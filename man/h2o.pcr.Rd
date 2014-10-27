@@ -7,7 +7,7 @@
 Runs GLM regression on PCA results, and allows for transformation of test data to match PCA transformations of training data.  
 }
 \usage{
-h2o.pcr(x, y, data, ncomp, family, nfolds = 10, alpha = 0.5, lambda = 1e-05, 
+h2o.pcr(x, y, data, key = "", ncomp, family, nfolds = 10, alpha = 0.5, lambda = 1e-05, 
   epsilon = 1e-05, tweedie.p)
 }
 
@@ -21,6 +21,9 @@ h2o.pcr(x, y, data, ncomp, family, nfolds = 10, alpha = 0.5, lambda = 1e-05,
   \item{data}{
     An \code{\linkS4class{H2OParsedData}} object containing the variables in the model.
   }
+    \item{key}{
+(Optional) The unique hex key assigned to the resulting model. If none is given, a key will automatically be generated.
+}
   \item{ncomp}{
     A number indicating the number of principal components to use in the regression model.
   }
@@ -73,13 +76,12 @@ This method standardizes the data, obtains the first \code{ncomp} principal comp
 \examples{
 \dontrun{
 library(h2o)
-localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
+localH2O = h2o.init()
 
 # Run PCR on Prostate Data
 prostate.hex = h2o.importURL(localH2O, path = paste("https://raw.github.com", 
   "0xdata/h2o/master/smalldata/logreg/prostate.csv", sep = "/"), key = "prostate.hex")
 h2o.pcr(x = c("AGE","RACE","PSA","DCAPS"), y = "CAPSULE", data = prostate.hex, family = "binomial", 
-  nfolds = 10, alpha = 0.5, ncomp = 3)
+  nfolds = 0, alpha = 0.5, ncomp = 2)
 }
 }
-

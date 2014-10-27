@@ -23,6 +23,7 @@ Objects can be created by calls of the form \code{new("H2OGBMModel", ...)}.
       }
   }
   \item{\code{valid}:}{Object of class \code{\linkS4class{H2OParsedData}}, which is the dataset used to validate the model.}
+  \item{\code{xval}:}{List of objects of class \code{"H2OGBMModel"}, representing the n-fold cross-validation models.}
 }}
 \section{Extends}{
 Class \code{"\linkS4class{H2OModel}"}, directly.
@@ -38,6 +39,8 @@ Class \code{"\linkS4class{H2OModel}"}, directly.
 \code{\link{h2o.gbm}}
 }
 \examples{
+\dontrun{
 showClass("H2OGBMModel")
+}
 }
 \keyword{classes}

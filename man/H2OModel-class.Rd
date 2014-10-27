@@ -5,7 +5,7 @@
 
 \title{Class \code{"H2OModel"}}
 \description{
-Object representing the model built by an H2O algorithm on a FluidVecs dataset.
+Object representing the model built by an H2O algorithm.
 }
 \section{Objects from the Class}{A virtual Class: No objects may be created from it.}
 \section{Slots}{
@@ -24,6 +24,8 @@ No methods defined with class "H2OModel" in the signature.
 \code{\linkS4class{H2OGLMModel}, \linkS4class{H2OKMeansModel}, \linkS4class{H2ODRFModel}, \linkS4class{H2OGBMModel}, \linkS4class{H2OPCAModel}, \linkS4class{H2ODeepLearningModel}}
 }
 \examples{
+\dontrun{
 showClass("H2OModel")
+}
 }
 \keyword{classes}

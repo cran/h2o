@@ -47,6 +47,8 @@ Class \code{"\linkS4class{H2OModel}"}, directly.
 \code{\link{h2o.glm}}
 }
 \examples{
+\dontrun{
 showClass("H2OGLMModel")
+}
 }
 \keyword{classes}

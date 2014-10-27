@@ -40,6 +40,8 @@ Class \code{"\linkS4class{H2OModel}"}, directly.
 \code{\link{h2o.prcomp}}
 }
 \examples{
+\dontrun{
 showClass("H2OPCAModel")
+}
 }
 \keyword{classes}

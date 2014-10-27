@@ -27,13 +27,9 @@ Returns the maximum or minimum over all the input arguments. For a \code{\linkS4
 \examples{
 \dontrun{
 library(h2o)
-localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
+localH2O = h2o.init()
 ausPath = system.file("extdata", "australia.csv", package = "h2o")
 australia.hex = h2o.importFile(localH2O, path = ausPath, key = "australia.hex")
 min(australia.hex)
 }
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

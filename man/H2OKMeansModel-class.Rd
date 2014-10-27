@@ -37,6 +37,8 @@ Objects can be created by calls of the form \code{new("H2OKMeansModel", ...)}.
 \code{\link{h2o.kmeans}}
 }
 \examples{
+\dontrun{
 showClass("H2OKMeansModel")
+}
 }
 \keyword{classes}

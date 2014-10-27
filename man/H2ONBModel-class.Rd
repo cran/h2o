@@ -41,6 +41,8 @@ Class \code{"\linkS4class{H2OModel}"}, directly.
 \code{\link{h2o.naiveBayes}}
 }
 \examples{
+\dontrun{
 showClass("H2ONBModel")
+}
 }
 \keyword{classes}

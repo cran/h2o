@@ -26,7 +26,7 @@ Returns a numeric vector with the hit ratio for every level in the reference dom
 \examples{
 \dontrun{
 library(h2o)
-localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
+localH2O = h2o.init()
 irisPath = system.file("extdata", "iris.csv", package = "h2o")
 iris.hex = h2o.importFile(localH2O, path = irisPath)
 iris.gbm = h2o.gbm(x = 1:4, y = 5, data = iris.hex)
@@ -34,7 +34,3 @@ iris.pred = h2o.predict(iris.gbm)
 h2o.hitRatio(iris.pred, iris.hex[,5], k = 3)
 }
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

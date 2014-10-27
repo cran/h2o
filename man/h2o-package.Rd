@@ -12,7 +12,7 @@ This is a package for running H2O via its REST API from within R. To communicate
 \tabular{ll}{
 Package: \tab h2o\cr
 Type: \tab Package\cr
-Version: \tab 2.4.3.11\cr
+Version: \tab 2.8.1.1\cr
 Date: \tab 2014-05-15\cr
 License: \tab Apache License (== 2.0)\cr
 Depends: \tab R (>= 2.13.0), RCurl, rjson, statmod, tools, methods, utils\cr
@@ -27,7 +27,7 @@ Note that no actual data is stored in the R workspace; and no actual work is car
 \author{
 Anqi Fu, Tom Kraljevic and Petr Maj, with contributions from the 0xdata team
 
-Maintainer: Anqi Fu <anqi@0xdata.com>
+Maintainer: Ariel Rao <ariel@0xdata.com>
 }
 \references{
 \itemize{

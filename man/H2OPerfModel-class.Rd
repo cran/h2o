@@ -46,6 +46,8 @@ Objects can be created by calls of the form \code{new("H2OPerfModel", ...)}.
 \code{\link{h2o.performance}}, \code{\link{plot.H2OPerfModel}}
 }
 \examples{
+\dontrun{
 showClass("H2OPerfModel")
+}
 }
 \keyword{classes}

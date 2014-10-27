@@ -31,6 +31,8 @@ No methods defined with class "H2OGBMGrid" in the signature.
 \code{\linkS4class{H2OGBMModel}, \link{h2o.gbm}}
 }
 \examples{
+\dontrun{
 showClass("H2OGBMGrid")
+}
 }
 \keyword{classes}

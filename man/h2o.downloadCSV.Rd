@@ -20,12 +20,12 @@ h2o.downloadCSV(data, filename, quiet = FALSE)
 WARNING: Files located on the H2O server may be very large! Make sure you have enough hard drive space to accommodate the entire file. 
 }
 \seealso{
-\code{\linkS4class{H2OParsedData}, \linkS4class{H2OParsedDataVA}}
+\code{\linkS4class{H2OParsedData}}
 }
 \examples{
 \dontrun{
 library(h2o)
-localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
+localH2O = h2o.init()
 irisPath = system.file("extdata", "iris_wheader.csv", package = "h2o")
 iris.hex = h2o.importFile(localH2O, path = irisPath)
 
@@ -35,7 +35,3 @@ file.info(myFile)
 file.remove(myFile)
 }
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

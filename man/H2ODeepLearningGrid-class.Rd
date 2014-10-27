@@ -31,6 +31,8 @@ No methods defined with class "H2ODeepLearningGrid" in the signature.
 \code{\linkS4class{H2ODeepLearningModel}, \link{h2o.deeplearning}}
 }
 \examples{
+\dontrun{
 showClass("H2ODeepLearningGrid")
+}
 }
 \keyword{classes}

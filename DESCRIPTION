@@ -1,17 +1,21 @@
 Package: h2o
 Type: Package
 Title: H2O R Interface
-Version: 2.4.3.11
+Version: 2.8.1.1
 Date: 2014-05-15
-Author: Anqi Fu, Tom Kraljevic and Petr Maj, with contributions from the 0xdata team
-Maintainer: Anqi Fu <anqi@0xdata.com>
-Description: This is a package for running H2O via its REST API from within R.
+Author: Anqi Fu, Spencer Aiello, Ariel Rao, Tom Kraljevic and Petr Maj,
+        with contributions from the 0xdata team
+Maintainer: Tom Kraljevic <tomk@0xdata.com>
+Description: Run H2O via its REST API from within R.
 License: Apache License (== 2.0)
-Depends: R (>= 2.13.0), RCurl, rjson, statmod, tools, methods, utils
-Collate: Wrapper.R Internal.R Classes.R ParseImport.R Algorithms.R
+Depends: R (>= 2.13.0), RCurl, rjson, statmod, survival, stats, tools,
+        utils, methods
+Collate: Wrapper.R Internal.R Classes.R ParseImport.R models.R
+        Algorithms.R zzz.R
 NeedsCompilation: no
 SystemRequirements: Java (>= 1.6)
+Suggests: plyr
 URL: http://www.0xdata.com
-Packaged: 2014-06-17 00:51:43 UTC; jenkins
+Packaged: 2014-10-23 02:24:40 UTC; jenkins
 Repository: CRAN
-Date/Publication: 2014-06-17 23:04:18
+Date/Publication: 2014-10-27 18:11:24

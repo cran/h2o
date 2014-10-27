@@ -33,6 +33,8 @@ Objects can be created by calls of the form \code{new("H2OClient", ...)}
 	 }
 }
 \examples{
+\dontrun{
 showClass("H2OClient")
+}
 }
 \keyword{classes}

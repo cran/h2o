@@ -5,7 +5,7 @@
 
 \title{Class \code{"H2ODRFGrid"}}
 \description{
-Object representing the models built by a H2O distributed random forest grid search on FluidVecs.
+Object representing the models built by a H2O distributed random forest grid search.
 }
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("H2ODRFGrid", ...)}.
@@ -31,6 +31,8 @@ No methods defined with class "H2ODRFGrid" in the signature.
 \code{\linkS4class{H2ODRFModel}, \link{h2o.randomForest}}
 }
 \examples{
+\dontrun{
 showClass("H2ODRFGrid")
+}
 }
 \keyword{classes}

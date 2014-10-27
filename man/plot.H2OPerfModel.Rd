@@ -28,7 +28,7 @@ Arguments to be passed to methods, such as graphical parameters (see \code{\link
 \examples{
 \dontrun{
 library(h2o)
-localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
+localH2O = h2o.init()
 
 # Run GBM classification on prostate.csv
 prosPath = system.file("extdata", "prostate.csv", package = "h2o")
@@ -43,7 +43,3 @@ plot(prostate.perf, type = "cutoffs")     # Plot precision vs. thresholds
 plot(prostate.perf, type = "roc")         # Plot ROC curve
 }
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

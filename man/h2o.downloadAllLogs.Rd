@@ -23,13 +23,9 @@ h2o.downloadAllLogs(client, dirname = ".", filename = NULL)
 \examples{
 \dontrun{
 library(h2o)
-localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
+localH2O = h2o.init()
 h2o.downloadAllLogs(localH2O, dirname = getwd(), filename = "h2o_logs.log")
 file.info(paste(getwd(), "h2o_logs.log", sep = .Platform$file.sep))
 file.remove(paste(getwd(), "h2o_logs.log", sep = .Platform$file.sep))
 }
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

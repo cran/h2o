@@ -10,9 +10,10 @@ H2O: Gradient Boosted Machines
 	 on a parsed data set.
 }
 \usage{
-h2o.gbm(x, y, distribution = "multinomial", data, n.trees = 10, interaction.depth = 5, 
-  n.minobsinnode = 10, shrinkage = 0.1, n.bins = 100, importance = FALSE, validation, 
-  balance.classes = FALSE, max.after.balance.size = 5)
+h2o.gbm(x, y, distribution = "multinomial", data, key = "", n.trees = 10, 
+  interaction.depth = 5, n.minobsinnode = 10, shrinkage = 0.1, n.bins = 20,
+  importance = FALSE, nfolds = 0, validation, balance.classes = FALSE, 
+  max.after.balance.size = 5)
 }
 \arguments{
   \item{x}{
@@ -26,6 +27,9 @@ The type of GBM model to be produced: classification is "multinomial" (default),
 }
   \item{data}{
 An \code{\linkS4class{H2OParsedData}} object containing the variables in the model.
+}
+  \item{key}{
+(Optional) The unique hex key assigned to the resulting model. If none is given, a key will automatically be generated.
 }
   \item{n.trees}{
 (Optional) Number of trees to grow. Must be a nonnegative integer.
@@ -45,8 +49,11 @@ An \code{\linkS4class{H2OParsedData}} object containing the variables in the mod
   \item{importance}{
 (Optional) A logical value indicating whether variable importance should be calculated. This will increase the amount of time for the algorithm to complete.
   }
+    \item{nfolds}{
+(Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.
+}
   \item{validation}{
-  (Optional) An \code{\linkS4class{H2OParsedData}} object indicating the validation dataset used to construct confusion matrix. If left blank, this defaults to the training data.}
+  (Optional) An \code{\linkS4class{H2OParsedData}} object indicating the validation dataset used to construct confusion matrix. If left blank, this defaults to the training data when \code{nfolds = 0}.}
   \item{balance.classes}{(Optional) Balance training data class counts via over/under-sampling (for imbalanced data)}
   \item{max.after.balance.size}{Maximum relative size of the training data after balancing class counts (can be less than 1.0)}
   }
@@ -77,9 +84,9 @@ http://www.stanford.edu/~hastie/local.ftp/Springer/OLD//ESLII_print4.pdf
 For more information see: http://docs.0xdata.com
 }
 \examples{
-\dontrun{
+# -- CRAN examples begin --
 library(h2o)
-localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
+localH2O = h2o.init()
 
 # Run regression GBM on australia.hex data 
 ausPath = system.file("extdata", "australia.csv", package="h2o")
@@ -87,11 +94,28 @@ australia.hex = h2o.importFile(localH2O, path = ausPath)
 independent <- c("premax", "salmax","minairtemp", "maxairtemp", "maxsst", 
   "maxsoilmoist", "Max_czcs")
 dependent <- "runoffnew"
-h2o.gbm(y = dependent, x = independent, data = australia.hex, n.trees = 10, interaction.depth = 3, 
+h2o.gbm(y = dependent, x = independent, data = australia.hex, n.trees = 3, interaction.depth = 3, 
   n.minobsinnode = 2, shrinkage = 0.2, distribution= "gaussian")
+# -- CRAN examples end --
 
+\dontrun{
 # Run multinomial classification GBM on australia data 
-h2o.gbm(y = dependent, x = independent, data = australia.hex, n.trees = 15, interaction.depth = 5, 
+h2o.gbm(y = dependent, x = independent, data = australia.hex, n.trees = 3, interaction.depth = 3, 
   n.minobsinnode = 2, shrinkage = 0.01, distribution= "multinomial")
+
+# GBM variable importance
+# Also see:
+#   https://github.com/0xdata/h2o/blob/master/R/tests/testdir_demos/runit_demo_VI_all_algos.R
+data.hex = h2o.importFile(
+  localH2O,
+  path = "https://raw.github.com/0xdata/h2o/master/smalldata/bank-additional-full.csv",
+  key = "data.hex")
+myX = 1:20
+myY="y"
+my.gbm <- h2o.gbm(x = myX, y = myY, distribution = "bernoulli", data = data.hex, n.trees =100,
+                  interaction.depth = 2, shrinkage = 0.01, importance = T)
+gbm.VI = my.gbm@model$varimp
+print(gbm.VI)
+barplot(t(gbm.VI[1]),las=2,main="VI from GBM")
 }
 }

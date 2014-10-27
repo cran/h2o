@@ -1,13 +1,11 @@
 \name{summary}
 \alias{summary.H2OParsedData}
-\alias{summary.H2OParsedDataVA}
 \title{ Summarizes the columns of a H2O Dataset }
 \description{
 A method for the \code{\link{summary}} generic. Summarizes the columns of an H2O parsed object or subset of columns and rows using vector notation (e.g. dataset[row, col])
 }
 \usage{
 \method{summary}{H2OParsedData}(object, \dots)
-\method{summary}{H2OParsedDataVA}(object, \dots)
 }
 \arguments{
   \item{object}{An \code{\linkS4class{H2OParsedData}} object.}
@@ -19,7 +17,7 @@ A matrix displaying the minimum, 1st quartile, median, mean, 3rd quartile and ma
 \examples{
 \dontrun{
 library(h2o)
-localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
+localH2O = h2o.init()
 prosPath = system.file("extdata", "prostate.csv", package="h2o")
 prostate.hex = h2o.importFile(localH2O, path = prosPath)
 summary(prostate.hex)
