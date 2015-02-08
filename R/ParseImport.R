@@ -26,7 +26,7 @@ h2o.clusterInfo <- function(client) {
 
   res = NULL
   {
-    res = fromJSON(postForm(myURL, .params = list(quiet="true", skip_ticks="true"), style = "POST"))
+    res = fromJSON(postForm(myURL, .params = list(quiet="true", skip_ticks="true"), style = "POST", .opts = curlOptions(useragent=R.version.string)))
 
     nodeInfo = res$nodes
     numCPU = sum(sapply(nodeInfo,function(x) as.numeric(x['num_cpus'])))
@@ -37,7 +37,7 @@ h2o.clusterInfo <- function(client) {
       # to post it's information yet.
       threeSeconds = 3
       Sys.sleep(threeSeconds)
-      res = fromJSON(postForm(myURL, style = "POST"))
+      res = fromJSON(postForm(myURL, style = "POST", .opts = curlOptions(useragent=R.version.string)))
     }  
   }
   
@@ -105,11 +105,13 @@ h2o.assign <- function(data, key) {
   .h2o.exec2(expr = data@key, h2o = data@h2o, dest_key = key)
 }
 
-h2o.createFrame <- function(object, key, rows, cols, seed, randomize, value, real_range, categorical_fraction, factors, integer_fraction, integer_range, missing_fraction, response_factors) {
+h2o.createFrame <- function(object, key, rows = 10000, cols = 10, seed, randomize = TRUE, value = 0, real_range = 100, categorical_fraction = 0.2, factors = 100, integer_fraction = 0.2, integer_range = 100, binary_fraction = 0.1, binary_ones_fraction = 0.02, missing_fraction = 0.01, response_factors = 2, has_response = FALSE) {
+  if(class(object) != "H2OClient") stop("object must be of class H2OClient")
+  if(!is.character(key)) stop("key must be a character string")
   if(!is.numeric(rows)) stop("rows must be a numeric value")
   if(!is.numeric(cols)) stop("cols must be a numeric value")
-  if(!is.numeric(seed)) stop("seed must be a numeric value")
-  if(!is.logical(randomize)) stop("randomize must be a boolean value")
+  if(!missing(seed) && !is.numeric(seed)) stop("seed must be a numeric value")
+  if(!is.logical(randomize)) stop("randomize must be a logical value")
   if(!is.numeric(value)) stop("value must be a numeric value")
   if(!is.numeric(real_range)) stop("real_range must be a numeric value")
   if(!is.numeric(categorical_fraction)) stop("categorical_fraction must be a numeric value")
@@ -118,10 +120,51 @@ h2o.createFrame <- function(object, key, rows, cols, seed, randomize, value, rea
   if(!is.numeric(integer_range)) stop("integer_range must be a numeric value")
   if(!is.numeric(missing_fraction)) stop("missing_fraction must be a numeric value")
   if(!is.numeric(response_factors)) stop("response_factors must be a numeric value")
+  if(!is.numeric(binary_fraction)) stop("binary_fraction must be a numeric value")
+  if(!is.numeric(binary_ones_fraction)) stop("binary_ones_fraction must be a numeric value")
+  if(!is.logical(has_response)) stop("has_response must be a logical value")
 
-  res <- .h2o.__remoteSend(object, .h2o.__PAGE_CreateFrame, key = key, rows = rows, cols = cols, seed = seed, randomize = as.numeric(randomize), value = value, real_range = real_range,
-                          categorical_fraction = categorical_fraction, factors = factors, integer_fraction = integer_fraction, integer_range = integer_range, missing_fraction = missing_fraction, response_factors = response_factors)
+  if(missing(seed))
+    res <- .h2o.__remoteSend(object, .h2o.__PAGE_CreateFrame, key = key, rows = rows, cols = cols, randomize = as.numeric(randomize), value = value, real_range = real_range,
+                             categorical_fraction = categorical_fraction, factors = factors, integer_fraction = integer_fraction, integer_range = integer_range, binary_fraction = binary_fraction, 
+                             binary_ones_fraction = binary_ones_fraction, missing_fraction = missing_fraction, response_factors = response_factors, has_response = as.numeric(has_response))
+  else
+    res <- .h2o.__remoteSend(object, .h2o.__PAGE_CreateFrame, key = key, rows = rows, cols = cols, seed = seed, randomize = as.numeric(randomize), value = value, real_range = real_range,
+                           categorical_fraction = categorical_fraction, factors = factors, integer_fraction = integer_fraction, integer_range = integer_range, binary_fraction = binary_fraction, 
+                           binary_ones_fraction = binary_ones_fraction, missing_fraction = missing_fraction, response_factors = response_factors, has_response = as.numeric(has_response))
   .h2o.exec2(expr = key, h2o = object, dest_key = key)
+}
+
+h2o.interaction <- function(data, key=NULL, factors, pairwise, max_factors, min_occurrence) {
+  if(class(data) != "H2OParsedData") stop("data must be of class H2OParsedData")
+  if(missing(factors)) stop("factors must be specified")
+  if(!is.logical(pairwise)) stop("pairwise must be a boolean value")
+  if(missing(max_factors)) stop("max_factors must be specified")
+  if(missing(min_occurrence)) stop("min_occurrence must be specified")
+
+  if (is.list(factors)) {
+    res <- lapply(factors, function(factor) h2o.interaction(data, key=NULL, factor, pairwise, max_factors, min_occurrence))
+    if (!is.null(key)) {
+      old <- cbind.H2OParsedData(res)
+      new <- h2o.assign(old, key)
+      h2o.rm(data@h2o, old@key)
+      return(new)
+    } else {
+      return(cbind.H2OParsedData(res))
+    }
+  }
+
+  if(!is.numeric(factors)) factors <- match(factors,colnames(data))
+  if(!is.numeric(factors)) stop("factors must be a numeric value")
+  if(is.null(factors)) stop("factors not found")
+  if(max_factors < 1) stop("max_factors cannot be < 1")
+  if(!is.numeric(max_factors)) stop("max_factors must be a numeric value")
+  if(min_occurrence < 1) stop("min_occurrence cannot be < 1")
+  if(!is.numeric(min_occurrence)) stop("min_occurrence must be a numeric value")
+
+  factors <- factors - 1 # make 0-based for Java
+  res <- .h2o.__remoteSend(data@h2o, .h2o.__PAGE_Interaction, source = data@key, destination_key = key, factors = factors, pairwise = as.numeric(pairwise), max_factors = max_factors, min_occurrence = min_occurrence)
+  h2o.getFrame(data@h2o, res$destination_key)
 }
 
 h2o.rebalance <- function(data, chunks, key) {
@@ -174,7 +217,7 @@ h2o.insertMissingValues <- function(data, fraction = 0.01, seed = -1) {
 # ----------------------------------- File Import Operations --------------------------------- #
 # WARNING: You must give the FULL file/folder path name! Relative paths are taken with respect to the H2O server directory
 # ----------------------------------- Import Folder --------------------------------- #  
-h2o.importFolder <- function(object, path, pattern = "", key = "", parse = TRUE, header, sep = "", col.names, parser_type = "AUTO") {
+h2o.importFolder <- function(object, path, pattern = "", key = "", parse = TRUE, header, header_with_hash, sep = "", col.names, parser_type = "AUTO") {
   if(class(object) != "H2OClient") stop("object must be of class H2OClient")
   if(!is.character(path)) stop("path must be of class character")
   if(nchar(path) == 0) stop("path must be a non-empty string")
@@ -203,7 +246,7 @@ h2o.importFolder <- function(object, path, pattern = "", key = "", parse = TRUE,
       } else {regPath <- paste(path, pattern, sep = .Platform$file.sep)}
       srcKey  <- ifelse(length(res$keys) == 1, res$keys[[1]], paste("*", regPath, "*", sep=""))
       rawData <- new("H2ORawData", h2o=object, key=srcKey)
-      h2o.parseRaw(data=rawData, key=key, header=header, sep=sep, col.names=col.names, parser_type = parser_type)
+      h2o.parseRaw(data=rawData, key=key, header=header, header_with_hash=header_with_hash, sep=sep, col.names=col.names, parser_type = parser_type)
     } else {
       myData <- lapply(res$keys, function(x) { new("H2ORawData", h2o=object, key=x) })
       if(length(res$keys) == 1) myData[[1]] else myData
@@ -212,24 +255,24 @@ h2o.importFolder <- function(object, path, pattern = "", key = "", parse = TRUE,
 }
 
 # ----------------------------------- Import File --------------------------------- #
-h2o.importFile <- function(object, path, key = "", parse = TRUE, header, sep = "", col.names, parser_type = "AUTO") {
-  h2o.importFolder(object, path, pattern = "", key, parse, header, sep, col.names, parser_type = parser_type)
+h2o.importFile <- function(object, path, key = "", parse = TRUE, header, header_with_hash, sep = "", col.names, parser_type = "AUTO") {
+  h2o.importFolder(object, path, pattern = "", key, parse, header, header_with_hash, sep, col.names, parser_type = parser_type)
 }
 
 # ----------------------------------- Import URL --------------------------------- #
-h2o.importURL <- function(object, path, key = "", parse = TRUE, header, sep = "", col.names, parser_type = "AUTO") {
+h2o.importURL <- function(object, path, key = "", parse = TRUE, header, header_with_hash, sep = "", col.names, parser_type = "AUTO") {
   print("This function has been deprecated. In the future, please use h2o.importFile with a http:// prefix instead.")
-  h2o.importFile(object, path, key, parse, header, sep, col.names, parser_type = parser_type)
+  h2o.importFile(object, path, key, parse, header, header_with_hash, sep, col.names, parser_type = parser_type)
 }
 
 # ----------------------------------- Import HDFS --------------------------------- #
-h2o.importHDFS <- function(object, path, pattern = "", key = "", parse = TRUE, header, sep = "", col.names, parser_type = "AUTO") {
+h2o.importHDFS <- function(object, path, pattern = "", key = "", parse = TRUE, header, header_with_hash, sep = "", col.names, parser_type = "AUTO") {
   print("This function has been deprecated. In the future, please use h2o.importFolder with a hdfs:// prefix instead.")
-  h2o.importFolder(object, path, pattern, key, parse, header, sep, col.names, parser_type = parser_type)
+  h2o.importFolder(object, path, pattern, key, parse, header, header_with_hash, sep, col.names, parser_type = parser_type)
 }
 
 # ----------------------------------- Upload File --------------------------------- #
-h2o.uploadFile <- function(object, path, key = "", parse = TRUE, header, sep = "", col.names, silent = TRUE, parser_type = "AUTO") {
+h2o.uploadFile <- function(object, path, key = "", parse = TRUE, header, header_with_hash, sep = "", col.names, silent = TRUE, parser_type = "AUTO") {
   if(class(object) != "H2OClient") stop("object must be of class H2OClient")
   if(!is.character(path)) stop("path must be of class character")
   if(nchar(path) == 0) stop("path must be a non-empty string")
@@ -243,33 +286,42 @@ h2o.uploadFile <- function(object, path, key = "", parse = TRUE, header, sep = "
   url = paste(url, "?key=", URLencode(path), sep="")
   if(file.exists(h2o.getLogPath("Command"))) .h2o.__logIt(url, NULL, "Command")
   if(silent)
-    temp = postForm(url, .params = list(fileData = fileUpload(normalizePath(path))))
+    temp = postForm(url, .params = list(fileData = fileUpload(normalizePath(path))), .opts = curlOptions(useragent=R.version.string))
   else
-    temp = postForm(url, .params = list(fileData = fileUpload(normalizePath(path))), .opts = list(verbose = TRUE))
+    temp = postForm(url, .params = list(fileData = fileUpload(normalizePath(path))), .opts = curlOptions(verbose = TRUE, useragent=R.version.string))
   rawData = new("H2ORawData", h2o=object, key=path)
-  if(parse) parsedData = h2o.parseRaw(data=rawData, key=key, header=header, sep=sep, col.names=col.names, parser_type = parser_type) else rawData
+  if(parse) parsedData = h2o.parseRaw(data=rawData, key=key, header=header, header_with_hash=header_with_hash, sep=sep, col.names=col.names, parser_type = parser_type) else rawData
 }
 
 # ----------------------------------- File Parse Operations --------------------------------- #
-h2o.parseRaw <- function(data, key = "", header, sep = "", col.names, parser_type = "AUTO") {
+h2o.parseRaw <- function(data, key = "", header, header_with_hash, sep = "", col.names, parser_type = "AUTO") {
   if(class(data) != "H2ORawData") stop("data must be of class H2ORawData")
   if(!is.character(key)) stop("key must be of class character")
   if(nchar(key) > 0 && regexpr("^[a-zA-Z_][a-zA-Z0-9_.]*$", key)[1] == -1)
     stop("key must match the regular expression '^[a-zA-Z_][a-zA-Z0-9_.]*$'")
   if(!(missing(header) || is.logical(header))) stop(paste("header cannot be of class", class(header)))
+  if(!(missing(header_with_hash) || is.logical(header_with_hash))) stop(paste("header_with_hash cannot be of class", class(header_with_hash)))
   if(!is.character(sep)) stop("sep must be of class character")
   if(!(missing(col.names) || class(col.names) == "H2OParsedData")) stop(paste("col.names cannot be of class", class(col.names)))
   
   # If both header and column names missing, then let H2O guess if header exists
   sepAscii <- ifelse(sep == "", sep, strtoi(charToRaw(sep), 16L))
-  if(missing(header) && missing(col.names))
+  if(missing(header) && missing(header_with_hash) && missing(col.names))
     res <- .h2o.__remoteSend(data@h2o, .h2o.__PAGE_PARSE2, source_key=data@key, destination_key=key, separator=sepAscii, parser_type=parser_type)
-  else if(missing(header) && !missing(col.names))
+  else if(missing(header) && !missing(header_with_hash) && missing(col.names))
+    res <- .h2o.__remoteSend(data@h2o, .h2o.__PAGE_PARSE2, source_key=data@key, destination_key=key, separator=sepAscii, header_with_hash=as.numeric(header_with_hash), parser_type=parser_type)
+  else if(missing(header) && missing(header_with_hash) && !missing(col.names))
     res <- .h2o.__remoteSend(data@h2o, .h2o.__PAGE_PARSE2, source_key=data@key, destination_key=key, separator=sepAscii, header=1, header_from_file=col.names@key, parser_type=parser_type)
-  else if(!missing(header) && missing(col.names))
+  else if(missing(header) && !missing(header_with_hash) && !missing(col.names))
+    res <- .h2o.__remoteSend(data@h2o, .h2o.__PAGE_PARSE2, source_key=data@key, destination_key=key, separator=sepAscii, header_with_hash=as.numeric(header_with_hash), header_from_file=col.names@key, parser_type=parser_type)
+  else if(!missing(header) && missing(header_with_hash) && missing(col.names))
     res <- .h2o.__remoteSend(data@h2o, .h2o.__PAGE_PARSE2, source_key=data@key, destination_key=key, separator=sepAscii, header=as.numeric(header), parser_type=parser_type)
-  else
+  else if(!missing(header) && !missing(header_with_hash) && missing(col.names))
+    res <- .h2o.__remoteSend(data@h2o, .h2o.__PAGE_PARSE2, source_key=data@key, destination_key=key, separator=sepAscii, header=as.numeric(header), header_with_hash=as.numeric(header_with_hash), parser_type=parser_type)
+  else if(!missing(header) && missing(header_with_hash) && !missing(col.names))
     res <- .h2o.__remoteSend(data@h2o, .h2o.__PAGE_PARSE2, source_key=data@key, destination_key=key, separator=sepAscii, header=as.numeric(header), header_from_file=col.names@key, parser_type=parser_type)
+  else  #(!missing(header) && !missing(header_with_hash) && !missing(col.names))
+    res <- .h2o.__remoteSend(data@h2o, .h2o.__PAGE_PARSE2, source_key=data@key, destination_key=key, separator=sepAscii, header=as.numeric(header), header_with_hash=as.numeric(header_with_hash), header_from_file=col.names@key, parser_type=parser_type)
   
   # on.exit(.h2o.__cancelJob(data@h2o, res$job_key))
   .h2o.__waitOnJob(data@h2o, res$job_key)
@@ -391,37 +443,30 @@ h2o.saveModel <- function(object, dir="", name="",save_cv=TRUE, force=FALSE) {
     if(!is.logical(save_cv)) stop('save_cv must be either TRUE or FALSE')
     if(nchar(name) == 0) name = object@key
 
-    force = ifelse(force==TRUE, 1, 0)    
+    force = ifelse(force==TRUE, 1, 0)
+    save_cv = ifelse(save_cv==TRUE, 1, 0)
     # Create a model directory for each model saved that will include main model
     # any cross validation models and a meta text file with all the model names listed
     model_dir <- paste(dir, name, sep=.Platform$file.sep)
-    dir.create(model_dir,showWarnings = F)
+    #dir.create(model_dir,showWarnings = F)
     
     # Save main model
-    path <- paste(model_dir, object@key, sep=.Platform$file.sep)
-    res <- .h2o.__remoteSend(object@data@h2o, .h2o.__PAGE_SaveModel, model=object@key, path=path, force=force)
+    path <- paste(model_dir, sep=.Platform$file.sep)
+    res <- .h2o.__remoteSend(object@data@h2o, .h2o.__PAGE_SaveModel, model=object@key, path=path, force=force, save_cv=save_cv)
     
     # Save all cross validation models
     if (.hasSlot(object, "xval")) {
       xval_keys <- sapply(object@xval,function(model) model@key )
       if(save_cv & !(length(xval_keys)==0)) {
-        for (xval_key in xval_keys) .h2o.__remoteSend(object@data@h2o, .h2o.__PAGE_SaveModel, model=xval_key, path=paste(model_dir, xval_key, sep=.Platform$file.sep), force=force)
+        save_cv <- TRUE
+#        for (xval_key in xval_keys) .h2o.__remoteSend(object@data@h2o, .h2o.__PAGE_SaveModel, model=xval_key, path=paste(model_dir, xval_key, sep=.Platform$file.sep), force=force)
       } else {
         save_cv <- FALSE # do not save CV results if they do not exist
       }
     } else {
       save_cv <- FALSE # if no xval slot (Naive Bayes) no CV models
-    }
-
-    # Create new file called model_names and write all model names to file
-    fileConn <- file(paste(model_dir, "model_names", sep=.Platform$file.sep))
-    if(save_cv) {writeLines(text = c(object@key, xval_keys), con = fileConn)
-    } else {
-      writeLines(text = object@key, fileConn )
-    }
-    close(fileConn)
-    
-    dirname(res$path)
+    }    
+    res$path
 }
 
 # ------------------- Save All H2O Model to Disk --------------------------------------------------
@@ -429,6 +474,8 @@ h2o.saveModel <- function(object, dir="", name="",save_cv=TRUE, force=FALSE) {
 h2o.saveAll <- function(object, dir="", save_cv=TRUE, force=FALSE) {
   if(missing(object)) stop('Must specify object')
   if(class(object) != 'H2OClient') stop('object must be of class H2OClient')
+  if(!is.logical(save_cv)) stop('save_cv needs to be a boolean')
+  if(!is.logical(force)) stop('force needs to be a boolean')
   
   ## Grab all the model keys in H2O
   res = .h2o.__remoteSend(client = object, page = .h2o.__PAGE_ALLMODELS)
@@ -439,7 +486,7 @@ h2o.saveAll <- function(object, dir="", save_cv=TRUE, force=FALSE) {
   for(key in keys) { dups = grep(pattern = paste(key, "_", sep = ""), x = keys)
     duplicates = append(x = duplicates, values = dups)
   }
-  keys = keys[-duplicates]
+  keys = if(length(duplicates) > 0) keys[-duplicates] else keys
   
   ## Create H2OModel objects in R (To grab the cross validation models)
   models = lapply(keys, function(model_key) h2o.getModel(h2o = object, key = model_key))
@@ -453,18 +500,12 @@ h2o.loadModel <- function(object, path="") {
     if(missing(object)) stop('Must specify object')
     if(class(object) != 'H2OClient') stop('object must be of class H2OClient')
     if(!is.character(path)) stop('path must be of class character')
-    
-    # Read models from model_names meta file
-    fileConn = file(paste(path, "model_names", sep="/"))
-    model_names = readLines(con = fileConn)
-    close(fileConn)
-    
-    # Load all model_names into H2O
-    if(length(model_names)==0) stop('No models names specified in meta file, check model_names')
-    if(length(model_names)>0) for (key in model_names) .h2o.__remoteSend(object, .h2o.__PAGE_LoadModel, path = paste(path, key, sep=.Platform$file.sep) )
-    h2o.getModel(object, model_names[1])
-}
 
+    # Load all model_names into H2O
+    res = .h2o.__remoteSend(object, .h2o.__PAGE_LoadModel, path = path)
+    modelKey = res$model$"_key"
+    h2o.getModel(object, modelKey)
+}
 
 # ------------------- Load All H2O Model in a directory from Disk -----------------------------------------------
 h2o.loadAll <- function(object, dir="") {
@@ -483,3 +524,29 @@ h2o.loadAll <- function(object, dir="") {
   model_objs
 }
 
+# ------------------- Remove vector from a data frame -----------------------------------------------
+
+h2o.removeVecs <- function(data, cols) {
+  if (missing(data)) stop('Must specify data object')
+  if (class(data) != 'H2OParsedData') stop('object must be of class H2OParsedData')
+  verified_cols <- .verify_datacols(data = data, cols = cols)
+  inds <- verified_cols$cols_ind - 1
+  .h2o.__remoteSend(data@h2o,.h2o.__PAGE_RemoveVec, source=data@key, cols=inds)
+  data <- h2o.getFrame(h2o = data@h2o, key = data@key)
+}
+
+# ------------- Return the indices of the top or bottom values of column(s) -----------------
+
+h2o.order <- function(data, cols, n = 5, decreasing = T) {
+  if (missing(data)) stop('Must specify data object')
+  if (class(data) != 'H2OParsedData') stop('object must be of class H2OParsedData')
+  if (!is.numeric(n)) stop('n must be a integer')
+  if (!is.logical(decreasing)) stop('decreasing must be a boolean')
+  if (missing(cols)) cols <- 1:ncol(data)
+  rev <- if (decreasing) 1 else 0
+  
+  verified_cols <- .verify_datacols(data = data, cols = cols)
+  inds <- verified_cols$cols_ind - 1
+  res <- .h2o.__remoteSend(data@h2o,.h2o.__PAGE_Order, source=data@key, cols=inds, n = n, rev = rev)
+  h2o.getFrame(data@h2o, res$destination_key)
+}

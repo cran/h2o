@@ -20,8 +20,9 @@ H2O: Cox Proportional Hazards Models
 Fit a Cox Proportional Hazards Model.
 }
 \usage{
-h2o.coxph(x, y, data, key = "", weights, ties = c("efron", "breslow"),
-          init = 0, control = h2o.coxph.control(...), ...)
+h2o.coxph(x, y, data, key = "", weights = NULL, offset = NULL,
+          ties = c("efron", "breslow"), init = 0,
+          control = h2o.coxph.control(...), ...)
 
 h2o.coxph.control(lre = 9, iter.max = 20, ...)
 
@@ -45,6 +46,8 @@ h2o.coxph.control(lre = 9, iter.max = 20, ...)
   \item{key}{An optional unique hex key assigned to the resulting model.
     If none is given, a key will automatically be generated.}
   \item{weights}{An optional character string representing the case weights in
+    the model.}
+  \item{offset}{An optional character vector representing the offset terms in
     the model.}
   \item{ties}{A character string denoting which approximation method for
     handling ties should be used in the partial likelihood;
@@ -97,10 +100,19 @@ Springer-Verlag, 2000.
 \examples{
 \dontrun{
 library(h2o)
-localH2O = h2o.init()
+localH2O <- h2o.init()
 
-library(survival)
-bladder.hex <- as.h2o(localH2O, bladder, key = "bladder.hex")
-h2o.coxph(x = c("number", "size"), y = c("stop", "event"), data = bladder.hex)
+# Use pbc data set from the survival package
+pbc.hex <- as.h2o(localH2O, pbc, key = "pbc.hex")
+pbc.hex$statusOf2  <- pbc.hex$status == 2
+pbc.hex$logBili    <- log(pbc.hex$bili)
+pbc.hex$logProtime <- log(pbc.hex$protime)
+pbc.hex$logAlbumin <- log(pbc.hex$albumin)
+pbcmodel <- h2o.coxph(x = c("age", "edema", "logBili", "logProtime", "logAlbumin"),
+                      y = c("time", "statusOf2"), data = pbc.hex)
+summary(pbcmodel)
+pbcsurv <- survfit(pbcmodel)
+summary(pbcsurv)
+plot(pbcsurv)
 }
 }

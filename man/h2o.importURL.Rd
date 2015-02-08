@@ -7,8 +7,8 @@ Import Data from URL
 Imports a file from the URL and parses it, returning an object containing the identifying hex key.
 }
 \usage{
-h2o.importURL(object, path, key = "", parse = TRUE, header, sep = "", col.names,
-              parser_type="AUTO")
+h2o.importURL(object, path, key = "", parse = TRUE, header, header_with_hash, sep = "",
+              col.names, parser_type="AUTO")
 }
 
 \arguments{
@@ -26,6 +26,9 @@ The complete URL of the file to be imported. Each row of data appears as one lin
   }
     \item{header}{
 (Optional) A logical value indicating whether the first row is the column header. If missing, H2O will automatically try to detect the presence of a header.
+  }
+     \item{header_with_hash}{
+(Optional) A logical value indicating whether the first row is a column header that begins with a hash character. If missing, H2O will automatically try to detect the presence of a header.
   }
   \item{sep}{
 (Optional) The field separator character. Values on each line of the file are separated by this character. If \code{sep = ""}, the parser will automatically detect the separator.
@@ -52,7 +55,7 @@ If \code{parse = TRUE}, the function returns an object of class \code{\linkS4cla
 library(h2o)
 localH2O = h2o.init()
 prostate.hex = h2o.importURL(localH2O, path = paste("https://raw.github.com", 
-  "0xdata/h2o/master/smalldata/logreg/prostate.csv", sep = "/"), key = "prostate.hex")
+  "h2oai/h2o/master/smalldata/logreg/prostate.csv", sep = "/"), key = "prostate.hex")
 class(prostate.hex)
 summary(prostate.hex)
 }

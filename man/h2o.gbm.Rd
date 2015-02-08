@@ -12,8 +12,9 @@ H2O: Gradient Boosted Machines
 \usage{
 h2o.gbm(x, y, distribution = "multinomial", data, key = "", n.trees = 10, 
   interaction.depth = 5, n.minobsinnode = 10, shrinkage = 0.1, n.bins = 20,
-  importance = FALSE, nfolds = 0, validation, balance.classes = FALSE, 
-  max.after.balance.size = 5)
+  group_split = TRUE, importance = FALSE, nfolds = 0, validation, holdout.fraction = 0,
+  balance.classes = FALSE, max.after.balance.size = 5, class.sampling.factors = NULL,
+  grid.parallelism = 1)
 }
 \arguments{
   \item{x}{
@@ -23,7 +24,7 @@ A vector containing the names or indices of the predictor variables to use in bu
 The name or index of the response variable. If the data does not contain a header, this is the column index number starting at 0, and increasing from left to right. (The response must be either an integer or a categorical variable).
 }
   \item{distribution}{
-The type of GBM model to be produced: classification is "multinomial" (default), "gaussian" is used for regression.
+The type of GBM model to be produced: classification is "multinomial" (default), "gaussian" is used for regression, and "bernoulli" for binary outcomes.
 }
   \item{data}{
 An \code{\linkS4class{H2OParsedData}} object containing the variables in the model.
@@ -46,16 +47,22 @@ An \code{\linkS4class{H2OParsedData}} object containing the variables in the mod
   \item{n.bins}{
 (Optional) Number of bins to use in building histogram.
 }
+
+\item{group_split}{
+(Optional) default is TRUE. If FALSE, does not do the bit-set group splitting categoricals, but 1 vs. many.
+}
   \item{importance}{
 (Optional) A logical value indicating whether variable importance should be calculated. This will increase the amount of time for the algorithm to complete.
   }
     \item{nfolds}{
 (Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.
 }
-  \item{validation}{
-  (Optional) An \code{\linkS4class{H2OParsedData}} object indicating the validation dataset used to construct confusion matrix. If left blank, this defaults to the training data when \code{nfolds = 0}.}
+  \item{validation}{ (Optional) An \code{\linkS4class{H2OParsedData}} object indicating the validation dataset used to construct confusion matrix. If left blank, this defaults to the training data when \code{nfolds = 0}.}
+  \item{holdout.fraction}{ (Optional) Fraction of the training data to hold out for validation.}
   \item{balance.classes}{(Optional) Balance training data class counts via over/under-sampling (for imbalanced data)}
   \item{max.after.balance.size}{Maximum relative size of the training data after balancing class counts (can be less than 1.0)}
+  \item{class.sampling.factors}{ Desired over/under-sampling ratios per class (lexicographic order). }
+  \item{grid.parallelism}{An integer between 1 and 4 (inclusive) indicating how many parallel threads to run during grid search.}
   }
 \value{
 An object of class \code{\linkS4class{H2OGBMModel}} with slots key, data, valid (the validation dataset) and model, where the last is a list of the following components:
@@ -81,7 +88,7 @@ http://www.stanford.edu/~hastie/local.ftp/Springer/OLD//ESLII_print4.pdf
 }
 
 \seealso{
-For more information see: http://docs.0xdata.com
+For more information see: http://docs.h2o.ai/
 }
 \examples{
 # -- CRAN examples begin --
@@ -105,10 +112,10 @@ h2o.gbm(y = dependent, x = independent, data = australia.hex, n.trees = 3, inter
 
 # GBM variable importance
 # Also see:
-#   https://github.com/0xdata/h2o/blob/master/R/tests/testdir_demos/runit_demo_VI_all_algos.R
+#   https://github.com/h2oai/h2o/blob/master/R/tests/testdir_demos/runit_demo_VI_all_algos.R
 data.hex = h2o.importFile(
   localH2O,
-  path = "https://raw.github.com/0xdata/h2o/master/smalldata/bank-additional-full.csv",
+  path = "https://raw.github.com/h2oai/h2o/master/smalldata/bank-additional-full.csv",
   key = "data.hex")
 myX = 1:20
 myY="y"

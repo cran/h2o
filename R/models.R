@@ -195,9 +195,9 @@ function(h2o, key, lambda_idx = -1, return_all_lambda = TRUE, pre = "", data = N
   names(result$coefficients) <- pre$json$glm_model$coefficients_names[idxes]
   if (!is.null(result$normalized_coefficients))
     names(result$normalized_coefficients) <- pre$json$glm_model$coefficients_names[idxes]
-  if(.isBinomial(pre)) {  # build and set the confusion matrix
+  if(.isBinomial(pre) && !is.null(valid) && !is.null(valid$cms)) {  # build and set the confusion matrix
     cm_ind <- trunc(100*result$best_threshold) + 1
-    if ( trunc(100 * result$best_threshold) + 1 > length(valid$cms)) {
+    if (trunc(100 * result$best_threshold) + 1 > length(valid$cms)) {
       threshs <- pre$json$glm_model$submodels[[lambda_idx]]$validation$thresholds
       cm_ind <- which(threshs == result$best_threshold)
     }
@@ -233,6 +233,7 @@ function(pre, h2o, key, num_lambda, best_lambda_idx, data) {
 .h2o.get.glm<-
 function(h2o, key, return_all_lambda = TRUE) {
   pre <- .h2o.__model.preamble(h2o, key, .json.to.R.map$glm)
+  if(is.null(pre$json$glm_model)) stop('getting GLM Cross validation model is correctly unimplemented')
   if(!is.null(pre$json$glm_model$warnings))
       invisible(lapply(pre$json$glm_model$warnings, warning))
   submodels <- pre$json$glm_model$submodels

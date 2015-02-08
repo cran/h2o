@@ -9,8 +9,10 @@ setClass("H2OParsedData", representation(h2o="H2OClient", key="character", logic
 setClass("H2OModel", representation(key="character", data="H2OParsedData", model="list", "VIRTUAL"))
 # setClass("H2OModel", representation(key="character", data="H2OParsedData", model="list", env="environment", "VIRTUAL"))
 setClass("H2OGrid", representation(key="character", data="H2OParsedData", model="list", sumtable="list", "VIRTUAL"))
-setClass("H2OPerfModel", representation(cutoffs="numeric", measure="numeric", perf="character", model="list", roc="data.frame"))
+setClassUnion("data.frameORnull", c("data.frame", "NULL"))
+setClass("H2OPerfModel", representation(cutoffs="numeric", measure="numeric", perf="character", model="list", roc="data.frame", gains="data.frameORnull"))
 
+setClass("H2OGapStatModel", contains="H2OModel")
 setClass("H2OCoxPHModel", contains="H2OModel", representation(summary="list", survfit="list"))
 setClass("H2OGLMModel", contains="H2OModel", representation(xval="list"))
 setClass("H2OKMeansModel", contains="H2OModel")
@@ -47,7 +49,7 @@ setClass("H2OGLMModelList", representation(models="list", best_model="numeric", 
 # setMethod("initialize", "H2OParsedData", function(.Object, h2o = new("H2OClient"), key = "") {
 #   .Object@h2o = h2o
 #   .Object@key = key
-#   .Object@env = new.env()
+#   .Object@env = new.env()ASTSS
 #
 #   assign("h2o", .Object@h2o, envir = .Object@env)
 #   assign("key", .Object@key, envir = .Object@env)
@@ -96,6 +98,66 @@ setMethod("show", "H2OGrid", function(object) {
   temp = data.frame(t(sapply(object@sumtable, c)))
   cat("\nSummary\n"); print(temp)
 })
+
+
+setMethod("show", "H2OGapStatModel", function(object) {
+  cat("\n")
+  cat("Number of KMeans Run: ", object@model$params$K*(object@model$params$B + 1), "\n")
+  cat("Optimal Number of Clusters: ", object@model$k_opt, "\n")
+  cat("\nFor more, try `summary` and `plot` methods.\n\n")
+  cat("\n")
+})
+
+summary.H2OGapStatModel <-
+function(object, ...) {
+  x    <- 1:length(object@model$log_within_ss)
+  lwk  <- object@model$log_within_ss
+  elwk <- object@model$boot_within_ss
+  sdev <- object@model$se_boot_within_ss
+  gaps <- object@model$gap_stats
+
+  row.names <- c("LWCSS", "E[LWCSS]", "sdevs", "gaps")
+
+  fr <- matrix(ncol=length(x), nrow=4)
+  fr[1,] <- lwk
+  fr[2,] <- elwk
+  fr[3,] <- sdev
+  fr[4,] <- gaps
+  fr <- as.data.frame(fr)
+  rownames(fr) <- row.names
+  colnames(fr) <- x
+
+#  cat("\n")
+#  cat("(LWCSS = Log of Within Cluster Sum of Squares)", "\n\n")
+#  cat("LWCSS for each k (log(W_k)):\n", lwk, "\n\n")
+#  cat("Expected LWCSS for each k (log(W*_k)):\n", elwk, "\n\n")
+#  cat("Standard Errors Expected LWCSS for each k:\n", sdev, "\n\n")
+#  cat("Gap Statistics:\n", gaps, "\n\n")
+#  cat("\n")
+  print(fr)
+
+  cat("\nTry plotting the Gap Statistic Model:\n")
+  cat("\nExample: plot(my.model)\n\n")
+
+  invisible(return(fr))
+}
+
+plot.H2OGapStatModel<-
+function(x, ...) {
+  object <- x
+  x    <- 1:length(object@model$log_within_ss)
+  lwk  <- object@model$log_within_ss
+  elwk <- object@model$boot_within_ss
+  sdev <- object@model$se_boot_within_ss
+  gaps <- object@model$gap_stats
+
+  par(mfrow=c(3,1))
+  plot(x, lwk, xlab="number of clusters k", ylab = "log(W_k)", type="o", pch=19)
+  plot(x, lwk, xlab="number of clusters k", ylab = "obs and exp log(W_k)", pch = "O", type="o", ylim=c(0,max(lwk, elwk)))
+  lines(x,elwk, pch="E", type="o")
+  plot(x, gaps, ylim=c(min(gaps-sdev), max(gaps+sdev)), type="o", pch=19, xlab="number of clusters k", ylab="Gap")
+  suppressWarnings(arrows(x, gaps-sdev, x, gaps+sdev, length=0.05, angle=90, code=3))  # suppress warning on case where sdev ~ 0
+}
 
 setMethod("show", "H2OCoxPHModel", function(object)
   get("print.coxph", getNamespace("survival"))(object@model))
@@ -146,11 +208,25 @@ survfit.H2OCoxPHModel <-
 function(formula, newdata, conf.int = 0.95,
          conf.type = c("log", "log-log", "plain", "none"), ...) {
   if (missing(newdata))
-    newdata <- as.data.frame(as.list(formula@model$means))
+    newdata <- as.data.frame(c(as.list(formula@model$means),
+                               as.list(formula@model$means.offset)))
   if (is.data.frame(newdata))
     capture.output(newdata <- as.h2o(formula@data@h2o, newdata, header = TRUE))
   conf.type <- match.arg(conf.type)
 
+  # Code below has calculation performed in R
+  pred <- as.data.frame(h2o.predict(formula, newdata))[[1L]]
+  res <- formula@survfit
+  if (length(pred) == 1L)
+    res$cumhaz <- pred * res$cumhaz
+  else
+    res$cumhaz <- outer(res$cumhaz, pred, FUN = "*")
+  res$std.err <- NULL
+  res$surv <- exp(- res$cumhaz)
+  class(res) <- c("survfit.H2OCoxPHModel", "survfit.cox", "survfit")
+  return(res)
+
+  # Code below assumes calculation in H2O
   pred <- as.matrix(h2o.predict(formula, newdata)[,-1L])
   nms <- colnames(pred)
   dimnames(pred) <- NULL
@@ -207,13 +283,12 @@ setMethod("show", "H2OKMeansModel", function(object) {
     print(object@data@h2o)
     cat("Parsed Data Key:", object@data@key, "\n\n")
     cat("K-Means Model Key:", object@key)
-    
     model = object@model
     cat("\n\nK-means clustering with", length(model$size), "clusters of sizes "); cat(model$size, sep=", ")
     cat("\n\nCluster means:\n"); print(model$centers)
-    cat("\nClustering vector:\n"); print(summary(model$cluster))
+    if (!is.null(model$cluster)) { cat("\nClustering vector:\n"); print(summary(model$cluster)) }
     cat("\nWithin cluster sum of squares by cluster:\n"); print(model$withinss)
-    cat("(between_SS / total_SS = ", round(100*sum(model$betweenss)/model$totss, 1), "%)\n")
+#    cat("(between_SS / total_SS = ", round(100*sum(model$betweenss)/model$totss, 1), "%)\n")
     cat("\nAvailable components:\n\n"); print(names(model))
 })
 
@@ -227,29 +302,31 @@ setMethod("show", "H2OGLMModel", function(object) {
     if(!is.null(model$normalized_coefficients)) {
         cat("\nNormalized Coefficients:\n"); print(round(model$normalized_coefficients,5))
     }
-    cat("\nDegrees of Freedom:", model$df.null, "Total (i.e. Null); ", model$df.residual, "Residual")
-    cat("\nNull Deviance:    ", round(model$null.deviance,1))
+    if( !(identical(model$df.null, numeric(0))) ) 
+      cat("\nDegrees of Freedom:", model$df.null, "Total (i.e. Null); ", model$df.residual, "Residual")
+    if(is.numeric(model$null.deviance)) cat("\nNull Deviance:    ", round(model$null.deviance,1))
     #Return AIC NaN while calculations for tweedie/gamma not implemented; keep R from throwing error
     if (class(model$aic) != "numeric") {
-      cat("\nResidual Deviance:", round(model$deviance,1), " AIC: NaN")
+      if(is.numeric(model$deviance)) cat("\nResidual Deviance:", round(model$deviance,1), " AIC: NaN")
     } else {
-      cat("\nResidual Deviance:", round(model$deviance,1), " AIC:", round(model$aic,1))
+      if(is.numeric(model$deviance)) cat("\nResidual Deviance:", round(model$deviance,1), " AIC:", round(model$aic,1))
     }
-    cat("\nDeviance Explained:", round(1-model$deviance/model$null.deviance,5), "\n")
+    if(is.numeric(model$null.deviance)) cat("\nDeviance Explained:", round(1-model$deviance/model$null.deviance,5), "\n")
     # cat("\nAvg Training Error Rate:", round(model$train.err,5), "\n")
-    
+
     family <- model$params$family$family
     if(family == "binomial") {
-        cat(" Best Threshold:", round(model$best_threshold,5))
-        cat("\n\nConfusion Matrix:\n"); print(model$confusion)
-    if (!is.null(model$auc)) {
-        if(.hasSlot(object, "valid"))
-          trainOrValidation <- ifelse(is.na(object@valid@key), "train)", "validation)")
-        else trainOrValidation <- "train)"
-        cat("\nAUC = ", model$auc, "(on", trainOrValidation ,"\n")
-      }
+        if(is.numeric(model$best_threshold)) cat(" Best Threshold:", round(model$best_threshold,5))
+        if(is.matrix(model$confusion)) cat("\n\nConfusion Matrix:\n") ; if(is.matrix(model$confusion)) print(model$confusion)
+        if (!is.null(model$auc)) {
+            if(.hasSlot(object, "valid")) {
+              trainOrValidation <- ifelse(is.na(object@valid@key), "train)", "validation)")
+            } else {trainOrValidation <- "train)"
+            if(is.numeric(model$auc)) cat("\nAUC = ", model$auc, "(on", trainOrValidation ,"\n")
+            }
+          }
     }
-
+    
     if(length(object@xval) > 0) {
         cat("\nCross-Validation Models:\n")
         if(family == "binomial") {
@@ -337,7 +414,7 @@ setMethod("show", "H2ODeepLearningModel", function(object) {
     temp = lapply(object@xval, function(x) { cat(" ", x@key, "\n") })
   }
 
-  if (!is.null(model$train_auc)) {
+  if (!is.null(model$train_auc) && is.null(model$auc)) {
     trainOrValidation <- "train)"
     cat("\nAUC = ", model$train_auc, "(on", trainOrValidation, "\n")
   }
@@ -363,7 +440,7 @@ setMethod("show", "H2ODRFModel", function(object) {
     if(is.na(object@valid@key))
       if (!is.null(object@model$params$nfolds) && object@model$params$nfolds >= 2)
         cat("Reported on", paste(object@model$params$nfolds, "-fold cross-validated data", sep = ""), "\n")
-      else cat("Reported on training data.")
+      else cat("Reported on training data.\n")
     else
       cat("Reported on", object@valid@key, "\n")
     print(model$confusion)
@@ -522,6 +599,28 @@ as.Date.H2OParsedData <- function(x, format, ...) {
   return(res)
 }
 
+h2o.setTimezone <- function(client, tz) {
+  if(class(client) != "H2OClient") stop("client must be a H2OClient object")
+  if (!is.character(tz)) stop('tz must be a string')
+
+  res = .h2o.__remoteSend(client, .h2o.__PAGE_SETTIMEZONE, tz = tz)
+  res$tz
+}
+
+h2o.getTimezone <- function(client) {
+  if(class(client) != "H2OClient") stop("client must be a H2OClient object")
+
+  res = .h2o.__remoteSend(client, .h2o.__PAGE_GETTIMEZONE)
+  res$tz
+}
+
+h2o.listTimezones <- function(client) {
+  if(class(client) != "H2OClient") stop("client must be a H2OClient object")
+
+  res = .h2o.__remoteSend(client, .h2o.__PAGE_LISTTIMEZONES)
+  cat(res$tzlist)
+}
+
 diff.H2OParsedData <- function(x, lag = 1, differences = 1, ...) {
   if(!is.numeric(lag)) stop("lag must be numeric")
   if(!is.numeric(differences)) stop("differences must be numeric")
@@ -641,13 +740,12 @@ revalue.H2OParsedData <- function(x, replace = NULL, warn_missing = TRUE) {
   }
 }
 
-ddply <- function (.data, .variables, .fun = NULL, ..., .progress = "none",
-             .inform = FALSE, .drop = TRUE, .parallel = FALSE, .paropts = NULL) {
-             if (inherits(.data, "H2OParsedData")) UseMethod("ddply")
-             else { if (require(plyr)) {plyr::ddply(.data, .variables, .fun, ..., .progress, .inform, .drop, .parallel, .paropts)} else { stop("invalid input data for H2O. Trying to default to plyr ddply, but plyr not found. Install plyr, or use H2OParsedData objects.") } } }
+#ddply <- function (.data, .variables, .fun = NULL, ..., .progress = "none",
+#             .inform = FALSE, .drop = TRUE, .parallel = FALSE, .paropts = NULL) {
+#             if (inherits(.data, "H2OParsedData")) UseMethod("ddply")
+#             else { if (require(plyr)) {plyr::ddply(.data, .variables, .fun, ..., .progress, .inform, .drop, .parallel, .paropts)} else { stop("invalid input data for H2O. Trying to default to plyr ddply, but plyr not found. Install plyr, or use H2OParsedData objects.") } } }
 
-ddply.H2OParsedData <- function (.data, .variables, .fun = NULL, ..., .progress = "none",
-                                 .inform = FALSE, .drop = TRUE, .parallel = FALSE, .paropts = NULL) {
+h2o.ddply <- function (.data, .variables, .fun = NULL, ..., .progress = "none") {
 
   # .inform, .drop, .parallel, .paropts are all ignored inputs.
 
@@ -1050,7 +1148,7 @@ setMethod("[[<-", "H2OParsedData", function(x, i, value) {
 cbind.H2OParsedData <- function(..., deparse.level = 1) {
   if(deparse.level != 1) stop("Unimplemented")
   
-  l <- list(...)
+  l <- unlist(list(...))
   # l_dep <- sapply(substitute(placeholderFunction(...))[-1], deparse)
   if(length(l) == 0) stop('cbind requires an H2O parsed dataset')
   
@@ -1062,13 +1160,38 @@ cbind.H2OParsedData <- function(..., deparse.level = 1) {
   if(!compatible){ stop(paste('cbind: all elements must be of type', klass, 'and in the same H2O instance'))}
   
   # If cbind(x,x), dupe colnames will automatically be renamed by H2O
-  # TODO: cbind(df[,1], df[,2]) should retain colnames of original data frame (not temp keys from slice)
   if(is.null(names(l)))
     tmp <- Map(function(x) x@key, l)
   else
     tmp <- mapply(function(x,n) { if(is.null(n) || is.na(n) || nchar(n) == 0) x@key else paste(n, x@key, sep = "=") }, l, names(l))
   
   exec_cmd <- sprintf("cbind(%s)", paste(as.vector(tmp), collapse = ","))
+  res <- .h2o.__exec2(h2o, exec_cmd)
+  .h2o.exec2(res$dest_key, h2o = h2o, res$dest_key)
+}
+
+
+# Note: right now, all things must be H2OParsedData
+rbind.H2OParsedData <- function(..., deparse.level = 1) {
+  if(deparse.level != 1) stop("Unimplemented")
+
+  l <- unlist(list(...))
+  # l_dep <- sapply(substitute(placeholderFunction(...))[-1], deparse)
+  if(length(l) == 0) stop('rbind requires an H2O parsed dataset')
+
+#  klass <- 'H2OParsedData'
+  h2o <- l[[1]]@h2o
+#  m <- Map(function(elem){ inherits(elem, klass) & elem@h2o@ip == h2o@ip & elem@h2o@port == h2o@port & nrows == nrow(elem) }, l)
+#  compatible <- Reduce(function(l,r) l & r, x=m, init=T)
+#  if(!compatible){ stop(paste('rbind: all elements must be of type', klass, 'and in the same H2O instance'))}
+
+  # If cbind(x,x), dupe colnames will automatically be renamed by H2O
+  if(is.null(names(l)))
+    tmp <- Map(function(x) x@key, l)
+  else
+    tmp <- mapply(function(x,n) { if(is.null(n) || is.na(n) || nchar(n) == 0) x@key else paste(n, x@key, sep = "=") }, l, names(l))
+
+  exec_cmd <- sprintf("rbind(%s)", paste(as.vector(tmp), collapse = ","))
   res <- .h2o.__exec2(h2o, exec_cmd)
   .h2o.exec2(res$dest_key, h2o = h2o, res$dest_key)
 }
@@ -1421,6 +1544,44 @@ tail.H2OParsedData <- function(x, n = 6L, ...) {
 
 setMethod("as.factor", "H2OParsedData", function(x) { .h2o.__unop2("factor", x) })
 setMethod("is.factor", "H2OParsedData", function(x) { as.logical(.h2o.__unop2("is.factor", x)) })
+
+#'
+#' The H2O Gains Method
+#'
+#' Construct the gains table and lift charts for binary outcome algorithms. Lift charts and gains tables
+#' are commonly applied to marketing.
+#'
+#' Ties are broken by building quantiles over the data (tie-breaking needed in deciding which group an observation
+#' belongs). Please examine the GainsTask within the GainsLiftTable.java class for more details on ranking.
+#'
+#' The values returned are in percent form if `percents` is TRUE.
+h2o.gains <- function(actual, predicted, groups=10, percents = FALSE) {
+  if(class(actual) != "H2OParsedData") stop("`actual` must be an H2O parsed dataset")
+  if(class(predicted) != "H2OParsedData") stop("`predicted` must be an H2O parsed dataset")
+  if(ncol(actual) != 1) stop("Must specify exactly one column for `actual`")
+  if(ncol(predicted) != 1) stop("Must specify exactly one column for `predicted`")
+  if(groups < 1) stop("`groups` must be  >= 1. Got: " %p0% groups)
+
+  h2o <- actual@h2o
+  res <- .h2o.__remoteSend(h2o, .h2o.__GAINS, actual = actual@key, vactual = 0, predict = predicted@key, vpredict = 0, groups = groups)
+  resp_rates <- res$response_rates
+  avg <- res$avg_response_rate
+  groups <- res$groups
+  percents <- 99*percents + 1  # multiply by 100 or by 1
+  lifts <- resp_rates / avg
+
+  # need to build a data frame with 4 columns: Quantile, Response Rate, Lift, Cum. Lift
+  col_names <- c("Quantile", "Mean.Response", "Lift", "Cume.Pct.Total.Lift")
+
+  gains_table <- data.frame(
+    Quantile        = qtiles <- seq(0,1,1/groups)[-1] * percents,
+    Response.Rate   = resp_rates, # * percents,
+    Lift            = (resp_rates / avg),
+    Cumulative.Lift = cumsum(lifts/groups) * percents
+  )
+  colnames(gains_table) <- col_names
+  gains_table
+}
 
 setMethod("which", "H2OParsedData", function(x, arr.ind = FALSE, useNames = TRUE) {
   .h2o.__unop2("which", x)

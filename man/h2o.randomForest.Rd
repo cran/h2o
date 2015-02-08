@@ -9,8 +9,9 @@ Performs random forest classification on a data set.
 \usage{
 h2o.randomForest(x, y, data, key = "", classification = TRUE, ntree = 50, 
   depth = 20, mtries = -1, sample.rate = 2/3, nbins = 20, seed = -1,
-  importance = FALSE, nfolds = 0, validation, nodesize = 1, 
-  balance.classes = FALSE, max.after.balance.size = 5, doGrpSplit = TRUE,
+  importance = FALSE, score.each.iteration = FALSE, nfolds = 0, validation, 
+  holdout.fraction = 0, nodesize = 1, balance.classes = FALSE, 
+  max.after.balance.size = 5, class.sampling.factors = NULL, doGrpSplit = TRUE, 
   verbose = FALSE, oobee = TRUE, stat.type = "ENTROPY", type = "fast")
 }
 %- maybe also 'usage' for other objects documented here.
@@ -54,21 +55,28 @@ An \code{\linkS4class{H2OParsedData}} object containing the variables in the mod
   (Optional) A logical value indicating whether to calculate variable importance. Set to \code{FALSE} to speed
   up computations.
   }
+  \item{score.each.iteration}{
+  (Optional) A logical value indicating whether to perform scoring after every iteration. Set to \code{FALSE} to speed up computations. Note that this can only be set to \code{TRUE} if \code{type = "BigData"}.
+  }
   \item{nfolds}{
   (Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.
 }
   \item{validation}{
   (Optional) An \code{\linkS4class{H2OParsedData}} object indicating the validation dataset used to construct
   confusion matrix. If left blank, this defaults to the training data when \code{nfolds = 0}.}
+
+  \item{holdout.fraction}{ (Optional) Fraction of the training data to hold out for validation.}
+
   \item{nodesize}{
   (Optional) Number of nodes to use for computation.
   }
   \item{balance.classes}{(Optional) Balance training data class counts via over/under-sampling (for imbalanced data)}
   \item{max.after.balance.size}{Maximum relative size of the training data after balancing
   class counts (can be less than 1.0)}
+  \item{class.sampling.factors}{ Desired over/under-sampling ratios per class (lexicographic order). }
   \item{doGrpSplit}{Check non-contiguous group splits for categorical predictors}
   \item{verbose}{(Optional) A logical value indicating whether verbose results should be returned.}
-  \item{stat.type}{(Optional) Type of statistic to use, equal to either "ENTROPY" or "GINI".}
+  \item{stat.type}{(Optional) Type of statistic to use, equal to either "ENTROPY" or "GINI" or "TWOING".}
   \item{oobee}{(Optional) A logical value indicating whether to calculate the out of bag error estimate.}
   \item{type}{(Optional) Default is "fast" mode, which builds trees in parallel and distributed,
   but requires all of the data to fit on a single node.
@@ -98,10 +106,10 @@ h2o.randomForest(y = 5, x = c(2,3,4), data = iris.hex, ntree = 50, depth = 100)
 \dontrun{
 # RF variable importance
 # Also see:
-#   https://github.com/0xdata/h2o/blob/master/R/tests/testdir_demos/runit_demo_VI_all_algos.R
+#   https://github.com/h2oai/h2o/blob/master/R/tests/testdir_demos/runit_demo_VI_all_algos.R
 data.hex = h2o.importFile(
   localH2O,
-  path = "https://raw.github.com/0xdata/h2o/master/smalldata/bank-additional-full.csv",
+  path = "https://raw.github.com/h2oai/h2o/master/smalldata/bank-additional-full.csv",
   key = "data.hex")
 myX = 1:20
 myY="y"
