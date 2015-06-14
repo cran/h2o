@@ -5,31 +5,30 @@
 library(h2o)
 localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
 
-prostate.hex = h2o.uploadFile(localH2O, path = system.file("extdata", "prostate.csv", package="h2o"), key = "prostate.hex")
+prostate.hex = h2o.uploadFile(localH2O, path = system.file("extdata", "prostate.csv", package="h2o"), destination_frame = "prostate")
 summary(prostate.hex)
-prostate.km = h2o.kmeans(prostate.hex, centers = 10, cols = c("AGE","RACE","GLEASON","CAPSULE","DCAPS"))
-prostate.pred = h2o.predict(object = prostate.km, newdata = prostate.hex)
+prostate.km = h2o.kmeans(prostate.hex, k = 10, x = c("AGE","RACE","GLEASON","CAPSULE","DCAPS"))
 print(prostate.km)
 
 prostate.data = as.data.frame(prostate.hex)
-prostate.clus = as.data.frame(prostate.pred)
+# prostate.clus = as.data.frame(prostate.km@model$cluster)
 
 # Plot categorized data
 # if(!"fpc" %in% rownames(installed.packages())) install.packages("fpc")
-if("fpc" %in% rownames(installed.packages())) {
-  library(fpc)
+# if("fpc" %in% rownames(installed.packages())) {
+#  library(fpc)
 
-  par(mfrow=c(1,1))
-  plotcluster(prostate.data, prostate.clus[,1])
-  title("K-Means Classification for k = 10")
-}
+#  par(mfrow=c(1,1))
+#  plotcluster(prostate.data, prostate.clus[,1])
+#  title("K-Means Classification for k = 10")
+# }
 
 # if(!"cluster" %in% rownames(installed.packages())) install.packages("cluster")
-if("cluster" %in% rownames(installed.packages())) {
-  library(cluster)
-  clusplot(prostate.data, prostate.clus[,1], color = TRUE, shade = TRUE)
-}
-pairs(prostate.data[,c(2,3,7,8)], col=prostate.clus[,1])
+# if("cluster" %in% rownames(installed.packages())) {
+#  library(cluster)
+#  clusplot(prostate.data, prostate.clus[,1], color = TRUE, shade = TRUE)
+# }
+# pairs(prostate.data[,c(2,3,7,8)], col=prostate.clus[,1])
 
 # Plot k-means centers
 par(mfrow = c(1,2))

@@ -1,38 +1,24 @@
-#demo of h2o's deeplearning algorithm from R
+# This is a demo of H2O's Deep Learning function
+# It imports a data set, parses it, and prints a summary
+# Then, it runs Deep Learning on the dataset
+# Note: This demo runs H2O on localhost:54321
 library(h2o)
+localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
 
-# Start 1-node H2O cluster on localhost
-#?h2o.init
-h2o_server = h2o.init()
+prostate.hex = h2o.uploadFile(localH2O, path = system.file("extdata", "prostate.csv", package="h2o"), destination_frame = "prostate.hex")
+summary(prostate.hex)
+# Set the CAPSULE column to be a factor column then build model.
+prostate.hex$CAPSULE = as.factor(prostate.hex$CAPSULE)
+model = h2o.deeplearning(x = setdiff(colnames(prostate.hex), c("ID","CAPSULE")), y = "CAPSULE", training_frame = prostate.hex, activation = "Tanh", hidden = c(10, 10, 10), epochs = 10000)
+print(model@model$model_summary)
 
-# Import data into H2O cluster and run Summary
-train = h2o.importFile(h2o_server, 
-                            path = 'https://raw.githubusercontent.com/0xdata/h2o/master/smalldata/logreg/prostate.csv',  ## can be a local path to file
-                            header = T,
-                            sep = ',', 
-                            key = 'prostate.hex')
-summary(train)
+# Make predictions with the trained model with training data.
+predictions = predict(object = model, newdata = prostate.hex)
+# Export predictions from H2O Cluster as R dataframe.
+predictions.R = as.data.frame(predictions)
+head(predictions.R)
+tail(predictions.R)
 
-# Train a DeepLearning model on the H2O cluster using 3 hidden layers with 10 neurons each, Tanh activation function, 10000 epochs, predict CAPSULE from other predictors (ignore column 1: ID)
-#?h2o.deeplearning
-model = h2o.deeplearning(x = 3:8, y = 2, 
-                              data = train, 
-                              activation = "Tanh", 
-                              hidden = c(10, 10, 10), 
-                              epochs = 10000)
-model
-
-# Make prediction with trained model (on training data for simplicity), prediction is stored in H2O cluster
-prediction = h2o.predict(model, newdata = train)
-
-# Download prediction from H2O cluster into R environment
-pred = as.data.frame(prediction)
-head(pred)
-tail(pred)
-
-# Check performance of binary classification model and return the probability threshold ("Best Cutoff") for optimal F1 score
-#?h2o.performance
-per = h2o.performance(prediction[,3], train[,2], measure = "F1")
-per
-
-######## END
+# Check performance of classification model.
+performance = h2o.performance(model = model)
+print(performance)

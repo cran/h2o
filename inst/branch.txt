@@ -1,1 +1,1 @@
-rel-noether
+rel-shannon

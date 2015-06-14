@@ -1,1 +1,1 @@
-https://github.com/0xdata/h2o
+https://github.com/h2oai/h2o-dev
