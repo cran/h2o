@@ -11,7 +11,7 @@ h2o.getModel(model_id, conn = h2o.getConnection(), linkToGC = FALSE)
 \item{conn}{\linkS4class{H2OConnection} object containing the IP address and port
 of the server running H2O.}
 
-\item{linkToGC}{a logical value indicating whether to remove the underlying model
+\item{linkToGC}{A logical value indicating whether to remove the underlying model
 from the H2O cluster when the R proxy object is garbage collected.}
 }
 \value{
@@ -21,11 +21,13 @@ Returns an object that is a subclass of \linkS4class{H2OModel}.
 Returns a reference to an existing model in the H2O instance.
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O <- h2o.init()
 
 iris.hex <- as.h2o(iris, localH2O, "iris.hex")
 model_id <- h2o.gbm(x = 1:4, y = 5, training_frame = iris.hex)@model_id
 model.retrieved <- h2o.getModel(model_id, localH2O)
+}
 }
 

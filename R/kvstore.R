@@ -34,11 +34,13 @@
 #' @param conn An \linkS4class{H2OConnection} object containing the IP address and port number of the H2O server.
 #' @return Returns a list of hex keys in the current H2O instance.
 #' @examples
+#' \dontrun{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 #' prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
 #' h2o.ls(localH2O)
+#' }
 #' @export
 h2o.ls <- function(conn = h2o.getConnection()) {
   gc()
@@ -60,6 +62,7 @@ h2o.ls <- function(conn = h2o.getConnection()) {
 #' @param timeout_secs Timeout in seconds. Default is no timeout.
 #' @seealso \code{\link{h2o.rm}}
 #' @examples
+#' \dontrun{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #' prosPath <- system.file("extdata", "prostate.csv", package = "h2o")
@@ -67,6 +70,7 @@ h2o.ls <- function(conn = h2o.getConnection()) {
 #' h2o.ls(localH2O)
 #' h2o.removeAll(localH2O)
 #' h2o.ls(localH2O)
+#' }
 #' @export
 h2o.removeAll <- function(conn = h2o.getConnection(), timeout_secs=0) {
   tryCatch(
@@ -100,38 +104,6 @@ h2o.rm <- function(ids, conn = h2o.getConnection()) {
 
   for(i in seq_len(length(ids)))
     .h2o.__remoteSend(conn, paste0(.h2o.__DKV, "/", ids[[i]]), method = "DELETE")
-}
-
-#'
-#' Garbage Collection of Temporary Frames
-#'
-#' @param conn An \linkS4class{H2OConnection} object containing the IP address and port number of the H2O server.
-
-# TODO: This is an older version; need to go back through git and find the "good" one...
-.h2o.gc <- function(conn = h2o.getConnection()) {
-  frame_keys <- as.vector(h2o.ls()[,1L])
-  frame_keys <- frame_keys[grepl(sprintf("%s$", data@conn@mutable$session_id), frame_keys)]
-  # no reference? then destroy!
-  # TODO in order for this function to work properly, you would need to search (recursively)
-  # TODO through ALL objects for H2OFrame and H2OModel objects including lists, environments,
-  # TODO and slots of S4 objects
-  f <- function(env) {
-    l <- lapply(ls(env), function(x) {
-      o <- get(x, envir=env)
-      if(is(o, "H2OFrame")) o@frame_id else if(is(o, "H2OModel")) o@model_id
-    })
-    Filter(Negate(is.null), l)
-  }
-  p_list  <- f(.pkg.env)
-  g_list  <- f(globalenv())
-  f1_list <- f(parent.frame())
-
-  g_list <- unlist(c(p_list, g_list, f1_list))
-  l <- setdiff(seq_len(length(frame_keys)),
-               unlist(lapply(g_list, function(e) if (e %in% frame_keys) match(e, frame_keys) else NULL)))
-  if (length(l) != 0L)
-    h2o.rm(frame_keys[l])
-  invisible(NULL)
 }
 
 #'
@@ -196,16 +168,18 @@ h2o.getFrame <- function(frame_id, conn = h2o.getConnection(), linkToGC = FALSE)
 #' @param model_id A string indicating the unique model_id of the model to retrieve.
 #' @param conn \linkS4class{H2OConnection} object containing the IP address and port
 #'             of the server running H2O.
-#' @param linkToGC a logical value indicating whether to remove the underlying model
+#' @param linkToGC A logical value indicating whether to remove the underlying model
 #'        from the H2O cluster when the R proxy object is garbage collected.
 #' @return Returns an object that is a subclass of \linkS4class{H2OModel}.
 #' @examples
+#' \dontrun{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #'
 #' iris.hex <- as.h2o(iris, localH2O, "iris.hex")
 #' model_id <- h2o.gbm(x = 1:4, y = 5, training_frame = iris.hex)@@model_id
 #' model.retrieved <- h2o.getModel(model_id, localH2O)
+#' }
 #' @export
 h2o.getModel <- function(model_id, conn = h2o.getConnection(), linkToGC = FALSE) {
   if (is(model_id, "H2OConnection")) {
@@ -297,13 +271,15 @@ h2o.getModel <- function(model_id, conn = h2o.getConnection(), linkToGC = FALSE)
 #' @return If path is "", then pretty print the POJO to the console.
 #'         Otherwise save it to the specified directory.
 #' @examples
+#' \dontrun{
 #' library(h2o)
 #' h <- h2o.init(nthreads=-1)
 #' fr <- as.h2o(iris)
 #' my_model <- h2o.gbm(x=1:4, y=5, training_frame=fr)
 #'
 #' h2o.download_pojo(my_model)  # print the model to screen
-#' # h2o.download_pojo(my_model, getwd())  # save to the current working directory, NOT RUN
+#' h2o.download_pojo(my_model, getwd())  # save to the current working directory
+#' }
 #' @export
 h2o.download_pojo <- function(model, path="", conn=h2o.getConnection()) {
   model_id <- model@model_id

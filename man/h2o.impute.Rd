@@ -39,10 +39,12 @@ The default method is selected based on the type of the column to impute. If the
  column types (e.g. String, Time, UUID) are not supported.
 }
 \examples{
-h2o.init()
+\dontrun{
+ h2o.init()
  fr <- as.h2o(iris, destination_frame="iris")
  fr[sample(nrow(fr),40),5] <- NA  # randomly replace 50 values with NA
  # impute with a group by
  h2o.impute(fr, "Species", "mode", by=c("Sepal.Length", "Sepal.Width"))
+}
 }
 

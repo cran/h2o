@@ -5,6 +5,8 @@
 \alias{h2o.dim}
 \title{Returns the Dimensions of a Parsed H2O Data Object.}
 \usage{
+h2o.dim(x)
+
 \S4method{dim}{H2OFrame}(x)
 }
 \arguments{
@@ -14,10 +16,12 @@
 Returns the number of rows and columns for an \linkS4class{H2OFrame} object.
 }
 \examples{
+\dontrun{
 localH2O <- h2o.init()
 irisPath <- system.file("extdata", "iris.csv", package="h2o")
 iris.hex <- h2o.uploadFile(localH2O, path = irisPath)
 dim(iris.hex)
+}
 }
 \seealso{
 \code{\link[base]{dim}} for the base R method.

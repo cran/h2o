@@ -15,10 +15,12 @@ Returns a list of hex keys in the current H2O instance.
 Accesses a list of object keys in the running instance of H2O.
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O <- h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
 h2o.ls(localH2O)
+}
 }
 

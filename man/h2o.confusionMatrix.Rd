@@ -47,6 +47,7 @@ The \linkS4class{H2OModelMetrics} version of this function will only take
 objects. If no threshold is specified, all possible thresholds are selected.
 }
 \examples{
+\dontrun{
 library(h2o)
 h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
@@ -57,6 +58,7 @@ h2o.confusionMatrix(model, hex)
 # Generating a ModelMetrics object
 perf <- h2o.performance(model, hex)
 h2o.confusionMatrix(perf)
+}
 }
 \seealso{
 \code{\link{predict}} for generating prediction frames,

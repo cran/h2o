@@ -18,6 +18,7 @@ Creates a vector of random uniform numbers equal in length to the length of the 
 dataset.
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O = h2o.init()
 prosPath = system.file("extdata", "prostate.csv", package="h2o")
@@ -30,5 +31,6 @@ prostate.train = h2o.assign(prostate.train, "prostate.train")
 prostate.test = prostate.hex[s > 0.8,]
 prostate.test = h2o.assign(prostate.test, "prostate.test")
 nrow(prostate.train) + nrow(prostate.test)
+}
 }
 

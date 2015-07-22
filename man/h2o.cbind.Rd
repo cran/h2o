@@ -16,12 +16,14 @@ An \linkS4class{H2OFrame} object containing the combined \dots arguments column-
 Takes a sequence of H2O data sets and combines them by column
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O <- h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
 prostate.cbind <- h2o.cbind(prostate.hex, prostate.hex)
 head(prostate.cbind)
+}
 }
 \seealso{
 \code{\link[base]{cbind}} for the base \code{R} method.

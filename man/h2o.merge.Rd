@@ -25,6 +25,7 @@ datasets must be small enough to exist in every node. Currently, this
 function only supports \code{all.x = TRUE}. All other permutations will fail.
 }
 \examples{
+\dontrun{
 h2o.init()
 left <- data.frame(fruit = c('apple', 'orange', 'banana', 'lemon', 'strawberry', 'blueberry'),
 color = c('red', 'orange', 'yellow', 'yellow', 'red', 'blue'))
@@ -33,5 +34,6 @@ citrus = c(FALSE, TRUE, FALSE, TRUE, FALSE, FALSE))
 l.hex <- as.h2o(left)
 r.hex <- as.h2o(right)
 left.hex <- h2o.merge(l.hex, r.hex, all.x = TRUE)
+}
 }
 

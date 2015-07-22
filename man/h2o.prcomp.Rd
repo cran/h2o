@@ -4,7 +4,8 @@
 \title{Principal Components Analysis}
 \usage{
 h2o.prcomp(training_frame, x, k, model_id, max_iterations = 1000,
-  transform = "NONE", seed, use_all_factor_levels)
+  transform = c("NONE", "DEMEAN", "DESCALE", "STANDARDIZE"),
+  pca_method = c("GramSVD", "Power", "GLRM"), seed, use_all_factor_levels)
 }
 \arguments{
 \item{training_frame}{An \linkS4class{H2OFrame} object containing the
@@ -28,6 +29,13 @@ column, "DESCALE": for dividing by the standard deviation of each
 column, "STANDARDIZE": for demeaning and descaling, and "NORMALIZE":
 for demeaning and dividing each column by its range (max - min).}
 
+\item{pca_method}{A character string that indicates how PCA should be calculated.
+Possible values are "GramSVD": distributed computation of the Gram matrix
+followed by a local SVD using the JAMA package, "Power": computation of
+the SVD using the power iteration method, "GLRM": fit a generalized low
+rank model with an l2 loss function (no regularization) and solve for the
+SVD using local matrix algebra.}
+
 \item{seed}{(Optional) Random seed used to initialize the right singular vectors
 at the beginning of each power method iteration.}
 
@@ -49,5 +57,8 @@ localH2O <- h2o.init()
 ausPath <- system.file("extdata", "australia.csv", package="h2o")
 australia.hex <- h2o.uploadFile(localH2O, path = ausPath)
 h2o.prcomp(training_frame = australia.hex, k = 8, transform = "STANDARDIZE")
+}
+\seealso{
+\code{\link{h2o.svd}}, \code{\link{h2o.glrm}}
 }
 

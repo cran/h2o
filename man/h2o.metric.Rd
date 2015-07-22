@@ -79,6 +79,7 @@ Currently, the these functions are only supported by
 \linkS4class{H2OBinomialMetrics} objects.
 }
 \examples{
+\dontrun{
 library(h2o)
 h2o.init()
 
@@ -89,6 +90,7 @@ hex[,2] <- as.factor(hex[,2])
 model <- h2o.gbm(x = 3:9, y = 2, training_frame = hex, distribution = "bernoulli")
 perf <- h2o.performance(model, hex)
 h2o.F1(perf)
+}
 }
 \seealso{
 \code{\link{h2o.auc}} for AUC, \code{\link{h2o.giniCoef}} for the

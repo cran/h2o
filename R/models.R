@@ -47,6 +47,7 @@
     if( length(x_ignore) == 0L ) x_ignore <- ''
     return(list(x=x, y=y, x_i=x_i, x_ignore=x_ignore, y_i=y_i))
   } else {
+    x_ignore <- setdiff(cc, x)
     if( !missing(y) ) stop("`y` should not be specified for autoencoder=TRUE, remove `y` input")
     return(list(x=x,x_i=x_i,x_ignore=x_ignore))
   }
@@ -97,10 +98,10 @@
 
 
 
-.h2o.startModelJob <- function(conn = h2o.getConnection(), algo, params) {
+.h2o.startModelJob <- function(conn = h2o.getConnection(), algo, params, h2oRestApiVersion = .h2o.__REST_API_VERSION) {
   .key.validate(params$key)
   #---------- Force evaluate temporary ASTs ----------#
-  ALL_PARAMS <- .h2o.__remoteSend(conn, method = "GET", .h2o.__MODEL_BUILDERS(algo))$model_builders[[algo]]$parameters
+  ALL_PARAMS <- .h2o.__remoteSend(conn, method = "GET", .h2o.__MODEL_BUILDERS(algo), h2oRestApiVersion = h2oRestApiVersion)$model_builders[[algo]]$parameters
 
   params <- lapply(params, function(x) {if(is.integer(x)) x <- as.numeric(x); x})
   #---------- Check user parameter types ----------#
@@ -161,7 +162,7 @@
   })
 
   #---------- Validate parameters ----------#
-  validation <- .h2o.__remoteSend(conn, method = "POST", paste0(.h2o.__MODEL_BUILDERS(algo), "/parameters"), .params = param_values)
+  validation <- .h2o.__remoteSend(conn, method = "POST", paste0(.h2o.__MODEL_BUILDERS(algo), "/parameters"), .params = param_values, h2oRestApiVersion = h2oRestApiVersion)
   if(length(validation$messages) != 0L) {
     error <- lapply(validation$messages, function(i) {
       if( i$message_type == "ERROR" )
@@ -178,7 +179,7 @@
   }
 
   #---------- Build! ----------#
-  res <- .h2o.__remoteSend(conn, method = "POST", .h2o.__MODEL_BUILDERS(algo), .params = param_values)
+  res <- .h2o.__remoteSend(conn, method = "POST", .h2o.__MODEL_BUILDERS(algo), .params = param_values, h2oRestApiVersion = h2oRestApiVersion)
 
   job_key  <- res$job$key$name
   dest_key <- res$job$dest$name
@@ -186,7 +187,7 @@
   new("H2OModelFuture",conn=conn, job_key=job_key, model_id=dest_key)
 }
 
-.h2o.createModel <- function(conn = h2o.getConnection(), algo, params) {
+.h2o.createModel <- function(conn = h2o.getConnection(), algo, params, h2oRestApiVersion = .h2o.__REST_API_VERSION) {
  params$training_frame <- get("training_frame", parent.frame())
  tmp_train <- !.is.eval(params$training_frame)
  if( tmp_train ) {
@@ -203,7 +204,7 @@
     }
   }
 
-  h2o.getFutureModel(.h2o.startModelJob(conn, algo, params))
+  h2o.getFutureModel(.h2o.startModelJob(conn, algo, params, h2oRestApiVersion))
 }
 
 h2o.getFutureModel <- function(object) {
@@ -307,6 +308,7 @@ h2o.crossValidate <- function(model, nfolds, model.type = c("gbm", "glm", "deepl
 #' @param ... Extra args passed in for use by other functions.
 #' @return Returns an object of the \linkS4class{H2OModelMetrics} subclass.
 #' @examples
+#' \dontrun{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
@@ -314,6 +316,7 @@ h2o.crossValidate <- function(model, nfolds, model.type = c("gbm", "glm", "deepl
 #' prostate.hex$CAPSULE <- as.factor(prostate.hex$CAPSULE)
 #' prostate.gbm <- h2o.gbm(3:9, "CAPSULE", prostate.hex)
 #' h2o.performance(model = prostate.gbm, data=prostate.hex)
+#' }
 #' @export
 h2o.performance <- function(model, data=NULL, valid=FALSE, ...) {
   # Some parameter checking
@@ -374,6 +377,7 @@ h2o.performance <- function(model, data=NULL, valid=FALSE, ...) {
 #'          various threshold metrics. See \code{\link{h2o.performance}} for
 #'          creating H2OModelMetrics objects.
 #' @examples
+#' \dontrun{
 #' library(h2o)
 #' h2o.init()
 #'
@@ -384,6 +388,7 @@ h2o.performance <- function(model, data=NULL, valid=FALSE, ...) {
 #' model <- h2o.gbm(x = 3:9, y = 2, training_frame = hex, distribution = "bernoulli")
 #' perf <- h2o.performance(model, hex)
 #' h2o.auc(perf)
+#' }
 #' @export
 h2o.auc <- function(object, valid=FALSE, ...) {
   if( is(object, "H2OModelMetrics") ) return( object@metrics$AUC )
@@ -430,6 +435,7 @@ h2o.aic <- function(object, valid=FALSE, ...) {
 #' @param \dots extra arguments to be passed if `object` is of type
 #'              \linkS4class{H2OModel} (e.g. train=TRUE)
 #' @examples
+#' \dontrun{
 #' library(h2o)
 #'
 #' h <- h2o.init()
@@ -438,6 +444,7 @@ h2o.aic <- function(object, valid=FALSE, ...) {
 #' m <- h2o.deeplearning(x=2:5,y=1,training_frame=fr)
 #'
 #' h2o.r2(m)
+#' }
 #' @export
 h2o.r2 <- function(object, valid=FALSE, ...) {
   if( is(object, "H2OModelMetrics") ) return( object@metrics$r2 )
@@ -466,6 +473,7 @@ h2o.r2 <- function(object, valid=FALSE, ...) {
 #'          \code{\link{h2o.performance}} for creating H2OModelMetrics objects.
 #'          threshold metrics.
 #' @examples
+#' \dontrun{
 #' library(h2o)
 #' h2o.init()
 #'
@@ -476,6 +484,7 @@ h2o.r2 <- function(object, valid=FALSE, ...) {
 #' model <- h2o.gbm(x = 3:9, y = 2, training_frame = hex, distribution = "bernoulli")
 #' perf <- h2o.performance(model, hex)
 #' h2o.giniCoef(perf)
+#' }
 #' @export
 h2o.giniCoef <- function(object, valid=FALSE, ...) {
   if(is(object, "H2OModelMetrics")) return( object@metrics$Gini )
@@ -533,6 +542,7 @@ h2o.coef_norm <- function(object) {
 #'          \code{\link{h2o.metric}} for the various threshold metrics. See
 #'          \code{\link{h2o.performance}} for creating H2OModelMetrics objects.
 #' @examples
+#' \dontrun{
 #' library(h2o)
 #' h2o.init()
 #'
@@ -543,6 +553,7 @@ h2o.coef_norm <- function(object) {
 #' model <- h2o.gbm(x = 3:9, y = 2, training_frame = hex, distribution = "bernoulli")
 #' perf <- h2o.performance(model, hex)
 #' h2o.mse(perf)
+#' }
 #' @export
 h2o.mse <- function(object, valid=FALSE, ...) {
   if( is(object, "H2OModelMetrics") ) return( object@metrics$MSE )
@@ -629,6 +640,44 @@ h2o.scoreHistory <- function(object, ...) {
 }
 
 #'
+#' Retrieve the respective weight matrix
+#'
+#' @param object An \linkS4class{H2OModel} or \linkS4class{H2OModelMetrics}
+#' @param matrix_id An integer, ranging from 1 to number of layers + 1, that specifies the weight matrix to return.
+#' @param \dots further arguments to be passed to/from this method.
+#' @export
+h2o.weights <- function(object, matrix_id=1, ...){
+  o <- object
+  if( is(o, "H2OModel") ) {
+    sh <- o@model$weights[[matrix_id]]
+    if( is.null(sh) ) return(NULL)
+    sh
+  } else {
+    warning( paste0("No weights for ", class(o)) )
+    return(NULL)
+  }
+}
+
+#'
+#' Return the respective bias vector
+#'
+#' @param object An \linkS4class{H2OModel} or \linkS4class{H2OModelMetrics}
+#' @param vector_id An integer, ranging from 1 to number of layers + 1, that specifies the bias vector to return.
+#' @param \dots further arguments to be passed to/from this method.
+#' @export
+h2o.biases <- function(object, vector_id=1, ...){
+  o <- object
+  if( is(o, "H2OModel") ) {
+    sh <- o@model$biases[[vector_id]]
+    if( is.null(sh) ) return(NULL)
+    sh
+  } else {
+    warning( paste0("No biases for ", class(o)) )
+    return(NULL)
+  }
+}
+
+#'
 #' Retrieve the Hit Ratios
 #'
 #' @param object An \linkS4class{H2OModel} object.
@@ -672,6 +721,7 @@ h2o.hit_ratio_table <- function(object, valid=FALSE, ...) {
 #'          GINI coefficient, and \code{\link{h2o.mse}} for MSE. See
 #'          \code{\link{h2o.performance}} for creating H2OModelMetrics objects.
 #' @examples
+#' \dontrun{
 #' library(h2o)
 #' h2o.init()
 #'
@@ -682,6 +732,7 @@ h2o.hit_ratio_table <- function(object, valid=FALSE, ...) {
 #' model <- h2o.gbm(x = 3:9, y = 2, training_frame = hex, distribution = "bernoulli")
 #' perf <- h2o.performance(model, hex)
 #' h2o.F1(perf)
+#' }
 #' @export
 h2o.metric <- function(object, thresholds, metric) {
   if(is(object, "H2OBinomialMetrics")){
@@ -915,6 +966,21 @@ h2o.totss <- function(object,valid=FALSE, ...) {
 h2o.num_iterations <- function(object) { object@model$model_summary$number_of_iterations }
 
 #'
+#' Retrieve the centroid statistics
+#'
+#' @param object An \linkS4class{H2OClusteringModel} object.
+#' @param valid Retrieve the validation metric.
+#' @param \dots further arguments to be passed on (currently unimplemented)
+#' @export
+h2o.centroid_stats <- function(object, valid=FALSE, ...) {
+  model.parts <- .model.parts(object)
+  if( valid ) {
+    if( is.null(model.parts$vm) ) return( invisible(.warn.no.validation()) )
+    else                          return( model.parts$vm@metrics$centroid_stats )
+  } else                          return( model.parts$tm@metrics$centroid_stats )
+}
+
+#'
 #' Retrieve the cluster sizes
 #'
 #' @param object An \linkS4class{H2OClusteringModel} object.
@@ -1028,6 +1094,7 @@ h2o.null_dof <- function(object, valid=FALSE, ...) {
 #'          \code{\link{h2o.performance}} for creating
 #'          \linkS4class{H2OModelMetrics}.
 #' @examples
+#' \dontrun{
 #' library(h2o)
 #' h2o.init()
 #' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
@@ -1038,6 +1105,7 @@ h2o.null_dof <- function(object, valid=FALSE, ...) {
 #' # Generating a ModelMetrics object
 #' perf <- h2o.performance(model, hex)
 #' h2o.confusionMatrix(perf)
+#' }
 #' @export
 setGeneric("h2o.confusionMatrix", function(object, ...) {})
 
@@ -1156,8 +1224,8 @@ plot.H2OBinomialMetrics <- function(x, type = "roc", ...) {
     main <- paste(yaxis, "vs", xaxis)
     if( x@on_train ) main <- paste(main, "(on train)")
     else             main <- paste(main, "(on valid)")
-    plot(x@metrics$thresholds_and_metric_scores$fpr, x@metrics$thresholds_and_metric_scores$tpr, main = main, xlab = xaxis, ylab = yaxis, ylim=c(0,1), xlim=c(0,1), ...)
-    abline(0, 1, lty = 2)
+    graphics::plot(x@metrics$thresholds_and_metric_scores$fpr, x@metrics$thresholds_and_metric_scores$tpr, main = main, xlab = xaxis, ylab = yaxis, ylim=c(0,1), xlim=c(0,1), ...)
+    graphics::abline(0, 1, lty = 2)
   }
 }
 

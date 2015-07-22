@@ -6,7 +6,9 @@
 h2o.loadModel(path, conn = h2o.getConnection())
 }
 \arguments{
-\item{path}{The path of the H2O Model to be imported.}
+\item{path}{The path of the H2O Model to be imported. For example, if the `dir` argument in h2o.saveModel was set to
+"/Users/UserName/Desktop" then the `path` argument in h2o.loadModel should be set to something like
+"/Users/UserName/Desktop/K-meansModel__a7cebf318ca5827185e209edf47c4052"}
 
 \item{conn}{an \linkS4class{H2OConnection} object containing the IP address
 and port of the server running H2O.}

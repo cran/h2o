@@ -17,6 +17,7 @@ h2o.r2(object, valid = FALSE, ...)
 Retrieves the R2 value from an H2O model.
 }
 \examples{
+\dontrun{
 library(h2o)
 
 h <- h2o.init()
@@ -25,5 +26,6 @@ fr <- as.h2o(iris)
 m <- h2o.deeplearning(x=2:5,y=1,training_frame=fr)
 
 h2o.r2(m)
+}
 }
 

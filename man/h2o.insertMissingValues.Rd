@@ -24,6 +24,7 @@ entries in a H2O dataset with missing values.
 this function should only be called on a subset of the original.
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O <- h2o.init()
 irisPath <- system.file("extdata", "iris.csv", package = "h2o")
@@ -32,5 +33,6 @@ summary(iris.hex)
 irismiss.hex <- h2o.insertMissingValues(iris.hex, fraction = 0.25)
 head(irismiss.hex)
 summary(irismiss.hex)
+}
 }
 

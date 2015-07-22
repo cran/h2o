@@ -17,6 +17,7 @@ Returns a tabulated \linkS4class{H2OFrame} object.
 Uses the cross-classifying factors to build a table of counts at each combination of factor levels.
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O <- h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
@@ -30,5 +31,6 @@ h2o.table(prostate.hex[,3])
 # Two-way table of ages (rows) and race (cols) of all patients
 head(h2o.table(prostate.hex[,c(3,4)]))
 h2o.table(prostate.hex[,c(3,4)])
+}
 }
 

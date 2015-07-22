@@ -5,6 +5,8 @@
 \alias{length,H2OFrame-method}
 \title{Returns the Length of a Parsed H2O Data Object.}
 \usage{
+h2o.length(x)
+
 \S4method{length}{H2OFrame}(x)
 }
 \arguments{
@@ -14,10 +16,12 @@
 Returns the length of an \code{\linkS4class{H2OFrame}}
 }
 \examples{
+\dontrun{
 localH2O <- h2o.init()
 irisPath <- system.file("extdata", "iris.csv", package = "h2o")
 iris.hex <- h2o.uploadFile(localH2O, path = irisPath)
 length(iris.hex)
+}
 }
 \seealso{
 \code{\link[base]{length}} for the base R method.

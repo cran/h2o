@@ -33,6 +33,8 @@
 #'        than 1.0)
 #' @param seed Seed for random numbers (affects sampling) - Note: only
 #'        reproducible when running single threaded
+#' @param offset_column Specify the offset column.
+#' @param weights_column Specify the weights column.
 #' @param ... (Currently Unimplemented)
 #' @return Creates a \linkS4class{H2OModel} object of the right type.
 #' @seealso \code{\link{predict.H2OModel}} for prediction.
@@ -48,15 +50,22 @@ h2o.randomForest <- function( x, y, training_frame,
                              min_rows = 1,
                              nbins = 20,
                              nbins_cats = 1024,
-                             binomial_double_trees = TRUE,
+                             binomial_double_trees = FALSE,
                              balance_classes = FALSE,
                              max_after_balance_size = 5,
                              seed,
+                             offset_column = NULL,
+                             weights_column = NULL,
                              ...)
 {
   # Pass over ellipse parameters and deprecated parameters
-  if (length(list(...)) > 0)
-    dots <- .model.ellipses( list(...))
+  do_future <- FALSE
+  if (length(list(...)) > 0) {
+#    browser()
+    dots <- list(...) #.model.ellipses( list(...))
+    if( !is.null(dots$future) ) do_future <- TRUE
+  }
+
 
   # Training_frame and validation_frame may be a key or an H2OFrame object
   if (!inherits(training_frame, "H2OFrame"))
@@ -74,8 +83,10 @@ h2o.randomForest <- function( x, y, training_frame,
 
   # Parameter list to send to model builder
   parms <- list()
-  parms$training_frame
+  parms$training_frame <- training_frame
   args <- .verify_dataxy(training_frame, x, y)
+  if( !missing(offset_column) )  args$x_ignore <- args$x_ignore[!( offset_column == args$x_ignore )]
+  if( !missing(weights_column) ) args$x_ignore <- args$x_ignore[!( weights_column == args$x_ignore )]
   parms$ignored_columns <- args$x_ignore
   parms$response_column <- args$y
   if(!missing(model_id))
@@ -88,6 +99,8 @@ h2o.randomForest <- function( x, y, training_frame,
     parms$sample_rate <- sample_rate
   if(!missing(build_tree_one_node))
     parms$build_tree_one_node <- build_tree_one_node
+  if(!missing(binomial_double_trees))
+    parms$binomial_double_trees <- binomial_double_trees
   if(!missing(ntrees))
     parms$ntrees <- ntrees
   if(!missing(max_depth))
@@ -104,6 +117,9 @@ h2o.randomForest <- function( x, y, training_frame,
     parms$max_after_balance_size <- max_after_balance_size
   if(!missing(seed))
     parms$seed <- seed
+  if( !missing(offset_column) )             parms$offset_column          <- offset_column
+  if( !missing(weights_column) )            parms$weights_column         <- weights_column
 
-  .h2o.createModel(training_frame@conn, 'drf', parms)
+  if( do_future ) .h2o.startModelJob(training_frame@conn, 'drf', parms)
+  else            .h2o.createModel(training_frame@conn, 'drf', parms)
 }

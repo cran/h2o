@@ -10,6 +10,7 @@ Clear all H2O R command and error response logs from the local disk. Used
 primarily for debugging purposes.
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O = h2o.init()
 h2o.startLogging()
@@ -17,6 +18,7 @@ ausPath = system.file("extdata", "australia.csv", package="h2o")
 australia.hex = h2o.importFile(localH2O, path = ausPath)
 h2o.stopLogging()
 h2o.clearLog()
+}
 }
 \seealso{
 \code{\link{h2o.startLogging}, \link{h2o.stopLogging},

@@ -6,6 +6,8 @@
 \alias{ifelse,H2OFrame,ANY,ANY-method}
 \title{H2O Apply Conditional Statement}
 \usage{
+h2o.ifelse(test, yes, no)
+
 \S4method{ifelse}{H2OFrame,ANY,ANY}(test, yes, no)
 
 \S4method{ifelse}{ANY,H2OFrame,H2OFrame}(test, yes, no)
@@ -30,10 +32,12 @@ Categorical data is not currently supported for this funciton and returned value
 categorical in nature.
 }
 \examples{
+\dontrun{
 localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
 ausPath = system.file("extdata", "australia.csv", package="h2o")
 australia.hex = h2o.importFile(localH2O, path = ausPath)
 australia.hex[,9] <- ifelse(australia.hex[,3] < 279.9, 1, 0)
 summary(australia.hex)
+}
 }
 

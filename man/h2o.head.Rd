@@ -2,10 +2,15 @@
 \docType{methods}
 \name{h2o.head}
 \alias{h2o.head}
+\alias{h2o.tail}
 \alias{head,H2OFrame-method}
 \alias{tail,H2OFrame-method}
 \title{Return the Head or Tail of an H2O Dataset.}
 \usage{
+h2o.head(x, n = 6L, ...)
+
+h2o.tail(x, n = 6L, ...)
+
 \S4method{head}{H2OFrame}(x, n = 6L, ...)
 
 \S4method{tail}{H2OFrame}(x, n = 6L, ...)
@@ -22,17 +27,15 @@ A data frame containing the first or last n rows of an \linkS4class{H2OFrame} ob
 }
 \description{
 Returns the first or last rows of an H2O parsed data object.
-
-
-
-
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O <- h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
 ausPath <- system.file("extdata", "australia.csv", package="h2o")
 australia.hex <- h2o.uploadFile(localH2O, path = ausPath)
 head(australia.hex, 10)
 tail(australia.hex, 10)
+}
 }
 

@@ -93,15 +93,19 @@
 #' @param reproducible Force reproducibility on small data (will be slow - only uses 1 thread)
 #' @param export_weights_and_biases Whether to export Neural Network weights and biases to H2O
 #'        Frames"
+#' @param offset_column Specify the offset column.
+#' @param weights_column Specify the weights column.
 #' @param ... extra parameters to pass onto functions (not implemented)
 #' @seealso \code{\link{predict.H2OModel}} for prediction.
 #' @examples
 #' library(h2o)
 #' localH2O <- h2o.init()
-#'
-#' irisPath <- system.file("extdata", "iris.csv", package = "h2o")
-#' iris.hex <- h2o.uploadFile(localH2O, path = irisPath)
+#' iris.hex <- as.h2o(iris)
 #' iris.dl <- h2o.deeplearning(x = 1:4, y = 5, training_frame = iris.hex)
+#'
+#' # now make a prediction
+#' predictions <- h2o.predict(iris.dl, iris.hex)
+#'
 #' @export
 h2o.deeplearning <- function(x, y, training_frame,
                              model_id = "",
@@ -162,6 +166,8 @@ h2o.deeplearning <- function(x, y, training_frame,
                              max_categorical_features,
                              reproducible=FALSE,
                              export_weights_and_biases=FALSE,
+                             offset_column = NULL,
+                             weights_column = NULL,
                              ...)
 {
   # Pass over ellipse parameters and deprecated parameters
@@ -183,9 +189,11 @@ h2o.deeplearning <- function(x, y, training_frame,
   # Parameter list to send to model builder
   parms <- list()
   parms$training_frame <- training_frame
-  colargs <- .verify_dataxy(training_frame, x, y, autoencoder)
-  parms$response_column <- colargs$y
-  parms$ignored_columns <- colargs$x_ignore
+  args <- .verify_dataxy(training_frame, x, y, autoencoder)
+  if( !missing(offset_column) )  args$x_ignore <- args$x_ignore[!( offset_column == args$x_ignore )]
+  if( !missing(weights_column) ) args$x_ignore <- args$x_ignore[!( weights_column == args$x_ignore )]
+  parms$response_column <- args$y
+  parms$ignored_columns <- args$x_ignore
   if(!missing(model_id))
     parms$model_id <- model_id
   if(!missing(overwrite_with_best_model))
@@ -302,6 +310,8 @@ h2o.deeplearning <- function(x, y, training_frame,
     parms$reproducible <- reproducible
   if(!missing(export_weights_and_biases))
     parms$export_weights_and_biases <- export_weights_and_biases
+  if( !missing(offset_column) )             parms$offset_column          <- offset_column
+  if( !missing(weights_column) )            parms$weights_column         <- weights_column
 
   .h2o.createModel(training_frame@conn, 'deeplearning', parms)
 }
@@ -318,6 +328,7 @@ h2o.deeplearning <- function(x, y, training_frame,
 #'         reconstruction MSE.
 #' @seealso \code{\link{h2o.deeplearning}} for making an H2OAutoEncoderModel.
 #' @examples
+#' \dontrun{
 #' library(h2o)
 #' localH2O = h2o.init()
 #' prosPath = system.file("extdata", "prostate.csv", package = "h2o")
@@ -326,6 +337,7 @@ h2o.deeplearning <- function(x, y, training_frame,
 #'                                hidden = c(10, 10), epochs = 5)
 #' prostate.anon = h2o.anomaly(prostate.dl, prostate.hex)
 #' head(prostate.anon)
+#' }
 #' @export
 h2o.anomaly <- function(object, data) {
   url <- paste0('Predictions/models/', object@model_id, '/frames/', data@frame_id)
@@ -347,6 +359,7 @@ h2o.anomaly <- function(object, data) {
 #'         number of units in the hidden layer of the specified index.
 #' @seealso \code{link{h2o.deeplearning}} for making deep learning models.
 #' @examples
+#' \dontrun{
 #' library(h2o)
 #' localH2O = h2o.init()
 #' prosPath = system.file("extdata", "prostate.csv", package = "h2o")
@@ -357,6 +370,7 @@ h2o.anomaly <- function(object, data) {
 #' prostate.deepfeatures_layer2 = h2o.deepfeatures(prostate.dl, prostate.hex, layer = 2)
 #' head(prostate.deepfeatures_layer1)
 #' head(prostate.deepfeatures_layer2)
+#' }
 #' @export
 h2o.deepfeatures <- function(object, data, layer = 1) {
   index = layer - 1

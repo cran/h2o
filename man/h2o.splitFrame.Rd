@@ -18,6 +18,7 @@ specified plus one.}
 Split an existing H2O data set according to user-specified ratios.
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O = h2o.init()
 irisPath = system.file("extdata", "iris.csv", package = "h2o")
@@ -25,5 +26,6 @@ iris.hex = h2o.importFile(localH2O, path = irisPath)
 iris.split = h2o.splitFrame(iris.hex, ratios = c(0.2, 0.5))
 head(iris.split[[1]])
 summary(iris.split[[1]])
+}
 }
 

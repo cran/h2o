@@ -5,6 +5,7 @@
 \alias{colnames<-,H2OFrame,H2OFrame-method}
 \alias{colnames<-,H2OFrame,character-method}
 \alias{h2o.colnames}
+\alias{h2o.names}
 \alias{names,H2OFrame-method}
 \alias{names<-,H2OFrame-method}
 \title{Returns Column Names for a Parsed H2O Data Object.}
@@ -17,9 +18,11 @@
 
 \S4method{names}{H2OFrame}(x) <- value
 
-\S4method{colnames}{H2OFrame}(x)
+h2o.colnames(x)
 
-\S4method{names}{H2OFrame}(x)
+h2o.names(x)
+
+\S4method{colnames}{H2OFrame}(x)
 }
 \arguments{
 \item{x}{An \linkS4class{H2OFrame} object.}
@@ -30,12 +33,14 @@
 Returns column names for an \linkS4class{H2OFrame} object.
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O <- h2o.init()
 irisPath <- system.file("extdata", "iris.csv", package="h2o")
 iris.hex <- h2o.uploadFile(localH2O, path = irisPath)
 summary(iris.hex)
 colnames(iris.hex)
+}
 }
 \seealso{
 \code{\link[base]{colnames}} for the base R method.

@@ -5,6 +5,8 @@
 \alias{var,H2OFrame-method}
 \title{Variance of a column.}
 \usage{
+h2o.var(x, y = NULL, na.rm = FALSE, use)
+
 \S4method{var}{H2OFrame}(x, y = NULL, na.rm = FALSE, use)
 }
 \arguments{
@@ -20,10 +22,12 @@
 Obtain the variance of a column of a parsed H2O data object.
 }
 \examples{
+\dontrun{
 localH2O <- h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
 var(prostate.hex$AGE)
+}
 }
 \seealso{
 \code{\link[stats]{var}} for the base R implementation. \code{\link{h2o.sd}} for standard deviation.

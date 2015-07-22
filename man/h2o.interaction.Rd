@@ -26,6 +26,7 @@ Returns a \linkS4class{H2OFrame} object.
 Creates a data frame in H2O with n-th order interaction features between categorical columns, as specified by the user.
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O <- h2o.init()
 
@@ -65,5 +66,6 @@ myframe <- h2o.cbind(myframe, pairwise, higherorder, trim_integer_levels)
 myframe
 head(myframe,20)
 summary(myframe)
+}
 }
 

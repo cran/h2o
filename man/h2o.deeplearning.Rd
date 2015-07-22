@@ -24,7 +24,8 @@ h2o.deeplearning(x, y, training_frame, model_id = "",
   variable_importances, fast_mode, ignore_const_cols, force_load_balance,
   replicate_training_data, single_node_mode, shuffle_training_data, sparse,
   col_major, average_activation, sparsity_beta, max_categorical_features,
-  reproducible = FALSE, export_weights_and_biases = FALSE, ...)
+  reproducible = FALSE, export_weights_and_biases = FALSE,
+  offset_column = NULL, weights_column = NULL, ...)
 }
 \arguments{
 \item{x}{A vector containing the \code{character} names of the predictors in the model.}
@@ -178,6 +179,10 @@ Experimental)}
 \item{export_weights_and_biases}{Whether to export Neural Network weights and biases to H2O
 Frames"}
 
+\item{offset_column}{Specify the offset column.}
+
+\item{weights_column}{Specify the weights column.}
+
 \item{...}{extra parameters to pass onto functions (not implemented)}
 }
 \description{
@@ -186,10 +191,11 @@ Performs Deep Learning neural networks on an \linkS4class{H2OFrame}
 \examples{
 library(h2o)
 localH2O <- h2o.init()
-
-irisPath <- system.file("extdata", "iris.csv", package = "h2o")
-iris.hex <- h2o.uploadFile(localH2O, path = irisPath)
+iris.hex <- as.h2o(iris)
 iris.dl <- h2o.deeplearning(x = 1:4, y = 5, training_frame = iris.hex)
+
+# now make a prediction
+predictions <- h2o.predict(iris.dl, iris.hex)
 }
 \seealso{
 \code{\link{predict.H2OModel}} for prediction.

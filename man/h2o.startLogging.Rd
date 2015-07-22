@@ -13,12 +13,14 @@ Begin logging H2o R POST commands and error responses to local disk. Used
 primarily for debuggin purposes.
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O = h2o.init()
 h2o.startLogging()
 ausPath = system.file("extdata", "australia.csv", package="h2o")
 australia.hex = h2o.importFile(localH2O, path = ausPath)
 h2o.stopLogging()
+}
 }
 \seealso{
 \code{\link{h2o.stopLogging}, \link{h2o.clearLog},

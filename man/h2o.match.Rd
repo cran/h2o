@@ -6,6 +6,8 @@
 \alias{match,H2OFrame-method}
 \title{Value Matching in H2O}
 \usage{
+h2o.match(x, table, nomatch = 0, incomparables = NULL)
+
 \S4method{match}{H2OFrame}(x, table, nomatch = 0, incomparables = NULL)
 
 \S4method{\%in\%}{H2OFrame}(x, table)
@@ -27,9 +29,11 @@ values to be matched.}
 functions.
 }
 \examples{
+\dontrun{
 h2o.init()
 hex <- as.h2o(iris)
 match(hex[,5], c("setosa", "versicola"))
+}
 }
 \seealso{
 \code{\link[base]{match}} for base R implementation.

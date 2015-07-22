@@ -442,6 +442,12 @@
   processTables(res)
 }
 
+
+.format.helper <- function(x, format) {
+    if( is.list(x) ) lapply(x, .format.helper, format)
+    else             sapply(x, function(i) if( is.na(i) ) "" else sprintf(format, i))
+}
+
 #' Print method for H2OTable objects
 #'
 #' This will print a truncated view of the table if there are more than 20 rows.
@@ -455,11 +461,11 @@ print.H2OTable <- function(x, header=TRUE, ...) {
   # format columns
   formats <- attr(x, "formats")
   xx <- x
+
   for (j in seq_along(x)) {
     if( formats[j] == "%d" ) formats[j] <- "%f"
-    xx[[j]] <- ifelse(is.na(x[[j]]), "", sprintf(formats[j], x[[j]]))
+    xx[[j]] <- .format.helper(x[[j]], formats[j])
   }
-
   # drop empty columns
   nz <- unlist(lapply(xx, function(y) any(nzchar(y))), use.names = FALSE)
   xx <- xx[nz]
@@ -526,6 +532,7 @@ print.H2OTable <- function(x, header=TRUE, ...) {
 #'
 #' @param conn H2O connection object
 #' @return TRUE if the cluster is up; FALSE otherwise
+#' @export
 h2o.clusterIsUp <- function(conn = h2o.getConnection()) {
   if (!is(conn, "H2OConnection")) stop("`conn` must be an H2OConnection object")
 
@@ -548,6 +555,7 @@ h2o.killMinus3 <- function(conn = h2o.getConnection()) {
 #' Print H2O cluster info
 #'
 #' @param conn H2O connection object
+#' @export
 h2o.clusterInfo <- function(conn = h2o.getConnection()) {
   stopifnot(is(conn, "H2OConnection"))
   if(! h2o.clusterIsUp(conn)) {

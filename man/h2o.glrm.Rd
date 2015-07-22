@@ -9,7 +9,7 @@ h2o.glrm(training_frame, x, k, destination_key, loading_key,
   regularization_x = c("L2", "L1"), regularization_y = c("L2", "L1"),
   gamma_x = 0, gamma_y = 0, max_iterations = 1000, init_step_size = 1,
   min_step_size = 0.001, init = c("Random", "PlusPlus", "SVD"),
-  recover_pca = FALSE, seed)
+  recover_svd = FALSE, seed)
 }
 \arguments{
 \item{training_frame}{An \linkS4class{H2OFrame} object containing the
@@ -67,8 +67,8 @@ from k-means++ initialization, or "SVD": for initialization using the
 first k right singular vectors. Additionally, the user may specify the
 initial Y as a matrix, data.frame, H2OFrame, or list of vectors.}
 
-\item{recover_pca}{A logical value indicating whether the principal components should
-be recovered during post-processing of the generalized low rank decomposition.}
+\item{recover_svd}{A logical value indicating whether the singular values and eigenvectors
+should be recovered during post-processing of the generalized low rank decomposition.}
 
 \item{seed}{(Optional) Random seed used to initialize the X and Y matrices.}
 }

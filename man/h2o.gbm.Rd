@@ -7,7 +7,9 @@ h2o.gbm(x, y, training_frame, model_id, distribution = c("AUTO", "gaussian",
   "bernoulli", "multinomial"), ntrees = 50, max_depth = 5, min_rows = 10,
   learn_rate = 0.1, nbins = 20, nbins_cats = 1024,
   validation_frame = NULL, balance_classes = FALSE,
-  max_after_balance_size = 1, seed, nfolds, score_each_iteration, ...)
+  max_after_balance_size = 1, seed, build_tree_one_node = FALSE, nfolds,
+  score_each_iteration = FALSE, offset_column = NULL,
+  weights_column = NULL, ...)
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the GBM model.}
@@ -45,11 +47,18 @@ counts via over/under-sampling (for imbalanced data)}
 \item{max_after_balance_size}{Maximum relative size of the training data after balancing class counts (can be less
 than 1.0)}
 
-\item{seed}{Seed for random numbers (affects sampling) - Note: only reproducible when running single threaded}
+\item{seed}{Seed for random numbers (affects sampling when balance_classes=T)}
+
+\item{build_tree_one_node}{Run on one node only; no network overhead but
+fewer cpus used.  Suitable for small datasets.}
 
 \item{nfolds}{(Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty. **Currently not supported**}
 
 \item{score_each_iteration}{Attempts to score each tree.}
+
+\item{offset_column}{Specify the offset column.}
+
+\item{weights_column}{Specify the weights column.}
 
 \item{...}{extra arguments to pass on (currently no implemented)}
 }

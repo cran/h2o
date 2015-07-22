@@ -20,6 +20,7 @@ Detect anomalies in a H2O dataset using a H2O deep learning model with
 auto-encoding.
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O = h2o.init()
 prosPath = system.file("extdata", "prostate.csv", package = "h2o")
@@ -28,6 +29,7 @@ prostate.dl = h2o.deeplearning(x = 3:9, training_frame = prostate.hex, autoencod
                                hidden = c(10, 10), epochs = 5)
 prostate.anon = h2o.anomaly(prostate.dl, prostate.hex)
 head(prostate.anon)
+}
 }
 \seealso{
 \code{\link{h2o.deeplearning}} for making an H2OAutoEncoderModel.

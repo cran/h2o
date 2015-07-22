@@ -25,6 +25,7 @@ Given a trained h2o model, compute its performance on the given
 dataset
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O <- h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
@@ -32,5 +33,6 @@ prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
 prostate.hex$CAPSULE <- as.factor(prostate.hex$CAPSULE)
 prostate.gbm <- h2o.gbm(3:9, "CAPSULE", prostate.hex)
 h2o.performance(model = prostate.gbm, data=prostate.hex)
+}
 }
 

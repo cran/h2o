@@ -25,10 +25,12 @@ Produces a new \linkS4class{H2OFrame} of the output of the applied
 Method for apply on \linkS4class{H2OFrame} objects.
 }
 \examples{
+\dontrun{
 localH2O = h2o.init()
 irisPath = system.file("extdata", "iris.csv", package="h2o")
 iris.hex = h2o.importFile(localH2O, path = irisPath, destination_frame = "iris.hex")
 summary(apply(iris.hex, 1, sum))
+}
 }
 \seealso{
 \link[base]{apply} for the base generic

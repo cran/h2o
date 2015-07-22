@@ -23,6 +23,7 @@ Returns a \linkS4class{H2OFrame} object containing the results from the split/ap
 For each subset of an H2O data set, apply a user-specified function, then comine the results.
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O <- h2o.init()
 
@@ -35,6 +36,7 @@ fun = function(df) { sum(df[,1], na.rm = T)/nrow(df) }
 # uses h2o's ddply, since iris.hex is an H2OFrame object
 res = h2o.ddply(iris.hex, "class", fun)
 head(res)
+}
 }
 \seealso{
 \code{\link[plyr]{ddply}} for the plyr library implementation.

@@ -15,6 +15,7 @@ of the H2O server.}
 Removes the data from the h2o cluster, but does not remove the local references.
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O <- h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package = "h2o")
@@ -22,6 +23,7 @@ prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
 h2o.ls(localH2O)
 h2o.removeAll(localH2O)
 h2o.ls(localH2O)
+}
 }
 \seealso{
 \code{\link{h2o.rm}}

@@ -6,8 +6,9 @@
 h2o.randomForest(x, y, training_frame, model_id, validation_frame,
   mtries = -1, sample_rate = 0.632, build_tree_one_node = FALSE,
   ntrees = 50, max_depth = 20, min_rows = 1, nbins = 20,
-  nbins_cats = 1024, binomial_double_trees = TRUE,
-  balance_classes = FALSE, max_after_balance_size = 5, seed, ...)
+  nbins_cats = 1024, binomial_double_trees = FALSE,
+  balance_classes = FALSE, max_after_balance_size = 5, seed,
+  offset_column = NULL, weights_column = NULL, ...)
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables
@@ -57,6 +58,10 @@ than 1.0)}
 
 \item{seed}{Seed for random numbers (affects sampling) - Note: only
 reproducible when running single threaded}
+
+\item{offset_column}{Specify the offset column.}
+
+\item{weights_column}{Specify the weights column.}
 
 \item{...}{(Currently Unimplemented)}
 }

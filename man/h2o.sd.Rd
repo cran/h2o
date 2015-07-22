@@ -5,6 +5,8 @@
 \alias{sd,H2OFrame-method}
 \title{Standard Deviation of a column of data.}
 \usage{
+h2o.sd(x, na.rm = FALSE)
+
 \S4method{sd}{H2OFrame}(x, na.rm = FALSE)
 }
 \arguments{
@@ -16,10 +18,12 @@
 Obtain the standard deviation of a column of data.
 }
 \examples{
+\dontrun{
 localH2O <- h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
 sd(prostate.hex$AGE)
+}
 }
 \seealso{
 \code{\link{h2o.var}} for variance, and \code{\link[stats]{sd}} for the base R implementation.

@@ -5,6 +5,8 @@
 \alias{mean,H2OFrame-method}
 \title{Mean of a column}
 \usage{
+h2o.mean(x, trim = 0, na.rm = FALSE, ...)
+
 \S4method{mean}{H2OFrame}(x, trim = 0, na.rm = FALSE, ...)
 }
 \arguments{
@@ -20,10 +22,12 @@
 Obtain the mean of a column of a parsed H2O data object.
 }
 \examples{
+\dontrun{
 localH2O <- h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
 mean(prostate.hex$AGE)
+}
 }
 \seealso{
 \code{\link[base]{mean}} for the base R implementation.

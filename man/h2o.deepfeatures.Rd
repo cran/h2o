@@ -22,6 +22,7 @@ Extract the non-linea feature from an H2O data set using an H2O deep learning
 model.
 }
 \examples{
+\dontrun{
 library(h2o)
 localH2O = h2o.init()
 prosPath = system.file("extdata", "prostate.csv", package = "h2o")
@@ -32,6 +33,7 @@ prostate.deepfeatures_layer1 = h2o.deepfeatures(prostate.dl, prostate.hex, layer
 prostate.deepfeatures_layer2 = h2o.deepfeatures(prostate.dl, prostate.hex, layer = 2)
 head(prostate.deepfeatures_layer1)
 head(prostate.deepfeatures_layer2)
+}
 }
 \seealso{
 \code{link{h2o.deeplearning}} for making deep learning models.

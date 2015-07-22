@@ -9,19 +9,20 @@
 \usage{
 h2o.importFolder(path, conn = h2o.getConnection(), pattern = "",
   destination_frame = "", parse = TRUE, header = NA, sep = "",
-  col.names = NULL, na.strings = NULL)
+  col.names = NULL, na.strings = NULL, parse_type = NULL)
 
 h2o.importURL(path, conn = h2o.getConnection(), destination_frame = "",
   parse = TRUE, header = NA, sep = "", col.names = NULL,
-  na.strings = NULL)
+  na.strings = NULL, parse_type = NULL)
 
 h2o.importHDFS(path, conn = h2o.getConnection(), pattern = "",
   destination_frame = "", parse = TRUE, header = NA, sep = "",
-  col.names = NULL, na.strings = NULL)
+  col.names = NULL, na.strings = NULL, parse_type = NULL)
 
 h2o.uploadFile(path, conn = h2o.getConnection(), destination_frame = "",
   parse = TRUE, header = NA, sep = "", col.names = NULL,
-  col.types = NULL, na.strings = NULL, progressBar = FALSE)
+  col.types = NULL, na.strings = NULL, progressBar = FALSE,
+  parse_type = NULL)
 }
 \arguments{
 \item{path}{The complete URL or normalized file path of the file to be
@@ -53,6 +54,9 @@ delimited line with the column names for the file.}
 
 \item{na.strings}{(Optional) H2O will interpret these strings as missing.}
 
+\item{parse_type}{(Optional) Specify which parser type H2O will use.
+Valid types are "ARFF", "XLS", "CSV", "SVMLight"}
+
 \item{col.types}{(Optional) A vector to specify whether columns should be
 forced to a certain type upon import parsing.}
 
@@ -78,10 +82,12 @@ behavior is to pass-through to the parse phase automatically.
 \code{h2o.importFile}
 }
 \examples{
+\dontrun{
 localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
 prosPath = system.file("extdata", "prostate.csv", package = "h2o")
 prostate.hex = h2o.uploadFile(localH2O, path = prosPath, destination_frame = "prostate.hex")
 class(prostate.hex)
 summary(prostate.hex)
+}
 }
 

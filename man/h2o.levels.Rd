@@ -2,6 +2,9 @@
 \name{h2o.levels}
 \alias{h2o.levels}
 \title{Return the levels from the column requested column.}
+\usage{
+h2o.levels(x, i)
+}
 \arguments{
 \item{x}{An \linkS4class{H2OFrame} object.}
 
@@ -11,9 +14,11 @@
 Return the levels from the column requested column.
 }
 \examples{
+\dontrun{
 localH2O <- h2o.init()
 iris.hex <- as.h2o(localH2O, iris)
 h2o.levels(iris.hex, 5)  # returns "setosa"     "versicolor" "virginica"
+}
 }
 \seealso{
 \code{\link[base]{levels}} for the base R method.
