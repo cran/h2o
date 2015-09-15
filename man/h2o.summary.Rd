@@ -23,7 +23,7 @@ A method for the \code{\link{summary}} generic. Summarizes the columns of an H2O
 columns and rows using vector notation (e.g. dataset[row, col])
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O = h2o.init()
 prosPath = system.file("extdata", "prostate.csv", package="h2o")

@@ -21,7 +21,7 @@ Returns a \linkS4class{H2OModel} object of the class corresponding to the type o
 Load a saved H2O model from disk.
 }
 \examples{
-\dontrun{
+\donttest{
 # library(h2o)
 # localH2O = h2o.init()
 # prosPath = system.file("extdata", "prostate.csv", package = "h2o")

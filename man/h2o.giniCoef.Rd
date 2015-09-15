@@ -3,21 +3,28 @@
 \alias{h2o.giniCoef}
 \title{Retrieve the GINI Coefficcient}
 \usage{
-h2o.giniCoef(object, valid = FALSE, ...)
+h2o.giniCoef(object, train = FALSE, valid = FALSE, xval = FALSE, ...)
 }
 \arguments{
 \item{object}{an \linkS4class{H2OBinomialMetrics} object.}
 
-\item{valid}{TRUE to extract the metric from validation set metrics; otherwise, training is assumed}
+\item{train}{Retrieve the training GINI Coefficcient}
+
+\item{valid}{Retrieve the validation GINI Coefficcient}
+
+\item{xval}{Retrieve the cross-validation GINI Coefficcient}
 
 \item{\dots}{extra arguments to be passed if `object` is of type
 \linkS4class{H2OModel} (e.g. train=TRUE)}
 }
 \description{
 Retrieves the GINI coefficient from an \linkS4class{H2OBinomialMetrics}.
+If "train", "valid", and "xval" parameters are FALSE (default), then the training GINIvalue is returned. If more
+than one parameter is set to TRUE, then a named vector of GINIs are returned, where the names are "train", "valid"
+or "xval".
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 h2o.init()
 

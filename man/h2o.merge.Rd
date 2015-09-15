@@ -25,7 +25,7 @@ datasets must be small enough to exist in every node. Currently, this
 function only supports \code{all.x = TRUE}. All other permutations will fail.
 }
 \examples{
-\dontrun{
+\donttest{
 h2o.init()
 left <- data.frame(fruit = c('apple', 'orange', 'banana', 'lemon', 'strawberry', 'blueberry'),
 color = c('red', 'orange', 'yellow', 'yellow', 'red', 'blue'))

@@ -16,11 +16,11 @@ Returns an \linkS4class{H2OFrame} object containing the
         reconstruction MSE.
 }
 \description{
-Detect anomalies in a H2O dataset using a H2O deep learning model with
+Detect anomalies in an H2O dataset using an H2O deep learning model with
 auto-encoding.
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O = h2o.init()
 prosPath = system.file("extdata", "prostate.csv", package = "h2o")

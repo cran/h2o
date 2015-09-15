@@ -20,7 +20,7 @@ A method to set a factor column to one of the levels.
 Replace all other occurences with `level` in a factor column.
 }
 \examples{
-\dontrun{
+\donttest{
 localH2O <- h2o.init()
 hex <- as.h2o(localH2O  , iris)
 hex$Species <- h2o.setLevel(hex$Species, "versicolor")

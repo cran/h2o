@@ -3,16 +3,12 @@
 \alias{h2o.saveModel}
 \title{Save an H2O Model Object to Disk}
 \usage{
-h2o.saveModel(object, dir = "", name = "", filename = "", force = FALSE)
+h2o.saveModel(object, path = "", force = FALSE)
 }
 \arguments{
 \item{object}{an \linkS4class{H2OModel} object.}
 
-\item{dir}{string indicating the directory the model will be written to.}
-
-\item{name}{string name of the file.}
-
-\item{filename}{the full path to the file.}
+\item{path}{string indicating the directory the model will be written to.}
 
 \item{force}{logical, indicates how to deal with files that already exist.}
 }
@@ -24,7 +20,7 @@ In the case of existing files \code{force = TRUE} will overwrite the file.
 Otherwise, the operation will fail.
 }
 \examples{
-\dontrun{
+\donttest{
 # library(h2o)
 # localH2O <- h2o.init()
 # prostate.hex <- h2o.importFile(localH2O, path = paste("https://raw.github.com",
@@ -32,8 +28,7 @@ Otherwise, the operation will fail.
 #   destination_frame = "prostate.hex")
 # prostate.glm <- h2o.glm(y = "CAPSULE", x = c("AGE","RACE","PSA","DCAPS"),
 #   training_frame = prostate.hex, family = "binomial", alpha = 0.5)
-# h2o.saveModel(object = prostate.glm, dir = "/Users/UserName/Desktop", save_cv = TRUE,
-# force = TRUE)
+# h2o.saveModel(object = prostate.glm, path = "/Users/UserName/Desktop", force=TRUE)
 }
 }
 \seealso{

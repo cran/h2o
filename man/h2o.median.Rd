@@ -15,10 +15,10 @@ h2o.median(x, na.rm = TRUE)
 \item{na.rm}{a logical, indicating whether na's are omitted.}
 }
 \description{
-Compute the airthmetic mean of a \linkS4class{H2OFrame}.
+Compute the arithmetic mean of a \linkS4class{H2OFrame}.
 }
 \examples{
-\dontrun{
+\donttest{
 localH2O <- h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 prostate.hex <- h2o.uploadFile(localH2O, path = prosPath, destination_frame = "prostate.hex")

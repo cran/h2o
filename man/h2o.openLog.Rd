@@ -13,7 +13,7 @@ Open existing logs of H2O R POST commands and error resposnes on local disk.
 Used primarily for debugging purposes.
 }
 \examples{
-\dontrun{
+\donttest{
 localH2O = h2o.init()
 
 h2o.startLogging()

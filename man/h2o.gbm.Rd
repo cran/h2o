@@ -3,11 +3,14 @@
 \alias{h2o.gbm}
 \title{Gradient Boosted Machines}
 \usage{
-h2o.gbm(x, y, training_frame, model_id, distribution = c("AUTO", "gaussian",
-  "bernoulli", "multinomial"), ntrees = 50, max_depth = 5, min_rows = 10,
+h2o.gbm(x, y, training_frame, model_id, checkpoint, distribution = c("AUTO",
+  "gaussian", "bernoulli", "multinomial", "poisson", "gamma", "tweedie"),
+  tweedie_power = 1.5, ntrees = 50, max_depth = 5, min_rows = 10,
   learn_rate = 0.1, nbins = 20, nbins_cats = 1024,
   validation_frame = NULL, balance_classes = FALSE,
-  max_after_balance_size = 1, seed, build_tree_one_node = FALSE, nfolds,
+  max_after_balance_size = 1, seed, build_tree_one_node = FALSE,
+  nfolds = 0, fold_column = NULL, fold_assignment = c("AUTO", "Random",
+  "Modulo"), keep_cross_validation_predictions = FALSE,
   score_each_iteration = FALSE, offset_column = NULL,
   weights_column = NULL, ...)
 }
@@ -23,8 +26,12 @@ categorical variable).}
 \item{model_id}{(Optional) The unique id assigned to the resulting model. If
 none is given, an id will automatically be generated.}
 
-\item{distribution}{A \code{character} string. The loss function to be implemented.
-Must be "AUTO", "bernoulli", "multinomial", or "gaussian"}
+\item{checkpoint}{"Model checkpoint (either key or H2ODeepLearningModel) to resume training with."}
+
+\item{distribution}{A \code{character} string. The distribution function of the response.
+Must be "AUTO", "bernoulli", "multinomial", "poisson", "gamma", "tweedie" or "gaussian"}
+
+\item{tweedie_power}{Tweedie power (only for Tweedie distribution, must be between 1 and 2)}
 
 \item{ntrees}{A nonnegative integer that determines the number of trees to grow.}
 
@@ -32,7 +39,7 @@ Must be "AUTO", "bernoulli", "multinomial", or "gaussian"}
 
 \item{min_rows}{Minimum number of rows to assign to teminal nodes.}
 
-\item{learn_rate}{An \code{interger} from \code{0.0} to \code{1.0}}
+\item{learn_rate}{An \code{integer} from \code{0.0} to \code{1.0}}
 
 \item{nbins}{For numerical columns (real/int), build a histogram of this many bins, then split at the best point}
 
@@ -52,7 +59,14 @@ than 1.0)}
 \item{build_tree_one_node}{Run on one node only; no network overhead but
 fewer cpus used.  Suitable for small datasets.}
 
-\item{nfolds}{(Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty. **Currently not supported**}
+\item{nfolds}{(Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.}
+
+\item{fold_column}{(Optional) Column with cross-validation fold index assignment per observation}
+
+\item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not specified
+Must be "AUTO", "Random" or "Modulo"}
+
+\item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models}
 
 \item{score_each_iteration}{Attempts to score each tree.}
 
@@ -67,7 +81,7 @@ Builds gradient boosted classification trees, and gradient boosted regression tr
 }
 \details{
 The default distribution function will guess the model type
-based on the response column typerun properly the response column must be an numeric for "gaussian" or an
+based on the response column type. In order to run properly, the response column must be an numeric for "gaussian" or an
 enum for "bernoulli" or "multinomial".
 }
 \examples{

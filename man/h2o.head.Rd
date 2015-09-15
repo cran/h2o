@@ -29,7 +29,7 @@ A data frame containing the first or last n rows of an \linkS4class{H2OFrame} ob
 Returns the first or last rows of an H2O parsed data object.
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O <- h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
 ausPath <- system.file("extdata", "australia.csv", package="h2o")

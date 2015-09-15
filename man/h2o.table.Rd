@@ -17,7 +17,7 @@ Returns a tabulated \linkS4class{H2OFrame} object.
 Uses the cross-classifying factors to build a table of counts at each combination of factor levels.
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O <- h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")

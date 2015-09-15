@@ -24,7 +24,7 @@ entries in a H2O dataset with missing values.
 this function should only be called on a subset of the original.
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O <- h2o.init()
 irisPath <- system.file("extdata", "iris.csv", package = "h2o")

@@ -16,7 +16,7 @@ h2o.dim(x)
 Returns the number of rows and columns for an \linkS4class{H2OFrame} object.
 }
 \examples{
-\dontrun{
+\donttest{
 localH2O <- h2o.init()
 irisPath <- system.file("extdata", "iris.csv", package="h2o")
 iris.hex <- h2o.uploadFile(localH2O, path = irisPath)

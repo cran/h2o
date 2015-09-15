@@ -33,7 +33,7 @@ h2o.names(x)
 Returns column names for an \linkS4class{H2OFrame} object.
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O <- h2o.init()
 irisPath <- system.file("extdata", "iris.csv", package="h2o")

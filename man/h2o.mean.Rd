@@ -22,7 +22,7 @@ h2o.mean(x, trim = 0, na.rm = FALSE, ...)
 Obtain the mean of a column of a parsed H2O data object.
 }
 \examples{
-\dontrun{
+\donttest{
 localH2O <- h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)

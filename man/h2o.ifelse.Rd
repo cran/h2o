@@ -32,7 +32,7 @@ Categorical data is not currently supported for this funciton and returned value
 categorical in nature.
 }
 \examples{
-\dontrun{
+\donttest{
 localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
 ausPath = system.file("extdata", "australia.csv", package="h2o")
 australia.hex = h2o.importFile(localH2O, path = ausPath)

@@ -18,11 +18,11 @@ Returns an \linkS4class{H2OFrame} object with as many features as the
         number of units in the hidden layer of the specified index.
 }
 \description{
-Extract the non-linea feature from an H2O data set using an H2O deep learning
+Extract the non-linear feature from an H2O data set using an H2O deep learning
 model.
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O = h2o.init()
 prosPath = system.file("extdata", "prostate.csv", package = "h2o")

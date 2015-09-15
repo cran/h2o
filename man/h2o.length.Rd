@@ -16,7 +16,7 @@ h2o.length(x)
 Returns the length of an \code{\linkS4class{H2OFrame}}
 }
 \examples{
-\dontrun{
+\donttest{
 localH2O <- h2o.init()
 irisPath <- system.file("extdata", "iris.csv", package = "h2o")
 iris.hex <- h2o.uploadFile(localH2O, path = irisPath)

@@ -34,7 +34,7 @@
 #' @param conn An \linkS4class{H2OConnection} object containing the IP address and port number of the H2O server.
 #' @return Returns a list of hex keys in the current H2O instance.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
@@ -62,7 +62,7 @@ h2o.ls <- function(conn = h2o.getConnection()) {
 #' @param timeout_secs Timeout in seconds. Default is no timeout.
 #' @seealso \code{\link{h2o.rm}}
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #' prosPath <- system.file("extdata", "prostate.csv", package = "h2o")
@@ -172,7 +172,7 @@ h2o.getFrame <- function(frame_id, conn = h2o.getConnection(), linkToGC = FALSE)
 #'        from the H2O cluster when the R proxy object is garbage collected.
 #' @return Returns an object that is a subclass of \linkS4class{H2OModel}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #'
@@ -197,8 +197,9 @@ h2o.getModel <- function(model_id, conn = h2o.getConnection(), linkToGC = FALSE)
   model <- json$output[!(names(json$output) %in% c("__meta", "names", "domains", "model_category"))]
   MetricsClass <- paste0("H2O", model_category, "Metrics")
   # setup the metrics objects inside of model...
-  model$training_metrics   <- new(MetricsClass, algorithm=json$algo, on_train=TRUE, metrics=model$training_metrics)
-  model$validation_metrics <- new(MetricsClass, algorithm=json$algo, on_train=FALSE,metrics=model$validation_metrics)  # default is on_train=FALSE
+  model$training_metrics   <- new(MetricsClass, algorithm=json$algo, on_train=TRUE, on_valid=FALSE, on_xval=FALSE, metrics=model$training_metrics)
+  model$validation_metrics <- new(MetricsClass, algorithm=json$algo, on_train=FALSE, on_valid=TRUE, on_xval=FALSE, metrics=model$validation_metrics)
+  model$cross_validation_metrics <- new(MetricsClass, algorithm=json$algo, on_train=FALSE, on_valid=FALSE, on_xval=TRUE, metrics=model$cross_validation_metrics)
   parameters <- list()
   allparams  <- list()
   lapply(json$parameters, function(param) {
@@ -262,31 +263,50 @@ h2o.getModel <- function(model_id, conn = h2o.getConnection(), linkToGC = FALSE)
 
 
 #'
-#' Download the Scoring POJO of An H2O Model
+#' Download the Scoring POJO (Plain Old Java Object) of a H2O Model
 #'
 #' @param model An H2OModel
-#' @param path The path to the directory to store the POJO (no trailing slash). If "", then print to console.
-#'             The file name will be a compilable java file name.
+#' @param path The path to the directory to store the POJO (no trailing slash). If "", then print to
+#'             to console. The file name will be a compilable java file name.
 #' @param conn An H2OClient object.
+#' @param getjar Whether to also download the h2o-genmodel.jar file needed to compile the POJO 
 #' @return If path is "", then pretty print the POJO to the console.
 #'         Otherwise save it to the specified directory.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' h <- h2o.init(nthreads=-1)
 #' fr <- as.h2o(iris)
 #' my_model <- h2o.gbm(x=1:4, y=5, training_frame=fr)
 #'
 #' h2o.download_pojo(my_model)  # print the model to screen
+#' # h2o.download_pojo(my_model, getwd())  # save the POJO and jar file to the current working 
+#' #                                         directory, NOT RUN
+#' # h2o.download_pojo(my_model, getwd(), getjar = FALSE )  # save only the POJO to the current
+#' #                                                           working directory, NOT RUN
 #' h2o.download_pojo(my_model, getwd())  # save to the current working directory
 #' }
 #' @export
-h2o.download_pojo <- function(model, path="", conn=h2o.getConnection()) {
+h2o.download_pojo <- function(model, path="", conn=h2o.getConnection(), getjar=TRUE) {
   model_id <- model@model_id
   java <- .h2o.__remoteSend(conn, method = "GET", paste0(.h2o.__MODELS, ".java/", model_id), raw=TRUE)
   file.path <- paste0(path, "/", model_id, ".java")
   if( path == "" ) cat(java)
-  else write(java, file=file.path)
+  else {
+    write(java, file=file.path)
+    if (getjar) {
+      .__curlError = FALSE
+      .__curlErrorMessage = ""
+      url = .h2o.calcBaseURL(conn = conn, h2oRestApiVersion = .h2o.__REST_API_VERSION, urlSuffix = "h2o-genmodel.jar")
+      tmp = tryCatch(getBinaryURL(url = url,
+                          useragent = R.version.string),
+                   error = function(x) { .__curlError <<- TRUE; .__curlErrorMessage <<- x$message })
+      if (! .__curlError) {
+        jar.path <- paste0(path, "/h2o-genmodel.jar")
+        writeBin(tmp, jar.path, useBytes = TRUE)
+      }
+    }
+  }
 
   if( path!="") print( paste0("POJO written to: ", file.path) )
 }

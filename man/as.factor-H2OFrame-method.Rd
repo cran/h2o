@@ -13,7 +13,7 @@
 Convert a column into a factor column.
 }
 \examples{
-\dontrun{
+\donttest{
 localH2O <- h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)

@@ -67,12 +67,12 @@ When \code{lambda = 0}, no elastic-net penalty is applied and ordinary generaliz
 the number of variables then \code{lambda_min_ratio} = 0.0001; if the number of observations is less than the number
 of variables then \code{lambda_min_ratio} = 0.01.}
 
-\item{nfolds}{(Currently Unimplemented)}
+\item{nfolds}{(Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.}
 
 \item{beta_constraints}{A data.frame or H2OParsedData object with the columns ["names",
 "lower_bounds", "upper_bounds", "beta_given"], where each row corresponds to a predictor
-in the GLM. "names" contains the predictor names, "lower"/"upper_bounds", are the lower
-and upper bounds of beta, and "beta_given" is some supplied starting values for the}
+in the GLM. "names" contains the predictor names, "lower_bounds" and "upper_bounds" are the lower
+and upper bounds of beta, and "beta_given" is some supplied starting values for beta.}
 
 \item{...}{(Currently Unimplemented)
 coefficients.}
@@ -82,8 +82,5 @@ Returns a \linkS4class{H2OModelFuture} class object.
 }
 \description{
 Creates a background H2O GLM job.
-}
-\seealso{
-\code{\link{h2o.getGLMModel}} for resolving the \code{H2OModelFuture} object.
 }
 

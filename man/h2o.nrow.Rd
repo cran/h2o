@@ -26,7 +26,7 @@ Returns a count of the number of rows or columns in an \code{\linkS4class{H2OFra
 
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O <- h2o.init()
 irisPath <- system.file("extdata", "iris.csv", package="h2o")

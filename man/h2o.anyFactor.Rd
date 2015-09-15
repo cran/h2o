@@ -15,7 +15,7 @@ Returns a logical value indicating whether any of the columns in \code{x} are fa
 Determines if any column of an H2OFrame object contains categorical data.
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O <- h2o.init()
 irisPath <- system.file("extdata", "iris_wheader.csv", package="h2o")

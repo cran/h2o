@@ -79,7 +79,7 @@ Currently, the these functions are only supported by
 \linkS4class{H2OBinomialMetrics} objects.
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 h2o.init()
 

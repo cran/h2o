@@ -39,7 +39,7 @@ The default method is selected based on the type of the column to impute. If the
  column types (e.g. String, Time, UUID) are not supported.
 }
 \examples{
-\dontrun{
+\donttest{
  h2o.init()
  fr <- as.h2o(iris, destination_frame="iris")
  fr[sample(nrow(fr),40),5] <- NA  # randomly replace 50 values with NA

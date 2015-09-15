@@ -3,21 +3,28 @@
 \alias{h2o.auc}
 \title{Retrieve the AUC}
 \usage{
-h2o.auc(object, valid = FALSE, ...)
+h2o.auc(object, train = FALSE, valid = FALSE, xval = FALSE, ...)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OBinomialMetrics} object.}
 
+\item{train}{Retrieve the training AUC}
+
 \item{valid}{Retrieve the validation AUC}
+
+\item{xval}{Retrieve the cross-validation AUC}
 
 \item{\dots}{extra arguments to be passed if `object` is of type
 \linkS4class{H2OModel} (e.g. train=TRUE)}
 }
 \description{
 Retrieves the AUC value from an \linkS4class{H2OBinomialMetrics}.
+If "train", "valid", and "xval" parameters are FALSE (default), then the training AUC value is returned. If more
+than one parameter is set to TRUE, then a named vector of AUCs are returned, where the names are "train", "valid"
+or "xval".
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 h2o.init()
 

@@ -12,11 +12,11 @@ This is a package for running H2O via its REST API from within R. To communicate
 \tabular{ll}{
 Package: \tab h2o\cr
 Type: \tab Package\cr
-Version: \tab 3.0.0.30\cr
-Branch: \tab rel-shannon\cr
-Date: \tab Mon Jul 20 20:13:15 PDT 2015\cr
+Version: \tab 3.2.0.1\cr
+Branch: \tab rel-slater\cr
+Date: \tab Sat Sep 12 15:48:49 PDT 2015\cr
 License: \tab Apache License (== 2.0)\cr
-Depends: \tab R (>= 2.13.0), RCurl, rjson, statmod, tools, methods, utils\cr
+Depends: \tab R (>= 2.13.0), RCurl, jsonlite, statmod, tools, methods, utils\cr
 }
 
 This package allows the user to run basic H2O commands using R commands. In order to use it, you must first have H2O running. To run H2O on your local machine, call \code{h2o.init} without any arguments, and H2O will be automatically launched at localhost:54321, where the IP is "127.0.0.1" and the port is 54321. If H2O is running on a cluster, you must provide the IP and port of the remote machine as arguments to the h2o.init() call.

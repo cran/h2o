@@ -16,7 +16,7 @@ An \linkS4class{H2OFrame} object containing the combined \dots arguments column-
 Takes a sequence of H2O data sets and combines them by column
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O <- h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")

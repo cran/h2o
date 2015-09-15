@@ -7,6 +7,6 @@ Shutting down H2O for examples
 }
 \examples{
 h2o.shutdown(prompt=FALSE)
-Sys.sleep(2)
+Sys.sleep(3)
 }
 

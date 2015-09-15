@@ -4,7 +4,7 @@
 \title{Build a Deep Learning Neural Network}
 \usage{
 h2o.deeplearning(x, y, training_frame, model_id = "",
-  overwrite_with_best_model, n_folds = 0, validation_frame, checkpoint,
+  overwrite_with_best_model, validation_frame, checkpoint,
   autoencoder = FALSE, use_all_factor_levels = TRUE,
   activation = c("Rectifier", "Tanh", "TanhWithDropout",
   "RectifierWithDropout", "Maxout", "MaxoutWithDropout"), hidden = c(200,
@@ -16,16 +16,20 @@ h2o.deeplearning(x, y, training_frame, model_id = "",
   hidden_dropout_ratios, l1 = 0, l2 = 0, max_w2 = Inf,
   initial_weight_distribution = c("UniformAdaptive", "Uniform", "Normal"),
   initial_weight_scale = 1, loss = c("Automatic", "CrossEntropy",
-  "MeanSquare", "Absolute", "Huber"), score_interval = 5,
-  score_training_samples, score_validation_samples, score_duty_cycle,
-  classification_stop, regression_stop, quiet_mode, max_confusion_matrix_size,
-  max_hit_ratio_k, balance_classes = FALSE, class_sampling_factors,
-  max_after_balance_size, score_validation_sampling, diagnostics,
-  variable_importances, fast_mode, ignore_const_cols, force_load_balance,
-  replicate_training_data, single_node_mode, shuffle_training_data, sparse,
-  col_major, average_activation, sparsity_beta, max_categorical_features,
+  "MeanSquare", "Absolute", "Huber"), distribution = c("AUTO", "gaussian",
+  "bernoulli", "multinomial", "poisson", "gamma", "tweedie", "laplace",
+  "huber"), tweedie_power = 1.5, score_interval = 5, score_training_samples,
+  score_validation_samples, score_duty_cycle, classification_stop,
+  regression_stop, quiet_mode, max_confusion_matrix_size, max_hit_ratio_k,
+  balance_classes = FALSE, class_sampling_factors, max_after_balance_size,
+  score_validation_sampling, diagnostics, variable_importances, fast_mode,
+  ignore_const_cols, force_load_balance, replicate_training_data,
+  single_node_mode, shuffle_training_data, sparse, col_major,
+  average_activation, sparsity_beta, max_categorical_features,
   reproducible = FALSE, export_weights_and_biases = FALSE,
-  offset_column = NULL, weights_column = NULL, ...)
+  offset_column = NULL, weights_column = NULL, nfolds = 0,
+  fold_column = NULL, fold_assignment = c("AUTO", "Random", "Modulo"),
+  keep_cross_validation_predictions = FALSE, ...)
 }
 \arguments{
 \item{x}{A vector containing the \code{character} names of the predictors in the model.}
@@ -37,26 +41,24 @@ h2o.deeplearning(x, y, training_frame, model_id = "",
 \item{model_id}{(Optional) The unique id assigned to the resulting model. If
 none is given, an id will automatically be generated.}
 
-\item{overwrite_with_best_model}{Logcial. If \code{TRUE}, overwrite the final model with the best model found during training. Defaults to \code{TRUE}.}
+\item{overwrite_with_best_model}{Logical. If \code{TRUE}, overwrite the final model with the best model found during training. Defaults to \code{TRUE}.}
 
-\item{n_folds}{(Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.}
-
-\item{validation_frame}{(Optional) An \code{\link{H2OFrame}} object indicating the validation dataset used to contruct the confusion matrix. If left blank, this defaults to the training data when \code{nfolds = 0}}
+\item{validation_frame}{(Optional) An \code{\link{H2OFrame}} object indicating the validation dataset used to construct the confusion matrix. If left blank, this defaults to the training data when \code{nfolds = 0}}
 
 \item{checkpoint}{"Model checkpoint (either key or H2ODeepLearningModel) to resume training with."}
 
 \item{autoencoder}{Enable auto-encoder for model building.}
 
 \item{use_all_factor_levels}{\code{Logical}. Use all factor levels of categorical variance.
-Otherwise the first factor level is omittted (without loss of accuracy). Useful for
-variable imporotances and auto-enabled for autoencoder.}
+Otherwise the first factor level is omitted (without loss of accuracy). Useful for
+variable importances and auto-enabled for autoencoder.}
 
 \item{activation}{A string indicating the activation function to use. Must be either "Tanh",
 "TanhWithDropout", "Rectifier", "RectifierWithDropout", "Maxout", or "MaxoutWithDropout"}
 
 \item{hidden}{Hidden layer sizes (e.g. c(100,100))}
 
-\item{epochs}{How many times the dataset shoud be iterated (streamed), can be fractional}
+\item{epochs}{How many times the dataset should be iterated (streamed), can be fractional}
 
 \item{train_samples_per_iteration}{Number of training samples (globally) per MapReduce iteration.
 Special values are: \bold{0} one epoch; \bold{-1} all available data (e.g., replicated
@@ -78,11 +80,11 @@ training phase. Typical values are between \code{1.0e-10} and \code{1.0e-4}}
 
 \item{rate_decay}{Learning rate decay factor between layers (N-th layer: \eqn{rate*\alpha^(N-1)})}
 
-\item{momentum_start}{Initial momentum at the beginning of traning (try 0.5)}
+\item{momentum_start}{Initial momentum at the beginning of training (try 0.5)}
 
 \item{momentum_ramp}{Number of training samples for which momentum increases}
 
-\item{momentum_stable}{Final momentum after ther amp is over (try 0.99)}
+\item{momentum_stable}{Final momentum after the amp is over (try 0.99)}
 
 \item{nesterov_accelerated_gradient}{\code{Logical}. Use Nesterov accelerated gradient
 (recommended)}
@@ -90,10 +92,10 @@ training phase. Typical values are between \code{1.0e-10} and \code{1.0e-4}}
 \item{input_dropout_ratio}{A fraction of the features for each training row to be omitted from
 training in order to improve generalization (dimension sampling).}
 
-\item{hidden_dropout_ratios}{Input layer dropout ration (can improve generalization) specify one
+\item{hidden_dropout_ratios}{Input layer dropout ratio (can improve generalization) specify one
 value per hidden layer, defaults to 0.5}
 
-\item{l1}{L1 regularization (can add stability and improve generalization, cause many weights to
+\item{l1}{L1 regularization (can add stability and improve generalization, causes many weights to
 become 0)}
 
 \item{l2}{L2 regularization (can add stability and improve generalization, causes many weights to
@@ -103,10 +105,16 @@ be small)}
 
 \item{initial_weight_distribution}{Can be "Uniform", "UniformAdaptive", or "Normal"}
 
-\item{initial_weight_scale}{Unifrom: -value ... value, Normal: stddev}
+\item{initial_weight_scale}{Uniform: -value ... value, Normal: stddev}
 
-\item{loss}{Loss function: Automatic, CrossEntropy (for classification only), MeanSquare, Absolute
-(experimental) or Huber (experimental)}
+\item{loss}{Loss function: "Automatic", "CrossEntropy" (for classification only), "MeanSquare", "Absolute"
+(experimental) or "Huber" (experimental)}
+
+\item{distribution}{A \code{character} string. The distribution function of the response.
+Must be "AUTO", "bernoulli", "multinomial", "poisson", "gamma", "tweedie",
+"laplace", "huber" or "gaussian"}
+
+\item{tweedie_power}{Tweedie power (only for Tweedie distribution, must be between 1 and 2)}
 
 \item{score_interval}{Shortest time interval (in secs) between model scoring}
 
@@ -127,7 +135,7 @@ disable)}
 
 \item{max_confusion_matrix_size}{Max. size (number of classes) for confusion matrices to be shown}
 
-\item{max_hit_ratio_k}{Max number (top K) of predictions to use for hit ration computation(for
+\item{max_hit_ratio_k}{Max number (top K) of predictions to use for hit ratio computation(for
 multi-class only, 0 to disable)}
 
 \item{balance_classes}{Balance training data class counts via over/under-sampling (for imbalanced
@@ -149,7 +157,7 @@ be slow for large networks)}
 
 \item{fast_mode}{Enable fast mode (minor approximations in back-propagation)}
 
-\item{ignore_const_cols}{Ignore constant columns (no information can be gained anwyay)}
+\item{ignore_const_cols}{Ignore constant columns (no information can be gained anyway)}
 
 \item{force_load_balance}{Force extra load balancing to increase training speed for small
 datasets (to keep all cores busy)}
@@ -165,7 +173,7 @@ replicated and train_samples_per_iteration is close to \eqn{numRows*numNodes}}
 \item{sparse}{Sparse data handling (Experimental)}
 
 \item{col_major}{Use a column major weight matrix for input layer. Can speed up forward
-proagation, but might slow down backpropagation (Experimental)}
+propagation, but might slow down backpropagation (Experimental)}
 
 \item{average_activation}{Average activation for sparse auto-encoder (Experimental)}
 
@@ -174,7 +182,7 @@ proagation, but might slow down backpropagation (Experimental)}
 \item{max_categorical_features}{Max. number of categorical features, enforced via hashing
 Experimental)}
 
-\item{reproducible}{Force reproducibility on small data (will be slow - only uses 1 thread)}
+\item{reproducible}{Force reproducibility on small data (requires setting the \code{seed} argument and this will be slow - only uses 1 thread)}
 
 \item{export_weights_and_biases}{Whether to export Neural Network weights and biases to H2O
 Frames"}
@@ -182,6 +190,15 @@ Frames"}
 \item{offset_column}{Specify the offset column.}
 
 \item{weights_column}{Specify the weights column.}
+
+\item{nfolds}{(Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.}
+
+\item{fold_column}{(Optional) Column with cross-validation fold index assignment per observation}
+
+\item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not specified
+Must be "AUTO", "Random" or "Modulo"}
+
+\item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models}
 
 \item{...}{extra parameters to pass onto functions (not implemented)}
 }

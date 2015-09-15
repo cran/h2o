@@ -33,7 +33,7 @@ Divides the range of the H2O data into intervals and codes the values according 
 leftmost interval corresponds to the level one, the next is level two, etc.
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O <- h2o.init()
 irisPath <- system.file("extdata", "iris_wheader.csv", package="h2o")

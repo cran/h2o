@@ -3,12 +3,16 @@
 \alias{h2o.logloss}
 \title{Retrieve the Log Loss Value}
 \usage{
-h2o.logloss(object, valid = FALSE, ...)
+h2o.logloss(object, train = FALSE, valid = FALSE, xval = FALSE, ...)
 }
 \arguments{
 \item{object}{a \linkS4class{H2OModelMetrics} object of the correct type.}
 
-\item{valid}{Retreive the validation metric.}
+\item{train}{Retrieve the training Log Loss}
+
+\item{valid}{Retrieve the validation Log Loss}
+
+\item{xval}{Retrieve the cross-validation Log Loss}
 
 \item{\dots}{Extra arguments to be passed if `object` is of type
 \linkS4class{H2OModel} (e.g. train=TRUE)}
@@ -16,5 +20,8 @@ h2o.logloss(object, valid = FALSE, ...)
 \description{
 Retrieves the log loss output for a \linkS4class{H2OBinomialMetrics} or
 \linkS4class{H2OMultinomialMetrics} object
+If "train", "valid", and "xval" parameters are FALSE (default), then the training Log Loss value is returned. If more
+than one parameter is set to TRUE, then a named vector of Log Losses are returned, where the names are "train", "valid"
+or "xval".
 }
 

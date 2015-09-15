@@ -13,6 +13,7 @@
 \alias{show,H2OAutoEncoderMetrics-method}
 \alias{show,H2OBinomialMetrics-method}
 \alias{show,H2OClusteringMetrics-method}
+\alias{show,H2ODimReductionMetrics-method}
 \alias{show,H2OModelMetrics-method}
 \alias{show,H2OMultinomialMetrics-method}
 \alias{show,H2ORegressionMetrics-method}
@@ -29,6 +30,8 @@
 \S4method{show}{H2OClusteringMetrics}(object)
 
 \S4method{show}{H2OAutoEncoderMetrics}(object)
+
+\S4method{show}{H2ODimReductionMetrics}(object)
 }
 \arguments{
 \item{object}{An \code{H2OModelMetrics} object}

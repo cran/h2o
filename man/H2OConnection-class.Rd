@@ -30,6 +30,14 @@ is not found at port 54321.
 
 \item{\code{port}}{A \code{numeric} value specifying the port number of the H2O cloud.}
 
+\item{\code{https}}{Set this to TRUE to use https instead of http.}
+
+\item{\code{insecure}}{Set this to TRUE to disable SSL certificate checking.}
+
+\item{\code{username}}{Username to login with.}
+
+\item{\code{password}}{Password to login with.}
+
 \item{\code{mutable}}{An \code{H2OConnectionMutableState} object to hold the mutable state for the H2O connection.}
 }}
 

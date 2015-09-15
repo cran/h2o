@@ -16,7 +16,7 @@ h2o.scale(x, center = TRUE, scale = TRUE)
 Centers and/or scales the columns of an H2O dataset.
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O <- h2o.init()
 irisPath <- system.file("extdata", "iris_wheader.csv", package="h2o")

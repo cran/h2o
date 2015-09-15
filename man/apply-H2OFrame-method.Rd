@@ -23,9 +23,10 @@ Produces a new \linkS4class{H2OFrame} of the output of the applied
 }
 \description{
 Method for apply on \linkS4class{H2OFrame} objects.
+Closures are not supported: an error message stating this fact will stop execution.
 }
 \examples{
-\dontrun{
+\donttest{
 localH2O = h2o.init()
 irisPath = system.file("extdata", "iris.csv", package="h2o")
 iris.hex = h2o.importFile(localH2O, path = irisPath, destination_frame = "iris.hex")

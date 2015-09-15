@@ -13,7 +13,7 @@ and port of the server running H2O.}
 Retrieve information on the status of the cluster running H2O.
 }
 \examples{
-\dontrun{
+\donttest{
 localH2O <- h2o.init()
 h2o.clusterStatus(localH2O)
 }

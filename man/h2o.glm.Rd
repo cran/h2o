@@ -9,8 +9,11 @@ h2o.glm(x, y, training_frame, model_id, validation_frame, max_iterations = 50,
   link = c("family_default", "identity", "logit", "log", "inverse",
   "tweedie"), tweedie_variance_power = NaN, tweedie_link_power = NaN,
   alpha = 0.5, prior = 0, lambda = 1e-05, lambda_search = FALSE,
-  nlambdas = -1, lambda_min_ratio = -1, nfolds, beta_constraints = NULL,
-  offset_column = NULL, weights_column = NULL, intercept = TRUE, ...)
+  nlambdas = -1, lambda_min_ratio = -1, nfolds = 0, fold_column = NULL,
+  fold_assignment = c("AUTO", "Random", "Modulo"),
+  keep_cross_validation_predictions = FALSE, beta_constraints = NULL,
+  offset_column = NULL, weights_column = NULL, intercept = TRUE,
+  max_active_predictors = -1, ...)
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the GLM model.}
@@ -67,18 +70,27 @@ When \code{lambda = 0}, no elastic-net penalty is applied and ordinary generaliz
 the number of variables then \code{lambda_min_ratio} = 0.0001; if the number of observations is less than the number
 of variables then \code{lambda_min_ratio} = 0.01.}
 
-\item{nfolds}{(Currently Unimplemented)}
+\item{nfolds}{(Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.}
+
+\item{fold_column}{(Optional) Column with cross-validation fold index assignment per observation}
+
+\item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not specified
+Must be "AUTO", "Random" or "Modulo"}
+
+\item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models}
 
 \item{beta_constraints}{A data.frame or H2OParsedData object with the columns ["names",
 "lower_bounds", "upper_bounds", "beta_given"], where each row corresponds to a predictor
-in the GLM. "names" contains the predictor names, "lower"/"upper_bounds", are the lower
-and upper bounds of beta, and "beta_given" is some supplied starting values for the}
+in the GLM. "names" contains the predictor names, "lower_bounds" and "upper_bounds" are the lower
+and upper bounds of beta, and "beta_given" is some supplied starting values for beta.}
 
 \item{offset_column}{Specify the offset column.}
 
 \item{weights_column}{Specify the weights column.}
 
 \item{intercept}{Logical, include constant term (intercept) in the model}
+
+\item{max_active_predictors}{(Optional) Convergence criteria for number of predictors when using L1 penalty.}
 
 \item{...}{(Currently Unimplemented)
 coefficients.}
@@ -110,7 +122,7 @@ myX = setdiff(colnames(prostate.hex), c("ID", "DPROS", "DCAPS", "VOL"))
 h2o.glm(y = "VOL", x = myX, training_frame = prostate.hex, family = "gaussian",
         nfolds = 0, alpha = 0.1, lambda_search = FALSE)
 
-\dontrun{
+\donttest{
  # GLM variable importance
  # Also see:
  #   https://github.com/h2oai/h2o/blob/master/R/tests/testdir_demos/runit_demo_VI_all_algos.R

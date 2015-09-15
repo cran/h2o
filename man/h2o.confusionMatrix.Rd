@@ -47,7 +47,7 @@ The \linkS4class{H2OModelMetrics} version of this function will only take
 objects. If no threshold is specified, all possible thresholds are selected.
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")

@@ -21,7 +21,7 @@ Functions that facilitate column transformations of an \linkS4class{H2OFrame} ob
 
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O <- h2o.init()
 iris.hex <- as.h2o(iris, localH2O)

@@ -82,7 +82,7 @@ behavior is to pass-through to the parse phase automatically.
 \code{h2o.importFile}
 }
 \examples{
-\dontrun{
+\donttest{
 localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
 prosPath = system.file("extdata", "prostate.csv", package = "h2o")
 prostate.hex = h2o.uploadFile(localH2O, path = prosPath, destination_frame = "prostate.hex")

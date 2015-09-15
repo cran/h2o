@@ -4,7 +4,9 @@
 \title{KMeans Model in H2O}
 \usage{
 h2o.kmeans(training_frame, x, k, model_id, max_iterations = 1000,
-  standardize = TRUE, init = c("Furthest", "Random", "PlusPlus"), seed)
+  standardize = TRUE, init = c("Furthest", "Random", "PlusPlus"), seed,
+  nfolds = 0, fold_column = NULL, fold_assignment = c("AUTO", "Random",
+  "Modulo"), keep_cross_validation_predictions = FALSE)
 }
 \arguments{
 \item{training_frame}{An \linkS4class{H2OFrame} object containing the
@@ -38,6 +40,15 @@ is an initial center. For lists of vectors, each vector is an
 initial center.}
 
 \item{seed}{(Optional) Random seed used to initialize the cluster centroids.}
+
+\item{nfolds}{(Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.}
+
+\item{fold_column}{(Optional) Column with cross-validation fold index assignment per observation}
+
+\item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not specified
+Must be "AUTO", "Random" or "Modulo"}
+
+\item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models}
 }
 \value{
 Returns an object of class \linkS4class{H2OClusteringModel}.

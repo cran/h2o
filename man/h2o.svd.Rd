@@ -4,7 +4,8 @@
 \title{Singular Value Decomposition}
 \usage{
 h2o.svd(training_frame, x, nv, destination_key, max_iterations = 1000,
-  transform = "NONE", seed, use_all_factor_levels)
+  transform = "NONE", svd_method = c("GramSVD", "Power", "Randomized"),
+  seed, use_all_factor_levels)
 }
 \arguments{
 \item{training_frame}{An \linkS4class{H2OFrame} object containing the
@@ -22,11 +23,17 @@ resulting model. Automatically generated if none is provided.}
 iteration loop. Must be between 1 and 1e6 inclusive.}
 
 \item{transform}{A character string that indicates how the training data
-should be transformed before running PCA. Possible values are "NONE":
-for no transformation, "DEMEAN": for subtracting the mean of each
-column, "DESCALE": for dividing by the standard deviation of each
-column, "STANDARDIZE": for demeaning and descaling, and "NORMALIZE":
+should be transformed before running PCA. Possible values are: "NONE"
+for no transformation; "DEMEAN" for subtracting the mean of each
+column; "DESCALE" for dividing by the standard deviation of each
+column; "STANDARDIZE" for demeaning and descaling; and "NORMALIZE"
 for demeaning and dividing each column by its range (max - min).}
+
+\item{svd_method}{A character string that indicates how SVD should be calculated.
+Possible values are "GramSVD": distributed computation of the Gram matrix
+followed by a local SVD using the JAMA package, "Power": computation of
+the SVD using the power iteration method, "Randomized": approximate SVD
+by projecting onto a random subspace (see references).}
 
 \item{seed}{(Optional) Random seed used to initialize the right singular vectors
 at the beginning of each power method iteration.}
@@ -48,5 +55,8 @@ localH2O <- h2o.init()
 ausPath <- system.file("extdata", "australia.csv", package="h2o")
 australia.hex <- h2o.uploadFile(localH2O, path = ausPath)
 h2o.svd(training_frame = australia.hex, nv = 8)
+}
+\references{
+N. Halko, P.G. Martinsson, J.A. Tropp. {Finding structure with randomness: Probabilistic algorithms for constructing approximate matrix decompositions}[http://arxiv.org/abs/0909.4061]. SIAM Rev., Survey and Review section, Vol. 53, num. 2, pp. 217-288, June 2011.
 }
 

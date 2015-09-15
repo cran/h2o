@@ -18,7 +18,7 @@ specified plus one.}
 Split an existing H2O data set according to user-specified ratios.
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O = h2o.init()
 irisPath = system.file("extdata", "iris.csv", package = "h2o")

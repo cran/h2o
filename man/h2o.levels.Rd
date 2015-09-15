@@ -14,7 +14,7 @@ h2o.levels(x, i)
 Return the levels from the column requested column.
 }
 \examples{
-\dontrun{
+\donttest{
 localH2O <- h2o.init()
 iris.hex <- as.h2o(localH2O, iris)
 h2o.levels(iris.hex, 5)  # returns "setosa"     "versicolor" "virginica"

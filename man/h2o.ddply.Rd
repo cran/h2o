@@ -20,10 +20,10 @@ h2o.ddply(.data, .variables, .fun = NULL, ..., .progress = "none")
 Returns a \linkS4class{H2OFrame} object containing the results from the split/apply operation, arranged
 }
 \description{
-For each subset of an H2O data set, apply a user-specified function, then comine the results.
+For each subset of an H2O data set, apply a user-specified function, then combine the results.  This is an experimental feature.
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O <- h2o.init()
 

@@ -51,7 +51,7 @@ The naive Bayes classifier assumes independence between predictor variables cond
        calculation during prediction.
 }
 \examples{
-\dontrun{
+\donttest{
  localH2O <- h2o.init()
  votesPath <- system.file("extdata", "housevotes.csv", package="h2o")
  votes.hex <- h2o.uploadFile(localH2O, path = votesPath, header = TRUE)

@@ -25,7 +25,7 @@ Given a trained h2o model, compute its performance on the given
 dataset
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O <- h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")

@@ -3,21 +3,28 @@
 \alias{h2o.r2}
 \title{Retrieve the R2 value}
 \usage{
-h2o.r2(object, valid = FALSE, ...)
+h2o.r2(object, train = FALSE, valid = FALSE, xval = FALSE, ...)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} object.}
 
-\item{valid}{Retrieve the validation set R2 if a validation set was passed in during model build time.}
+\item{train}{Retrieve the training R2}
+
+\item{valid}{Retrieve the validation R2}
+
+\item{xval}{Retrieve the cross-validation R2}
 
 \item{\dots}{extra arguments to be passed if `object` is of type
 \linkS4class{H2OModel} (e.g. train=TRUE)}
 }
 \description{
 Retrieves the R2 value from an H2O model.
+If "train", "valid", and "xval" parameters are FALSE (default), then the training R2 value is returned. If more
+than one parameter is set to TRUE, then a named vector of R2s are returned, where the names are "train", "valid"
+or "xval".
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 
 h <- h2o.init()

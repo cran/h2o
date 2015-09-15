@@ -52,7 +52,7 @@ Returns a \linkS4class{H2OFrame} object.
 Creates a data frame in H2O with real-valued, categorical, integer, and binary columns specified by the user.
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O <- h2o.init()
 hex <- h2o.createFrame(localH2O, rows = 1000, cols = 100, categorical_fraction = 0.1,

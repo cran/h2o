@@ -28,7 +28,7 @@ Obtain and display quantiles for H2O parsed data.
 an \code{\linkS4class{H2OFrame}} object.
 }
 \examples{
-\dontrun{
+\donttest{
 # Request quantiles for an H2O parsed data set:
 library(h2o)
 localH2O <- h2o.init()

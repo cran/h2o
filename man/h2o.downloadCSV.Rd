@@ -19,7 +19,7 @@ Download an H2O data set to a CSV file on the local disk
        sure you have enough hard drive psace to accomoadet the entire file.
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O <- h2o.init()
 irisPath <- system.file("extdata", "iris_wheader.csv", package = "h2o")

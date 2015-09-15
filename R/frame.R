@@ -79,7 +79,7 @@
 #' @param seed A seed used to generate random values when \code{randomize = TRUE}.
 #' @return Returns a \linkS4class{H2OFrame} object.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #' hex <- h2o.createFrame(localH2O, rows = 1000, cols = 100, categorical_fraction = 0.1,
@@ -145,7 +145,7 @@ h2o.kappa <- function(act,pred,nclass) { .h2o.nary_frame_op("kappa", act, pred, 
 #' @param min_occurrence Min. occurrence threshold for factor levels in pair-wise interaction terms
 #' @return Returns a \linkS4class{H2OFrame} object.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #'
@@ -267,7 +267,7 @@ h2o.qpfpc <- function(data, class.col, probs=NULL) {
 #' @section WARNING: This will modify the original dataset. Unless this is intended,
 #' this function should only be called on a subset of the original.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #' irisPath <- system.file("extdata", "iris.csv", package = "h2o")
@@ -313,7 +313,7 @@ h2o.insertMissingValues <- function(data, fraction=0.1, seed=-1) {
 #' @param destination_frames An array of frame IDs equal to the number of ratios
 #'        specified plus one.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O = h2o.init()
 #' irisPath = system.file("extdata", "iris.csv", package = "h2o")
@@ -346,7 +346,7 @@ h2o.splitFrame <- function(data, ratios = 0.75, destination_frames) {
 }
 
 #'
-#' Filter NA Coluns
+#' Filter NA Columns
 #'
 #' @param data A dataset to filter on.
 #' @param frac The threshold of NAs to allow per column (columns >= this threshold are filtered)
@@ -394,7 +394,7 @@ h2o.filterNACols <- function(data, frac=0.2) {
 #' @param y An \linkS4class{H2OFrame} similar to x, or \code{NULL}.
 #' @return Returns a tabulated \linkS4class{H2OFrame} object.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
@@ -418,12 +418,12 @@ h2o.table <- function(x, y = NULL) {
 
 #' H2O Median
 #'
-#' Compute the airthmetic mean of a \linkS4class{H2OFrame}.
+#' Compute the arithmetic mean of a \linkS4class{H2OFrame}.
 #'
 #' @param x An \linkS4class{H2OFrame} object.
 #' @param na.rm a logical, indicating whether na's are omitted.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' localH2O <- h2o.init()
 #' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 #' prostate.hex <- h2o.uploadFile(localH2O, path = prosPath, destination_frame = "prostate.hex")
@@ -436,6 +436,13 @@ h2o.median <- function(x, na.rm = TRUE) {
 #' @rdname h2o.median
 #' @export
 setMethod("median", "H2OFrame", h2o.median)
+
+#' Range of an H2O Column
+#'
+#' @param x An H2OFrame object.
+#' @param na.rm ignore missing values
+#' @export
+setMethod("range", "H2OFrame", function(x,na.rm=TRUE) .h2o.nary_frame_op("range", x, na.rm))
 
 #' Cut H2O Numeric Data to Factor
 #'
@@ -455,7 +462,7 @@ setMethod("median", "H2OFrame", h2o.median)
 #' @param ... Further arguments passed to or from other methods.
 #' @return Returns an \linkS4class{H2OFrame} object containing the factored data with intervals as levels.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #' irisPath <- system.file("extdata", "iris_wheader.csv", package="h2o")
@@ -493,10 +500,10 @@ cut.H2OFrame <- h2o.cut
 #'        \code{nomatch} value.
 #' @seealso \code{\link[base]{match}} for base R implementation.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' h2o.init()
 #' hex <- as.h2o(iris)
-#' match(hex[,5], c("setosa", "versicola"))
+#' match(hex[,5], c("setosa", "versicola"))   # versipepsi
 #' }
 #' @export
 h2o.match <- function(x, table, nomatch = 0, incomparables = NULL) {
@@ -510,7 +517,71 @@ setMethod("match", "H2OFrame", h2o.match)
 # %in% method
 #' @rdname h2o.match
 #' @export
-setMethod("%in%", "H2OFrame", function(x, table) match(x, table, nomatch = 0) > 0L)
+setMethod("%in%", signature("H2OFrame", "character"), function(x, table) h2o.match(x, table, nomatch = 0))
+
+# %in% method
+#' @rdname h2o.match
+#' @export
+setMethod("%in%", signature("H2OFrame", "numeric"), function(x, table) h2o.match(x, table, nomatch=0))
+
+#' Remove Rows With NAs
+#'
+#' @param object H2OFrame object
+#' @param ... Ignored
+#' @export
+setMethod("na.omit", "H2OFrame", function(object, ...) .h2o.nary_frame_op("na.omit", object) )
+
+#' Compute DCT of an H2OFrame
+#'
+#' Compute the Discrete Cosine Transform of every row in the H2OFrame
+#'
+#' @param data An \linkS4class{H2OFrame} object representing the dataset to transform
+#' @param destination_frame A frame ID for the result
+#' @param dimensions An array containing the 3 integer values for height, width, depth of each sample.
+#'        The product of HxWxD must total up to less than the number of columns.
+#'        For 1D, use c(L,1,1), for 2D, use C(N,M,1).
+#' @param inverse Whether to perform the inverse transform
+#' @examples
+#' \donttest{
+#'   library(h2o)
+#'   localH2O = h2o.init()
+#'   df <- h2o.createFrame(localH2O, rows = 1000, cols = 8*16*24,
+#'                         categorical_fraction = 0, integer_fraction = 0, missing_fraction = 0)
+#'   df1 <- h2o.dct(data=df, dimensions=c(8*16*24,1,1))
+#'   df2 <- h2o.dct(data=df1,dimensions=c(8*16*24,1,1),inverse=TRUE)
+#'   max(abs(df1-df2))
+#'
+#'   df1 <- h2o.dct(data=df, dimensions=c(8*16,24,1))
+#'   df2 <- h2o.dct(data=df1,dimensions=c(8*16,24,1),inverse=TRUE)
+#'   max(abs(df1-df2))
+#'
+#'   df1 <- h2o.dct(data=df, dimensions=c(8,16,24))
+#'   df2 <- h2o.dct(data=df1,dimensions=c(8,16,24),inverse=TRUE)
+#'   max(abs(df1-df2))
+#' }
+#' @export
+h2o.dct <- function(data, destination_frame, dimensions, inverse=F) {
+  if(!is(data, "H2OFrame")) stop("`data` must be an H2OFrame object")
+  ## -- Force evaluate temporary ASTs -- ##
+  delete <- !.is.eval(data)
+  if( delete ) {
+    temp_key <- data@frame_id
+    .h2o.eval.frame(conn = data@conn, ast = data@mutable$ast, frame_id = temp_key)
+  }
+  if(!is.logical(inverse)) stop("inverse must be a boolean value")
+  params <- list()
+  params$dataset <- data@frame_id
+  params$dimensions <- .collapse(dimensions)
+  if (!missing(destination_frame))
+    params$destination_frame <- destination_frame
+  params$inverse <- inverse
+
+  res <- .h2o.__remoteSend(data@conn, method="POST", h2oRestApiVersion = 99, "DCTTransformer", .params = params)
+  job_key <- res$key$name
+  .h2o.__waitOnJob(data@conn, job_key)
+
+  h2o.getFrame(res$destination_frame$name)
+}
 
 #-----------------------------------------------------------------------------------------------------------------------
 # Time & Date
@@ -538,8 +609,8 @@ h2o.year <- function(x){
 
 #' Convert Milliseconds to Months in H2O Datasets
 #'
-#' Converts the entries of a \linkS4class{H2OFrame} object from milliseconds to months (on a 0 to
-#' 11 scale).
+#' Converts the entries of a \linkS4class{H2OFrame} object from milliseconds to months (on a 1 to
+#' 12 scale).
 #'
 #' @param x An \linkS4class{H2OFrame} object.
 #' @return A \linkS4class{H2OFrame} object containing the entries of \code{x} converted to months of
@@ -711,7 +782,7 @@ h2o.listTimezones <- function(conn=h2o.getConnection()) {
 #  .newH2OFrame("H2OFrame", conn=x@conn, frame_id=res$dest_key, logic=FALSE, finalizers=x@finalizers)
 #}
 
-#' Produe a Vector of Random Uniform Numbers
+#' Produce a Vector of Random Uniform Numbers
 #'
 #' Creates a vector of random uniform numbers equal in length to the length of the specified H2O
 #' dataset.
@@ -720,7 +791,7 @@ h2o.listTimezones <- function(conn=h2o.getConnection()) {
 #' @param seed A random seed used to generate draws from the uniform distribution.
 #' @return A vector of random, uniformly distributed numbers. The elements are between 0 and 1.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O = h2o.init()
 #' prosPath = system.file("extdata", "prostate.csv", package="h2o")
@@ -750,7 +821,7 @@ h2o.runif <- function(x, seed = -1) {
 #' @param x An \code{\linkS4class{H2OFrame}} object.
 #' @return Returns a logical value indicating whether any of the columns in \code{x} are factors.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #' irisPath <- system.file("extdata", "iris_wheader.csv", package="h2o")
@@ -900,14 +971,10 @@ h2o.subset <- function(x, subset, select, drop = FALSE, ...) {
     cols <- eval(substitute(select), env, parent.frame())
   }
 
-  if (missingSubset && missingSelect)
-    x
-  else if (missingSelect)
-    x[rows,]
-  else if (missingSubset)
-    x[,cols]
-  else
-    x[rows, cols]
+  if (missingSubset && missingSelect) x
+  else if (missingSelect)             x[rows,]
+  else if (missingSubset)             x[,cols]
+  else                                x[rows, cols]
 }
 
 #' @export
@@ -1027,10 +1094,10 @@ setMethod("$<-", "H2OFrame", function(x, name, value) {
     if (is(value, "H2OFrame")) {
       finalizers <- c(finalizers, value@finalizers)
       rhs <- .get(value)
-    } else if (is.numeric(value))
+    } else if (is.numeric(value) || is.integer(value) || typeof(value)=="integer" )
       rhs <- .eval(substitute(value), parent.frame(), FALSE)
     else
-      stop("`value` can only be an H2OFrame object, numeric or NULL")
+      stop(paste0("`value` can only be an H2OFrame object, numeric or NULL. Got: ", typeof(value), ": ", value))
 
     ast <- new("ASTNode", root = new("ASTApply", op = "="), children = list(lhs, rhs))
     res <- .h2o.replace.frame(conn = x@conn, ast = ast, frame_id = x@frame_id, finalizers = finalizers)
@@ -1089,7 +1156,7 @@ setMethod("names<-", "H2OFrame", function(x, value) { colnames(x) <- value; x })
 #' @param ... For \code{transform} method, column transformations in the form \code{tag=value}.
 #' @seealso \code{\link[base]{transform}}, \code{\link[base]{within}} for the base R methods.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #' iris.hex <- as.h2o(iris, localH2O)
@@ -1168,7 +1235,7 @@ within.H2OFrame <- h2o.within
 #' @param x An \linkS4class{H2OFrame} object.
 #' @seealso \code{\link{dim}} for all the dimensions. \code{\link[base]{nrow}} for the default R method.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #' irisPath <- system.file("extdata", "iris.csv", package="h2o")
@@ -1209,7 +1276,7 @@ setMethod("ncol", "H2OFrame", h2o.ncol)
 #' @param value a character string to rename columns.
 #' @seealso \code{\link[base]{colnames}} for the base R method.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #' irisPath <- system.file("extdata", "iris.csv", package="h2o")
@@ -1246,7 +1313,7 @@ setMethod("names", "H2OFrame", h2o.names)
 #' @param x An \linkS4class{H2OFrame} object.
 #' @seealso \code{\link[base]{length}} for the base R method.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' localH2O <- h2o.init()
 #' irisPath <- system.file("extdata", "iris.csv", package = "h2o")
 #' iris.hex <- h2o.uploadFile(localH2O, path = irisPath)
@@ -1273,7 +1340,7 @@ setMethod("length", "H2OFrame", h2o.length)
 #' @param i The index of the column whose domain is to be returned.
 #' @seealso \code{\link[base]{levels}} for the base R method.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' localH2O <- h2o.init()
 #' iris.hex <- as.h2o(localH2O, iris)
 #' h2o.levels(iris.hex, 5)  # returns "setosa"     "versicolor" "virginica"
@@ -1285,11 +1352,8 @@ h2o.levels <- function(x, i) {
     i <- 1
   } else if( is.character(i) ) i <- match(i, colnames(x))
   if( is.na(i) ) stop("no such column found")
-  col_idx <- i
-  if (col_idx <= 0) col_idx <- 1
-  if (col_idx >= ncol(x)) col_idx <- ncol(x)
-  res <- .h2o.__remoteSend(x@conn, .h2o.__COL_DOMAIN(x@frame_id, colnames(x)[col_idx]), method="GET")
-  res$domain[[1]]
+  levels <- as.data.frame(.h2o.nary_frame_op("levels", x[,i]))[,1]
+  if( length(levels) == 0 ) {return(NULL)} else {return(levels)}
 }
 
 #'
@@ -1311,7 +1375,7 @@ h2o.setLevels <- function(x, levels) .h2o.nary_frame_op("setDomain", x, levels)
 #' @param x An \linkS4class{H2OFrame} object.
 #' @seealso \code{\link[base]{dim}} for the base R method.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' localH2O <- h2o.init()
 #' irisPath <- system.file("extdata", "iris.csv", package="h2o")
 #' iris.hex <- h2o.uploadFile(localH2O, path = irisPath)
@@ -1333,7 +1397,7 @@ setMethod("dim", "H2OFrame", h2o.dim)
 #' @param ... Further arguments passed to or from other methods.
 #' @return A data frame containing the first or last n rows of an \linkS4class{H2OFrame} object.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
 #' ausPath <- system.file("extdata", "australia.csv", package="h2o")
@@ -1409,6 +1473,18 @@ setMethod("is.factor", "H2OFrame", function(x) {
 })
 
 #'
+#' Is H2O Data Frame column numeric
+#'
+#' @param x an \linkS4class{H2OFrame} object column.
+#' @return Returns logical value.
+#' @export
+setMethod("is.numeric", "H2OFrame", function(x) {
+  if( ncol(x)==1 ) .h2o.unary_scalar_op("is.numeric", x)
+  else             .h2o.unary_frame_op("is.numeric", x )
+})
+
+
+#'
 #' Quantiles of H2O Data Frame.
 #'
 #' Obtain and display quantiles for H2O parsed data.
@@ -1423,7 +1499,7 @@ setMethod("is.factor", "H2OFrame", function(x) {
 #' @param ... Further arguments passed to or from other methods.
 #' @return A vector describing the percentiles at the given cutoffs for the \code{\linkS4class{H2OFrame}} object.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Request quantiles for an H2O parsed data set:
 #' library(h2o)
 #' localH2O <- h2o.init()
@@ -1478,7 +1554,7 @@ quantile.H2OFrame <- h2o.quantile
 #' @return A table displaying the minimum, 1st quartile, median, mean, 3rd quartile and maximum for each
 #' numeric column, and the levels and category counts of the levels in each categorical column.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O = h2o.init()
 #' prosPath = system.file("extdata", "prostate.csv", package="h2o")
@@ -1534,7 +1610,14 @@ setMethod("summary", "H2OFrame", function(object, factors=6L, ...) {
     } else if( col.type == "enum" ) {
       domains <- col.sum$domain
       domain.cnts <- col.sum$histogram_bins
-      if( length(domain.cnts) < length(domains) ) domain.cnts <- c(domain.cnts, rep(NA, length(domains) - length(domain.cnts)))
+      if( length(domain.cnts) < length(domains) ) {
+        if( length(domain.cnts) == 1 )  {   # Constant categorical column
+          cnt <- domain.cnts[1]
+          domain.cnts <- rep(NA, length(domains))
+          domain.cnts[col.sum$mean+1] <- cnt
+        } else
+          domain.cnts <- c(domain.cnts, rep(NA, length(domains) - length(domain.cnts)))
+      }
       missing.count <- 0L
       if( !is.null(col.sum$missing_count) && col.sum$missing_count > 0L ) missing.count <- col.sum$missing_count    # set the missing count
       # create a dataframe of the counts and factor levels, then sort in descending order (most frequent levels at the top)
@@ -1552,7 +1635,7 @@ setMethod("summary", "H2OFrame", function(object, factors=6L, ...) {
       df.domains.subset <- df.domains[1L:factors,]      # subset to the top `factors` (default is 6)
 
       # if there are any missing levels, plonk them down here now after we've subset.
-      if( missing.count > 0L ) df.domains.subset <- rbind( df.domains.subset, c("NA", missing.count))
+      if( !is.null(missing.count) && !is.na(missing.count) && missing.count > 0L ) df.domains.subset <- rbind( df.domains.subset, c("NA", missing.count))
 
       # fish out the domains
       domains <- as.character(df.domains.subset[,1L])
@@ -1616,7 +1699,7 @@ setMethod("summary", "H2OFrame", function(object, factors=6L, ...) {
 #' @param ... Further arguments to be passed from or to other methods.
 #' @seealso \code{\link[base]{mean}} for the base R implementation.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' localH2O <- h2o.init()
 #' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 #' prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
@@ -1659,7 +1742,7 @@ setMethod("mean", "H2OFrame", h2o.mean)
 #' @param use An optional character string to be used in the presence of missing values. This must be one of the following strings. "everything", "all.obs", or "complete.obs".
 #' @seealso \code{\link[stats]{var}} for the base R implementation. \code{\link{h2o.sd}} for standard deviation.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' localH2O <- h2o.init()
 #' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 #' prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
@@ -1691,7 +1774,7 @@ setMethod("var", "H2OFrame", h2o.var)
 #' @param na.rm \code{logical}. Should missing values be removed?
 #' @seealso \code{\link{h2o.var}} for variance, and \code{\link[stats]{sd}} for the base R implementation.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' localH2O <- h2o.init()
 #' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 #' prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
@@ -1716,7 +1799,7 @@ setMethod("sd", "H2OFrame", h2o.sd)
 #' @param center either a \code{logical} value or numeric vector of length equal to the number of columns of x.
 #' @param scale either a \code{logical} value or numeric vector of length equal to the number of columns of x.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #' irisPath <- system.file("extdata", "iris_wheader.csv", package="h2o")
@@ -1762,6 +1845,7 @@ as.h2o <- function(object, conn = h2o.getConnection(), destination_frame= "") {
     object <- as.data.frame(object)
   }
   types <- sapply(object, class)
+  types <- gsub("integer64", "numeric", types)
   types <- gsub("integer", "numeric", types)
   types <- gsub("double", "numeric", types)
   types <- gsub("complex", "numeric", types)
@@ -1785,7 +1869,7 @@ as.h2o <- function(object, conn = h2o.getConnection(), destination_frame= "") {
 #' @param x An \linkS4class{H2OFrame} object.
 #' @param ... Further arguments to be passed down from other methods.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' localH2O <- h2o.init()
 #' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 #' prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
@@ -1799,12 +1883,8 @@ as.data.frame.H2OFrame <- function(x, ...) {
   # Versions of R including 3.1 and later should use hex string.
   use_hex_string <- getRversion() >= "3.1"
 
-  url <- paste0('http://', x@conn@ip, ':', x@conn@port,
-                '/3/DownloadDataset',
-                '?frame_id=', URLencode(x@frame_id),
-                '&hex_string=', as.numeric(use_hex_string))
-
-  ttt <- getURL(url)
+  urlSuffix = sprintf("DownloadDataset?frame_id=%s&hex_string=%d", URLencode(x@frame_id), as.numeric(use_hex_string))
+  ttt <- .h2o.doSafeGET(x@conn, urlSuffix = urlSuffix)
   n <- nchar(ttt)
 
   # Delete last 1 or 2 characters if it's a newline.
@@ -1830,7 +1910,7 @@ as.data.frame.H2OFrame <- function(x, ...) {
   }
 
   # Substitute NAs for blank cells rather than skipping
-  df <- read.csv((tcon <- textConnection(ttt)), blank.lines.skip = FALSE, ...)
+  df <- read.csv((tcon <- textConnection(ttt)), blank.lines.skip = FALSE, na.strings = "", ...)
   # df <- read.csv(textConnection(ttt), blank.lines.skip = FALSE, colClasses = colClasses, ...)
   close(tcon)
   df
@@ -1899,7 +1979,7 @@ h2o.nlevels <- function(object) {
 #' @param x a column from an \linkS4class{H2OFrame} data set.
 #' @seealso \code{\link{is.factor}}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' localH2O <- h2o.init()
 #' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 #' prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
@@ -1950,7 +2030,7 @@ setMethod("as.numeric", "H2OFrame", function(x)
 #' @param no The value to return if the condition is FALSE.
 #' @return Returns a vector of new values matching the conditions stated in the ifelse call.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
 #' ausPath = system.file("extdata", "australia.csv", package="h2o")
 #' australia.hex = h2o.importFile(localH2O, path = ausPath)
@@ -1987,7 +2067,7 @@ setMethod("ifelse", signature(test="ANY",yes="H2OFrame", no="H2OFrame"), functio
 #' @return An \linkS4class{H2OFrame} object containing the combined \dots arguments column-wise.
 #' @seealso \code{\link[base]{cbind}} for the base \code{R} method.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
@@ -2006,9 +2086,9 @@ h2o.cbind <- function(...) {
   klasses <- unlist(lapply(li, function(l) is(l, "H2OFrame")))
   if (any(!klasses)) stop("`h2o.cbind` accepts only of H2OFrame objects")
   if( use.args ) {
-    .h2o.nary_frame_op("cbind %TRUE", .args=li)
+    .h2o.nary_frame_op("cbind %FALSE", .args=li)
   } else {
-    .h2o.nary_frame_op("cbind %TRUE", ...)
+    .h2o.nary_frame_op("cbind %FALSE", ...)
   }
 }
 
@@ -2022,7 +2102,7 @@ h2o.cbind <- function(...) {
 #' @param level The level at which the column will be set.
 #' @return An object of class \linkS4class{H2OFrame}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' localH2O <- h2o.init()
 #' hex <- as.h2o(localH2O  , iris)
 #' hex$Species <- h2o.setLevel(hex$Species, "versicolor")
@@ -2048,7 +2128,7 @@ h2o.setLevel <- function(x, level) {
 #' @return An \linkS4class{H2OFrame} object containing the combined \dots arguments column-wise.
 #' @seealso \code{\link[base]{rbind}} for the base \code{R} method.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
@@ -2086,7 +2166,7 @@ h2o.rbind <- function(...) {
 #' @param all.y a logical value indicating whether or not shared values are
 #'        preserved or ignored in \code{y}.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' h2o.init()
 #' left <- data.frame(fruit = c('apple', 'orange', 'banana', 'lemon', 'strawberry', 'blueberry'),
 #' color = c('red', 'orange', 'yellow', 'yellow', 'red', 'blue'))
@@ -2368,7 +2448,7 @@ h2o.group_by <- function(data, by, ..., order.by=NULL, gb.control=list(na.method
 #'
 #'  @return a H2OFrame with imputed values
 #'  @examples
-#' \dontrun{
+#' \donttest{
 #'  h2o.init()
 #'  fr <- as.h2o(iris, destination_frame="iris")
 #'  fr[sample(nrow(fr),40),5] <- NA  # randomly replace 50 values with NA
@@ -2450,8 +2530,72 @@ h2o.impute <- function(data, column, method=c("mean","median","mode"), # TODO: a
   }
 }
 
+#'
+#' Cumulative Sum
+#'
+#' Obtain the cumulative sum of a column.
+#'
+#' @param x An \linkS4class{H2OFrame} object.
+#' @examples
+#' localH2O <- h2o.init()
+#' fr <- as.h2o(iris)
+#' h2o.cumsum(fr[,1])
+#' @export
+h2o.cumsum <- function(x) .h2o.nary_frame_op("cumsum", x)
 
-h2o.which <- function(x) { .h2o.nary_frame_op("h2o.which", x) }
+#'
+#' Cumulative Product
+#'
+#' Obtain the cumulative product of a column.
+#'
+#' @param x An \linkS4class{H2OFrame} object.
+#' @examples
+#' localH2O <- h2o.init()
+#' fr <- as.h2o(iris)
+#' h2o.cumprod(fr[,1])
+#' @export
+h2o.cumprod <- function(x) .h2o.nary_frame_op("cumprod", x)
+
+#'
+#' Cumulative Min
+#'
+#' Obtain the cumulative min of a column.
+#'
+#' @param x An \linkS4class{H2OFrame} object.
+#' @examples
+#' localH2O <- h2o.init()
+#' fr <- as.h2o(iris)
+#' h2o.cummin(fr[,1])
+#' @export
+h2o.cummin <- function(x) .h2o.nary_frame_op("cummin", x)
+
+#'
+#' Cumulative Max
+#'
+#' Obtain the cumulative max of a column.
+#'
+#' @param x An \linkS4class{H2OFrame} object.
+#' @examples
+#' localH2O <- h2o.init()
+#' fr <- as.h2o(iris)
+#' h2o.cummax(fr[,1])
+#' @export
+h2o.cummax <- function(x) .h2o.nary_frame_op("cummax", x)
+
+#'
+#' H2O Which
+#'
+#' 1-based indices similar to R's which
+#'
+#' @param x An \linkS4class{H2OFrame} object.
+#' @examples
+#' localH2O <- h2o.init()
+#' fr <- as.h2o(iris)
+#' h2o.which(fr[,5] == "setosa")
+#' @export
+h2o.which <- function(x) { .h2o.nary_frame_op("h2o.which", x, TRUE) }
+
+
 h2o.which.max <- function(x)  { .h2o.nary_frame_op("h2o.which.max", x) }
 h2o.vote  <- function(x, nclasses, weights=rep(0,ncol(x))) { .h2o.nary_frame_op("h2o.vote", x, nclasses, weights) }
 #-----------------------------------------------------------------------------------------------------------------------
@@ -2461,7 +2605,7 @@ h2o.vote  <- function(x, nclasses, weights=rep(0,ncol(x))) { .h2o.nary_frame_op(
 # TODO: Cleanup the cruft!
 #' Split H2O Dataset, Apply Function, and Return Results
 #'
-#' For each subset of an H2O data set, apply a user-specified function, then comine the results.
+#' For each subset of an H2O data set, apply a user-specified function, then combine the results.  This is an experimental feature.
 #'
 #' @param .data An \linkS4class{H2OFrame} object to be processed.
 #' @param .variables Variables to split \code{.data} by, either the indices or names of a set of columns.
@@ -2472,7 +2616,7 @@ h2o.vote  <- function(x, nclasses, weights=rep(0,ncol(x))) { .h2o.nary_frame_op(
 #          row-by-row
 #' @seealso \code{\link[plyr]{ddply}} for the plyr library implementation.
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(h2o)
 #' localH2O <- h2o.init()
 #'
@@ -2576,18 +2720,10 @@ h2o.ddply <- function (.data, .variables, .fun = NULL, ..., .progress = 'none') 
 #
 #`.` <- `h2o..`
 #
-#h2o.unique <- function(x, incomparables = FALSE, ...) {
-#  # NB: we do nothing with incomparables right now
-#  # NB: we only support MARGIN = 2 (which is the default)
-#
-#  if(!class(x) %in% c('H2OFrame', 'H2OFrame', 'H2OFrame')) stop('h2o.unique: x is of the wrong type. Got: ', class(x))
-##  if( nrow(x) == 0 | ncol(x) == 0) return(NULL) #TODO: Do this on the back end.
-##  if( nrow(x) == 1) return(x)  #TODO: Do this on the back end.
-#
-#  args <- list(...)
-#  if( 'MARGIN' %in% names(args) && args[['MARGIN']] != 2 ) stop('h2o unique: only MARGIN 2 supported')
-#  .h2o.unary_op("unique", x)
-#}
+h2o.unique <- function(x) {
+  if( !is(x, "H2OFrame") ) stop('h2o.unique: x is of the wrong type. Got: ', class(x))
+  .h2o.nary_frame_op("unique", x)
+}
 #unique.H2OFrame <- h2o.unique
 
 
@@ -2613,6 +2749,7 @@ h2o.ddply <- function (.data, .variables, .fun = NULL, ..., .progress = 'none') 
 #' Apply on H2O Datasets
 #'
 #' Method for apply on \linkS4class{H2OFrame} objects.
+#' Closures are not supported: an error message stating this fact will stop execution.
 #'
 #' @param X an \linkS4class{H2OFrame} object on which \code{apply} will operate.
 #' @param MARGIN the vector on which the function will be applied over, either
@@ -2624,7 +2761,7 @@ h2o.ddply <- function (.data, .variables, .fun = NULL, ..., .progress = 'none') 
 #'         subsequent H2O processes.
 #' @seealso \link[base]{apply} for the base generic
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' localH2O = h2o.init()
 #' irisPath = system.file("extdata", "iris.csv", package="h2o")
 #' iris.hex = h2o.importFile(localH2O, path = irisPath, destination_frame = "iris.hex")
@@ -2750,10 +2887,12 @@ setMethod("sapply", "H2OFrame", function(X, FUN, ...) {
 })
 
 #'
-#' Compute A Histgram
+#' Compute A Histogram
 #'
 #' Compute a histogram over a numeric column. If breaks=="FD", the MAD is used over the IQR
-#' in computing bin width.
+#' in computing bin width. Note that we do not beautify the breakpoints as R does.
+#'
+#'
 #'
 #' @param x A single numeric column from an H2OFrame.
 #' @param breaks Can be one of the following:
@@ -2882,3 +3021,32 @@ h2o.trim <- function(x) { .h2o.nary_frame_op("trim", x) }
 ##   })
 ##   list.of.bins
 ## })
+
+#
+# Force evaluation of given frame
+# if it is necessary.
+#
+.h2o.evalFrame <- function(frame) {
+  mktmp <- !.is.eval(frame)
+  if (mktmp) {
+    .h2o.eval.frame(conn=h2o.getConnection(), ast=frame@mutable$ast, frame_id=frame@frame_id)
+  }
+}
+
+#
+# Check and evaluate given frame if it is necassary.
+# Returns frame.
+#
+.h2o.checkFrameParam <- function(frame, param_name) {
+  if (!inherits(frame, "H2OFrame")) {
+   tryCatch(frame <- h2o.getFrame(frame),
+            error = function(err) {
+              stop(cat("argument \"", param_name, "\" must be a valid H2OFrame or frame ID"))
+            })
+  } else {
+    # Force AST evaluation
+    .h2o.evalFrame(frame)
+  }
+  frame
+}
+

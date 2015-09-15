@@ -21,7 +21,7 @@ Returns an object that is a subclass of \linkS4class{H2OModel}.
 Returns a reference to an existing model in the H2O instance.
 }
 \examples{
-\dontrun{
+\donttest{
 library(h2o)
 localH2O <- h2o.init()
 

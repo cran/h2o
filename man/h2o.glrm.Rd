@@ -3,13 +3,16 @@
 \alias{h2o.glrm}
 \title{Generalized Low Rank Model}
 \usage{
-h2o.glrm(training_frame, x, k, destination_key, loading_key,
-  transform = c("NONE", "DEMEAN", "DESCALE", "STANDARDIZE", "NORMALIZE"),
-  loss = c("L2", "L1", "Huber", "Poisson", "Hinge", "Logistic"),
-  regularization_x = c("L2", "L1"), regularization_y = c("L2", "L1"),
-  gamma_x = 0, gamma_y = 0, max_iterations = 1000, init_step_size = 1,
-  min_step_size = 0.001, init = c("Random", "PlusPlus", "SVD"),
-  recover_svd = FALSE, seed)
+h2o.glrm(training_frame, x, k, model_id, validation_frame, loading_name,
+  ignore_const_cols, transform = c("NONE", "DEMEAN", "DESCALE", "STANDARDIZE",
+  "NORMALIZE"), loss = c("Quadratic", "L1", "Huber", "Poisson", "Hinge",
+  "Logistic"), multi_loss = c("Categorical", "Ordinal"), loss_by_col = NULL,
+  loss_by_col_idx = NULL, regularization_x = c("None", "Quadratic", "L2",
+  "L1", "NonNegative", "OneSparse", "UnitOneSparse", "Simplex"),
+  regularization_y = c("None", "Quadratic", "L2", "L1", "NonNegative",
+  "OneSparse", "UnitOneSparse", "Simplex"), gamma_x = 0, gamma_y = 0,
+  max_iterations = 1000, init_step_size = 1, min_step_size = 0.001,
+  init = c("Random", "PlusPlus", "SVD"), recover_svd = FALSE, seed)
 }
 \arguments{
 \item{training_frame}{An \linkS4class{H2OFrame} object containing the
@@ -21,11 +24,18 @@ which k-means operates.}
 \item{k}{The rank of the resulting decomposition. This must be
 between 1 and the number of columns in the training frame, inclusive.}
 
-\item{destination_key}{(Optional) The unique hex key assigned to the
-resulting model. Automatically generated if none is provided.}
+\item{model_id}{(Optional) The unique id assigned to the resulting model.
+If none is given, an id will automatically be generated.}
 
-\item{loading_key}{(Optional) The unique hex key assigned to the loading matrix X
+\item{validation_frame}{An \code{\linkS4class{H2OFrame}} object containing the
+variables in the model.}
+
+\item{loading_name}{(Optional) The unique name assigned to the loading matrix X
 in the XY decomposition. Automatically generated if none is provided.}
+
+\item{ignore_const_cols}{(Optional) A logical value indicating whether to ignore
+constant columns in the training frame. A column is constant if all of its
+non-missing values are the same value.}
 
 \item{transform}{A character string that indicates how the training data
 should be transformed before running PCA. Possible values are "NONE":
@@ -34,20 +44,31 @@ column, "DESCALE": for dividing by the standard deviation of each
 column, "STANDARDIZE": for demeaning and descaling, and "NORMALIZE":
 for demeaning and dividing each column by its range (max - min).}
 
-\item{loss}{A character string indicating the loss function. Possible values are
-"L2", "L1", "Huber", "Poisson", "Hinge" and "Logistic".}
+\item{loss}{A character string indicating the default loss function for numeric columns.
+Possible values are "Quadratic" (default), "L1", "Huber", "Poisson", "Hinge"
+and "Logistic".}
+
+\item{multi_loss}{A character string indicating the default loss function for enum columns.
+Possible values are "Categorical" and "Ordinal".}
+
+\item{loss_by_col}{A vector of strings indicating the loss function for specific
+columns by corresponding index in loss_by_col_idx. Will override loss for
+numeric columns and multi_loss for enum columns.}
+
+\item{loss_by_col_idx}{A vector of column indices to which the corresponding loss
+functions in loss_by_col are assigned. Must be zero indexed.}
 
 \item{regularization_x}{A character string indicating the regularization function for
-the X matrix. Possible values are "L2" and "L1".}
+the X matrix. Possible values are "None" (default), "Quadratic", "L2", "L1",
+"NonNegative", "OneSparse", "UnitOneSparse", and "Simplex".}
 
 \item{regularization_y}{A character string indicating the regularization function for
-the Y matrix. Possible values are "L2" and "L1".}
+the Y matrix. Possible values are "None" (default), "Quadratic", "L2", "L1",
+"NonNegative", "OneSparse", "UnitOneSparse", and "Simplex".}
 
-\item{gamma_x}{The weight on the X matrix regularization term. For no X regularization,
-set this value to zero.}
+\item{gamma_x}{The weight on the X matrix regularization term.}
 
-\item{gamma_y}{The weight on the Y matrix regularization term. For no Y regularization,
-set this value to zero.}
+\item{gamma_y}{The weight on the Y matrix regularization term.}
 
 \item{max_iterations}{The maximum number of iterations to run the optimization loop.
 Each iteration consists of an update of the X matrix, followed by an update
@@ -72,7 +93,21 @@ should be recovered during post-processing of the generalized low rank decomposi
 
 \item{seed}{(Optional) Random seed used to initialize the X and Y matrices.}
 }
+\value{
+Returns an object of class \linkS4class{H2ODimReductionModel}.
+}
 \description{
 Generalized low rank decomposition of a H2O dataset.
+}
+\examples{
+library(h2o)
+localH2O <- h2o.init()
+ausPath <- system.file("extdata", "australia.csv", package="h2o")
+australia.hex <- h2o.uploadFile(localH2O, path = ausPath)
+h2o.glrm(training_frame = australia.hex, k = 5, loss = "Quadratic", regularization_x = "L1",
+         gamma_x = 0.5, gamma_y = 0, max_iterations = 1000)
+}
+\references{
+M. Udell, C. Horn, R. Zadeh, S. Boyd (2014). {Generalized Low Rank Models}[http://arxiv.org/abs/1410.0342]. Unpublished manuscript, Stanford Electrical Engineering Department.
 }
 

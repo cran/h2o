@@ -6,10 +6,11 @@
 h2o.init(ip = "127.0.0.1", port = 54321, startH2O = TRUE,
   forceDL = FALSE, Xmx, beta = FALSE, assertion = TRUE, license = NULL,
   nthreads = -2, max_mem_size = NULL, min_mem_size = NULL,
-  ice_root = tempdir(), strict_version_check = TRUE)
+  ice_root = tempdir(), strict_version_check = TRUE, https = FALSE,
+  insecure = FALSE, username = NA_character_, password = NA_character_)
 }
 \arguments{
-\item{ip}{Object of class \code{character} representing the IP address of the server where H2O is running.}
+\item{ip}{Object of class \code{character} representing the hostname or IP address of the server where H2O is running.}
 
 \item{port}{Object of class \code{numeric} representing the port number of the H2O server.}
 
@@ -34,6 +35,14 @@ h2o.init(ip = "127.0.0.1", port = 54321, startH2O = TRUE,
 \item{ice_root}{(Optional) A directory to handle object spillage. The defaul varies by OS.}
 
 \item{strict_version_check}{(Optional) Setting this to FALSE is unsupported and should only be done when advised by technical support.}
+
+\item{https}{(Optional) Set this to TRUE to use https instead of http.}
+
+\item{insecure}{(Optional) Set this to TRUE to disable SSL certificate checking.}
+
+\item{username}{(Optional) Username to login with.}
+
+\item{password}{(Optional) Password to login with.}
 }
 \value{
 this method will load it and return a \code{H2OConnection} object containing the IP address and port number of the H2O server.
@@ -54,7 +63,7 @@ that they fully uninstall and reinstall the H2O package, and the H2O client pack
 in the environment before upgrading. It's recommended that users restart R or R studio after upgrading
 }
 \examples{
-\dontrun{
+\donttest{
 # Try to connect to a local H2O instance that is already running.
 # If not found, start a local H2O instance from R with the default settings.
 localH2O = h2o.init()
@@ -65,10 +74,6 @@ localH2O = h2o.init(startH2O = FALSE)
 
 # Try to connect to a local H2O instance that is already running.
 # If not found, start a local H2O instance from R with 5 gigabytes of memory.
-localH2O = h2o.init(max_mem_size = "5g")
-
-# Try to connect to a local H2O instance that is already running.
-# If not found, start a local H2O instance from R that uses 5 gigabytes of memory.
 localH2O = h2o.init(max_mem_size = "5g")
 }
 }

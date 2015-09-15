@@ -14,7 +14,7 @@
 Downloads the H2O data and then scans it in to an R data frame.
 }
 \examples{
-\dontrun{
+\donttest{
 localH2O <- h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)

@@ -18,7 +18,7 @@ h2o.sd(x, na.rm = FALSE)
 Obtain the standard deviation of a column of data.
 }
 \examples{
-\dontrun{
+\donttest{
 localH2O <- h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)

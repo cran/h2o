@@ -3,12 +3,14 @@
 \alias{h2o.randomForest}
 \title{Build a Big Data Random Forest Model}
 \usage{
-h2o.randomForest(x, y, training_frame, model_id, validation_frame,
+h2o.randomForest(x, y, training_frame, model_id, validation_frame, checkpoint,
   mtries = -1, sample_rate = 0.632, build_tree_one_node = FALSE,
   ntrees = 50, max_depth = 20, min_rows = 1, nbins = 20,
   nbins_cats = 1024, binomial_double_trees = FALSE,
   balance_classes = FALSE, max_after_balance_size = 5, seed,
-  offset_column = NULL, weights_column = NULL, ...)
+  offset_column = NULL, weights_column = NULL, nfolds = 0,
+  fold_column = NULL, fold_assignment = c("AUTO", "Random", "Modulo"),
+  keep_cross_validation_predictions = FALSE, ...)
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables
@@ -26,6 +28,8 @@ variables in the model.}
 none is given, an id will automatically be generated.}
 
 \item{validation_frame}{An \code{\linkS4class{H2OFrame}} object containing the variables in the model.}
+
+\item{checkpoint}{"Model checkpoint (either key or H2ODeepLearningModel) to resume training with."}
 
 \item{mtries}{Number of variables randomly sampled as candidates at each split.
 If set to -1, defaults to sqrt{p} for classification, and p/3 for regression,
@@ -62,6 +66,15 @@ reproducible when running single threaded}
 \item{offset_column}{Specify the offset column.}
 
 \item{weights_column}{Specify the weights column.}
+
+\item{nfolds}{(Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.}
+
+\item{fold_column}{(Optional) Column with cross-validation fold index assignment per observation}
+
+\item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not specified
+Must be "AUTO", "Random" or "Modulo"}
+
+\item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models}
 
 \item{...}{(Currently Unimplemented)}
 }
