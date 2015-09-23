@@ -3,17 +3,19 @@
 \alias{h2o.anomaly}
 \title{Anomaly Detection via H2O Deep Learning Model}
 \usage{
-h2o.anomaly(object, data)
+h2o.anomaly(object, data, per_feature = FALSE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OAutoEncoderModel} object that represents the
 model to be used for anomaly detection.}
 
 \item{data}{An \linkS4class{H2OFrame} object.}
+
+\item{per_feature}{Whether to return the per-feature squared reconstruction error}
 }
 \value{
 Returns an \linkS4class{H2OFrame} object containing the
-        reconstruction MSE.
+        reconstruction MSE or the per-feature squared error.
 }
 \description{
 Detect anomalies in an H2O dataset using an H2O deep learning model with
@@ -29,6 +31,8 @@ prostate.dl = h2o.deeplearning(x = 3:9, training_frame = prostate.hex, autoencod
                                hidden = c(10, 10), epochs = 5)
 prostate.anon = h2o.anomaly(prostate.dl, prostate.hex)
 head(prostate.anon)
+prostate.anon.per.feature = h2o.anomaly(prostate.dl, prostate.hex, per_feature=T)
+head(prostate.anon.per.feature)
 }
 }
 \seealso{

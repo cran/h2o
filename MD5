@@ -1,4 +1,4 @@
-345094ee200611e7f92850101e7b85ae *DESCRIPTION
+87dc2b87096c6eafaee5b88b136528c4 *DESCRIPTION
 ccf4ccb1a848b27cfcb8ed3d1a6a1d63 *NAMESPACE
 953b55ad4fc3e854dfdbc20e8e3b3b84 *R/ast.R
 fb44e8e0d9dc7ababcbf3b98fb23ebd9 *R/astfun.R
@@ -6,7 +6,7 @@ fb44e8e0d9dc7ababcbf3b98fb23ebd9 *R/astfun.R
 963e37915a4a42c4900e366666b2c949 *R/communication.R
 d40fe2d2047fd696be16727c2abef701 *R/connection.R
 f399ae5b7930940c6af46e1d6109ce58 *R/constants.R
-b453aef09b464ef5ee1bf15dece796d3 *R/deeplearning.R
+2b16694a14557061e72c0cbf9a8af2d5 *R/deeplearning.R
 d7f673b11d31e88178816e444ddada54 *R/edicts.R
 53a75a2fc03d8963f1401cfe47e9d145 *R/exec.R
 834757673ba8c455a5c9d3350a19661e *R/export.R
@@ -20,10 +20,10 @@ d16fcc76b02f720fd6f7b43915c388e1 *R/grid.R
 7a1d83741d69d5bac681907283ca9a0c *R/kvstore.R
 a74e8e868b45a5d2b3c929510ec849c8 *R/locate.R
 9571990cc7cffbc0b50a49fe2c8173c6 *R/logging.R
-c87780822b51eb73f09404f07aa136dd *R/models.R
+d8429ba85220b471c5a1aa80df0bf070 *R/models.R
 bc97891b97f16a29bfbf21ec5a51e67e *R/naivebayes.R
 47ed4bdbd40b6d6dbf2bbdca13ff9788 *R/ops.R
-1a321a73f7c9b163de9f6205912fd761 *R/parse.R
+37392cf2d5b19f4f4acaff9b45520d44 *R/parse.R
 a14e1cdcd97c756f07d5348cec8cde09 *R/pca.R
 a4172a86348809db7498ea4cc61a353a *R/randomforest.R
 473282ede7cce1bc6ff16e11d3b7f6e3 *R/shim.R
@@ -48,7 +48,7 @@ d82818b09ed7e19c60521cacf12967e4 *demo/h2o.prcomp.remote.R
 34f4d205916254159154a96508527419 *demo/h2o.randomForest.R
 c50a761bcb561bb4e83c0dc90bc45022 *demo/h2o.randomForest.remote.R
 e48666c6247efc479baf5b4915519a9a *inst/branch.txt
-b026324c6904b2a9cb4b88d6d61c81d1 *inst/buildnum.txt
+6d7fce9fee471194aa8b5b6e47267f03 *inst/buildnum.txt
 c2009f0054eecbceac0e820e4927e455 *inst/extdata/australia.csv
 fdbd7a2797e683a8f352462c6b140b7d *inst/extdata/housevotes.csv
 42615765a885ddf54427f12c34a0a070 *inst/extdata/iris.csv
@@ -82,9 +82,9 @@ ce574715c1fe2ddd783f796f7151f60c *man/Node-class.Rd
 7ec0816cc8fc4b5df1e5a2c87b6e7f49 *man/as.factor-H2OFrame-method.Rd
 1dfc34a6faee1ce58d3fa751d5fe1936 *man/as.h2o.Rd
 ee9284c274268c9f46511e9a9984476c *man/as.numeric-H2OFrame-method.Rd
-778950a2fd2632b72d246612bc98cfb8 *man/h2o-package.Rd
+1b5dcf11037a67ab4d4453f1f2514203 *man/h2o-package.Rd
 ecd0748ec6ef339e5fdcb4da85a7726d *man/h2o.aic.Rd
-a1b53cc346a8615a076274a1093e1157 *man/h2o.anomaly.Rd
+73c058ab613fa8c8902d28a6151be211 *man/h2o.anomaly.Rd
 36cc6f3879198095adafef445359b45c *man/h2o.anyFactor.Rd
 65ad8e15b103a9ab0ed296906cd6f6f2 *man/h2o.assign.Rd
 24f34536a24d46a4e79c78a5f480f969 *man/h2o.auc.Rd
