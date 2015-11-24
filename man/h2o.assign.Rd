@@ -3,14 +3,12 @@
 \alias{h2o.assign}
 \title{Rename an H2O object.}
 \usage{
-h2o.assign(data, key, deepCopy = FALSE)
+h2o.assign(data, key)
 }
 \arguments{
-\item{data}{An \linkS4class{H2OFrame} object}
+\item{data}{An H2O Frame object}
 
 \item{key}{The hex key to be associated with the H2O parsed data object}
-
-\item{deepCopy}{Should it do a deepCopy of the frame. Default is FALSE.}
 }
 \description{
 Makes a copy of the data frame and gives it the desired the key.

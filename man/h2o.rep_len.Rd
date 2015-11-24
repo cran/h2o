@@ -12,7 +12,7 @@ h2o.rep_len(x, length.out)
 vector.}
 }
 \value{
-Creates a \linkS4class{H2OFrame} vector of the same type as x
+Creates a Frame vector of the same type as x
 }
 \description{
 \code{h2o.rep} performs just as \code{rep} does. It replicates the values in

@@ -3,28 +3,28 @@
 \alias{h2o.glm}
 \title{H2O Generalized Linear Models}
 \usage{
-h2o.glm(x, y, training_frame, model_id, validation_frame, max_iterations = 50,
-  beta_epsilon = 0, solver = c("IRLSM", "L_BFGS"), standardize = TRUE,
-  family = c("gaussian", "binomial", "poisson", "gamma", "tweedie"),
-  link = c("family_default", "identity", "logit", "log", "inverse",
-  "tweedie"), tweedie_variance_power = NaN, tweedie_link_power = NaN,
-  alpha = 0.5, prior = 0, lambda = 1e-05, lambda_search = FALSE,
-  nlambdas = -1, lambda_min_ratio = -1, nfolds = 0, fold_column = NULL,
-  fold_assignment = c("AUTO", "Random", "Modulo"),
-  keep_cross_validation_predictions = FALSE, beta_constraints = NULL,
-  offset_column = NULL, weights_column = NULL, intercept = TRUE,
-  max_active_predictors = -1, ...)
+h2o.glm(x, y, training_frame, model_id, validation_frame = NULL,
+  max_iterations = 50, beta_epsilon = 0, solver = c("IRLSM", "L_BFGS"),
+  standardize = TRUE, family = c("gaussian", "binomial", "poisson", "gamma",
+  "tweedie"), link = c("family_default", "identity", "logit", "log",
+  "inverse", "tweedie"), tweedie_variance_power = NaN,
+  tweedie_link_power = NaN, alpha = 0.5, prior = 0, lambda = 1e-05,
+  lambda_search = FALSE, nlambdas = -1, lambda_min_ratio = -1,
+  nfolds = 0, fold_column = NULL, fold_assignment = c("AUTO", "Random",
+  "Modulo"), keep_cross_validation_predictions = FALSE,
+  beta_constraints = NULL, offset_column = NULL, weights_column = NULL,
+  intercept = TRUE, max_active_predictors = -1)
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the GLM model.}
 
 \item{y}{A character string or index that represent the response variable in the model.}
 
-\item{training_frame}{An \code{\linkS4class{H2OFrame}} object containing the variables in the model.}
+\item{training_frame}{An H2O Frame object containing the variables in the model.}
 
 \item{model_id}{(Optional) The unique id assigned to the resulting model. If none is given, an id will automatically be generated.}
 
-\item{validation_frame}{An \code{\linkS4class{H2OFrame}} object containing the variables in the model.}
+\item{validation_frame}{An H2O Frame object containing the variables in the model.  Defaults to NULL.}
 
 \item{max_iterations}{A non-negative integer specifying the maximum number of iterations.}
 
@@ -77,7 +77,7 @@ of variables then \code{lambda_min_ratio} = 0.01.}
 \item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not specified
 Must be "AUTO", "Random" or "Modulo"}
 
-\item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models}
+\item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models.}
 
 \item{beta_constraints}{A data.frame or H2OParsedData object with the columns ["names",
 "lower_bounds", "upper_bounds", "beta_given"], where each row corresponds to a predictor
@@ -109,11 +109,12 @@ A subclass of \code{\linkS4class{H2OModel}} is returned. The specific subclass d
 Fit a generalized linear model, specified by a response variable, a set of predictors, and a description of the error distribution.
 }
 \examples{
-localH2O = h2o.init()
+\donttest{
+h2o.init()
 
 # Run GLM of CAPSULE ~ AGE + RACE + PSA + DCAPS
 prostatePath = system.file("extdata", "prostate.csv", package = "h2o")
-prostate.hex = h2o.importFile(localH2O, path = prostatePath, destination_frame = "prostate.hex")
+prostate.hex = h2o.importFile(path = prostatePath, destination_frame = "prostate.hex")
 h2o.glm(y = "CAPSULE", x = c("AGE","RACE","PSA","DCAPS"), training_frame = prostate.hex,
         family = "binomial", nfolds = 0, alpha = 0.5, lambda_search = FALSE)
 
@@ -122,17 +123,16 @@ myX = setdiff(colnames(prostate.hex), c("ID", "DPROS", "DCAPS", "VOL"))
 h2o.glm(y = "VOL", x = myX, training_frame = prostate.hex, family = "gaussian",
         nfolds = 0, alpha = 0.1, lambda_search = FALSE)
 
-\donttest{
- # GLM variable importance
- # Also see:
- #   https://github.com/h2oai/h2o/blob/master/R/tests/testdir_demos/runit_demo_VI_all_algos.R
- data.hex = h2o.importFile(
-   localH2O,
-   path = "https://raw.github.com/h2oai/h2o/master/smalldata/bank-additional-full.csv",
-   destination_frame = "data.hex")
- myX = 1:20
- myY="y"
- my.glm = h2o.glm(x=myX, y=myY, training_frame=data.hex, family="binomial", standardize=TRUE,
+
+# GLM variable importance
+# Also see:
+#   https://github.com/h2oai/h2o/blob/master/R/tests/testdir_demos/runit_demo_VI_all_algos.R
+data.hex = h2o.importFile(
+  path = "https://s3.amazonaws.com/h2o-public-test-data/smalldata/demos/bank-additional-full.csv",
+  destination_frame = "data.hex")
+myX = 1:20
+myY="y"
+my.glm = h2o.glm(x=myX, y=myY, training_frame=data.hex, family="binomial", standardize=TRUE,
                  lambda_search=TRUE)
 }
 }

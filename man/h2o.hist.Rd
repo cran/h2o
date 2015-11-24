@@ -6,7 +6,7 @@
 h2o.hist(x, breaks = "Sturges", plot = TRUE)
 }
 \arguments{
-\item{x}{A single numeric column from an H2OFrame.}
+\item{x}{A single numeric column from an H2O Frame.}
 
 \item{breaks}{Can be one of the following:
 A string: "Sturges", "Rice", "sqrt", "Doane", "FD", "Scott"

@@ -9,12 +9,12 @@ h2o.anomaly(object, data, per_feature = FALSE)
 \item{object}{An \linkS4class{H2OAutoEncoderModel} object that represents the
 model to be used for anomaly detection.}
 
-\item{data}{An \linkS4class{H2OFrame} object.}
+\item{data}{An H2O Frame object.}
 
 \item{per_feature}{Whether to return the per-feature squared reconstruction error}
 }
 \value{
-Returns an \linkS4class{H2OFrame} object containing the
+Returns an H2O Frame object containing the
         reconstruction MSE or the per-feature squared error.
 }
 \description{
@@ -24,14 +24,14 @@ auto-encoding.
 \examples{
 \donttest{
 library(h2o)
-localH2O = h2o.init()
+h2o.init()
 prosPath = system.file("extdata", "prostate.csv", package = "h2o")
-prostate.hex = h2o.importFile(localH2O, path = prosPath)
+prostate.hex = h2o.importFile(path = prosPath)
 prostate.dl = h2o.deeplearning(x = 3:9, training_frame = prostate.hex, autoencoder = TRUE,
                                hidden = c(10, 10), epochs = 5)
 prostate.anon = h2o.anomaly(prostate.dl, prostate.hex)
 head(prostate.anon)
-prostate.anon.per.feature = h2o.anomaly(prostate.dl, prostate.hex, per_feature=T)
+prostate.anon.per.feature = h2o.anomaly(prostate.dl, prostate.hex, per_feature=TRUE)
 head(prostate.anon.per.feature)
 }
 }

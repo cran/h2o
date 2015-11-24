@@ -3,12 +3,10 @@
 \alias{h2o.setTimezone}
 \title{Set the Time Zone on the H2O Cloud}
 \usage{
-h2o.setTimezone(tz, conn = h2o.getConnection())
+h2o.setTimezone(tz)
 }
 \arguments{
 \item{tz}{The desired timezone.}
-
-\item{conn}{An H2OConnection object.}
 }
 \description{
 Set the Time Zone on the H2O Cloud

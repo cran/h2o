@@ -15,6 +15,7 @@ h2o.sub(pattern, replacement, x, ignore.case = FALSE)
 \item{ignore.case}{Case sensitive or not}
 }
 \description{
-Mutates the input. Changes the first occurence of pattern with replacement.
+Creates a copy of the target column in which each string has the first occurence of
+the regex pattern replaced with the replacement substring.
 }
 

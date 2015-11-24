@@ -19,7 +19,7 @@ h2o.confusionMatrix(object, ...)
 
 \item{...}{Extra arguments for extracting train or valid confusion matrices.}
 
-\item{newdata}{An \linkS4class{H2OFrame} object that can be scored on.
+\item{newdata}{An H2O Frame object that can be scored on.
 Requires a valid response column.}
 
 \item{valid}{Retreive the validation metric.}

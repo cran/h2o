@@ -8,7 +8,7 @@ h2o.svd(training_frame, x, nv, destination_key, max_iterations = 1000,
   seed, use_all_factor_levels)
 }
 \arguments{
-\item{training_frame}{An \linkS4class{H2OFrame} object containing the
+\item{training_frame}{An H2O Frame object containing the
 variables in the model.}
 
 \item{x}{(Optional) A vector containing the data columns on which SVD operates.}
@@ -50,11 +50,13 @@ Returns an object of class \linkS4class{H2ODimReductionModel}.
 Singular value decomposition of a H2O dataset using the power method.
 }
 \examples{
+\donttest{
 library(h2o)
-localH2O <- h2o.init()
+h2o.init()
 ausPath <- system.file("extdata", "australia.csv", package="h2o")
-australia.hex <- h2o.uploadFile(localH2O, path = ausPath)
+australia.hex <- h2o.uploadFile(path = ausPath)
 h2o.svd(training_frame = australia.hex, nv = 8)
+}
 }
 \references{
 N. Halko, P.G. Martinsson, J.A. Tropp. {Finding structure with randomness: Probabilistic algorithms for constructing approximate matrix decompositions}[http://arxiv.org/abs/0909.4061]. SIAM Rev., Survey and Review section, Vol. 53, num. 2, pp. 217-288, June 2011.

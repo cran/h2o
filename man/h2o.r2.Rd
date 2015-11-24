@@ -10,7 +10,7 @@ h2o.r2(object, train = FALSE, valid = FALSE, xval = FALSE, ...)
 
 \item{train}{Retrieve the training R2}
 
-\item{valid}{Retrieve the validation R2}
+\item{valid}{Retrieve the validation set R2 if a validation set was passed in during model build time.}
 
 \item{xval}{Retrieve the cross-validation R2}
 

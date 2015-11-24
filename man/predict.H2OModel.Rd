@@ -12,13 +12,13 @@ h2o.predict(object, newdata, ...)
 \item{object}{a fitted \linkS4class{H2OModel} object for which prediction is
 desired}
 
-\item{newdata}{A \linkS4class{H2OFrame} object in which to look for
+\item{newdata}{A Frame object in which to look for
 variables with which to predict.}
 
 \item{...}{additional arguments to pass on.}
 }
 \value{
-Returns an \linkS4class{H2OFrame} object with probabilites and
+Returns an H2O Frame object with probabilites and
         default predictions.
 }
 \description{
@@ -27,6 +27,9 @@ Obtains predictions from various fitted H2O model objects.
 \details{
 This method dispatches on the type of H2O model to select the correct
 prediction/scoring algorithm.
+The order of the rows in the results is the same as the order in which the
+data was loaded, even if some rows fail (for example, due to missing
+values or unseen factor levels).
 }
 \seealso{
 \code{link{h2o.deeplearning}}, \code{link{h2o.gbm}},

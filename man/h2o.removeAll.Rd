@@ -3,12 +3,9 @@
 \alias{h2o.removeAll}
 \title{Remove All Objects on the H2O Cluster}
 \usage{
-h2o.removeAll(conn = h2o.getConnection(), timeout_secs = 0)
+h2o.removeAll(timeout_secs = 0)
 }
 \arguments{
-\item{conn}{An \linkS4class{H2OConnection} object containing the IP address and port number
-of the H2O server.}
-
 \item{timeout_secs}{Timeout in seconds. Default is no timeout.}
 }
 \description{
@@ -17,12 +14,12 @@ Removes the data from the h2o cluster, but does not remove the local references.
 \examples{
 \donttest{
 library(h2o)
-localH2O <- h2o.init()
+h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package = "h2o")
-prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
-h2o.ls(localH2O)
-h2o.removeAll(localH2O)
-h2o.ls(localH2O)
+prostate.hex <- h2o.uploadFile(path = prosPath)
+h2o.ls()
+h2o.removeAll()
+h2o.ls()
 }
 }
 \seealso{

@@ -6,7 +6,7 @@
 h2o.insertMissingValues(data, fraction = 0.1, seed = -1)
 }
 \arguments{
-\item{data}{An \linkS4class{H2OFrame} object representing the dataset.}
+\item{data}{An H2O Frame object representing the dataset.}
 
 \item{fraction}{A number between 0 and 1 indicating the fraction of entries
 to replace with missing.}
@@ -26,9 +26,9 @@ this function should only be called on a subset of the original.
 \examples{
 \donttest{
 library(h2o)
-localH2O <- h2o.init()
+h2o.init()
 irisPath <- system.file("extdata", "iris.csv", package = "h2o")
-iris.hex <- h2o.importFile(localH2O, path = irisPath)
+iris.hex <- h2o.importFile(path = irisPath)
 summary(iris.hex)
 irismiss.hex <- h2o.insertMissingValues(iris.hex, fraction = 0.25)
 head(irismiss.hex)

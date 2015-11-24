@@ -3,28 +3,28 @@
 \alias{h2o.getGrid}
 \title{Get a grid object from H2O distributed K/V store.}
 \usage{
-h2o.getGrid(grid_id, conn = h2o.getConnection())
+h2o.getGrid(grid_id)
 }
 \arguments{
 \item{grid_id}{ID of existing grid object to fetch}
-
-\item{conn}{H2O connection}
 }
 \description{
 Get a grid object from H2O distributed K/V store.
 }
 \examples{
+\donttest{
 library(h2o)
 library(jsonlite)
-localH2O <- h2o.init()
+h2o.init()
 iris.hex <- as.h2o(iris)
-h2o.grid("gbm", grid_id = "gbm_grid", x = c(1:4), y = 5,
+h2o.grid("gbm", grid_id = "gbm_grid_id", x = c(1:4), y = 5,
          training_frame = iris.hex, hyper_params = list(ntrees = c(1,2,3)))
-grid <- h2o.getGrid("gbm_grid")
+grid <- h2o.getGrid("gbm_grid_id")
 # Get grid summary
 summary(grid)
 # Fetch grid models
 model_ids <- grid@model_ids
 models <- lapply(model_ids, function(id) { h2o.getModel(id)})
+}
 }
 

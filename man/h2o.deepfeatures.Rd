@@ -9,12 +9,12 @@ h2o.deepfeatures(object, data, layer = 1)
 \item{object}{An \linkS4class{H2OModel} object that represents the deep
 learning model to be used for feature extraction.}
 
-\item{data}{An \linkS4class{H2OFrame} object.}
+\item{data}{An H2O Frame object.}
 
 \item{layer}{Index of the hidden layer to extract.}
 }
 \value{
-Returns an \linkS4class{H2OFrame} object with as many features as the
+Returns an H2O Frame object with as many features as the
         number of units in the hidden layer of the specified index.
 }
 \description{
@@ -24,9 +24,9 @@ model.
 \examples{
 \donttest{
 library(h2o)
-localH2O = h2o.init()
+h2o.init()
 prosPath = system.file("extdata", "prostate.csv", package = "h2o")
-prostate.hex = h2o.importFile(localH2O, path = prosPath)
+prostate.hex = h2o.importFile(path = prosPath)
 prostate.dl = h2o.deeplearning(x = 3:9, y = 2, training_frame = prostate.hex,
                                hidden = c(100, 200), epochs = 5)
 prostate.deepfeatures_layer1 = h2o.deepfeatures(prostate.dl, prostate.hex, layer = 1)

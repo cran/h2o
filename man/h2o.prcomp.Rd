@@ -5,10 +5,11 @@
 \usage{
 h2o.prcomp(training_frame, x, k, model_id, max_iterations = 1000,
   transform = c("NONE", "DEMEAN", "DESCALE", "STANDARDIZE"),
-  pca_method = c("GramSVD", "Power", "GLRM"), seed, use_all_factor_levels)
+  pca_method = c("GramSVD", "Power", "Randomized", "GLRM"), seed,
+  use_all_factor_levels)
 }
 \arguments{
-\item{training_frame}{An \linkS4class{H2OFrame} object containing the
+\item{training_frame}{An H2O Frame object containing the
 variables in the model.}
 
 \item{x}{(Optional) A vector containing the data columns on which SVD operates.}
@@ -32,9 +33,10 @@ for demeaning and dividing each column by its range (max - min).}
 \item{pca_method}{A character string that indicates how PCA should be calculated.
 Possible values are "GramSVD": distributed computation of the Gram matrix
 followed by a local SVD using the JAMA package, "Power": computation of
-the SVD using the power iteration method, "GLRM": fit a generalized low
-rank model with an l2 loss function (no regularization) and solve for the
-SVD using local matrix algebra.}
+the SVD using the power iteration method, "Randomized": approximate SVD
+by projecting onto a random subspace (see references), "GLRM": fit a
+generalized low rank model with an l2 loss function (no regularization)
+and solve for the SVD using local matrix algebra.}
 
 \item{seed}{(Optional) Random seed used to initialize the right singular vectors
 at the beginning of each power method iteration.}
@@ -52,11 +54,16 @@ Principal components analysis of a H2O dataset using the power method
 to calculate the singular value decomposition of the Gram matrix.
 }
 \examples{
+\donttest{
 library(h2o)
-localH2O <- h2o.init()
+h2o.init()
 ausPath <- system.file("extdata", "australia.csv", package="h2o")
-australia.hex <- h2o.uploadFile(localH2O, path = ausPath)
+australia.hex <- h2o.uploadFile(path = ausPath)
 h2o.prcomp(training_frame = australia.hex, k = 8, transform = "STANDARDIZE")
+}
+}
+\references{
+N. Halko, P.G. Martinsson, J.A. Tropp. {Finding structure with randomness: Probabilistic algorithms for constructing approximate matrix decompositions}[http://arxiv.org/abs/0909.4061]. SIAM Rev., Survey and Review section, Vol. 53, num. 2, pp. 217-288, June 2011.
 }
 \seealso{
 \code{\link{h2o.svd}}, \code{\link{h2o.glrm}}

@@ -3,20 +3,14 @@
 \alias{h2o.downloadAllLogs}
 \title{Download H2O Log Files to Disk}
 \usage{
-h2o.downloadAllLogs(conn = h2o.getConnection(), dirname = ".",
-  filename = NULL)
+h2o.downloadAllLogs(dirname = ".", filename = NULL)
 }
 \arguments{
-\item{conn}{An \code{H2OConnection} object pointing to a running H2O cluster.}
-
 \item{dirname}{(Optional) A character string indicating the directory that the log file should be saved in.}
 
 \item{filename}{(Optional) A character string indicating the name that the log file should be saved to.}
 }
 \description{
 \code{h2o.downloadAllLogs} downloads all H2O log files to local disk. Generally used for debugging purposes.
-}
-\seealso{
-\code{\link{H2OConnection}}
 }
 

@@ -6,7 +6,7 @@
 h2o.runif(x, seed = -1)
 }
 \arguments{
-\item{x}{An \linkS4class{H2OFrame} object.}
+\item{x}{An H2O Frame object.}
 
 \item{seed}{A random seed used to generate draws from the uniform distribution.}
 }
@@ -20,9 +20,9 @@ dataset.
 \examples{
 \donttest{
 library(h2o)
-localH2O = h2o.init()
+h2o.init()
 prosPath = system.file("extdata", "prostate.csv", package="h2o")
-prostate.hex = h2o.importFile(localH2O, path = prosPath, destination_frame = "prostate.hex")
+prostate.hex = h2o.importFile(path = prosPath, destination_frame = "prostate.hex")
 s = h2o.runif(prostate.hex)
 summary(s)
 

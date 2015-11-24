@@ -3,10 +3,7 @@
 \alias{h2o.ls}
 \title{List Keys on an H2O Cluster}
 \usage{
-h2o.ls(conn = h2o.getConnection())
-}
-\arguments{
-\item{conn}{An \linkS4class{H2OConnection} object containing the IP address and port number of the H2O server.}
+h2o.ls()
 }
 \value{
 Returns a list of hex keys in the current H2O instance.
@@ -17,10 +14,10 @@ Accesses a list of object keys in the running instance of H2O.
 \examples{
 \donttest{
 library(h2o)
-localH2O <- h2o.init()
+h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
-prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
-h2o.ls(localH2O)
+prostate.hex <- h2o.uploadFile(path = prosPath)
+h2o.ls()
 }
 }
 

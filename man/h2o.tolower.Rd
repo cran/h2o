@@ -6,9 +6,9 @@
 h2o.tolower(x)
 }
 \arguments{
-\item{x}{An H2OFrame object whose strings should be lower'd}
+\item{x}{A Frame object whose strings should be lower'd}
 }
 \description{
-Mutates the input!
+To Lower
 }
 

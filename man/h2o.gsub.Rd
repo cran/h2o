@@ -15,6 +15,7 @@ h2o.gsub(pattern, replacement, x, ignore.case = FALSE)
 \item{ignore.case}{Case sensitive or not}
 }
 \description{
-Mutates the input. Changes the all occurences of pattern with replacement.
+Creates a copy of the target column in which each string has all occurence of
+the regex pattern replaced with the replacement substring.
 }
 

@@ -17,11 +17,11 @@ h2o.startGLMJob(x, y, training_frame, model_id, validation_frame,
 
 \item{y}{A character string or index that represent the response variable in the model.}
 
-\item{training_frame}{An \code{\linkS4class{H2OFrame}} object containing the variables in the model.}
+\item{training_frame}{An H2O Frame object containing the variables in the model.}
 
 \item{model_id}{(Optional) The unique id assigned to the resulting model. If none is given, an id will automatically be generated.}
 
-\item{validation_frame}{An \code{\linkS4class{H2OFrame}} object containing the variables in the model.}
+\item{validation_frame}{An H2O Frame object containing the variables in the model.  Defaults to NULL.}
 
 \item{max_iterations}{A non-negative integer specifying the maximum number of iterations.}
 

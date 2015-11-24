@@ -3,15 +3,13 @@
 \alias{h2o.group_by}
 \title{Group and Apply by Column}
 \usage{
-h2o.group_by(data, by, ..., order.by = NULL, gb.control = list(na.methods =
-  NULL, col.names = NULL))
+h2o.group_by(data, by, ..., gb.control = list(na.methods = NULL, col.names =
+  NULL))
 }
 \arguments{
-\item{data}{an \linkS4class{H2OFrame} object.}
+\item{data}{an H2O Frame object.}
 
 \item{by}{a list of column names}
-
-\item{order.by}{Takes a vector column names or indices specifiying how to order the group by result.}
 
 \item{gb.control}{a list of how to handle \code{NA} values in the dataset as well as how to name
 output columns. See \code{Details:} for more help.}
@@ -19,7 +17,7 @@ output columns. See \code{Details:} for more help.}
 \item{\dots}{any supported aggregate function.}
 }
 \value{
-Returns a new \linkS4class{H2OFrame} object with columns equivalent to the number of
+Returns a new Frame object with columns equivalent to the number of
         groups created
 }
 \description{

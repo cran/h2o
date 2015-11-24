@@ -12,10 +12,10 @@ primarily for debugging purposes.
 \examples{
 \donttest{
 library(h2o)
-localH2O = h2o.init()
+h2o.init()
 h2o.startLogging()
 ausPath = system.file("extdata", "australia.csv", package="h2o")
-australia.hex = h2o.importFile(localH2O, path = ausPath)
+australia.hex = h2o.importFile(path = ausPath)
 h2o.stopLogging()
 }
 }

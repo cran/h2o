@@ -3,10 +3,7 @@
 \alias{h2o.killMinus3}
 \title{Dump the stack into the JVM's stdout.}
 \usage{
-h2o.killMinus3(conn = h2o.getConnection())
-}
-\arguments{
-\item{conn}{an \linkS4class{H2OConnection} class object.}
+h2o.killMinus3()
 }
 \description{
 A poor man's profiler, but effective.

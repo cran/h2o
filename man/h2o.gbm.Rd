@@ -6,13 +6,15 @@
 h2o.gbm(x, y, training_frame, model_id, checkpoint, distribution = c("AUTO",
   "gaussian", "bernoulli", "multinomial", "poisson", "gamma", "tweedie"),
   tweedie_power = 1.5, ntrees = 50, max_depth = 5, min_rows = 10,
-  learn_rate = 0.1, nbins = 20, nbins_cats = 1024,
-  validation_frame = NULL, balance_classes = FALSE,
-  max_after_balance_size = 1, seed, build_tree_one_node = FALSE,
-  nfolds = 0, fold_column = NULL, fold_assignment = c("AUTO", "Random",
-  "Modulo"), keep_cross_validation_predictions = FALSE,
-  score_each_iteration = FALSE, offset_column = NULL,
-  weights_column = NULL, ...)
+  learn_rate = 0.1, sample_rate = 1, col_sample_rate = 1, nbins = 20,
+  nbins_top_level, nbins_cats = 1024, validation_frame = NULL,
+  balance_classes = FALSE, max_after_balance_size = 1, seed,
+  build_tree_one_node = FALSE, nfolds = 0, fold_column = NULL,
+  fold_assignment = c("AUTO", "Random", "Modulo"),
+  keep_cross_validation_predictions = FALSE, score_each_iteration = FALSE,
+  stopping_rounds = 0, stopping_metric = c("AUTO", "deviance", "logloss",
+  "MSE", "AUC", "r2", "misclassification"), stopping_tolerance = 0.001,
+  offset_column = NULL, weights_column = NULL)
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the GBM model.}
@@ -21,7 +23,7 @@ h2o.gbm(x, y, training_frame, model_id, checkpoint, distribution = c("AUTO",
 number starting at 0, and increasing from left to right. (The response must be either an integer or a
 categorical variable).}
 
-\item{training_frame}{An \code{\linkS4class{H2OFrame}} object containing the variables in the model.}
+\item{training_frame}{An H2O Frame object containing the variables in the model.}
 
 \item{model_id}{(Optional) The unique id assigned to the resulting model. If
 none is given, an id will automatically be generated.}
@@ -39,22 +41,30 @@ Must be "AUTO", "bernoulli", "multinomial", "poisson", "gamma", "tweedie" or "ga
 
 \item{min_rows}{Minimum number of rows to assign to teminal nodes.}
 
-\item{learn_rate}{An \code{integer} from \code{0.0} to \code{1.0}}
+\item{learn_rate}{Learning rate (from \code{0.0} to \code{1.0})}
 
-\item{nbins}{For numerical columns (real/int), build a histogram of this many bins, then split at the best point}
+\item{sample_rate}{Row sample rate (from \code{0.0} to \code{1.0})}
 
-\item{nbins_cats}{For categorical columns (enum), build a histogram of this many bins, then split at the best point. Higher values can lead to more overfitting.}
+\item{col_sample_rate}{Column sample rate (from \code{0.0} to \code{1.0})}
 
-\item{validation_frame}{An \code{\link{H2OFrame}} object indicating the validation dataset used to contruct the
-confusion matrix. If left blank, this defaults to the training data when \code{nfolds = 0}}
+\item{nbins}{For numerical columns (real/int), build a histogram of (at least) this many bins, then split at the best point.}
+
+\item{nbins_top_level}{For numerical columns (real/int), build a histogram of (at most) this many bins at the root
+level, then decrease by factor of two per level.}
+
+\item{nbins_cats}{For categorical columns (factors), build a histogram of this many bins, then split at the best point.
+Higher values can lead to more overfitting.}
+
+\item{validation_frame}{An H2O Frame object indicating the validation dataset used to contruct the
+confusion matrix. Defaults to NULL.  If left as NULL, this defaults to the training data when \code{nfolds = 0}.}
 
 \item{balance_classes}{logical, indicates whether or not to balance training data class
-counts via over/under-sampling (for imbalanced data)}
+counts via over/under-sampling (for imbalanced data).}
 
 \item{max_after_balance_size}{Maximum relative size of the training data after balancing class counts (can be less
-than 1.0)}
+than 1.0). Ignored if balance_classes is FALSE, which is the default behavior.}
 
-\item{seed}{Seed for random numbers (affects sampling when balance_classes=T)}
+\item{seed}{Seed for random numbers (affects sampling).}
 
 \item{build_tree_one_node}{Run on one node only; no network overhead but
 fewer cpus used.  Suitable for small datasets.}
@@ -64,17 +74,26 @@ fewer cpus used.  Suitable for small datasets.}
 \item{fold_column}{(Optional) Column with cross-validation fold index assignment per observation}
 
 \item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not specified
-Must be "AUTO", "Random" or "Modulo"}
+Must be "AUTO", "Random" or "Modulo".}
 
 \item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models}
 
 \item{score_each_iteration}{Attempts to score each tree.}
 
+\item{stopping_rounds}{Early stopping based on convergence of stopping_metric.
+Stop if simple moving average of length k of the stopping_metric does not improve
+(by stopping_tolerance) for k=stopping_rounds scoring events.
+Can only trigger after at least 2k scoring events. Use 0 to disable.}
+
+\item{stopping_metric}{Metric to use for convergence checking, only for _stopping_rounds > 0
+Can be one of "AUTO", "deviance", "logloss", "MSE", "AUC", "r2", "misclassification".}
+
+\item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (if relative
+improvement is not at least this much, stop)}
+
 \item{offset_column}{Specify the offset column.}
 
 \item{weights_column}{Specify the weights column.}
-
-\item{...}{extra arguments to pass on (currently no implemented)}
 }
 \description{
 Builds gradient boosted classification trees, and gradient boosted regression trees on a parsed data set.
@@ -85,17 +104,19 @@ based on the response column type. In order to run properly, the response column
 enum for "bernoulli" or "multinomial".
 }
 \examples{
+\donttest{
 library(h2o)
-localH2O = h2o.init()
+h2o.init()
 
 # Run regression GBM on australia.hex data
 ausPath <- system.file("extdata", "australia.csv", package="h2o")
-australia.hex <- h2o.uploadFile(localH2O, path = ausPath)
+australia.hex <- h2o.uploadFile(path = ausPath)
 independent <- c("premax", "salmax","minairtemp", "maxairtemp", "maxsst",
                  "maxsoilmoist", "Max_czcs")
 dependent <- "runoffnew"
 h2o.gbm(y = dependent, x = independent, training_frame = australia.hex,
         ntrees = 3, max_depth = 3, min_rows = 2)
+}
 }
 \seealso{
 \code{\link{predict.H2OModel}} for prediction.

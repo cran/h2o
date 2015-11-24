@@ -8,7 +8,7 @@ h2o.performance(model, data = NULL, valid = FALSE, ...)
 \arguments{
 \item{model}{An \linkS4class{H2OModel} object}
 
-\item{data}{An \linkS4class{H2OFrame}. The model will make predictions
+\item{data}{An H2O Frame. The model will make predictions
 on this dataset, and subsequently score them. The dataset should
 match the dataset that was used to train the model, in terms of
 column names, types, and dimensions. If data is passed in, then train and valid are ignored.}
@@ -27,9 +27,9 @@ dataset
 \examples{
 \donttest{
 library(h2o)
-localH2O <- h2o.init()
+h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
-prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
+prostate.hex <- h2o.uploadFile(path = prosPath)
 prostate.hex$CAPSULE <- as.factor(prostate.hex$CAPSULE)
 prostate.gbm <- h2o.gbm(3:9, "CAPSULE", prostate.hex)
 h2o.performance(model = prostate.gbm, data=prostate.hex)

@@ -3,19 +3,15 @@
 \alias{h2o.clusterStatus}
 \title{Return the status of the cluster}
 \usage{
-h2o.clusterStatus(conn = h2o.getConnection())
-}
-\arguments{
-\item{conn}{the \linkS4class{H2OConnection} object containing the IP address
-and port of the server running H2O.}
+h2o.clusterStatus()
 }
 \description{
 Retrieve information on the status of the cluster running H2O.
 }
 \examples{
 \donttest{
-localH2O <- h2o.init()
-h2o.clusterStatus(localH2O)
+h2o.init()
+h2o.clusterStatus()
 }
 }
 \seealso{

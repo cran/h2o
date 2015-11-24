@@ -6,7 +6,7 @@
 h2o.clusterIsUp(conn = h2o.getConnection())
 }
 \arguments{
-\item{conn}{H2O connection object}
+\item{conn}{H2OConnection object}
 }
 \value{
 TRUE if the cluster is up; FALSE otherwise

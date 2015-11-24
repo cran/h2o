@@ -3,14 +3,17 @@
 \alias{h2o.randomForest}
 \title{Build a Big Data Random Forest Model}
 \usage{
-h2o.randomForest(x, y, training_frame, model_id, validation_frame, checkpoint,
-  mtries = -1, sample_rate = 0.632, build_tree_one_node = FALSE,
-  ntrees = 50, max_depth = 20, min_rows = 1, nbins = 20,
-  nbins_cats = 1024, binomial_double_trees = FALSE,
-  balance_classes = FALSE, max_after_balance_size = 5, seed,
-  offset_column = NULL, weights_column = NULL, nfolds = 0,
-  fold_column = NULL, fold_assignment = c("AUTO", "Random", "Modulo"),
-  keep_cross_validation_predictions = FALSE, ...)
+h2o.randomForest(x, y, training_frame, model_id, validation_frame = NULL,
+  checkpoint, mtries = -1, sample_rate = 0.632,
+  build_tree_one_node = FALSE, ntrees = 50, max_depth = 20,
+  min_rows = 1, nbins = 20, nbins_top_level, nbins_cats = 1024,
+  binomial_double_trees = FALSE, balance_classes = FALSE,
+  max_after_balance_size = 5, seed, offset_column = NULL,
+  weights_column = NULL, nfolds = 0, fold_column = NULL,
+  fold_assignment = c("AUTO", "Random", "Modulo"),
+  keep_cross_validation_predictions = FALSE, score_each_iteration = FALSE,
+  stopping_rounds = 0, stopping_metric = c("AUTO", "deviance", "logloss",
+  "MSE", "AUC", "r2", "misclassification"), stopping_tolerance = 0.001)
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables
@@ -21,13 +24,13 @@ contain a header, this is the column index number starting at 1, and
 increasing from left to right. (The response must be either an integer
 or a categorical variable).}
 
-\item{training_frame}{An \code{\linkS4class{H2OFrame}} object containing the
+\item{training_frame}{An H2O Frame object containing the
 variables in the model.}
 
 \item{model_id}{(Optional) The unique id assigned to the resulting model. If
 none is given, an id will automatically be generated.}
 
-\item{validation_frame}{An \code{\linkS4class{H2OFrame}} object containing the variables in the model.}
+\item{validation_frame}{An H2O Frame object containing the variables in the model.  Default is NULL.}
 
 \item{checkpoint}{"Model checkpoint (either key or H2ODeepLearningModel) to resume training with."}
 
@@ -47,9 +50,12 @@ grow.}
 
 \item{min_rows}{Minimum number of rows to assign to teminal nodes.}
 
-\item{nbins}{For numerical columns (real/int), build a histogram of this many bins, then split at the best point.}
+\item{nbins}{For numerical columns (real/int), build a histogram of (at least) this many bins, then split at the best point.}
 
-\item{nbins_cats}{For categorical columns (enum), build a histogram of this many bins, then split at the best point.
+\item{nbins_top_level}{For numerical columns (real/int), build a histogram of (at most) this many bins at the root
+level, then decrease by factor of two per level.}
+
+\item{nbins_cats}{For categorical columns (factors), build a histogram of this many bins, then split at the best point.
 Higher values can lead to more overfitting.}
 
 \item{binomial_double_trees}{For binary classification: Build 2x as many trees (one per class) - can lead to higher accuracy.}
@@ -58,7 +64,7 @@ Higher values can lead to more overfitting.}
 data class counts via over/under-sampling (for imbalanced data)}
 
 \item{max_after_balance_size}{Maximum relative size of the training data after balancing class counts (can be less
-than 1.0)}
+than 1.0). Ignored if balance_classes is FALSE, which is the default behavior.}
 
 \item{seed}{Seed for random numbers (affects sampling) - Note: only
 reproducible when running single threaded}
@@ -76,13 +82,26 @@ Must be "AUTO", "Random" or "Modulo"}
 
 \item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models}
 
+\item{score_each_iteration}{Attempts to score each tree.}
+
+\item{stopping_rounds}{Early stopping based on convergence of stopping_metric.
+Stop if simple moving average of length k of the stopping_metric does not improve
+(by stopping_tolerance) for k=stopping_rounds scoring events.
+Can only trigger after at least 2k scoring events. Use 0 to disable.}
+
+\item{stopping_metric}{Metric to use for convergence checking, only for _stopping_rounds > 0
+Can be one of "AUTO", "deviance", "logloss", "MSE", "AUC", "r2", "misclassification".}
+
+\item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (if relative
+improvement is not at least this much, stop)}
+
 \item{...}{(Currently Unimplemented)}
 }
 \value{
 Creates a \linkS4class{H2OModel} object of the right type.
 }
 \description{
-Builds a Random Forest Model on an \linkS4class{H2OFrame}
+Builds a Random Forest Model on an H2O Frame
 }
 \seealso{
 \code{\link{predict.H2OModel}} for prediction.

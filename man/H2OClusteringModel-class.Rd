@@ -8,17 +8,12 @@ This virtual class represents a clustering model built by H2O.
 }
 \details{
 This object has slots for the key, which is a character string that points to the model key existing in the H2O cloud,
-the data used to build the model (an object of class H2OFrame).
+the data used to build the model (an object of class Frame).
 }
 \section{Slots}{
 
 \describe{
-\item{\code{conn}}{Object of class \code{H2OConnection}, which is the client object that was passed into the function call.}
-
 \item{\code{model_id}}{A \code{character} string specifying the key for the model fit in the H2O cloud's key-value store.}
-
-\item{\code{finalizers}}{A \code{list} object containing environments with finalizers that
-remove keys from the H2O key-value store.}
 
 \item{\code{algorithm}}{A \code{character} string specifying the algorithm that was used to fit the model.}
 
@@ -34,8 +29,5 @@ remove keys from the H2O key-value store.}
   \item{tot_withinss }{Total within-cluster sum of squared error.}
   \item{betweenss }{Between-cluster sum of squared error.}
 }}
-
-\item{\code{finalizers}}{A \code{list} object containing environments with finalizers that
-remove keys from the H2O key-value store.}
 }}
 

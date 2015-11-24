@@ -2,24 +2,24 @@
 \name{h2o.month}
 \alias{h2o.month}
 \alias{month}
-\alias{month.H2OFrame}
+\alias{month.Frame}
 \title{Convert Milliseconds to Months in H2O Datasets}
 \usage{
 h2o.month(x)
 
 month(x)
 
-\method{month}{H2OFrame}(x)
+\method{month}{Frame}(x)
 }
 \arguments{
-\item{x}{An \linkS4class{H2OFrame} object.}
+\item{x}{An H2O Frame object.}
 }
 \value{
-A \linkS4class{H2OFrame} object containing the entries of \code{x} converted to months of
+A Frame object containing the entries of \code{x} converted to months of
         the year.
 }
 \description{
-Converts the entries of a \linkS4class{H2OFrame} object from milliseconds to months (on a 1 to
+Converts the entries of a Frame object from milliseconds to months (on a 1 to
 12 scale).
 }
 \seealso{

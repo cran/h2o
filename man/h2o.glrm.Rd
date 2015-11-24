@@ -3,7 +3,7 @@
 \alias{h2o.glrm}
 \title{Generalized Low Rank Model}
 \usage{
-h2o.glrm(training_frame, x, k, model_id, validation_frame, loading_name,
+h2o.glrm(training_frame, cols, k, model_id, validation_frame, loading_name,
   ignore_const_cols, transform = c("NONE", "DEMEAN", "DESCALE", "STANDARDIZE",
   "NORMALIZE"), loss = c("Quadratic", "L1", "Huber", "Poisson", "Hinge",
   "Logistic"), multi_loss = c("Categorical", "Ordinal"), loss_by_col = NULL,
@@ -12,13 +12,15 @@ h2o.glrm(training_frame, x, k, model_id, validation_frame, loading_name,
   regularization_y = c("None", "Quadratic", "L2", "L1", "NonNegative",
   "OneSparse", "UnitOneSparse", "Simplex"), gamma_x = 0, gamma_y = 0,
   max_iterations = 1000, init_step_size = 1, min_step_size = 0.001,
-  init = c("Random", "PlusPlus", "SVD"), recover_svd = FALSE, seed)
+  init = c("Random", "PlusPlus", "SVD"), svd_method = c("GramSVD", "Power",
+  "Randomized"), user_y = NULL, user_x = NULL, expand_user_y = TRUE,
+  impute_original = FALSE, recover_svd = FALSE, seed)
 }
 \arguments{
-\item{training_frame}{An \linkS4class{H2OFrame} object containing the
+\item{training_frame}{An H2O Frame object containing the
 variables in the model.}
 
-\item{x}{(Optional) A vector containing the data columns on
+\item{cols}{(Optional) A vector containing the data columns on
 which k-means operates.}
 
 \item{k}{The rank of the resulting decomposition. This must be
@@ -27,7 +29,7 @@ between 1 and the number of columns in the training frame, inclusive.}
 \item{model_id}{(Optional) The unique id assigned to the resulting model.
 If none is given, an id will automatically be generated.}
 
-\item{validation_frame}{An \code{\linkS4class{H2OFrame}} object containing the
+\item{validation_frame}{An H2O Frame object containing the
 variables in the model.}
 
 \item{loading_name}{(Optional) The unique name assigned to the loading matrix X
@@ -86,7 +88,26 @@ Possible values are "Random": for initialization to a random array from the
 standard normal distribution, "PlusPlus": for initialization using the clusters
 from k-means++ initialization, or "SVD": for initialization using the
 first k right singular vectors. Additionally, the user may specify the
-initial Y as a matrix, data.frame, H2OFrame, or list of vectors.}
+initial Y as a matrix, data.frame, Frame, or list of vectors.}
+
+\item{svd_method}{(Optional) A character string that indicates how SVD should be
+calculated during initialization. Possible values are "GramSVD": distributed
+computation of the Gram matrix followed by a local SVD using the JAMA package,
+"Power": computation of the SVD using the power iteration method, "Randomized":
+(default) approximate SVD by projecting onto a random subspace (see references).}
+
+\item{user_y}{(Optional) A matrix, data.frame, Frame, or list of vectors specifying the
+initial Y. Only used when init = "User". The number of rows must equal k.}
+
+\item{user_x}{(Optional) A matrix, data.frame, Frame, or list of vectors specifying the
+initial X. Only used when init = "User". The number of columns must equal k.}
+
+\item{expand_user_y}{A logical value indicating whether the categorical columns of user_y
+should be one-hot expanded. Only used when init = "User" and user_y is specified.}
+
+\item{impute_original}{A logical value indicating whether to reconstruct the original training
+data by reversing the transformation during prediction. Model metrics are calculated
+with respect to the original data.}
 
 \item{recover_svd}{A logical value indicating whether the singular values and eigenvectors
 should be recovered during post-processing of the generalized low rank decomposition.}
@@ -100,14 +121,20 @@ Returns an object of class \linkS4class{H2ODimReductionModel}.
 Generalized low rank decomposition of a H2O dataset.
 }
 \examples{
+\donttest{
 library(h2o)
-localH2O <- h2o.init()
+h2o.init()
 ausPath <- system.file("extdata", "australia.csv", package="h2o")
-australia.hex <- h2o.uploadFile(localH2O, path = ausPath)
+australia.hex <- h2o.uploadFile(path = ausPath)
 h2o.glrm(training_frame = australia.hex, k = 5, loss = "Quadratic", regularization_x = "L1",
          gamma_x = 0.5, gamma_y = 0, max_iterations = 1000)
 }
+}
 \references{
 M. Udell, C. Horn, R. Zadeh, S. Boyd (2014). {Generalized Low Rank Models}[http://arxiv.org/abs/1410.0342]. Unpublished manuscript, Stanford Electrical Engineering Department.
+            N. Halko, P.G. Martinsson, J.A. Tropp. {Finding structure with randomness: Probabilistic algorithms for constructing approximate matrix decompositions}[http://arxiv.org/abs/0909.4061]. SIAM Rev., Survey and Review section, Vol. 53, num. 2, pp. 217-288, June 2011.
+}
+\seealso{
+\code{\link{h2o.kmeans}, \link{h2o.svd}}, \code{\link{h2o.prcomp}}
 }
 

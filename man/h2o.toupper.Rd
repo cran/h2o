@@ -6,9 +6,9 @@
 h2o.toupper(x)
 }
 \arguments{
-\item{x}{An H2OFrame object whose strings should be upper'd}
+\item{x}{A Frame object whose strings should be upper'd}
 }
 \description{
-Mutates the input!
+To Upper
 }
 

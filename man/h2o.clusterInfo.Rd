@@ -3,10 +3,7 @@
 \alias{h2o.clusterInfo}
 \title{Print H2O cluster info}
 \usage{
-h2o.clusterInfo(conn = h2o.getConnection())
-}
-\arguments{
-\item{conn}{H2O connection object}
+h2o.clusterInfo()
 }
 \description{
 Print H2O cluster info

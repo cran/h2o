@@ -5,10 +5,13 @@
 #' h2o.init()
 NULL
 
-#' Shutting down H2O for examples
+#' Shutdown H2O cloud after examples run
+#'
 #' @name zzz
 #' @examples
-#' h2o.shutdown(prompt=FALSE)
+#' library(h2o)
+#' h2o.init()
+#' h2o.shutdown(prompt = FALSE)
 #' Sys.sleep(3)
 NULL
 
@@ -49,10 +52,10 @@ h2o.logIt <- function(m, tmp, commandOrErr, isPost = TRUE) {
 #' @examples
 #' \donttest{
 #' library(h2o)
-#' localH2O = h2o.init()
+#' h2o.init()
 #' h2o.startLogging()
 #' ausPath = system.file("extdata", "australia.csv", package="h2o")
-#' australia.hex = h2o.importFile(localH2O, path = ausPath)
+#' australia.hex = h2o.importFile(path = ausPath)
 #' h2o.stopLogging()
 #' }
 #' @export
@@ -78,10 +81,10 @@ h2o.startLogging <- function(file) {
 #' @examples
 #' \donttest{
 #' library(h2o)
-#' localH2O = h2o.init()
+#' h2o.init()
 #' h2o.startLogging()
 #' ausPath = system.file("extdata", "australia.csv", package="h2o")
-#' australia.hex = h2o.importFile(localH2O, path = ausPath)
+#' australia.hex = h2o.importFile(path = ausPath)
 #' h2o.stopLogging()
 #' }
 #' @export
@@ -100,10 +103,10 @@ h2o.stopLogging <- function() {
 #' @examples
 #' \donttest{
 #' library(h2o)
-#' localH2O = h2o.init()
+#' h2o.init()
 #' h2o.startLogging()
 #' ausPath = system.file("extdata", "australia.csv", package="h2o")
-#' australia.hex = h2o.importFile(localH2O, path = ausPath)
+#' australia.hex = h2o.importFile(path = ausPath)
 #' h2o.stopLogging()
 #' h2o.clearLog()
 #' }
@@ -122,12 +125,12 @@ h2o.clearLog <- function() {
 #' @seealso \code{\link{h2o.startLogging}, \link{h2o.stopLogging},
 #'          \link{h2o.clearLog}}
 #' @examples
-#' \donttest{
-#' localH2O = h2o.init()
+#' \dontrun{
+#' h2o.init()
 #'
 #' h2o.startLogging()
 #' ausPath = system.file("extdata", "australia.csv", package="h2o")
-#' australia.hex = h2o.importFile(localH2O, path = ausPath)
+#' australia.hex = h2o.importFile(path = ausPath)
 #' h2o.stopLogging()
 #'
 #' # Not run to avoid windows being opened during R CMD check
@@ -155,23 +158,11 @@ h2o.openLog <- function(type) {
 #' \code{h2o.logAndEcho} sends a message to H2O for logging. Generally used for debugging purposes.
 #'
 #' @param message A character string with the message to write to the log.
-#' @param conn An \code{H2OConnection} object pointing to a running H2O cluster.
-#' @seealso \code{\link{H2OConnection}}
 #' @export
-h2o.logAndEcho <- function(message, conn = h2o.getConnection()) {
-  if (is(message, "H2OConnection")) {
-    temp <- message
-    message <- conn
-    conn <- temp
-  }
-
-  if(!is(conn, "H2OConnection"))
-    stop("`conn` must be an H2OConnection object")
-
+h2o.logAndEcho <- function(message) {
   if(!is.character(message))
     stop("`message` must be a character string")
-
-  res <- .h2o.__remoteSend(conn, .h2o.__LOGANDECHO, message = message, method = "POST")
+  res <- .h2o.__remoteSend(.h2o.__LOGANDECHO, message = message, method = "POST")
   res$message
 }
 
@@ -179,21 +170,17 @@ h2o.logAndEcho <- function(message, conn = h2o.getConnection()) {
 #'
 #' \code{h2o.downloadAllLogs} downloads all H2O log files to local disk. Generally used for debugging purposes.
 #'
-#' @param conn An \code{H2OConnection} object pointing to a running H2O cluster.
 #' @param dirname (Optional) A character string indicating the directory that the log file should be saved in.
 #' @param filename (Optional) A character string indicating the name that the log file should be saved to.
-#' @seealso \code{\link{H2OConnection}}
 #' @export
-h2o.downloadAllLogs <- function(conn = h2o.getConnection(), dirname = ".", filename = NULL) {
-  if(!is(conn, "H2OConnection"))
-    stop("`conn` must be an H2OConnection object")
-
+h2o.downloadAllLogs <- function(dirname = ".", filename = NULL) {
   if(!is.character(dirname) || length(dirname) != 1L || is.na(dirname) || !nzchar(dirname))
     stop("`dirname` must be a non-empty character string")
 
   if(!is.character(filename) || length(filename) != 1L || is.na(filename) || !nzchar(filename))
     stop("`filename` must be a non-empty character string")
 
+  conn <- h2o.getConnection()
   url <- paste0("http://", conn@ip, ":", conn@port, "/", .h2o.__DOWNLOAD_LOGS)
   if(!file.exists(dirname))
     dir.create(dirname)

@@ -20,10 +20,10 @@ In the case of existing files \code{force = TRUE} will overwrite the file.
 Otherwise, the operation will fail.
 }
 \examples{
-\donttest{
+\dontrun{
 # library(h2o)
-# localH2O <- h2o.init()
-# prostate.hex <- h2o.importFile(localH2O, path = paste("https://raw.github.com",
+# h2o.init()
+# prostate.hex <- h2o.importFile(path = paste("https://raw.github.com",
 #   "h2oai/h2o-2/master/smalldata/logreg/prostate.csv", sep = "/"),
 #   destination_frame = "prostate.hex")
 # prostate.glm <- h2o.glm(y = "CAPSULE", x = c("AGE","RACE","PSA","DCAPS"),

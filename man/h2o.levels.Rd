@@ -6,7 +6,7 @@
 h2o.levels(x, i)
 }
 \arguments{
-\item{x}{An \linkS4class{H2OFrame} object.}
+\item{x}{An H2O Frame object.}
 
 \item{i}{The index of the column whose domain is to be returned.}
 }
@@ -15,8 +15,7 @@ Return the levels from the column requested column.
 }
 \examples{
 \donttest{
-localH2O <- h2o.init()
-iris.hex <- as.h2o(localH2O, iris)
+iris.hex <- as.h2o(iris)
 h2o.levels(iris.hex, 5)  # returns "setosa"     "versicolor" "virginica"
 }
 }

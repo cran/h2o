@@ -6,11 +6,11 @@
 h2o.cbind(...)
 }
 \arguments{
-\item{\dots}{A sequence of \linkS4class{H2OFrame} arguments. All datasets must exist on the same H2O instance
+\item{\dots}{A sequence of Frame arguments. All datasets must exist on the same H2O instance
 (IP and port) and contain the same number of rows.}
 }
 \value{
-An \linkS4class{H2OFrame} object containing the combined \dots arguments column-wise.
+An H2O Frame object containing the combined \dots arguments column-wise.
 }
 \description{
 Takes a sequence of H2O data sets and combines them by column
@@ -18,9 +18,9 @@ Takes a sequence of H2O data sets and combines them by column
 \examples{
 \donttest{
 library(h2o)
-localH2O <- h2o.init()
+h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
-prostate.hex <- h2o.uploadFile(localH2O, path = prosPath)
+prostate.hex <- h2o.uploadFile(path = prosPath)
 prostate.cbind <- h2o.cbind(prostate.hex, prostate.hex)
 head(prostate.cbind)
 }

@@ -4,7 +4,7 @@
 \alias{summary,H2OGrid-method}
 \title{Format grid object in user-friendly way}
 \usage{
-\S4method{summary}{H2OGrid}(object, show_stack_traces = F)
+\S4method{summary}{H2OGrid}(object, show_stack_traces = FALSE)
 }
 \arguments{
 \item{object}{an \code{H2OGrid} object.}

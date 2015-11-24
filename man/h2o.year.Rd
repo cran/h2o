@@ -2,24 +2,24 @@
 \name{h2o.year}
 \alias{h2o.year}
 \alias{year}
-\alias{year.H2OFrame}
+\alias{year.Frame}
 \title{Convert Milliseconds to Years in H2O Datasets}
 \usage{
 h2o.year(x)
 
 year(x)
 
-\method{year}{H2OFrame}(x)
+\method{year}{Frame}(x)
 }
 \arguments{
-\item{x}{An \linkS4class{H2OFrame} object.}
+\item{x}{An H2O Frame object.}
 }
 \value{
-A \linkS4class{H2OFrame} object containig the entries of \code{x} converted to years
+A Frame object containig the entries of \code{x} converted to years
         starting from 1900, e.g. 69 corresponds to the year 1969.
 }
 \description{
-Convert the entries of a \linkS4class{H2OFrame} object from milliseconds to years, indexed
+Convert the entries of a Frame object from milliseconds to years, indexed
 starting from 1900.
 }
 \details{

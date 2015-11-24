@@ -3,10 +3,7 @@
 \alias{h2o.networkTest}
 \title{View Network Traffic Speed}
 \usage{
-h2o.networkTest(conn = h2o.getConnection())
-}
-\arguments{
-\item{conn}{an \linkS4class{H2OConnection} object.}
+h2o.networkTest()
 }
 \value{
 Returns a table listing the network speed for 1B, 10KB, and 10MB.

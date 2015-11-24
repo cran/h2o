@@ -3,11 +3,9 @@
 \alias{h2o.shutdown}
 \title{Shut Down H2O Instance}
 \usage{
-h2o.shutdown(conn = h2o.getConnection(), prompt = TRUE)
+h2o.shutdown(prompt = TRUE)
 }
 \arguments{
-\item{conn}{An \linkS4class{H2OConnection} object containing the IP address and port of the server running H2O.}
-
 \item{prompt}{A \code{logical} value indicating whether to prompt the user before shutting down the H2O server.}
 }
 \description{
@@ -26,8 +24,8 @@ Users must call h2o.shutdown explicitly in order to shut down the local H2O inst
 # Don't run automatically to prevent accidentally shutting down a cloud
 \dontrun{
 library(h2o)
-localH2O = h2o.init()
-h2o.shutdown(localH2O)
+h2o.init()
+h2o.shutdown()
 }
 }
 \seealso{

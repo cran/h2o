@@ -9,8 +9,6 @@ A class to contain the information for background model jobs.
 \section{Slots}{
 
 \describe{
-\item{\code{conn}}{an \linkS4class{H2OConnection}}
-
 \item{\code{job_key}}{a character key representing the identification of the job process.}
 
 \item{\code{model_id}}{the final identifier for the model}

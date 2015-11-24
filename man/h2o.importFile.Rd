@@ -7,28 +7,23 @@
 \alias{h2o.uploadFile}
 \title{Import Files into H2O}
 \usage{
-h2o.importFolder(path, conn = h2o.getConnection(), pattern = "",
-  destination_frame = "", parse = TRUE, header = NA, sep = "",
-  col.names = NULL, na.strings = NULL, parse_type = NULL)
+h2o.importFolder(path, pattern = "", destination_frame = "", parse = TRUE,
+  header = NA, sep = "", col.names = NULL, col.types = NULL,
+  na.strings = NULL)
 
-h2o.importURL(path, conn = h2o.getConnection(), destination_frame = "",
-  parse = TRUE, header = NA, sep = "", col.names = NULL,
-  na.strings = NULL, parse_type = NULL)
+h2o.importURL(path, destination_frame = "", parse = TRUE, header = NA,
+  sep = "", col.names = NULL, na.strings = NULL)
 
-h2o.importHDFS(path, conn = h2o.getConnection(), pattern = "",
-  destination_frame = "", parse = TRUE, header = NA, sep = "",
-  col.names = NULL, na.strings = NULL, parse_type = NULL)
+h2o.importHDFS(path, pattern = "", destination_frame = "", parse = TRUE,
+  header = NA, sep = "", col.names = NULL, na.strings = NULL)
 
-h2o.uploadFile(path, conn = h2o.getConnection(), destination_frame = "",
-  parse = TRUE, header = NA, sep = "", col.names = NULL,
-  col.types = NULL, na.strings = NULL, progressBar = FALSE,
-  parse_type = NULL)
+h2o.uploadFile(path, destination_frame = "", parse = TRUE, header = NA,
+  sep = "", col.names = NULL, col.types = NULL, na.strings = NULL,
+  progressBar = FALSE, parse_type = NULL)
 }
 \arguments{
 \item{path}{The complete URL or normalized file path of the file to be
 imported. Each row of data appears as one line of the file.}
-
-\item{conn}{an \linkS4class{H2OConnection} class object.}
 
 \item{pattern}{(Optional) Character string containing a regular expression to match file(s) in
 the folder.}
@@ -48,21 +43,20 @@ to automatically detect this.}
 the file are separated by this character. If \code{sep = ""}, the
 parser will automatically detect the separator.}
 
-\item{col.names}{(Optional) A \linkS4class{H2ORawData} or
-\linkS4class{H2OFrame} (\code{version = 2}) object containing a single
+\item{col.names}{(Optional) A Frame object containing a single
 delimited line with the column names for the file.}
-
-\item{na.strings}{(Optional) H2O will interpret these strings as missing.}
-
-\item{parse_type}{(Optional) Specify which parser type H2O will use.
-Valid types are "ARFF", "XLS", "CSV", "SVMLight"}
 
 \item{col.types}{(Optional) A vector to specify whether columns should be
 forced to a certain type upon import parsing.}
 
+\item{na.strings}{(Optional) H2O will interpret these strings as missing.}
+
 \item{progressBar}{(Optional) When FALSE, tell H2O parse call to block
 synchronously instead of polling.  This can be faster for small
 datasets but loses the progress bar.}
+
+\item{parse_type}{(Optional) Specify which parser type H2O will use.
+Valid types are "ARFF", "XLS", "CSV", "SVMLight"}
 }
 \description{
 Imports files into an H2O cloud. The default behavior is to pass-through to the parse phase
@@ -83,9 +77,9 @@ behavior is to pass-through to the parse phase automatically.
 }
 \examples{
 \donttest{
-localH2O = h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
+h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
 prosPath = system.file("extdata", "prostate.csv", package = "h2o")
-prostate.hex = h2o.uploadFile(localH2O, path = prosPath, destination_frame = "prostate.hex")
+prostate.hex = h2o.uploadFile(path = prosPath, destination_frame = "prostate.hex")
 class(prostate.hex)
 summary(prostate.hex)
 }

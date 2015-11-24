@@ -4,46 +4,49 @@
 \title{Build a Deep Learning Neural Network}
 \usage{
 h2o.deeplearning(x, y, training_frame, model_id = "",
-  overwrite_with_best_model, validation_frame, checkpoint,
+  overwrite_with_best_model, validation_frame = NULL, checkpoint,
   autoencoder = FALSE, use_all_factor_levels = TRUE,
   activation = c("Rectifier", "Tanh", "TanhWithDropout",
   "RectifierWithDropout", "Maxout", "MaxoutWithDropout"), hidden = c(200,
-  200), epochs = 10, train_samples_per_iteration = -2, seed,
-  adaptive_rate = TRUE, rho = 0.99, epsilon = 1e-08, rate = 0.005,
-  rate_annealing = 1e-06, rate_decay = 1, momentum_start = 0,
-  momentum_ramp = 1e+06, momentum_stable = 0,
-  nesterov_accelerated_gradient = TRUE, input_dropout_ratio = 0,
-  hidden_dropout_ratios, l1 = 0, l2 = 0, max_w2 = Inf,
-  initial_weight_distribution = c("UniformAdaptive", "Uniform", "Normal"),
-  initial_weight_scale = 1, loss = c("Automatic", "CrossEntropy",
-  "MeanSquare", "Absolute", "Huber"), distribution = c("AUTO", "gaussian",
-  "bernoulli", "multinomial", "poisson", "gamma", "tweedie", "laplace",
-  "huber"), tweedie_power = 1.5, score_interval = 5, score_training_samples,
-  score_validation_samples, score_duty_cycle, classification_stop,
-  regression_stop, quiet_mode, max_confusion_matrix_size, max_hit_ratio_k,
-  balance_classes = FALSE, class_sampling_factors, max_after_balance_size,
-  score_validation_sampling, diagnostics, variable_importances, fast_mode,
-  ignore_const_cols, force_load_balance, replicate_training_data,
-  single_node_mode, shuffle_training_data, sparse, col_major,
-  average_activation, sparsity_beta, max_categorical_features,
-  reproducible = FALSE, export_weights_and_biases = FALSE,
-  offset_column = NULL, weights_column = NULL, nfolds = 0,
-  fold_column = NULL, fold_assignment = c("AUTO", "Random", "Modulo"),
-  keep_cross_validation_predictions = FALSE, ...)
+  200), epochs = 10, train_samples_per_iteration = -2,
+  target_ratio_comm_to_comp = 0.05, seed, adaptive_rate = TRUE,
+  rho = 0.99, epsilon = 1e-08, rate = 0.005, rate_annealing = 1e-06,
+  rate_decay = 1, momentum_start = 0, momentum_ramp = 1e+06,
+  momentum_stable = 0, nesterov_accelerated_gradient = TRUE,
+  input_dropout_ratio = 0, hidden_dropout_ratios, l1 = 0, l2 = 0,
+  max_w2 = Inf, initial_weight_distribution = c("UniformAdaptive",
+  "Uniform", "Normal"), initial_weight_scale = 1, loss = c("Automatic",
+  "CrossEntropy", "Quadratic", "Absolute", "Huber"), distribution = c("AUTO",
+  "gaussian", "bernoulli", "multinomial", "poisson", "gamma", "tweedie",
+  "laplace", "huber"), tweedie_power = 1.5, score_interval = 5,
+  score_training_samples, score_validation_samples, score_duty_cycle,
+  classification_stop, regression_stop, stopping_rounds = 5,
+  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "AUC", "r2",
+  "misclassification"), stopping_tolerance = 0, quiet_mode,
+  max_confusion_matrix_size, max_hit_ratio_k, balance_classes = FALSE,
+  class_sampling_factors, max_after_balance_size, score_validation_sampling,
+  diagnostics, variable_importances, fast_mode, ignore_const_cols,
+  force_load_balance, replicate_training_data, single_node_mode,
+  shuffle_training_data, sparse, col_major, average_activation, sparsity_beta,
+  max_categorical_features, reproducible = FALSE,
+  export_weights_and_biases = FALSE, offset_column = NULL,
+  weights_column = NULL, nfolds = 0, fold_column = NULL,
+  fold_assignment = c("AUTO", "Random", "Modulo"),
+  keep_cross_validation_predictions = FALSE)
 }
 \arguments{
 \item{x}{A vector containing the \code{character} names of the predictors in the model.}
 
 \item{y}{The name of the response variable in the model.}
 
-\item{training_frame}{An \linkS4class{H2OFrame} object containing the variables in the model.}
+\item{training_frame}{An H2O Frame object containing the variables in the model.}
 
 \item{model_id}{(Optional) The unique id assigned to the resulting model. If
 none is given, an id will automatically be generated.}
 
 \item{overwrite_with_best_model}{Logical. If \code{TRUE}, overwrite the final model with the best model found during training. Defaults to \code{TRUE}.}
 
-\item{validation_frame}{(Optional) An \code{\link{H2OFrame}} object indicating the validation dataset used to construct the confusion matrix. If left blank, this defaults to the training data when \code{nfolds = 0}}
+\item{validation_frame}{An H2O Frame object indicating the validation dataset used to construct the confusion matrix. Defaults to NULL.  If left as NULL, this defaults to the training data when \code{nfolds = 0}.}
 
 \item{checkpoint}{"Model checkpoint (either key or H2ODeepLearningModel) to resume training with."}
 
@@ -63,6 +66,10 @@ variable importances and auto-enabled for autoencoder.}
 \item{train_samples_per_iteration}{Number of training samples (globally) per MapReduce iteration.
 Special values are: \bold{0} one epoch; \bold{-1} all available data (e.g., replicated
 training data); or \bold{-2} auto-tuning (default)}
+
+\item{target_ratio_comm_to_comp}{Target ratio of communication overhead to computation.
+Only for multi-node operation and train_samples_per_iteration=-2 (auto-tuning).
+Higher values can lead to faster convergence.}
 
 \item{seed}{Seed for random numbers (affects sampling) - Note: only reproducible when running
 single threaded}
@@ -107,7 +114,7 @@ be small)}
 
 \item{initial_weight_scale}{Uniform: -value ... value, Normal: stddev}
 
-\item{loss}{Loss function: "Automatic", "CrossEntropy" (for classification only), "MeanSquare", "Absolute"
+\item{loss}{Loss function: "Automatic", "CrossEntropy" (for classification only), "Quadratic", "Absolute"
 (experimental) or "Huber" (experimental)}
 
 \item{distribution}{A \code{character} string. The distribution function of the response.
@@ -130,6 +137,17 @@ more scoring)}
 
 \item{regression_stop}{Stopping criterion for regression error (MSE) on training data (-1 to
 disable)}
+
+\item{stopping_rounds}{Early stopping based on convergence of stopping_metric.
+Stop if simple moving average of length k of the stopping_metric does not improve
+(by stopping_tolerance) for k=stopping_rounds scoring events.
+Can only trigger after at least 2k scoring events. Use 0 to disable.}
+
+\item{stopping_metric}{Metric to use for convergence checking, only for _stopping_rounds > 0
+Can be one of "AUTO", "deviance", "logloss", "MSE", "AUC", "r2", "misclassification".}
+
+\item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (if relative
+improvement is not at least this much, stop)}
 
 \item{quiet_mode}{Enable quiet mode for less output to standard output}
 
@@ -170,7 +188,7 @@ training}
 \item{shuffle_training_data}{Enable shuffling of training data (recommended if training data is
 replicated and train_samples_per_iteration is close to \eqn{numRows*numNodes}}
 
-\item{sparse}{Sparse data handling (Experimental)}
+\item{sparse}{Sparse data handling (more efficient for data with lots of 0 values)}
 
 \item{col_major}{Use a column major weight matrix for input layer. Can speed up forward
 propagation, but might slow down backpropagation (Experimental)}
@@ -203,16 +221,18 @@ Must be "AUTO", "Random" or "Modulo"}
 \item{...}{extra parameters to pass onto functions (not implemented)}
 }
 \description{
-Performs Deep Learning neural networks on an \linkS4class{H2OFrame}
+Performs Deep Learning neural networks on an H2O Frame
 }
 \examples{
+\donttest{
 library(h2o)
-localH2O <- h2o.init()
+h2o.init()
 iris.hex <- as.h2o(iris)
 iris.dl <- h2o.deeplearning(x = 1:4, y = 5, training_frame = iris.hex)
 
 # now make a prediction
 predictions <- h2o.predict(iris.dl, iris.hex)
+}
 }
 \seealso{
 \code{\link{predict.H2OModel}} for prediction.

@@ -3,21 +3,21 @@
 \alias{h2o.ddply}
 \title{Split H2O Dataset, Apply Function, and Return Results}
 \usage{
-h2o.ddply(.data, .variables, .fun = NULL, ..., .progress = "none")
+h2o.ddply(X, .variables, FUN, ..., .progress = "none")
 }
 \arguments{
-\item{.data}{An \linkS4class{H2OFrame} object to be processed.}
+\item{X}{An H2O Frame object to be processed.}
 
-\item{.variables}{Variables to split \code{.data} by, either the indices or names of a set of columns.}
+\item{.variables}{Variables to split \code{X} by, either the indices or names of a set of columns.}
 
-\item{.fun}{Function to apply to each subset grouping.}
+\item{FUN}{Function to apply to each subset grouping.}
+
+\item{...}{Additional arguments passed on to \code{FUN}.}
 
 \item{.progress}{Name of the progress bar to use. #TODO: (Currently unimplemented)}
-
-\item{\dots}{Additional arguments passed on to \code{.fun}. #TODO: (Currently unimplemented)}
 }
 \value{
-Returns a \linkS4class{H2OFrame} object containing the results from the split/apply operation, arranged
+Returns a Frame object containing the results from the split/apply operation, arranged
 }
 \description{
 For each subset of an H2O data set, apply a user-specified function, then combine the results.  This is an experimental feature.
@@ -25,15 +25,15 @@ For each subset of an H2O data set, apply a user-specified function, then combin
 \examples{
 \donttest{
 library(h2o)
-localH2O <- h2o.init()
+h2o.init()
 
 # Import iris dataset to H2O
 irisPath <- system.file("extdata", "iris_wheader.csv", package = "h2o")
-iris.hex <- h2o.uploadFile(localH2O, path = irisPath, destination_frame = "iris.hex")
+iris.hex <- h2o.uploadFile(path = irisPath, destination_frame = "iris.hex")
 # Add function taking mean of sepal_len column
-fun = function(df) { sum(df[,1], na.rm = T)/nrow(df) }
+fun = function(df) { sum(df[,1], na.rm = TRUE)/nrow(df) }
 # Apply function to groups by class of flower
-# uses h2o's ddply, since iris.hex is an H2OFrame object
+# uses h2o's ddply, since iris.hex is a Frame object
 res = h2o.ddply(iris.hex, "class", fun)
 head(res)
 }

@@ -6,7 +6,7 @@
 h2o.exportFile(data, path, force = FALSE)
 }
 \arguments{
-\item{data}{An \linkS4class{H2OFrame} data frame.}
+\item{data}{An H2O Frame data frame.}
 
 \item{path}{The path to write the file to. Must include the directory and
 filename. May be prefaced with hdfs:// or s3n://. Each row of data
@@ -15,7 +15,7 @@ appears as line of the file.}
 \item{force}{logical, indicates how to deal with files that already exist.}
 }
 \description{
-Exports an \linkS4class{H2OFrame} (which can be either VA or FV) to a file.
+Exports an H2O Frame (which can be either VA or FV) to a file.
 This file may be on the H2O instace's local filesystem, or to HDFS (preface
 the path with hdfs://) or to S3N (preface the path with s3n://).
 }
@@ -24,11 +24,11 @@ In the case of existing files \code{forse = TRUE} will overwrite the file.
 Otherwise, the operation will fail.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
-localH2O <- h2o.init()
+h2o.init()
 irisPath <- system.file("extdata", "iris.csv", package = "h2o")
-iris.hex <- h2o.uploadFile(localH2O, path = irisPath)
+iris.hex <- h2o.uploadFile(path = irisPath)
 
 # These aren't real paths
 # h2o.exportFile(iris.hex, path = "/path/on/h2o/server/filesystem/iris.csv")

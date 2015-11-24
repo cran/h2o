@@ -19,8 +19,6 @@ Format grid object in user-friendly way
 \section{Slots}{
 
 \describe{
-\item{\code{conn}}{an \linkS4class{H2OConnection}}
-
 \item{\code{grid_id}}{the final identifier of grid}
 
 \item{\code{model_ids}}{list of model IDs which are included in the grid object}

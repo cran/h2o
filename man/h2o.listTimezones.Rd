@@ -3,10 +3,7 @@
 \alias{h2o.listTimezones}
 \title{List all of the Time Zones Acceptable by the H2O Cloud.}
 \usage{
-h2o.listTimezones(conn = h2o.getConnection())
-}
-\arguments{
-\item{conn}{An H2OConnection object.}
+h2o.listTimezones()
 }
 \description{
 List all of the Time Zones Acceptable by the H2O Cloud.

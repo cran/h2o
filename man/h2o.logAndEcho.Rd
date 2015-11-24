@@ -3,12 +3,10 @@
 \alias{h2o.logAndEcho}
 \title{Log a message on the server-side logs}
 \usage{
-h2o.logAndEcho(message, conn = h2o.getConnection())
+h2o.logAndEcho(message)
 }
 \arguments{
 \item{message}{A character string with the message to write to the log.}
-
-\item{conn}{An \code{H2OConnection} object pointing to a running H2O cluster.}
 }
 \description{
 This is helpful when running several pieces of work one after the other on a single H2O
@@ -17,8 +15,5 @@ work ends and the next piece of work begins.
 }
 \details{
 \code{h2o.logAndEcho} sends a message to H2O for logging. Generally used for debugging purposes.
-}
-\seealso{
-\code{\link{H2OConnection}}
 }
 

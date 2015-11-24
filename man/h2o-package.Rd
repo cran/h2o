@@ -12,9 +12,9 @@ This is a package for running H2O via its REST API from within R. To communicate
 \tabular{ll}{
 Package: \tab h2o\cr
 Type: \tab Package\cr
-Version: \tab 3.2.0.3\cr
-Branch: \tab rel-slater\cr
-Date: \tab Mon Sep 21 18:19:33 PDT 2015\cr
+Version: \tab 3.6.0.8\cr
+Branch: \tab rel-tibshirani\cr
+Date: \tab Mon Nov 23 20:21:10 PST 2015\cr
 License: \tab Apache License (== 2.0)\cr
 Depends: \tab R (>= 2.13.0), RCurl, jsonlite, statmod, tools, methods, utils\cr
 }
@@ -28,15 +28,15 @@ Note that no actual data is stored in the R workspace; and no actual work is car
 If you are using an older version of H2O, use the following porting guide to update your scripts: \href{https://github.com/h2oai/h2o-dev/blob/master/h2o-docs/src/product/upgrade/H2ODevPortingRScripts.md}{Porting Scripts}
 }
 \author{
-Anqi Fu, Tom Kraljevic and Petr Maj, with contributions from the 0xdata team
+Anqi Fu, Tom Kraljevic and Petr Maj, with contributions from the H2O.ai team
 
 Maintainer: Tom Kraljevic <tomk@0xdata.com>
 }
 \references{
 \itemize{
-  \item \href{http://www.h2o.ai}{0xdata Homepage}
+  \item \href{http://www.h2o.ai}{H2O.ai Homepage}
   \item \href{http://docs.h2o.ai}{H2O Documentation}
-  \item \href{https://github.com/h2oai/h2o-dev}{H2O on Github}
+  \item \href{https://github.com/h2oai/h2o-dev}{H2O on GitHub}
   }
 }
 \keyword{ package }

@@ -4,8 +4,7 @@
 \title{H2O Grid Support}
 \usage{
 h2o.grid(algorithm, grid_id, ..., hyper_params = list(),
-  is_supervised = NULL, do_hyper_params_check = FALSE,
-  conn = h2o.getConnection())
+  is_supervised = NULL, do_hyper_params_check = FALSE)
 }
 \arguments{
 \item{algorithm}{name of algorithm to use in grid search (gbm, randomForest, kmeans, glm, deeplearning, naivebayes, pca)}
@@ -22,8 +21,6 @@ name and parameters specify super/unsupervised algorithm.}
 
 \item{do_hyper_params_check}{perform client check for specified hyper parameters. It can be time expensive for
 large hyper space}
-
-\item{conn}{connection to H2O cluster}
 }
 \description{
 Provides a set of functions to launch a grid search and get
@@ -33,9 +30,10 @@ its results.
 Launch grid search with given algorithm and parameters.
 }
 \examples{
+\donttest{
 library(h2o)
 library(jsonlite)
-localH2O <- h2o.init()
+h2o.init()
 iris.hex <- as.h2o(iris)
 grid <- h2o.grid("gbm", x = c(1:4), y = 5, training_frame = iris.hex,
                  hyper_params = list(ntrees = c(1,2,3)))
@@ -44,5 +42,6 @@ summary(grid)
 # Fetch grid models
 model_ids <- grid@model_ids
 models <- lapply(model_ids, function(id) { h2o.getModel(id)})
+}
 }
 

@@ -6,7 +6,7 @@
 h2o.downloadCSV(data, filename)
 }
 \arguments{
-\item{data}{an \linkS4class{H2OFrame} object to be downloaded.}
+\item{data}{an H2O Frame object to be downloaded.}
 
 \item{filename}{A string indicating the name that the CSV file should be
 should be saved to.}
@@ -16,14 +16,14 @@ Download an H2O data set to a CSV file on the local disk
 }
 \section{Warning}{
  Files located on the H2O server may be very large! Make
-       sure you have enough hard drive psace to accomoadet the entire file.
+       sure you have enough hard drive space to accomodate the entire file.
 }
 \examples{
 \donttest{
 library(h2o)
-localH2O <- h2o.init()
+h2o.init()
 irisPath <- system.file("extdata", "iris_wheader.csv", package = "h2o")
-iris.hex <- h2o.uploadFile(localH2O, path = irisPath)
+iris.hex <- h2o.uploadFile(path = irisPath)
 
 myFile <- paste(getwd(), "my_iris_file.csv", sep = .Platform$file.sep)
 h2o.downloadCSV(iris.hex, myFile)

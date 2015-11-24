@@ -3,12 +3,10 @@
 \alias{h2o.rm}
 \title{Delete Objects In H2O}
 \usage{
-h2o.rm(ids, conn = h2o.getConnection())
+h2o.rm(ids)
 }
 \arguments{
 \item{ids}{The hex key associated with the object to be removed.}
-
-\item{conn}{An \linkS4class{H2OConnection} object containing the IP address and port number of the H2O server.}
 }
 \description{
 Remove the h2o Big Data object(s) having the key name(s) from ids.

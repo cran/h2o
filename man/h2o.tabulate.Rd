@@ -7,7 +7,7 @@ h2o.tabulate(data, x, y, weights_column = NULL, nbins_x = 50,
   nbins_y = 50)
 }
 \arguments{
-\item{data}{An \linkS4class{H2OFrame} object.}
+\item{data}{An H2O Frame object.}
 
 \item{x}{predictor column}
 
@@ -32,10 +32,11 @@ Handles numerical/categorical data and missing values. Supports observation weig
 \examples{
 \donttest{
 library(h2o)
-localH2O <- h2o.init()
+h2o.init()
 df <- as.h2o(iris)
-h2o.tabulate(data = df, x = "Sepal.Length", y = "Petal.Width",
+tab <- h2o.tabulate(data = df, x = "Sepal.Length", y = "Petal.Width",
              weights_column = NULL, nbins_x = 10, nbins_y = 10)
+plot(tab)
 }
 }
 

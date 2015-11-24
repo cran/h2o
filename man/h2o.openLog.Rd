@@ -13,12 +13,12 @@ Open existing logs of H2O R POST commands and error resposnes on local disk.
 Used primarily for debugging purposes.
 }
 \examples{
-\donttest{
-localH2O = h2o.init()
+\dontrun{
+h2o.init()
 
 h2o.startLogging()
 ausPath = system.file("extdata", "australia.csv", package="h2o")
-australia.hex = h2o.importFile(localH2O, path = ausPath)
+australia.hex = h2o.importFile(path = ausPath)
 h2o.stopLogging()
 
 # Not run to avoid windows being opened during R CMD check

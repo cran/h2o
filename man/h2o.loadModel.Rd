@@ -3,14 +3,10 @@
 \alias{h2o.loadModel}
 \title{Load H2O Model from HDFS or Local Disk}
 \usage{
-h2o.loadModel(path, conn = h2o.getConnection())
+h2o.loadModel(path)
 }
 \arguments{
-\item{path}{The path of the H2O Model to be imported. For example, if the `dir` argument in h2o.saveModel was set to
-"/Users/UserName/Desktop" then the `path` argument in h2o.loadModel should be set to something like
-"/Users/UserName/Desktop/K-meansModel__a7cebf318ca5827185e209edf47c4052"}
-
-\item{conn}{an \linkS4class{H2OConnection} object containing the IP address
+\item{path}{The path of the H2O Model to be imported.
 and port of the server running H2O.}
 }
 \value{
@@ -21,15 +17,15 @@ Returns a \linkS4class{H2OModel} object of the class corresponding to the type o
 Load a saved H2O model from disk.
 }
 \examples{
-\donttest{
+\dontrun{
 # library(h2o)
-# localH2O = h2o.init()
+# h2o.init()
 # prosPath = system.file("extdata", "prostate.csv", package = "h2o")
-# prostate.hex = h2o.importFile(localH2O, path = prosPath, destination_frame = "prostate.hex")
+# prostate.hex = h2o.importFile(path = prosPath, destination_frame = "prostate.hex")
 # prostate.glm = h2o.glm(y = "CAPSULE", x = c("AGE","RACE","PSA","DCAPS"),
 #   training_frame = prostate.hex, family = "binomial", alpha = 0.5)
 # glmmodel.path = h2o.saveModel(prostate.glm, dir = "/Users/UserName/Desktop")
-# glmmodel.load = h2o.loadModel(localH2O, glmmodel.path)
+# glmmodel.load = h2o.loadModel(glmmodel.path)
 }
 }
 \seealso{

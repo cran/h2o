@@ -3,16 +3,18 @@
 \alias{h2o.splitFrame}
 \title{Split an H2O Data Set}
 \usage{
-h2o.splitFrame(data, ratios = 0.75, destination_frames)
+h2o.splitFrame(data, ratios = 0.75, destination_frames, seed = -1)
 }
 \arguments{
-\item{data}{An \linkS4class{H2OFrame} object representing the dataste to split.}
+\item{data}{An H2O Frame object representing the dataste to split.}
 
 \item{ratios}{A numeric value or array indicating the ratio of total rows
 contained in each split. Must total up to less than 1.}
 
 \item{destination_frames}{An array of frame IDs equal to the number of ratios
 specified plus one.}
+
+\item{seed}{Random seed.}
 }
 \description{
 Split an existing H2O data set according to user-specified ratios.
@@ -20,9 +22,9 @@ Split an existing H2O data set according to user-specified ratios.
 \examples{
 \donttest{
 library(h2o)
-localH2O = h2o.init()
+h2o.init()
 irisPath = system.file("extdata", "iris.csv", package = "h2o")
-iris.hex = h2o.importFile(localH2O, path = irisPath)
+iris.hex = h2o.importFile(path = irisPath)
 iris.split = h2o.splitFrame(iris.hex, ratios = c(0.2, 0.5))
 head(iris.split[[1]])
 summary(iris.split[[1]])

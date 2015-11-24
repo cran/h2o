@@ -3,10 +3,10 @@
 \alias{h2o.merge}
 \title{Merge Two H2O Data Frames}
 \usage{
-h2o.merge(x, y, all.x = FALSE, all.y = FALSE)
+h2o.merge(x, y, all.x = TRUE, all.y = FALSE)
 }
 \arguments{
-\item{x,y}{\linkS4class{H2OFrame} objects}
+\item{x,y}{Frame objects}
 
 \item{all.x}{a logical value indicating whether or not shared values are
 preserved or ignored in \code{x}.}
@@ -15,7 +15,7 @@ preserved or ignored in \code{x}.}
 preserved or ignored in \code{y}.}
 }
 \description{
-Merges two \linkS4class{H2OFrame} objects by shared column names. Unlike the
+Merges two Frame objects by shared column names. Unlike the
 base R implementation, \code{h2o.merge} only supports merging through shared
 column names.
 }
