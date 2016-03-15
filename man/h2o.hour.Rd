@@ -2,24 +2,24 @@
 \name{h2o.hour}
 \alias{h2o.hour}
 \alias{hour}
-\alias{hour.Frame}
+\alias{hour.H2OFrame}
 \title{Convert Milliseconds to Hour of Day in H2O Datasets}
 \usage{
 h2o.hour(x)
 
 hour(x)
 
-\method{hour}{Frame}(x)
+\method{hour}{H2OFrame}(x)
 }
 \arguments{
-\item{x}{An H2O Frame object.}
+\item{x}{An H2OFrame object.}
 }
 \value{
-A Frame object containing the entries of \code{x} converted to hours of
+An H2OFrame object containing the entries of \code{x} converted to hours of
         the day.
 }
 \description{
-Converts the entries of a Frame object from milliseconds to hours of the day
+Converts the entries of an H2OFrame object from milliseconds to hours of the day
 (on a 0 to 23 scale).
 }
 \seealso{

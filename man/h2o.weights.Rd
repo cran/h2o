@@ -3,14 +3,12 @@
 \alias{h2o.weights}
 \title{Retrieve the respective weight matrix}
 \usage{
-h2o.weights(object, matrix_id = 1, ...)
+h2o.weights(object, matrix_id = 1)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} or \linkS4class{H2OModelMetrics}}
 
 \item{matrix_id}{An integer, ranging from 1 to number of layers + 1, that specifies the weight matrix to return.}
-
-\item{\dots}{further arguments to be passed to/from this method.}
 }
 \description{
 Retrieve the respective weight matrix

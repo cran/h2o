@@ -2,17 +2,17 @@
 \name{h2o.match}
 \alias{\%in\%}
 \alias{h2o.match}
-\alias{match.Frame}
+\alias{match.H2OFrame}
 \title{Value Matching in H2O}
 \usage{
 h2o.match(x, table, nomatch = 0, incomparables = NULL)
 
-match.Frame(x, table, nomatch = 0, incomparables = NULL)
+match.H2OFrame(x, table, nomatch = 0, incomparables = NULL)
 
 x \%in\% table
 }
 \arguments{
-\item{x}{a categorical vector from an H2O Frame object with
+\item{x}{a categorical vector from an H2OFrame object with
 values to be matched.}
 
 \item{table}{an R object to match \code{x} against.}

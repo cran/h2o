@@ -6,8 +6,7 @@ If "train", "valid", and "xval" parameters are FALSE (default), then the trainin
 than one parameter is set to TRUE, then a named vector of residual deviances are returned, where the names are "train", "valid"
 or "xval".}
 \usage{
-h2o.residual_deviance(object, train = FALSE, valid = FALSE, xval = FALSE,
-  ...)
+h2o.residual_deviance(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} or \linkS4class{H2OModelMetrics}}
@@ -17,8 +16,6 @@ h2o.residual_deviance(object, train = FALSE, valid = FALSE, xval = FALSE,
 \item{valid}{Retrieve the validation residual deviance}
 
 \item{xval}{Retrieve the cross-validation residual deviance}
-
-\item{\dots}{further arguments to be passed to/from this method.}
 }
 \description{
 Retrieve the residual deviance

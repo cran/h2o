@@ -6,7 +6,7 @@
 h2o.splitFrame(data, ratios = 0.75, destination_frames, seed = -1)
 }
 \arguments{
-\item{data}{An H2O Frame object representing the dataste to split.}
+\item{data}{An H2OFrame object representing the dataste to split.}
 
 \item{ratios}{A numeric value or array indicating the ratio of total rows
 contained in each split. Must total up to less than 1.}

@@ -3,10 +3,12 @@
 \alias{h2o.init}
 \title{Initialize and Connect to H2O}
 \usage{
-h2o.init(ip = "127.0.0.1", port = 54321, startH2O = TRUE,
-  forceDL = FALSE, Xmx, beta = FALSE, assertion = TRUE, license = NULL,
+h2o.init(ip = "localhost", port = 54321, startH2O = TRUE,
+  forceDL = FALSE, enable_assertions = TRUE, license = NULL,
   nthreads = -2, max_mem_size = NULL, min_mem_size = NULL,
-  ice_root = tempdir(), strict_version_check = TRUE)
+  ice_root = tempdir(), strict_version_check = TRUE,
+  proxy = NA_character_, https = FALSE, insecure = FALSE,
+  username = NA_character_, password = NA_character_)
 }
 \arguments{
 \item{ip}{Object of class \code{character} representing the IP address of the server where H2O is running.}
@@ -17,11 +19,7 @@ h2o.init(ip = "127.0.0.1", port = 54321, startH2O = TRUE,
 
 \item{forceDL}{(Optional) A \code{logical} value indicating whether to force download of the H2O executable. Defaults to FALSE, so the executable will only be downloaded if it does not already exist in the h2o R library resources directory \code{h2o/java/h2o.jar}.  This value is only used when R starts H2O.}
 
-\item{Xmx}{(Optional) (DEPRECATED) A \code{character} string specifying the maximum size, in bytes, of the memory allocation pool to H2O. This value must a multiple of 1024 greater than 2MB. Append the letter m or M to indicate megabytes, or g or G to indicate gigabytes.  This value is only used when R starts H2O.}
-
-\item{beta}{(Optional) A \code{logical} value indicating whether H2O should launch in beta mode. This value is only used when R starts H2O.}
-
-\item{assertion}{(Optional) A \code{logical} value indicating whether H2O should be launched with assertions enabled. Used mainly for error checking and debugging purposes.  This value is only used when R starts H2O.}
+\item{enable_assertions}{(Optional) A \code{logical} value indicating whether H2O should be launched with assertions enabled. Used mainly for error checking and debugging purposes.  This value is only used when R starts H2O.}
 
 \item{license}{(Optional) A \code{character} string value specifying the full path of the license file.  This value is only used when R starts H2O.}
 
@@ -34,6 +32,16 @@ h2o.init(ip = "127.0.0.1", port = 54321, startH2O = TRUE,
 \item{ice_root}{(Optional) A directory to handle object spillage. The defaul varies by OS.}
 
 \item{strict_version_check}{(Optional) Setting this to FALSE is unsupported and should only be done when advised by technical support.}
+
+\item{proxy}{(Optional) A \code{character} string specifying the proxy path.}
+
+\item{https}{(Optional) Set this to TRUE to use https instead of http.}
+
+\item{insecure}{(Optional) Set this to TRUE to disable SSL certificate checking.}
+
+\item{username}{(Optional) Username to login with.}
+
+\item{password}{(Optional) Password to login with.}
 }
 \value{
 this method will load it and return a \code{H2OConnection} object containing the IP address and port number of the H2O server.
@@ -42,7 +50,7 @@ this method will load it and return a \code{H2OConnection} object containing the
 Attempts to start and/or connect to and H2O instance.
 }
 \details{
-By defualt, this method first checks if an H2O instance is connectible. If it cannot connect and \code{start = TRUE} with \code{ip = "localhost"}, it will attempt to start and instance of H2O at localhost:54321. Otherwise it stops with an error.
+By default, this method first checks if an H2O instance is connectible. If it cannot connect and \code{start = TRUE} with \code{ip = "localhost"}, it will attempt to start and instance of H2O at localhost:54321. Otherwise it stops with an error.
 
 When initializing H2O locally, this method searches for h2o.jar in the R library resources (\code{system.file("java", "h2o.jar", package = "h2o")}), and if the file does not exist, it will automatically attempt to download the correct version from Amazon S3. The user must have Internet access for this process to be successful.
 

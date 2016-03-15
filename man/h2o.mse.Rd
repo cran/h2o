@@ -3,7 +3,7 @@
 \alias{h2o.mse}
 \title{Retrieves Mean Squared Error Value}
 \usage{
-h2o.mse(object, train = FALSE, valid = FALSE, xval = FALSE, ...)
+h2o.mse(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModelMetrics} object of the correct type.}
@@ -13,8 +13,6 @@ h2o.mse(object, train = FALSE, valid = FALSE, xval = FALSE, ...)
 \item{valid}{Retrieve the validation MSE}
 
 \item{xval}{Retrieve the cross-validation MSE}
-
-\item{\dots}{Extra arguments to be passed if `object` is of type \linkS4class{H2OModel} (e.g. train=TRUE)}
 }
 \description{
 Retrieves the mean squared error value from an \linkS4class{H2OModelMetrics}

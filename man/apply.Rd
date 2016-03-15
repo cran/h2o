@@ -6,7 +6,7 @@
 apply(X, MARGIN, FUN, ...)
 }
 \arguments{
-\item{X}{an H2O Frame object on which \code{apply} will operate.}
+\item{X}{an H2OFrame object on which \code{apply} will operate.}
 
 \item{MARGIN}{the vector on which the function will be applied over, either
 \code{1} for rows or \code{2} for columns.}
@@ -16,12 +16,12 @@ apply(X, MARGIN, FUN, ...)
 \item{\dots}{optional arguments to \code{FUN}.}
 }
 \value{
-Produces a new Frame of the output of the applied
+Produces a new H2OFrame of the output of the applied
         function. The output is stored in H2O so that it can be used in
         subsequent H2O processes.
 }
 \description{
-Method for apply on Frame objects.
+Method for apply on H2OFrame objects.
 }
 \examples{
 \donttest{

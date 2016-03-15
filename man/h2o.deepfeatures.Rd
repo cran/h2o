@@ -9,12 +9,12 @@ h2o.deepfeatures(object, data, layer = 1)
 \item{object}{An \linkS4class{H2OModel} object that represents the deep
 learning model to be used for feature extraction.}
 
-\item{data}{An H2O Frame object.}
+\item{data}{An H2OFrame object.}
 
 \item{layer}{Index of the hidden layer to extract.}
 }
 \value{
-Returns an H2O Frame object with as many features as the
+Returns an H2OFrame object with as many features as the
         number of units in the hidden layer of the specified index.
 }
 \description{

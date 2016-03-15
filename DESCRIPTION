@@ -1,8 +1,8 @@
 Package: h2o
-Version: 3.6.0.8
+Version: 3.8.1.3
 Type: Package
 Title: R Interface for H2O
-Date: 2015-11-18
+Date: 2016-03-11
 Author: Spencer Aiello, Tom Kraljevic and Petr Maj, with contributions from the
     H2O.ai team
 Maintainer: Tom Kraljevic <tomk@0xdata.com>
@@ -18,6 +18,6 @@ SystemRequirements: Java (>= 1.7)
 Depends: R (>= 2.13.0), methods, statmod, stats
 Imports: graphics, RCurl, jsonlite, tools, utils
 Suggests: devtools, roxygen2, testthat, ggplot2, mlbench
-Packaged: 2015-11-24 04:21:22 UTC; jenkins
+Packaged: 2016-03-06 22:56:40 UTC; jenkins
 Repository: CRAN
-Date/Publication: 2015-11-24 15:03:56
+Date/Publication: 2016-03-15 06:32:50

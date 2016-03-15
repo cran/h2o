@@ -6,9 +6,9 @@
 h2o.levels(x, i)
 }
 \arguments{
-\item{x}{An H2O Frame object.}
+\item{x}{An H2OFrame object.}
 
-\item{i}{The index of the column whose domain is to be returned.}
+\item{i}{Optional, the index of the column whose domain is to be returned.}
 }
 \description{
 Return the levels from the column requested column.

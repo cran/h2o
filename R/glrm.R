@@ -1,10 +1,10 @@
 #'
 #' Generalized Low Rank Model
 #'
-#' Generalized low rank decomposition of a H2O dataset.
+#' Generalized low rank decomposition of an H2O data frame.
 #'
 #'
-#' @param training_frame An H2O Frame object containing the
+#' @param training_frame An H2OFrame object containing the
 #'        variables in the model.
 #' @param cols (Optional) A vector containing the data columns on
 #'        which k-means operates.
@@ -12,7 +12,7 @@
 #'        between 1 and the number of columns in the training frame, inclusive.
 #' @param model_id (Optional) The unique id assigned to the resulting model.
 #'        If none is given, an id will automatically be generated.
-#' @param validation_frame An H2O Frame object containing the
+#' @param validation_frame An H2OFrame object containing the
 #'        variables in the model.
 #' @param loading_name (Optional) The unique name assigned to the loading matrix X
 #'        in the XY decomposition. Automatically generated if none is provided.
@@ -46,6 +46,10 @@
 #' @param max_iterations The maximum number of iterations to run the optimization loop.
 #'        Each iteration consists of an update of the X matrix, followed by an update
 #'        of the Y matrix.
+#' @param max_updates The maximum number of updates of X or Y to run. Each update consists
+#'        of an update of either the X matrix or the Y matrix. For example, if max_updates = 1
+#'        and max_iterations = 1, the algorithm will initialize X and Y, update X once, and
+#'        terminate without updating Y.
 #' @param init_step_size Initial step size. Divided by number of columns in the training
 #'        frame when calculating the proximal gradient update. The algorithm begins at
 #'        init_step_size and decreases the step size at each iteration until a
@@ -56,15 +60,15 @@
 #'        standard normal distribution, "PlusPlus": for initialization using the clusters
 #'        from k-means++ initialization, or "SVD": for initialization using the
 #'        first k right singular vectors. Additionally, the user may specify the
-#'        initial Y as a matrix, data.frame, Frame, or list of vectors.
+#'        initial Y as a matrix, data.frame, H2OFrame, or list of vectors.
 #' @param svd_method (Optional) A character string that indicates how SVD should be 
 #'        calculated during initialization. Possible values are "GramSVD": distributed 
 #'        computation of the Gram matrix followed by a local SVD using the JAMA package, 
 #'        "Power": computation of the SVD using the power iteration method, "Randomized": 
 #'        (default) approximate SVD by projecting onto a random subspace (see references).
-#' @param user_x (Optional) A matrix, data.frame, Frame, or list of vectors specifying the 
+#' @param user_x (Optional) A matrix, data.frame, H2OFrame, or list of vectors specifying the
 #'        initial X. Only used when init = "User". The number of columns must equal k.
-#' @param user_y (Optional) A matrix, data.frame, Frame, or list of vectors specifying the 
+#' @param user_y (Optional) A matrix, data.frame, H2OFrame, or list of vectors specifying the
 #'        initial Y. Only used when init = "User". The number of rows must equal k.
 #' @param expand_user_y A logical value indicating whether the categorical columns of user_y
 #'        should be one-hot expanded. Only used when init = "User" and user_y is specified.
@@ -74,6 +78,7 @@
 #' @param recover_svd A logical value indicating whether the singular values and eigenvectors
 #'        should be recovered during post-processing of the generalized low rank decomposition.
 #' @param seed (Optional) Random seed used to initialize the X and Y matrices.
+#' @param max_runtime_secs Maximum allowed runtime in seconds for model training. Use 0 to disable.
 #' @return Returns an object of class \linkS4class{H2ODimReductionModel}.
 #' @seealso \code{\link{h2o.kmeans}, \link{h2o.svd}}, \code{\link{h2o.prcomp}}
 #' @references M. Udell, C. Horn, R. Zadeh, S. Boyd (2014). {Generalized Low Rank Models}[http://arxiv.org/abs/1410.0342]. Unpublished manuscript, Stanford Electrical Engineering Department.
@@ -103,6 +108,7 @@ h2o.glrm <- function(training_frame, cols, k, model_id,
                      gamma_x = 0,
                      gamma_y = 0,
                      max_iterations = 1000,
+                     max_updates = 2 * max_iterations,
                      init_step_size = 1.0,
                      min_step_size = 0.001,
                      init = c("Random", "PlusPlus", "SVD"),
@@ -112,16 +118,17 @@ h2o.glrm <- function(training_frame, cols, k, model_id,
                      expand_user_y = TRUE,
                      impute_original = FALSE,
                      recover_svd = FALSE,
-                     seed)
+                     seed,
+                     max_runtime_secs=0)
 {
   # Required args: training_frame
   if( missing(training_frame) ) stop("argument \"training_frame\" is missing, with no default")
   
-  # Training_frame may be a key or an H2O Frame object
-  if (!is.Frame(training_frame))
+  # Training_frame may be a key or an H2OFrame object
+  if (!is.H2OFrame(training_frame))
     tryCatch(training_frame <- h2o.getFrame(training_frame),
              error = function(err) {
-               stop("argument \"training_frame\" must be a valid Frame or key")
+               stop("argument \"training_frame\" must be a valid H2OFrame or key")
              })
 
   # Gather user input
@@ -159,6 +166,8 @@ h2o.glrm <- function(training_frame, cols, k, model_id,
     parms$gamma_y <- gamma_y
   if(!missing(max_iterations))
     parms$max_iterations <- max_iterations
+  if(!missing(max_updates))
+    parms$max_updates <- max_updates
   if(!missing(init_step_size))
     parms$init_step_size <- init_step_size
   if(!missing(min_step_size))
@@ -173,10 +182,11 @@ h2o.glrm <- function(training_frame, cols, k, model_id,
     parms$recover_svd <- recover_svd
   if(!missing(seed))
     parms$seed <- seed
-  
+  if(!missing(max_runtime_secs)) parms$max_runtime_secs <- max_runtime_secs
+
   # Check if user_y is an acceptable set of user-specified starting points
-  if( is.data.frame(user_y) || is.matrix(user_y) || is.list(user_y) || is.Frame(user_y) ) {
-    # Convert user-specified starting points to Frame
+  if( is.data.frame(user_y) || is.matrix(user_y) || is.list(user_y) || is.H2OFrame(user_y) ) {
+    # Convert user-specified starting points to H2OFrame
     if( is.data.frame(user_y) || is.matrix(user_y) || is.list(user_y) ) {
       if( !is.data.frame(user_y) && !is.matrix(user_y) ) user_y <- t(as.data.frame(user_y))
       user_y <- as.h2o(user_y)
@@ -196,8 +206,8 @@ h2o.glrm <- function(training_frame, cols, k, model_id,
     stop("Argument user_y must either be null or a valid user-defined starting Y matrix.")
   
   # Check if user_x is an acceptable set of user-specified starting points
-  if( is.data.frame(user_x) || is.matrix(user_x) || is.list(user_x) || is.Frame(user_x) ) {
-    # Convert user-specified starting points to Frame
+  if( is.data.frame(user_x) || is.matrix(user_x) || is.list(user_x) || is.H2OFrame(user_x) ) {
+    # Convert user-specified starting points to H2OFrame
     if( is.data.frame(user_x) || is.matrix(user_x) || is.list(user_x) ) {
       if( !is.data.frame(user_x) && !is.matrix(user_x) ) user_x <- t(as.data.frame(user_x))
       user_x <- as.h2o(user_x)
@@ -212,4 +222,72 @@ h2o.glrm <- function(training_frame, cols, k, model_id,
   
   # Error check and build model
   .h2o.modelJob('glrm', parms, h2oRestApiVersion=3)
+}
+
+#' Reconstruct Training Data via H2O GLRM Model
+#' 
+#' Reconstruct the training data and impute missing values from the H2O GLRM model
+#' by computing the matrix product of X and Y, and transforming back to the original
+#' feature space by minimizing each column's loss function.
+#' 
+#' @param object An \linkS4class{H2ODimReductionModel} object that represents the
+#'        model to be used for reconstruction.
+#' @param data An H2OFrame object representing the training data for the H2O GLRM model.
+#'        Used to set the domain of each column in the reconstructed frame.
+#' @param reverse_transform (Optional) A logical value indicating whether to reverse the
+#'        transformation from model-building by re-scaling columns and adding back the 
+#'        offset to each column of the reconstructed frame.
+#' @return Returns an H2OFrame object containing the approximate reconstruction of the
+#'         training data;
+#' @seealso \code{\link{h2o.glrm}} for making an H2ODimReductionModel.
+#' @examples
+#' \donttest{
+#' library(h2o)
+#' h2o.init()
+#' irisPath <- system.file("extdata", "iris_wheader.csv", package="h2o")
+#' iris.hex <- h2o.uploadFile(path = irisPath)
+#' iris.glrm <- h2o.glrm(training_frame = iris.hex, k = 4, transform = "STANDARDIZE",
+#'                       loss = "Quadratic", multi_loss = "Categorical", max_iterations = 1000)
+#' iris.rec <- h2o.reconstruct(iris.glrm, iris.hex, reverse_transform = TRUE)
+#' head(iris.rec)
+#' }
+#' @export
+h2o.reconstruct <- function(object, data, reverse_transform=FALSE) {
+  url <- paste0('Predictions/models/', object@model_id, '/frames/',h2o.getId(data))
+  res <- .h2o.__remoteSend(url, method = "POST", reconstruct_train=TRUE, reverse_transform=reverse_transform)
+  key <- res$model_metrics[[1L]]$predictions$frame_id$name
+  h2o.getFrame(key)
+}
+
+#' Convert Archetypes to Features from H2O GLRM Model
+#'
+#' Project each archetype in an H2O GLRM model into the corresponding feature
+#' space from the H2O training frame.
+#'
+#' @param object An \linkS4class{H2ODimReductionModel} object that represents the
+#'        model containing archetypes to be projected.
+#' @param data An H2OFrame object representing the training data for the H2O GLRM model.
+#' @param reverse_transform (Optional) A logical value indicating whether to reverse the
+#'        transformation from model-building by re-scaling columns and adding back the 
+#'        offset to each column of the projected archetypes.
+#' @return Returns an H2OFrame object containing the projection of the archetypes
+#'         down into the original feature space, where each row is one archetype.
+#' @seealso \code{\link{h2o.glrm}} for making an H2ODimReductionModel.
+#' @examples
+#' \donttest{
+#' library(h2o)
+#' h2o.init()
+#' irisPath <- system.file("extdata", "iris_wheader.csv", package="h2o")
+#' iris.hex <- h2o.uploadFile(path = irisPath)
+#' iris.glrm <- h2o.glrm(training_frame = iris.hex, k = 4, loss = "Quadratic", 
+#'                       multi_loss = "Categorical", max_iterations = 1000)
+#' iris.parch <- h2o.proj_archetypes(iris.glrm, iris.hex)
+#' head(iris.parch)
+#' }
+#' @export
+h2o.proj_archetypes <- function(object, data, reverse_transform=FALSE) {
+  url <- paste0('Predictions/models/', object@model_id, '/frames/',h2o.getId(data))
+  res <- .h2o.__remoteSend(url, method = "POST", project_archetypes=TRUE, reverse_transform=reverse_transform)
+  key <- res$model_metrics[[1L]]$predictions$frame_id$name
+  h2o.getFrame(key)
 }

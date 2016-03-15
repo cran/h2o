@@ -3,7 +3,7 @@
 \alias{h2o.r2}
 \title{Retrieve the R2 value}
 \usage{
-h2o.r2(object, train = FALSE, valid = FALSE, xval = FALSE, ...)
+h2o.r2(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} object.}
@@ -13,9 +13,6 @@ h2o.r2(object, train = FALSE, valid = FALSE, xval = FALSE, ...)
 \item{valid}{Retrieve the validation set R2 if a validation set was passed in during model build time.}
 
 \item{xval}{Retrieve the cross-validation R2}
-
-\item{\dots}{extra arguments to be passed if `object` is of type
-\linkS4class{H2OModel} (e.g. train=TRUE)}
 }
 \description{
 Retrieves the R2 value from an H2O model.

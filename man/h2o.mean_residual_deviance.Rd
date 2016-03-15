@@ -4,7 +4,7 @@
 \title{Retrieve the Mean Residual Deviance value}
 \usage{
 h2o.mean_residual_deviance(object, train = FALSE, valid = FALSE,
-  xval = FALSE, ...)
+  xval = FALSE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} object.}
@@ -14,9 +14,6 @@ h2o.mean_residual_deviance(object, train = FALSE, valid = FALSE,
 \item{valid}{Retrieve the validation Mean Residual Deviance}
 
 \item{xval}{Retrieve the cross-validation Mean Residual Deviance}
-
-\item{\dots}{extra arguments to be passed if `object` is of type
-\linkS4class{H2OModel} (e.g. train=TRUE)}
 }
 \description{
 Retrieves the Mean Residual Deviance value from an H2O model.

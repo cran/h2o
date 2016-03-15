@@ -11,13 +11,15 @@ h2o.glrm(training_frame, cols, k, model_id, validation_frame, loading_name,
   "L1", "NonNegative", "OneSparse", "UnitOneSparse", "Simplex"),
   regularization_y = c("None", "Quadratic", "L2", "L1", "NonNegative",
   "OneSparse", "UnitOneSparse", "Simplex"), gamma_x = 0, gamma_y = 0,
-  max_iterations = 1000, init_step_size = 1, min_step_size = 0.001,
-  init = c("Random", "PlusPlus", "SVD"), svd_method = c("GramSVD", "Power",
-  "Randomized"), user_y = NULL, user_x = NULL, expand_user_y = TRUE,
-  impute_original = FALSE, recover_svd = FALSE, seed)
+  max_iterations = 1000, max_updates = 2 * max_iterations,
+  init_step_size = 1, min_step_size = 0.001, init = c("Random",
+  "PlusPlus", "SVD"), svd_method = c("GramSVD", "Power", "Randomized"),
+  user_y = NULL, user_x = NULL, expand_user_y = TRUE,
+  impute_original = FALSE, recover_svd = FALSE, seed,
+  max_runtime_secs = 0)
 }
 \arguments{
-\item{training_frame}{An H2O Frame object containing the
+\item{training_frame}{An H2OFrame object containing the
 variables in the model.}
 
 \item{cols}{(Optional) A vector containing the data columns on
@@ -29,7 +31,7 @@ between 1 and the number of columns in the training frame, inclusive.}
 \item{model_id}{(Optional) The unique id assigned to the resulting model.
 If none is given, an id will automatically be generated.}
 
-\item{validation_frame}{An H2O Frame object containing the
+\item{validation_frame}{An H2OFrame object containing the
 variables in the model.}
 
 \item{loading_name}{(Optional) The unique name assigned to the loading matrix X
@@ -76,6 +78,11 @@ the Y matrix. Possible values are "None" (default), "Quadratic", "L2", "L1",
 Each iteration consists of an update of the X matrix, followed by an update
 of the Y matrix.}
 
+\item{max_updates}{The maximum number of updates of X or Y to run. Each update consists
+of an update of either the X matrix or the Y matrix. For example, if max_updates = 1
+and max_iterations = 1, the algorithm will initialize X and Y, update X once, and
+terminate without updating Y.}
+
 \item{init_step_size}{Initial step size. Divided by number of columns in the training
 frame when calculating the proximal gradient update. The algorithm begins at
 init_step_size and decreases the step size at each iteration until a
@@ -88,7 +95,7 @@ Possible values are "Random": for initialization to a random array from the
 standard normal distribution, "PlusPlus": for initialization using the clusters
 from k-means++ initialization, or "SVD": for initialization using the
 first k right singular vectors. Additionally, the user may specify the
-initial Y as a matrix, data.frame, Frame, or list of vectors.}
+initial Y as a matrix, data.frame, H2OFrame, or list of vectors.}
 
 \item{svd_method}{(Optional) A character string that indicates how SVD should be
 calculated during initialization. Possible values are "GramSVD": distributed
@@ -96,10 +103,10 @@ computation of the Gram matrix followed by a local SVD using the JAMA package,
 "Power": computation of the SVD using the power iteration method, "Randomized":
 (default) approximate SVD by projecting onto a random subspace (see references).}
 
-\item{user_y}{(Optional) A matrix, data.frame, Frame, or list of vectors specifying the
+\item{user_y}{(Optional) A matrix, data.frame, H2OFrame, or list of vectors specifying the
 initial Y. Only used when init = "User". The number of rows must equal k.}
 
-\item{user_x}{(Optional) A matrix, data.frame, Frame, or list of vectors specifying the
+\item{user_x}{(Optional) A matrix, data.frame, H2OFrame, or list of vectors specifying the
 initial X. Only used when init = "User". The number of columns must equal k.}
 
 \item{expand_user_y}{A logical value indicating whether the categorical columns of user_y
@@ -113,12 +120,14 @@ with respect to the original data.}
 should be recovered during post-processing of the generalized low rank decomposition.}
 
 \item{seed}{(Optional) Random seed used to initialize the X and Y matrices.}
+
+\item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable.}
 }
 \value{
 Returns an object of class \linkS4class{H2ODimReductionModel}.
 }
 \description{
-Generalized low rank decomposition of a H2O dataset.
+Generalized low rank decomposition of an H2O data frame.
 }
 \examples{
 \donttest{

@@ -2,23 +2,23 @@
 \name{h2o.var}
 \alias{h2o.var}
 \alias{var}
-\title{Variance of a column.}
+\title{Variance of a column or covariance of columns.}
 \usage{
 h2o.var(x, y = NULL, na.rm = FALSE, use)
 
 var(x, y = NULL, na.rm = FALSE, use)
 }
 \arguments{
-\item{x}{An H2O Frame object.}
+\item{x}{An H2OFrame object.}
 
-\item{y}{\code{NULL} (default) or a column of an H2O Frame object. The default is equivalent to y = x (but more efficient).}
+\item{y}{\code{NULL} (default) or an H2OFrame. The default is equivalent to y = x.}
 
 \item{na.rm}{\code{logical}. Should missing values be removed?}
 
-\item{use}{An optional character string to be used in the presence of missing values. This must be one of the following strings. "everything", "all.obs", or "complete.obs".}
+\item{use}{An optional character string indicating how to handle missing values. This must be one of the following:}
 }
 \description{
-Obtain the variance of a column of a parsed H2O data object.
+Compute the variance or covariance matrix of one or two H2OFrames.
 }
 \examples{
 \donttest{

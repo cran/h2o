@@ -6,11 +6,11 @@
 h2o.rbind(...)
 }
 \arguments{
-\item{\dots}{A sequence of Frame arguments. All datasets must exist on the same H2O instance
+\item{\dots}{A sequence of H2OFrame arguments. All datasets must exist on the same H2O instance
 (IP and port) and contain the same number of rows.}
 }
 \value{
-An H2O Frame object containing the combined \dots arguments column-wise.
+An H2OFrame object containing the combined \dots arguments row-wise.
 }
 \description{
 Takes a sequence of H2O data sets and combines them by rows

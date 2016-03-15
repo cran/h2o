@@ -14,15 +14,17 @@
 #' @param y The name or index of the response variable. If the data does not contain a header, this is the
 #'        column index number starting at 0, and increasing from left to right. The response must be a categorical
 #'        variable with at least two levels.
-#' @param training_frame An H2O Frame object containing the variables in the model.
+#' @param training_frame An H2OFrame object containing the variables in the model.
 #' @param model_id (Optional) The unique id assigned to the resulting model. If
 #'        none is given, an id will automatically be generated.
+#' @param ignore_const_cols A logical value indicating whether or not to ignore all the constant columns in the training frame.
 #' @param laplace A positive number controlling Laplace smoothing. The default zero disables smoothing.
 #' @param threshold The minimum standard deviation to use for observations without enough data. Must be
 #'        at least 1e-10.
 #' @param eps A threshold cutoff to deal with numeric instability, must be positive.
 #' @param compute_metrics A logical value indicating whether model metrics should be computed. Set to
 #'        FALSE to reduce the runtime of the algorithm.
+#' @param max_runtime_secs Maximum allowed runtime in seconds for model training. Use 0 to disable.
 #' @details The naive Bayes classifier assumes independence between predictor variables conditional
 #'        on the response, and a Gaussian distribution of numeric predictors with mean and standard
 #'        deviation computed from the training dataset. When building a naive Bayes classifier,
@@ -41,16 +43,18 @@
 #' @export
 h2o.naiveBayes <- function(x, y, training_frame,
                            model_id,
+                           ignore_const_cols = TRUE,
                            laplace = 0,
                            threshold = 0.001,
                            eps = 0,
-                           compute_metrics = TRUE)
+                           compute_metrics = TRUE,
+                           max_runtime_secs=0)
 {
-  # Training_frame may be a key or an H2O Frame object
-  if (!is.Frame(training_frame))
+  # Training_frame may be a key or an H2OFrame object
+  if (!is.H2OFrame(training_frame))
     tryCatch(training_frame <- h2o.getFrame(training_frame),
              error = function(err) {
-               stop("argument \"training_frame\" must be a valid Frame or key")
+               stop("argument \"training_frame\" must be a valid H2OFrame or key")
              })
 
   .naivebayes.map <- c("x" = "ignored_columns", "y" = "response_column",
@@ -62,6 +66,7 @@ h2o.naiveBayes <- function(x, y, training_frame,
   parms$ignored_columns <- args$x_ignore
   parms$response_column <- args$y
   parms$training_frame <- training_frame
+  parms$ignore_const_cols <- ignore_const_cols
   if(!missing(model_id))
     parms$model_id <- model_id
   if(!missing(laplace))
@@ -73,6 +78,7 @@ h2o.naiveBayes <- function(x, y, training_frame,
     parms$eps_sdev <- eps
   if(!missing(compute_metrics))
     parms$compute_metrics <- compute_metrics
+  if(!missing(max_runtime_secs)) parms$max_runtime_secs <- max_runtime_secs
 
   # In R package, cutoff and threshold for probability and standard deviation are the same
   parms$min_prob <- threshold

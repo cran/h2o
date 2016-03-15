@@ -3,13 +3,14 @@
 \alias{h2o.kmeans}
 \title{KMeans Model in H2O}
 \usage{
-h2o.kmeans(training_frame, x, k, model_id, max_iterations = 1000,
-  standardize = TRUE, init = c("Furthest", "Random", "PlusPlus"), seed,
-  nfolds = 0, fold_column = NULL, fold_assignment = c("AUTO", "Random",
-  "Modulo"), keep_cross_validation_predictions = FALSE)
+h2o.kmeans(training_frame, x, k, model_id, ignore_const_cols = TRUE,
+  max_iterations = 1000, standardize = TRUE, init = c("Furthest",
+  "Random", "PlusPlus"), seed, nfolds = 0, fold_column = NULL,
+  fold_assignment = c("AUTO", "Random", "Modulo"),
+  keep_cross_validation_predictions = FALSE, max_runtime_secs = 0)
 }
 \arguments{
-\item{training_frame}{An H2O Frame object containing the
+\item{training_frame}{An H2OFrame object containing the
 variables in the model.}
 
 \item{x}{(Optional) A vector containing the data columns on
@@ -24,6 +25,8 @@ user-specified centers.}
 \item{model_id}{(Optional) The unique id assigned to the resulting model. If
 none is given, an id will automatically be generated.}
 
+\item{ignore_const_cols}{A logical value indicating whether or not to ignore all the constant columns in the training frame.}
+
 \item{max_iterations}{The maximum number of iterations allowed. Must be between 0}
 
 \item{standardize}{Logical, indicates whether the data should be
@@ -34,7 +37,7 @@ centers. Possible values are "Random": for random initialization,
 "PlusPlus": for k-means plus initialization, or "Furthest": for
 initialization at the furthest point from each successive center.
 Additionally, the user may specify a the initial centers as a matrix,
-data.frame, Frame, or list of vectors. For matrices,
+data.frame, H2OFrame, or list of vectors. For matrices,
 data.frames, and Frames, each row of the respective structure
 is an initial center. For lists of vectors, each vector is an
 initial center.}
@@ -49,6 +52,8 @@ initial center.}
 Must be "AUTO", "Random" or "Modulo"}
 
 \item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models}
+
+\item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable.}
 }
 \value{
 Returns an object of class \linkS4class{H2OClusteringModel}.

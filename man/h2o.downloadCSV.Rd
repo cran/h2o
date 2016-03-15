@@ -6,7 +6,7 @@
 h2o.downloadCSV(data, filename)
 }
 \arguments{
-\item{data}{an H2O Frame object to be downloaded.}
+\item{data}{an H2OFrame object to be downloaded.}
 
 \item{filename}{A string indicating the name that the CSV file should be
 should be saved to.}

@@ -6,8 +6,7 @@ If "train", "valid", and "xval" parameters are FALSE (default), then the trainin
 than one parameter is set to TRUE, then a named list of centroid stats data frames are returned, where the names are "train", "valid"
 or "xval".}
 \usage{
-h2o.centroid_stats(object, train = FALSE, valid = FALSE, xval = FALSE,
-  ...)
+h2o.centroid_stats(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OClusteringModel} object.}
@@ -17,8 +16,6 @@ h2o.centroid_stats(object, train = FALSE, valid = FALSE, xval = FALSE,
 \item{valid}{Retrieve the validation centroid statistics}
 
 \item{xval}{Retrieve the cross-validation centroid statistics}
-
-\item{\dots}{further arguments to be passed on (currently unimplemented)}
 }
 \description{
 Retrieve the centroid statistics

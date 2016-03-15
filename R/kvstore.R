@@ -5,20 +5,21 @@
 .key.validate <- function(key) {
   if (!missing(key) && !is.null(key)) {
     stopifnot( is.character(key) && length(key) == 1L && !is.na(key) )
-    if( nzchar(key) && regexpr("^[a-zA-Z_][a-zA-Z0-9_.]*$", key)[1L] == -1L )
-      stop("`key` must match the regular expression '^[a-zA-Z_][a-zA-Z0-9_.]*$'")
+    if( nzchar(key) && regexpr("^[a-zA-Z_][a-zA-Z0-9_.-]*$", key)[1L] == -1L )
+      stop(paste0("`key` must match the regular expression '^[a-zA-Z_][a-zA-Z0-9_.]*$': ", key))
   }
   invisible(TRUE)
 }
 
 .key.make <- function(prefix = "rapids") {
   conn <- h2o.getConnection()
+  session_id <- conn@mutable$session_id
   if (conn@mutable$key_count == .Machine$integer.max) {
-    conn@mutable$session_id <- .init.session_id()
+    session_id <- conn@mutable$session_id <- .init.session_id()
     conn@mutable$key_count  <- 0L
   }
   conn@mutable$key_count <- conn@mutable$key_count + 1L
-  sprintf("%s_%d", prefix, conn@mutable$key_count)  # removed session_id
+  sprintf("%s%s_%d", prefix, session_id, conn@mutable$key_count)  # removed session_id
 }
 
 
@@ -61,6 +62,7 @@ h2o.ls <- function() {
 #' }
 #' @export
 h2o.removeAll <- function(timeout_secs=0) {
+  gc()
   tryCatch(
     invisible(.h2o.__remoteSend(.h2o.__DKV, method = "DELETE", timeout=timeout_secs)),
     error = function(e) {
@@ -76,18 +78,30 @@ h2o.removeAll <- function(timeout_secs=0) {
 #'
 #' Remove the h2o Big Data object(s) having the key name(s) from ids.
 #'
-#' @param ids The hex key associated with the object to be removed.
+#' @param ids The object or hex key associated with the object to be removed or a vector/list of those things.
 #' @seealso \code{\link{h2o.assign}}, \code{\link{h2o.ls}}
 #' @export
 h2o.rm <- function(ids) {
-  if( is.Frame(ids) ) {
-    if( is.null( attr(ids, "id")) ) stop("Trying to remove a client-managed temp; try assigning NULL over the variable instead")
-    ids <- attr(ids, "id")
+  gc()
+  if( !is.vector(ids) ) x_list = c(ids) else x_list = ids
+  for (xi in x_list) {
+    if( is.null(xi) ) stop("h2o.rm with NULL object is not supported")
+    if( is.H2OFrame(xi) ) {
+      xi_id <- attr(xi, "id")       # String or None
+      if( is.null(xi_id) ) return() # Lazy frame, never evaluated, nothing in cluster
+      .h2o.__remoteSend(.h2o.__RAPIDS, h2oRestApiVersion = 99, ast=paste0("(rm ",xi_id[[1]],")"), session_id=h2o.getConnection()@mutable$session_id, method = "POST")
+    } else if( is(xi, "H2OModel") ) {
+      .h2o.__remoteSend(paste0(.h2o.__DKV, "/",xi@model_id), method = "DELETE")
+    } else if( is.character(xi) ) {
+      .h2o.__remoteSend(paste0(.h2o.__DKV, "/",xi), method = "DELETE")
+    } else {
+      stop("input to h2o.rm must be one of: H2OFrame, H2OModel, or character")
+    }
   }
-  if(!is.character(ids)) stop("`ids` must be of class character")
 
-  for(i in seq_len(length(ids)))
-    .h2o.__remoteSend(.h2o.__RAPIDS, h2oRestApiVersion = 99, ast=paste0("(rm ",ids[[i]],")"), method = "POST")
+  #remove object from R client if possible (not possible for input of strings)
+  ids <- deparse(substitute(ids))
+  if( exists(ids, envir=parent.frame()) ) rm(list=ids, envir=parent.frame())
 }
 
 #'
@@ -98,7 +112,7 @@ h2o.rm <- function(ids) {
 #' @param id A string indicating the unique frame of the dataset to retrieve.
 #' @export
 h2o.getFrame <- function(id) {
-  fr <- .newFrame(id,id,-1,-1)
+  fr <- .newH2OFrame(id,id,-1,-1)
   .fetch.data(fr,1L)
   fr
 }
@@ -149,7 +163,7 @@ h2o.getModel <- function(model_id) {
         value <- -Inf
 
       # Parse frame information to a key
-      if (type == "Frame")
+      if (type == "H2OFrame")
         value <- value$name
       # Parse model information to a key
       if (type == "H2OModel") {
@@ -194,7 +208,7 @@ h2o.getModel <- function(model_id) {
 }
 
 #'
-#' Download the Scoring POJO (Plain Old Java Object) of a H2O Model
+#' Download the Scoring POJO (Plain Old Java Object) of an H2O Model
 #'
 #' @param model An H2OModel
 #' @param path The path to the directory to store the POJO (no trailing slash). If "", then print to

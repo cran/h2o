@@ -4,27 +4,33 @@
 \title{H2O Generalized Linear Models}
 \usage{
 h2o.glm(x, y, training_frame, model_id, validation_frame = NULL,
-  max_iterations = 50, beta_epsilon = 0, solver = c("IRLSM", "L_BFGS"),
-  standardize = TRUE, family = c("gaussian", "binomial", "poisson", "gamma",
-  "tweedie"), link = c("family_default", "identity", "logit", "log",
+  ignore_const_cols = TRUE, max_iterations = 50, beta_epsilon = 0,
+  solver = c("IRLSM", "L_BFGS"), standardize = TRUE,
+  family = c("gaussian", "binomial", "poisson", "gamma", "tweedie",
+  "multinomial"), link = c("family_default", "identity", "logit", "log",
   "inverse", "tweedie"), tweedie_variance_power = NaN,
-  tweedie_link_power = NaN, alpha = 0.5, prior = 0, lambda = 1e-05,
+  tweedie_link_power = NaN, alpha = 0.5, prior = NULL, lambda = 1e-05,
   lambda_search = FALSE, nlambdas = -1, lambda_min_ratio = -1,
   nfolds = 0, fold_column = NULL, fold_assignment = c("AUTO", "Random",
   "Modulo"), keep_cross_validation_predictions = FALSE,
   beta_constraints = NULL, offset_column = NULL, weights_column = NULL,
-  intercept = TRUE, max_active_predictors = -1)
+  intercept = TRUE, max_active_predictors = -1, objective_epsilon = -1,
+  gradient_epsilon = -1, non_negative = FALSE, compute_p_values = FALSE,
+  remove_collinear_columns = FALSE, max_runtime_secs = 0,
+  missing_values_handling = c("MeanImputation", "Skip"))
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the GLM model.}
 
 \item{y}{A character string or index that represent the response variable in the model.}
 
-\item{training_frame}{An H2O Frame object containing the variables in the model.}
+\item{training_frame}{An H2OFrame object containing the variables in the model.}
 
 \item{model_id}{(Optional) The unique id assigned to the resulting model. If none is given, an id will automatically be generated.}
 
-\item{validation_frame}{An H2O Frame object containing the variables in the model.  Defaults to NULL.}
+\item{validation_frame}{An H2OFrame object containing the variables in the model.  Defaults to NULL.}
+
+\item{ignore_const_cols}{A logical value indicating whether or not to ignore all the constant columns in the training frame.}
 
 \item{max_iterations}{A non-negative integer specifying the maximum number of iterations.}
 
@@ -52,11 +58,11 @@ the \code{family} specifications are:\cr
 
 \item{alpha}{A numeric in [0, 1] specifying the elastic-net mixing parameter.
 The elastic-net penalty is defined to be:
-\deqn{P(\alpha,\beta) = (1-\alpha)/2||\beta||_2^2 + \alpha||\beta||_1 = \sum_j [(1-\alpha)/2 \beta_j^2 + \alpha|\beta_j|]},
+\deqn{P(\alpha,\beta) = (1-\alpha)/2||\beta||_2^2 + \alpha||\beta||_1 = \sum_j [(1-\alpha)/2 \beta_j^2 + \alpha|\beta_j|]}
 making \code{alpha = 1} the lasso penalty and \code{alpha = 0} the ridge penalty.}
 
 \item{prior}{(Optional) A numeric specifying the prior probability of class 1 in the response when \code{family = "binomial"}.
-The default prior is the observational frequency of class 1.}
+The default prior is the observational frequency of class 1. Must be from (0,1) exclusive range or NULL (no prior).}
 
 \item{lambda}{A non-negative shrinkage parameter for the elastic-net, which multiplies \eqn{P(\alpha,\beta)} in the objective function.
 When \code{lambda = 0}, no elastic-net penalty is applied and ordinary generalized linear models are fit.}
@@ -72,28 +78,44 @@ of variables then \code{lambda_min_ratio} = 0.01.}
 
 \item{nfolds}{(Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.}
 
-\item{fold_column}{(Optional) Column with cross-validation fold index assignment per observation}
+\item{fold_column}{(Optional) Column with cross-validation fold index assignment per observation.}
 
 \item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not specified
-Must be "AUTO", "Random" or "Modulo"}
+Must be "AUTO", "Random" or "Modulo".}
 
 \item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models.}
 
 \item{beta_constraints}{A data.frame or H2OParsedData object with the columns ["names",
-"lower_bounds", "upper_bounds", "beta_given"], where each row corresponds to a predictor
+"lower_bounds", "upper_bounds", "beta_given", "rho"], where each row corresponds to a predictor
 in the GLM. "names" contains the predictor names, "lower_bounds" and "upper_bounds" are the lower
-and upper bounds of beta, and "beta_given" is some supplied starting values for beta.}
+and upper bounds of beta, "beta_given" is some supplied starting values for beta, and "rho" is the
+proximal penalty constant that is used with "beta_given". If "rho" is not specified when "beta_given"
+is then we will take the default rho value of zero.}
 
 \item{offset_column}{Specify the offset column.}
 
 \item{weights_column}{Specify the weights column.}
 
-\item{intercept}{Logical, include constant term (intercept) in the model}
+\item{intercept}{Logical, include constant term (intercept) in the model.}
 
 \item{max_active_predictors}{(Optional) Convergence criteria for number of predictors when using L1 penalty.}
 
+\item{objective_epsilon}{Convergence criteria. Converge if relative change in objective function is below this threshold.}
+
+\item{gradient_epsilon}{Convergence criteria. Converge if gradient l-infinity norm is below this threshold.}
+
+\item{non_negative}{Logical, allow only positive coefficients.}
+
+\item{compute_p_values}{(Optional)  Logical, compute p-values, only allowed with IRLSM solver and no regularization. May fail if there are collinear predictors.}
+
+\item{remove_collinear_columns}{(Optional)  Logical, valid only with no regularization. If set, co-linear columns will be automatically ignored (coefficient will be 0).}
+
+\item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable.}
+
+\item{missing_values_handling}{(Optional) Controls handling of missing values. Can be either "MeanImputation" or "Skip". MeanImputation replaces missing values with mean for numeric and most frequent level for categorical,  Skip ignores observations with any missing value. Applied both during model training *AND* scoring.}
+
 \item{...}{(Currently Unimplemented)
-coefficients.}
+       coefficients.}
 }
 \value{
 A subclass of \code{\linkS4class{H2OModel}} is returned. The specific subclass depends on the machine learning task at hand

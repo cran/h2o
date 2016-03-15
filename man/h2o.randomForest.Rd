@@ -4,16 +4,17 @@
 \title{Build a Big Data Random Forest Model}
 \usage{
 h2o.randomForest(x, y, training_frame, model_id, validation_frame = NULL,
-  checkpoint, mtries = -1, sample_rate = 0.632,
-  build_tree_one_node = FALSE, ntrees = 50, max_depth = 20,
-  min_rows = 1, nbins = 20, nbins_top_level, nbins_cats = 1024,
-  binomial_double_trees = FALSE, balance_classes = FALSE,
-  max_after_balance_size = 5, seed, offset_column = NULL,
-  weights_column = NULL, nfolds = 0, fold_column = NULL,
-  fold_assignment = c("AUTO", "Random", "Modulo"),
+  ignore_const_cols = TRUE, checkpoint, mtries = -1, sample_rate = 0.632,
+  col_sample_rate_per_tree = 1, build_tree_one_node = FALSE, ntrees = 50,
+  max_depth = 20, min_rows = 1, nbins = 20, nbins_top_level,
+  nbins_cats = 1024, binomial_double_trees = FALSE,
+  balance_classes = FALSE, max_after_balance_size = 5, seed,
+  offset_column = NULL, weights_column = NULL, nfolds = 0,
+  fold_column = NULL, fold_assignment = c("AUTO", "Random", "Modulo"),
   keep_cross_validation_predictions = FALSE, score_each_iteration = FALSE,
-  stopping_rounds = 0, stopping_metric = c("AUTO", "deviance", "logloss",
-  "MSE", "AUC", "r2", "misclassification"), stopping_tolerance = 0.001)
+  score_tree_interval = 0, stopping_rounds = 0,
+  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "AUC", "r2",
+  "misclassification"), stopping_tolerance = 0.001, max_runtime_secs = 0)
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables
@@ -24,13 +25,15 @@ contain a header, this is the column index number starting at 1, and
 increasing from left to right. (The response must be either an integer
 or a categorical variable).}
 
-\item{training_frame}{An H2O Frame object containing the
+\item{training_frame}{An H2OFrame object containing the
 variables in the model.}
 
 \item{model_id}{(Optional) The unique id assigned to the resulting model. If
 none is given, an id will automatically be generated.}
 
-\item{validation_frame}{An H2O Frame object containing the variables in the model.  Default is NULL.}
+\item{validation_frame}{An H2OFrame object containing the variables in the model.  Default is NULL.}
+
+\item{ignore_const_cols}{A logical value indicating whether or not to ignore all the constant columns in the training frame.}
 
 \item{checkpoint}{"Model checkpoint (either key or H2ODeepLearningModel) to resume training with."}
 
@@ -39,6 +42,8 @@ If set to -1, defaults to sqrt{p} for classification, and p/3 for regression,
 where p is the number of predictors.}
 
 \item{sample_rate}{Sample rate, from 0 to 1.0.}
+
+\item{col_sample_rate_per_tree}{Column sample rate per tree (from \code{0.0} to \code{1.0})}
 
 \item{build_tree_one_node}{Run on one node only; no network overhead but
 fewer cpus used.  Suitable for small datasets.}
@@ -84,6 +89,8 @@ Must be "AUTO", "Random" or "Modulo"}
 
 \item{score_each_iteration}{Attempts to score each tree.}
 
+\item{score_tree_interval}{Score the model after every so many trees. Disabled if set to 0.}
+
 \item{stopping_rounds}{Early stopping based on convergence of stopping_metric.
 Stop if simple moving average of length k of the stopping_metric does not improve
 (by stopping_tolerance) for k=stopping_rounds scoring events.
@@ -95,13 +102,15 @@ Can be one of "AUTO", "deviance", "logloss", "MSE", "AUC", "r2", "misclassificat
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (if relative
 improvement is not at least this much, stop)}
 
+\item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable.}
+
 \item{...}{(Currently Unimplemented)}
 }
 \value{
 Creates a \linkS4class{H2OModel} object of the right type.
 }
 \description{
-Builds a Random Forest Model on an H2O Frame
+Builds a Random Forest Model on an H2OFrame
 }
 \seealso{
 \code{\link{predict.H2OModel}} for prediction.

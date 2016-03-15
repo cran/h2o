@@ -6,7 +6,7 @@ If "train", "valid", and "xval" parameters are FALSE (default), then the trainin
 than one parameter is set to TRUE, then a named vector of tot_withinss' are returned, where the names are "train", "valid"
 or "xval".}
 \usage{
-h2o.tot_withinss(object, train = FALSE, valid = FALSE, xval = FALSE, ...)
+h2o.tot_withinss(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OClusteringModel} object.}
@@ -16,8 +16,6 @@ h2o.tot_withinss(object, train = FALSE, valid = FALSE, xval = FALSE, ...)
 \item{valid}{Retrieve the validation total within cluster sum of squares}
 
 \item{xval}{Retrieve the cross-validation total within cluster sum of squares}
-
-\item{\dots}{further arguments to be passed on (currently unimplemented)}
 }
 \description{
 Get the total within cluster sum of squares.

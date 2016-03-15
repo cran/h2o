@@ -26,10 +26,10 @@ if (inherits(try(getRefClass("H2OConnectionMutableState"), silent = TRUE), "try-
 #'
 #' This class represents the mutable aspects of a connection to an H2O cloud.
 #'
+#' @name H2OConnectionMutableState
 #' @slot session_id A \code{character} string specifying the H2O session identifier.
 #' @slot key_count A \code{integer} value specifying count for the number of keys generated for the \code{session_id}.
-#' @aliases H2OConnectionMutableStat
-#' @export
+#' @aliases H2OConnectionMutableState
 setRefClass("H2OConnectionMutableState",
             fields = list(session_id = "character", key_count = "integer"),
             methods = list(
@@ -54,6 +54,7 @@ setRefClass("H2OConnectionMutableState",
 #' is not found at port 54321.
 #' @slot ip A \code{character} string specifying the IP address of the H2O cloud.
 #' @slot port A \code{numeric} value specifying the port number of the H2O cloud.
+#' @slot proxy A \code{character} specifying the proxy path of the H2O cloud.  
 #' @slot https Set this to TRUE to use https instead of http.
 #' @slot insecure Set this to TRUE to disable SSL certificate checking.
 #' @slot username Username to login with.
@@ -62,12 +63,13 @@ setRefClass("H2OConnectionMutableState",
 #' @aliases H2OConnection
 #' @export
 setClass("H2OConnection",
-         representation(ip="character", port="numeric",
+         representation(ip="character", port="numeric", proxy="character",
                         https="logical", insecure="logical",
                         username="character", password="character",
                         mutable="H2OConnectionMutableState"),
          prototype(ip       = NA_character_,
                    port     = NA_integer_,
+                   proxy    = NA_character_,
                    https    = FALSE,
                    insecure = FALSE,
                    username = NA_character_,
@@ -92,7 +94,7 @@ setMethod("show", "H2OConnection", function(object) {
 #' This virtual class represents a model built by H2O.
 #'
 #' This object has slots for the key, which is a character string that points to the model key existing in the H2O cloud,
-#' the data used to build the model (an object of class Frame).
+#' the data used to build the model (an object of class H2OFrame).
 #'
 #' @slot model_id A \code{character} string specifying the key for the model fit in the H2O cloud's key-value store.
 #' @slot algorithm A \code{character} string specifying the algorithm that were used to fit the model.
@@ -205,7 +207,7 @@ setMethod("summary", "H2OModel", function(object, ...) {
   } else {
     if( !is.null(tm$cm)                                              )  { if ( arg != "xval" ) { cat(paste0("\nConfusion Matrix: Extract with `h2o.confusionMatrix(<model>, <data>)`)\n")); } }
   }
-  if( !is.null(tm$cm)                                              )  { if ( arg != "xval" ) { cat("=========================================================================\n"); print(data.frame(tm$cm$table)) } }
+  if( !is.null(tm$cm)                                              )  { if ( arg != "xval" ) { cat("=========================================================================\n"); print(tm$cm$table) } }
   if (arg != "test") {
     if( !is.null(tm$hit_ratio_table)                                 )  cat(paste0("\nHit Ratio Table: Extract with `h2o.hit_ratio_table(<model>,", arg, " = TRUE)`\n"))
   } else {
@@ -234,7 +236,7 @@ setClass("H2ORegressionModel",  contains="H2OModel")
 #' This virtual class represents a clustering model built by H2O.
 #'
 #' This object has slots for the key, which is a character string that points to the model key existing in the H2O cloud,
-#' the data used to build the model (an object of class Frame).
+#' the data used to build the model (an object of class H2OFrame).
 #'
 #' @slot model_id A \code{character} string specifying the key for the model fit in the H2O cloud's key-value store.
 #' @slot algorithm A \code{character} string specifying the algorithm that was used to fit the model.
@@ -377,6 +379,11 @@ setMethod("show", "H2OBinomialMetrics", function(object) {
       cat("\n")
     }
     print(object@metrics$max_criteria_and_metric_scores)
+
+    cat("\nGains/Lift Table: Extract with `h2o.gainsLift(<model>, <data>)` or `h2o.gainsLift(<model>, valid=<T/F>, xval=<T/F>)`")
+    #if (!is.null(object@metrics$gains_lift_table)) {
+    #  print(object@metrics$gains_lift_table)
+    #}
 })
 
 #' @rdname H2OModelMetrics-class
@@ -485,6 +492,7 @@ setClass("H2OModelFuture", representation(job_key="character", model_id="charact
 #' @slot failure_stack_traces  list of stack traces corresponding to model failures reported by
 #'                             failed_params and failure_details fields
 #' @slot failed_raw_params list of failed raw parameters
+#' @slot summary_table table of models built with parameters and metric information.
 #' @seealso \linkS4class{H2OModel} for the final model types.
 #' @aliases H2OGrid
 #' @export
@@ -494,7 +502,8 @@ setClass("H2OGrid", representation(grid_id = "character",
                                    failed_params = "list",
                                    failure_details = "list",
                                    failure_stack_traces = "list",
-                                   failed_raw_params = "matrix"))
+                                   failed_raw_params = "matrix",
+                                   summary_table = "ANY"))
 
 #' Format grid object in user-friendly way
 #'
@@ -511,28 +520,7 @@ setMethod("show", "H2OGrid", function(object) {
   cat("Number of failed models:", length(object@failed_params), "\n\n")
   hyper_names <- object@hyper_names
   model_ids <- sapply(object@model_ids, function(model_id) { model_id })
-  if (length(object@model_ids) > 0) {
-    # Fetch all models
-    all_models <- lapply(object@model_ids, function(model_id) { h2o.getModel(model_id) })
-    # Extract hyper parameters from models
-    params_ok <- lapply(hyper_names, function(name) {
-                      sapply(all_models, function(model) {
-                             v <- model@allparameters[[name]]
-                             if ((is.list(v) || is.array(v) || is.vector(v)) && length(v) > 1) {
-                               .collapse(v)
-                             } else {
-                               v
-                             }
-                      })
-                    })
-    names(params_ok) <- hyper_names # Assign correct names to items in params list
-    status_ok <- rep("OK", length(object@model_ids))
-    cat("Generated models\n")
-    cat("----------------\n")
-    if ( length(params_ok) > 0 ) { print(data.frame(params_ok, status_ok, model_ids), row.names = FALSE)
-    } else {                       print(data.frame(           status_ok, model_ids), row.names = FALSE) }
-
-  }
+  print(object@summary_table)
   if (length(object@failed_params) > 0) {
     # Extract failed parameters info
     params_failed <- lapply(1:length(hyper_names), function(idx) {

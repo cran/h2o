@@ -6,7 +6,7 @@
 as.numeric(x)
 }
 \arguments{
-\item{x}{a column from an H2O Frame data set.}
+\item{x}{a column from an H2OFrame data set.}
 
 \item{...}{Further arguments to be passed from or to other methods.}
 }

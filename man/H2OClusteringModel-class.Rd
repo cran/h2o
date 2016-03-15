@@ -8,7 +8,7 @@ This virtual class represents a clustering model built by H2O.
 }
 \details{
 This object has slots for the key, which is a character string that points to the model key existing in the H2O cloud,
-the data used to build the model (an object of class Frame).
+the data used to build the model (an object of class H2OFrame).
 }
 \section{Slots}{
 

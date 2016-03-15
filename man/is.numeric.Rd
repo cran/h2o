@@ -6,7 +6,7 @@
 is.numeric(x)
 }
 \arguments{
-\item{x}{An H2O Frame object}
+\item{x}{An H2OFrame object}
 }
 \description{
 Check if numeric

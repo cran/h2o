@@ -1,10 +1,10 @@
 #'
 #' Singular Value Decomposition
 #'
-#' Singular value decomposition of a H2O dataset using the power method.
+#' Singular value decomposition of an H2O data frame using the power method.
 #'
 #'
-#' @param training_frame An H2O Frame object containing the
+#' @param training_frame An H2OFrame object containing the
 #'        variables in the model.
 #' @param x (Optional) A vector containing the data columns on which SVD operates.
 #' @param nv The number of right singular vectors to be computed. This must be
@@ -30,6 +30,7 @@
 #'        factor levels should be included in each categorical column expansion.
 #'        If FALSE, the indicator column corresponding to the first factor level
 #'        of every categorical variable will be dropped. Defaults to TRUE.
+#' @param max_runtime_secs Maximum allowed runtime in seconds for model training. Use 0 to disable.
 #' @return Returns an object of class \linkS4class{H2ODimReductionModel}.
 #' @references N. Halko, P.G. Martinsson, J.A. Tropp. {Finding structure with randomness: Probabilistic algorithms for constructing approximate matrix decompositions}[http://arxiv.org/abs/0909.4061]. SIAM Rev., Survey and Review section, Vol. 53, num. 2, pp. 217-288, June 2011.
 #' @examples
@@ -48,15 +49,16 @@ h2o.svd <- function(training_frame, x, nv,
                     transform = "NONE",
                     svd_method = c("GramSVD", "Power", "Randomized"),
                     seed,
-                    use_all_factor_levels)
+                    use_all_factor_levels,
+                    max_runtime_secs=0)
 {
   # Required args: training_frame
   if( missing(training_frame) ) stop("argument \"training_frame\" is missing, with no default")
-  # Training_frame may be a key or an H2O Frame object
-  if (!is.Frame(training_frame))
+  # Training_frame may be a key or an H2OFrame object
+  if (!is.H2OFrame(training_frame))
     tryCatch(training_frame <- h2o.getFrame(training_frame),
              error = function(err) {
-               stop("argument \"training_frame\" must be a valid Frame or key")
+               stop("argument \"training_frame\" must be a valid H2OFrame or key")
              })
 
   # Gather user input
@@ -76,6 +78,7 @@ h2o.svd <- function(training_frame, x, nv,
     parms$seed <- seed
   if(!missing(use_all_factor_levels))
     parms$use_all_factor_levels <- use_all_factor_levels
+  if(!missing(max_runtime_secs)) parms$max_runtime_secs <- max_runtime_secs
 
   # Error check and build model
   .h2o.modelJob('svd', parms, h2oRestApiVersion=99)

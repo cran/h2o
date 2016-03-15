@@ -9,12 +9,12 @@ h2o.anomaly(object, data, per_feature = FALSE)
 \item{object}{An \linkS4class{H2OAutoEncoderModel} object that represents the
 model to be used for anomaly detection.}
 
-\item{data}{An H2O Frame object.}
+\item{data}{An H2OFrame object.}
 
 \item{per_feature}{Whether to return the per-feature squared reconstruction error}
 }
 \value{
-Returns an H2O Frame object containing the
+Returns an H2OFrame object containing the
         reconstruction MSE or the per-feature squared error.
 }
 \description{

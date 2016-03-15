@@ -59,9 +59,9 @@ h2o.specificity(object, thresholds)
 \arguments{
 \item{object}{An \linkS4class{H2OModelMetrics} object of the correct type.}
 
-\item{thresholds}{A value or a list of values between 0.0 and 1.0.}
+\item{thresholds}{(Optional) A value or a list of values between 0.0 and 1.0.}
 
-\item{metric}{A specified paramter to retrieve.}
+\item{metric}{(Optional) A specified paramter to retrieve.}
 }
 \value{
 Returns either a single value, or a list of values.

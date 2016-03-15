@@ -3,18 +3,20 @@
 \alias{h2o.gbm}
 \title{Gradient Boosted Machines}
 \usage{
-h2o.gbm(x, y, training_frame, model_id, checkpoint, distribution = c("AUTO",
-  "gaussian", "bernoulli", "multinomial", "poisson", "gamma", "tweedie"),
+h2o.gbm(x, y, training_frame, model_id, checkpoint, ignore_const_cols = TRUE,
+  distribution = c("AUTO", "gaussian", "bernoulli", "multinomial", "poisson",
+  "gamma", "tweedie", "laplace", "quantile"), quantile_alpha = 0.5,
   tweedie_power = 1.5, ntrees = 50, max_depth = 5, min_rows = 10,
-  learn_rate = 0.1, sample_rate = 1, col_sample_rate = 1, nbins = 20,
-  nbins_top_level, nbins_cats = 1024, validation_frame = NULL,
-  balance_classes = FALSE, max_after_balance_size = 1, seed,
-  build_tree_one_node = FALSE, nfolds = 0, fold_column = NULL,
-  fold_assignment = c("AUTO", "Random", "Modulo"),
-  keep_cross_validation_predictions = FALSE, score_each_iteration = FALSE,
+  learn_rate = 0.1, sample_rate = 1, col_sample_rate = 1,
+  col_sample_rate_per_tree = 1, nbins = 20, nbins_top_level,
+  nbins_cats = 1024, validation_frame = NULL, balance_classes = FALSE,
+  max_after_balance_size = 1, seed, build_tree_one_node = FALSE,
+  nfolds = 0, fold_column = NULL, fold_assignment = c("AUTO", "Random",
+  "Modulo"), keep_cross_validation_predictions = FALSE,
+  score_each_iteration = FALSE, score_tree_interval = 0,
   stopping_rounds = 0, stopping_metric = c("AUTO", "deviance", "logloss",
   "MSE", "AUC", "r2", "misclassification"), stopping_tolerance = 0.001,
-  offset_column = NULL, weights_column = NULL)
+  max_runtime_secs = 0, offset_column = NULL, weights_column = NULL)
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the GBM model.}
@@ -23,15 +25,19 @@ h2o.gbm(x, y, training_frame, model_id, checkpoint, distribution = c("AUTO",
 number starting at 0, and increasing from left to right. (The response must be either an integer or a
 categorical variable).}
 
-\item{training_frame}{An H2O Frame object containing the variables in the model.}
+\item{training_frame}{An H2OFrame object containing the variables in the model.}
 
 \item{model_id}{(Optional) The unique id assigned to the resulting model. If
 none is given, an id will automatically be generated.}
 
 \item{checkpoint}{"Model checkpoint (either key or H2ODeepLearningModel) to resume training with."}
 
+\item{ignore_const_cols}{A logical value indicating whether or not to ignore all the constant columns in the training frame.}
+
 \item{distribution}{A \code{character} string. The distribution function of the response.
-Must be "AUTO", "bernoulli", "multinomial", "poisson", "gamma", "tweedie" or "gaussian"}
+Must be "AUTO", "bernoulli", "multinomial", "poisson", "gamma", "tweedie", "laplace", "quantile" or "gaussian"}
+
+\item{quantile_alpha}{Quantile (only for Quantile regression, must be between 0 and 1)}
 
 \item{tweedie_power}{Tweedie power (only for Tweedie distribution, must be between 1 and 2)}
 
@@ -47,6 +53,8 @@ Must be "AUTO", "bernoulli", "multinomial", "poisson", "gamma", "tweedie" or "ga
 
 \item{col_sample_rate}{Column sample rate (from \code{0.0} to \code{1.0})}
 
+\item{col_sample_rate_per_tree}{Column sample rate per tree (from \code{0.0} to \code{1.0})}
+
 \item{nbins}{For numerical columns (real/int), build a histogram of (at least) this many bins, then split at the best point.}
 
 \item{nbins_top_level}{For numerical columns (real/int), build a histogram of (at most) this many bins at the root
@@ -55,7 +63,7 @@ level, then decrease by factor of two per level.}
 \item{nbins_cats}{For categorical columns (factors), build a histogram of this many bins, then split at the best point.
 Higher values can lead to more overfitting.}
 
-\item{validation_frame}{An H2O Frame object indicating the validation dataset used to contruct the
+\item{validation_frame}{An H2OFrame object indicating the validation dataset used to contruct the
 confusion matrix. Defaults to NULL.  If left as NULL, this defaults to the training data when \code{nfolds = 0}.}
 
 \item{balance_classes}{logical, indicates whether or not to balance training data class
@@ -80,6 +88,8 @@ Must be "AUTO", "Random" or "Modulo".}
 
 \item{score_each_iteration}{Attempts to score each tree.}
 
+\item{score_tree_interval}{Score the model after every so many trees. Disabled if set to 0.}
+
 \item{stopping_rounds}{Early stopping based on convergence of stopping_metric.
 Stop if simple moving average of length k of the stopping_metric does not improve
 (by stopping_tolerance) for k=stopping_rounds scoring events.
@@ -90,6 +100,8 @@ Can be one of "AUTO", "deviance", "logloss", "MSE", "AUC", "r2", "misclassificat
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (if relative
 improvement is not at least this much, stop)}
+
+\item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable.}
 
 \item{offset_column}{Specify the offset column.}
 

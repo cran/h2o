@@ -3,19 +3,24 @@
 \alias{h2o.performance}
 \title{Model Performance Metrics in H2O}
 \usage{
-h2o.performance(model, data = NULL, valid = FALSE, ...)
+h2o.performance(model, newdata = NULL, train = FALSE, valid = FALSE,
+  xval = FALSE, data = NULL)
 }
 \arguments{
 \item{model}{An \linkS4class{H2OModel} object}
 
-\item{data}{An H2O Frame. The model will make predictions
+\item{newdata}{An H2OFrame. The model will make predictions
 on this dataset, and subsequently score them. The dataset should
 match the dataset that was used to train the model, in terms of
-column names, types, and dimensions. If data is passed in, then train and valid are ignored.}
+column names, types, and dimensions. If newdata is passed in, then train, valid, and xval are ignored.}
+
+\item{train}{A logical value indicating whether to return the training metrics (constructed during training).}
 
 \item{valid}{A logical value indicating whether to return the validation metrics (constructed during training).}
 
-\item{...}{Extra args passed in for use by other functions.}
+\item{xval}{A logical value indicating whether to return the cross-validation metrics (constructed during training).}
+
+\item{data}{(DEPRECATED) An H2OFrame. This argument is now called `newdata`.}
 }
 \value{
 Returns an object of the \linkS4class{H2OModelMetrics} subclass.
@@ -32,7 +37,7 @@ prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 prostate.hex <- h2o.uploadFile(path = prosPath)
 prostate.hex$CAPSULE <- as.factor(prostate.hex$CAPSULE)
 prostate.gbm <- h2o.gbm(3:9, "CAPSULE", prostate.hex)
-h2o.performance(model = prostate.gbm, data=prostate.hex)
+h2o.performance(model = prostate.gbm, newdata=prostate.hex)
 }
 }
 

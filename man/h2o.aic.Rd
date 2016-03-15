@@ -6,7 +6,7 @@ If "train", "valid", and "xval" parameters are FALSE (default), then the trainin
 than one parameter is set to TRUE, then a named vector of AICs are returned, where the names are "train", "valid"
 or "xval".}
 \usage{
-h2o.aic(object, train = FALSE, valid = FALSE, xval = FALSE, ...)
+h2o.aic(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} or \linkS4class{H2OModelMetrics}.}
@@ -16,9 +16,6 @@ h2o.aic(object, train = FALSE, valid = FALSE, xval = FALSE, ...)
 \item{valid}{Retrieve the validation AIC}
 
 \item{xval}{Retrieve the cross-validation AIC}
-
-\item{\dots}{extra arguments to be passed if `object` is of type
-\linkS4class{H2OModel} (e.g. train=TRUE)}
 }
 \description{
 Retrieve the AIC.

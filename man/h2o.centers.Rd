@@ -3,12 +3,10 @@
 \alias{h2o.centers}
 \title{Retrieve the Model Centers}
 \usage{
-h2o.centers(object, ...)
+h2o.centers(object)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OClusteringModel} object.}
-
-\item{\dots}{further arguments to be passed on (currently unimplemented)}
 }
 \description{
 Retrieve the Model Centers

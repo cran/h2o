@@ -6,7 +6,7 @@
 h2o.runif(x, seed = -1)
 }
 \arguments{
-\item{x}{An H2O Frame object.}
+\item{x}{An H2OFrame object.}
 
 \item{seed}{A random seed used to generate draws from the uniform distribution.}
 }

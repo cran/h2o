@@ -6,7 +6,7 @@
 h2o.getTypes(x)
 }
 \arguments{
-\item{x}{A Frame}
+\item{x}{An H2OFrame}
 }
 \value{
 A list of types

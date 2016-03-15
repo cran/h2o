@@ -3,8 +3,9 @@
 \alias{h2o.naiveBayes}
 \title{Naive Bayes Model in H2O}
 \usage{
-h2o.naiveBayes(x, y, training_frame, model_id, laplace = 0,
-  threshold = 0.001, eps = 0, compute_metrics = TRUE)
+h2o.naiveBayes(x, y, training_frame, model_id, ignore_const_cols = TRUE,
+  laplace = 0, threshold = 0.001, eps = 0, compute_metrics = TRUE,
+  max_runtime_secs = 0)
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the model.}
@@ -13,10 +14,12 @@ h2o.naiveBayes(x, y, training_frame, model_id, laplace = 0,
 column index number starting at 0, and increasing from left to right. The response must be a categorical
 variable with at least two levels.}
 
-\item{training_frame}{An H2O Frame object containing the variables in the model.}
+\item{training_frame}{An H2OFrame object containing the variables in the model.}
 
 \item{model_id}{(Optional) The unique id assigned to the resulting model. If
 none is given, an id will automatically be generated.}
+
+\item{ignore_const_cols}{A logical value indicating whether or not to ignore all the constant columns in the training frame.}
 
 \item{laplace}{A positive number controlling Laplace smoothing. The default zero disables smoothing.}
 
@@ -27,6 +30,8 @@ at least 1e-10.}
 
 \item{compute_metrics}{A logical value indicating whether model metrics should be computed. Set to
 FALSE to reduce the runtime of the algorithm.}
+
+\item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable.}
 }
 \value{
 Returns an object of class \linkS4class{H2OBinomialModel} if the response has two categorical levels,

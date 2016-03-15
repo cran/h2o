@@ -3,13 +3,14 @@
 \alias{h2o.prcomp}
 \title{Principal Components Analysis}
 \usage{
-h2o.prcomp(training_frame, x, k, model_id, max_iterations = 1000,
-  transform = c("NONE", "DEMEAN", "DESCALE", "STANDARDIZE"),
-  pca_method = c("GramSVD", "Power", "Randomized", "GLRM"), seed,
-  use_all_factor_levels)
+h2o.prcomp(training_frame, x, k, model_id, ignore_const_cols = TRUE,
+  max_iterations = 1000, transform = c("NONE", "DEMEAN", "DESCALE",
+  "STANDARDIZE"), pca_method = c("GramSVD", "Power", "Randomized", "GLRM"),
+  use_all_factor_levels = FALSE, compute_metrics = TRUE,
+  impute_missing = FALSE, seed, max_runtime_secs = 0)
 }
 \arguments{
-\item{training_frame}{An H2O Frame object containing the
+\item{training_frame}{An H2OFrame object containing the
 variables in the model.}
 
 \item{x}{(Optional) A vector containing the data columns on which SVD operates.}
@@ -19,6 +20,9 @@ between 1 and min(ncol(training_frame), nrow(training_frame)) inclusive.}
 
 \item{model_id}{(Optional) The unique hex key assigned to the
 resulting model. Automatically generated if none is provided.}
+
+\item{ignore_const_cols}{A logical value indicating whether or not to ignore
+all the constant columns in the training frame.}
 
 \item{max_iterations}{The maximum number of iterations to run each power
 iteration loop. Must be between 1 and 1e6 inclusive.}
@@ -38,19 +42,29 @@ by projecting onto a random subspace (see references), "GLRM": fit a
 generalized low rank model with an l2 loss function (no regularization)
 and solve for the SVD using local matrix algebra.}
 
-\item{seed}{(Optional) Random seed used to initialize the right singular vectors
-at the beginning of each power method iteration.}
-
 \item{use_all_factor_levels}{(Optional) A logical value indicating whether all
 factor levels should be included in each categorical column expansion.
 If FALSE, the indicator column corresponding to the first factor level
 of every categorical variable will be dropped. Defaults to FALSE.}
+
+\item{compute_metrics}{(Optional) A logical value indicating whether to compute
+metrics on the training data, which requires additional calculation time.
+Only used if pca_method = "GLRM". Defaults to TRUE.}
+
+\item{impute_missing}{(Optional) A logical value indicating whether missing values
+should be imputed with the mean of the corresponding column. This is necessary
+if too many entries are NA when using methods like GramSVD. Defaults to FALSE.}
+
+\item{seed}{(Optional) Random seed used to initialize the right singular vectors
+at the beginning of each power method iteration.}
+
+\item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable.}
 }
 \value{
 Returns an object of class \linkS4class{H2ODimReductionModel}.
 }
 \description{
-Principal components analysis of a H2O dataset using the power method
+Principal components analysis of an H2O data frame using the power method
 to calculate the singular value decomposition of the Gram matrix.
 }
 \examples{

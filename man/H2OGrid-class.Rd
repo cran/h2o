@@ -34,6 +34,8 @@ it can contain a null value}
 failed_params and failure_details fields}
 
 \item{\code{failed_raw_params}}{list of failed raw parameters}
+
+\item{\code{summary_table}}{table of models built with parameters and metric information.}
 }}
 \seealso{
 \linkS4class{H2OModel} for the final model types.

@@ -6,7 +6,7 @@
 h2o.rm(ids)
 }
 \arguments{
-\item{ids}{The hex key associated with the object to be removed.}
+\item{ids}{The object or hex key associated with the object to be removed or a vector/list of those things.}
 }
 \description{
 Remove the h2o Big Data object(s) having the key name(s) from ids.

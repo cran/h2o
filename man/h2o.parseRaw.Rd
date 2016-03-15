@@ -8,7 +8,7 @@ h2o.parseRaw(data, destination_frame = "", header = NA, sep = "",
   blocking = FALSE, parse_type = NULL)
 }
 \arguments{
-\item{data}{An H2O Frame object to be parsed.}
+\item{data}{An H2OFrame object to be parsed.}
 
 \item{destination_frame}{(Optional) The hex key assigned to the parsed file.}
 
@@ -20,7 +20,7 @@ the presence of a header.}
 the file are separated by this character. If \code{sep = ""}, the
 parser will automatically detect the separator.}
 
-\item{col.names}{(Optional) A Frame object containing a
+\item{col.names}{(Optional) An H2OFrame object containing a
 single delimited line with the column names for the file.}
 
 \item{col.types}{(Optional) A vector specifying the types to attempt to force

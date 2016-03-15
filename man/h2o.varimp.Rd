@@ -3,12 +3,10 @@
 \alias{h2o.varimp}
 \title{Retrieve the variable importance.}
 \usage{
-h2o.varimp(object, ...)
+h2o.varimp(object)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} object.}
-
-\item{\dots}{further arguments to be passed on (currently unimplemented)}
 }
 \description{
 Retrieve the variable importance.

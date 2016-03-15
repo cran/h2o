@@ -4,7 +4,7 @@
 #' Performs k-means clustering on an H2O dataset.
 #'
 #'
-#' @param training_frame An H2O Frame object containing the
+#' @param training_frame An H2OFrame object containing the
 #'        variables in the model.
 #' @param x (Optional) A vector containing the data columns on
 #'        which k-means operates.
@@ -15,6 +15,7 @@
 #'        user-specified centers.
 #' @param model_id (Optional) The unique id assigned to the resulting model. If
 #'        none is given, an id will automatically be generated.
+#' @param ignore_const_cols A logical value indicating whether or not to ignore all the constant columns in the training frame.
 #' @param max_iterations The maximum number of iterations allowed. Must be between 0
 #         and 1e6 inclusive.
 #' @param standardize Logical, indicates whether the data should be
@@ -24,7 +25,7 @@
 #'        "PlusPlus": for k-means plus initialization, or "Furthest": for
 #'        initialization at the furthest point from each successive center.
 #'        Additionally, the user may specify a the initial centers as a matrix,
-#'        data.frame, Frame, or list of vectors. For matrices,
+#'        data.frame, H2OFrame, or list of vectors. For matrices,
 #'        data.frames, and Frames, each row of the respective structure
 #'        is an initial center. For lists of vectors, each vector is an
 #'        initial center.
@@ -34,6 +35,7 @@
 #' @param fold_assignment Cross-validation fold assignment scheme, if fold_column is not specified
 #'        Must be "AUTO", "Random" or "Modulo"
 #' @param keep_cross_validation_predictions Whether to keep the predictions of the cross-validation models
+#' @param max_runtime_secs Maximum allowed runtime in seconds for model training. Use 0 to disable.
 #' @return Returns an object of class \linkS4class{H2OClusteringModel}.
 #' @seealso \code{\link{h2o.cluster_sizes}}, \code{\link{h2o.totss}}, \code{\link{h2o.num_iterations}},
 #'          \code{\link{h2o.betweenss}}, \code{\link{h2o.tot_withinss}}, \code{\link{h2o.withinss}},
@@ -49,6 +51,7 @@
 #' @export
 h2o.kmeans <- function(training_frame, x, k,
                        model_id,
+                       ignore_const_cols = TRUE,
                        max_iterations = 1000,
                        standardize = TRUE,
                        init = c("Furthest","Random", "PlusPlus"),
@@ -56,13 +59,14 @@ h2o.kmeans <- function(training_frame, x, k,
                        nfolds = 0,
                        fold_column = NULL,
                        fold_assignment = c("AUTO","Random","Modulo"),
-                       keep_cross_validation_predictions = FALSE)
+                       keep_cross_validation_predictions = FALSE,
+                       max_runtime_secs=0)
 {
-  # Training_frame may be a key or an H2O Frame object
-  if( !is.Frame(training_frame) )
+  # Training_frame may be a key or an H2OFrame object
+  if( !is.H2OFrame(training_frame) )
     tryCatch(training_frame <- h2o.getFrame(training_frame),
              error = function(err) {
-               stop("argument \"training_frame\" must be a valid Frame or key")
+               stop("argument \"training_frame\" must be a valid H2OFrame or key")
              })
 
   # Gather user input
@@ -74,6 +78,8 @@ h2o.kmeans <- function(training_frame, x, k,
   parms$training_frame <- training_frame
   if(!missing(model_id))
     parms$model_id <- model_id
+  if(!missing(ignore_const_cols))
+    parms$ignore_const_cols <- ignore_const_cols
   if(!missing(max_iterations))
     parms$max_iterations <- max_iterations
   if(!missing(standardize))
@@ -87,11 +93,12 @@ h2o.kmeans <- function(training_frame, x, k,
   if( !missing(fold_column) )               parms$fold_column            <- fold_column
   if( !missing(fold_assignment) )           parms$fold_assignment        <- fold_assignment
   if( !missing(keep_cross_validation_predictions) )  parms$keep_cross_validation_predictions  <- keep_cross_validation_predictions
+  if(!missing(max_runtime_secs)) parms$max_runtime_secs <- max_runtime_secs
 
   # Check if init is an acceptable set of user-specified starting points
-  if( is.data.frame(init) || is.matrix(init) || is.list(init) || is.Frame(init) ) {
+  if( is.data.frame(init) || is.matrix(init) || is.list(init) || is.H2OFrame(init) ) {
     parms[["init"]] <- "User"
-    # Convert user-specified starting points to Frame
+    # Convert user-specified starting points to H2OFrame
     if( is.data.frame(init) || is.matrix(init) || is.list(init) ) {
       if( !is.data.frame(init) && !is.matrix(init) ) init <- t(as.data.frame(init))
       init <- as.h2o(init)

@@ -2,24 +2,24 @@
 \name{h2o.week}
 \alias{h2o.week}
 \alias{week}
-\alias{week.Frame}
+\alias{week.H2OFrame}
 \title{Convert Milliseconds to Week of Week Year in H2O Datasets}
 \usage{
 h2o.week(x)
 
 week(x)
 
-\method{week}{Frame}(x)
+\method{week}{H2OFrame}(x)
 }
 \arguments{
-\item{x}{An H2O Frame object.}
+\item{x}{An H2OFrame object.}
 }
 \value{
-A Frame object containing the entries of \code{x} converted to weeks of
+An H2OFrame object containing the entries of \code{x} converted to weeks of
         the week year.
 }
 \description{
-Converts the entries of a Frame object from milliseconds to weeks of the week
+Converts the entries of an H2OFrame object from milliseconds to weeks of the week
 year (starting from 1).
 }
 \seealso{

@@ -3,14 +3,12 @@
 \alias{h2o.biases}
 \title{Return the respective bias vector}
 \usage{
-h2o.biases(object, vector_id = 1, ...)
+h2o.biases(object, vector_id = 1)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} or \linkS4class{H2OModelMetrics}}
 
 \item{vector_id}{An integer, ranging from 1 to number of layers + 1, that specifies the bias vector to return.}
-
-\item{\dots}{further arguments to be passed to/from this method.}
 }
 \description{
 Return the respective bias vector

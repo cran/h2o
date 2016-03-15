@@ -9,7 +9,7 @@ h2o.sd(x, na.rm = FALSE)
 sd(x, na.rm = FALSE)
 }
 \arguments{
-\item{x}{An H2O Frame object.}
+\item{x}{An H2OFrame object.}
 
 \item{na.rm}{\code{logical}. Should missing values be removed?}
 }

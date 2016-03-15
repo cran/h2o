@@ -171,7 +171,7 @@
     }
 
     # H2O primitives we invoke directly
-    fr.name <- paste0(fname,".Frame")
+    fr.name <- paste0(fname,".H2OFrame")
     if( fname %in% .h2o.primitives || exists(fr.name) ) {
       if( exists(fr.name) ) { # Append any missing default args
         formal_args <- formals(get(fr.name))
@@ -196,6 +196,8 @@
        return(paste0("(",.fun.to.ast(sym,formalz,envs)," ",paste0(args,collapse=" "),")"))
       if( typeof(sym) == "double" )
         return(as.character(sym))
+      if( is(sym, "H2OFrame") )
+        return(h2o.getId(sym))
       stop(paste0("Found symbol ",fname," of type ",typeof(sym),", but do not know how to convert to a Currents expression"))
     }
     # If we get here, the lookup failed and it's an unknown variable name in

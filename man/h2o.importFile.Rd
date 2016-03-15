@@ -43,7 +43,7 @@ to automatically detect this.}
 the file are separated by this character. If \code{sep = ""}, the
 parser will automatically detect the separator.}
 
-\item{col.names}{(Optional) A Frame object containing a single
+\item{col.names}{(Optional) An H2OFrame object containing a single
 delimited line with the column names for the file.}
 
 \item{col.types}{(Optional) A vector to specify whether columns should be

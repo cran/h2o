@@ -30,6 +30,8 @@ is not found at port 54321.
 
 \item{\code{port}}{A \code{numeric} value specifying the port number of the H2O cloud.}
 
+\item{\code{proxy}}{A \code{character} specifying the proxy path of the H2O cloud.}
+
 \item{\code{https}}{Set this to TRUE to use https instead of http.}
 
 \item{\code{insecure}}{Set this to TRUE to disable SSL certificate checking.}

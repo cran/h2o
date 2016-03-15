@@ -6,7 +6,7 @@
 as.factor(x)
 }
 \arguments{
-\item{x}{a column from an H2O Frame data set.}
+\item{x}{a column from an H2OFrame data set.}
 }
 \description{
 Convert a column into a factor column.

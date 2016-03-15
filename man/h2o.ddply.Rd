@@ -6,7 +6,7 @@
 h2o.ddply(X, .variables, FUN, ..., .progress = "none")
 }
 \arguments{
-\item{X}{An H2O Frame object to be processed.}
+\item{X}{An H2OFrame object to be processed.}
 
 \item{.variables}{Variables to split \code{X} by, either the indices or names of a set of columns.}
 
@@ -17,7 +17,7 @@ h2o.ddply(X, .variables, FUN, ..., .progress = "none")
 \item{.progress}{Name of the progress bar to use. #TODO: (Currently unimplemented)}
 }
 \value{
-Returns a Frame object containing the results from the split/apply operation, arranged
+Returns an H2OFrame object containing the results from the split/apply operation, arranged
 }
 \description{
 For each subset of an H2O data set, apply a user-specified function, then combine the results.  This is an experimental feature.
@@ -33,7 +33,7 @@ iris.hex <- h2o.uploadFile(path = irisPath, destination_frame = "iris.hex")
 # Add function taking mean of sepal_len column
 fun = function(df) { sum(df[,1], na.rm = TRUE)/nrow(df) }
 # Apply function to groups by class of flower
-# uses h2o's ddply, since iris.hex is a Frame object
+# uses h2o's ddply, since iris.hex is an H2OFrame object
 res = h2o.ddply(iris.hex, "class", fun)
 head(res)
 }

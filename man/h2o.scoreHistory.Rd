@@ -3,12 +3,10 @@
 \alias{h2o.scoreHistory}
 \title{Retrieve Model Score History}
 \usage{
-h2o.scoreHistory(object, ...)
+h2o.scoreHistory(object)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} object.}
-
-\item{\dots}{further arguments to be passed on (currently unimplemented)}
 }
 \description{
 Retrieve Model Score History

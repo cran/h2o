@@ -19,10 +19,10 @@ h2o.confusionMatrix(object, ...)
 
 \item{...}{Extra arguments for extracting train or valid confusion matrices.}
 
-\item{newdata}{An H2O Frame object that can be scored on.
+\item{newdata}{An H2OFrame object that can be scored on.
 Requires a valid response column.}
 
-\item{valid}{Retreive the validation metric.}
+\item{valid}{Retrieve the validation metric.}
 
 \item{thresholds}{(Optional) A value or a list of valid values between 0.0 and 1.0.
 This value is only used in the case of

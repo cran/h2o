@@ -6,7 +6,7 @@ If "train", "valid", and "xval" parameters are FALSE (default), then the trainin
 than one parameter is set to TRUE, then a named vector of null degrees of freedom are returned, where the names are "train", "valid"
 or "xval".}
 \usage{
-h2o.null_dof(object, train = FALSE, valid = FALSE, xval = FALSE, ...)
+h2o.null_dof(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} or \linkS4class{H2OModelMetrics}}
@@ -16,8 +16,6 @@ h2o.null_dof(object, train = FALSE, valid = FALSE, xval = FALSE, ...)
 \item{valid}{Retrieve the validation null degrees of freedom}
 
 \item{xval}{Retrieve the cross-validation null degrees of freedom}
-
-\item{\dots}{further arguments to be passed to/from this method.}
 }
 \description{
 Retrieve the null degrees of freedom

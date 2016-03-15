@@ -12,13 +12,13 @@ h2o.predict(object, newdata, ...)
 \item{object}{a fitted \linkS4class{H2OModel} object for which prediction is
 desired}
 
-\item{newdata}{A Frame object in which to look for
+\item{newdata}{An H2OFrame object in which to look for
 variables with which to predict.}
 
 \item{...}{additional arguments to pass on.}
 }
 \value{
-Returns an H2O Frame object with probabilites and
+Returns an H2OFrame object with probabilites and
         default predictions.
 }
 \description{
@@ -32,8 +32,8 @@ data was loaded, even if some rows fail (for example, due to missing
 values or unseen factor levels).
 }
 \seealso{
-\code{link{h2o.deeplearning}}, \code{link{h2o.gbm}},
-         \code{link{h2o.glm}}, \code{link{h2o.randomForest}} for model
+\code{\link{h2o.deeplearning}}, \code{\link{h2o.gbm}},
+         \code{\link{h2o.glm}}, \code{\link{h2o.randomForest}} for model
          generation in h2o.
 }
 

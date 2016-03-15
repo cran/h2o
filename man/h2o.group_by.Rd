@@ -7,7 +7,7 @@ h2o.group_by(data, by, ..., gb.control = list(na.methods = NULL, col.names =
   NULL))
 }
 \arguments{
-\item{data}{an H2O Frame object.}
+\item{data}{an H2OFrame object.}
 
 \item{by}{a list of column names}
 
@@ -17,7 +17,7 @@ output columns. See \code{Details:} for more help.}
 \item{\dots}{any supported aggregate function.}
 }
 \value{
-Returns a new Frame object with columns equivalent to the number of
+Returns a new H2OFrame object with columns equivalent to the number of
         groups created
 }
 \description{

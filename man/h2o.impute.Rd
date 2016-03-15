@@ -3,9 +3,9 @@
 \alias{h2o.impute}
 \title{Basic Imputation of H2O Vectors}
 \usage{
-h2o.impute(data, column, method = c("mean", "median", "mode"),
+h2o.impute(data, column = 0, method = c("mean", "median", "mode"),
   combine_method = c("interpolate", "average", "lo", "hi"), by = NULL,
-  inplace = FALSE)
+  groupByFrame = NULL, values = NULL)
 }
 \arguments{
 \item{data}{The dataset containing the column to impute.}
@@ -19,10 +19,12 @@ h2o.impute(data, column, method = c("mean", "median", "mode"),
 
 \item{by}{group by columns}
 
-\item{inplace}{Perform the imputation inplace or make a copy. Default is to perform the imputation in place.}
+\item{groupByFrame}{Impute the column col with this pre-computed grouped frame.}
+
+\item{values}{A vector of impute values (one per column). NaN indicates to skip the column}
 }
 \value{
-a Frame with imputed values
+an H2OFrame with imputed values
 }
 \description{
 Perform simple imputation on a single vector by filling missing values with aggregates

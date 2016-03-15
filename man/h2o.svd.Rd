@@ -5,10 +5,10 @@
 \usage{
 h2o.svd(training_frame, x, nv, destination_key, max_iterations = 1000,
   transform = "NONE", svd_method = c("GramSVD", "Power", "Randomized"),
-  seed, use_all_factor_levels)
+  seed, use_all_factor_levels, max_runtime_secs = 0)
 }
 \arguments{
-\item{training_frame}{An H2O Frame object containing the
+\item{training_frame}{An H2OFrame object containing the
 variables in the model.}
 
 \item{x}{(Optional) A vector containing the data columns on which SVD operates.}
@@ -42,12 +42,14 @@ at the beginning of each power method iteration.}
 factor levels should be included in each categorical column expansion.
 If FALSE, the indicator column corresponding to the first factor level
 of every categorical variable will be dropped. Defaults to TRUE.}
+
+\item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable.}
 }
 \value{
 Returns an object of class \linkS4class{H2ODimReductionModel}.
 }
 \description{
-Singular value decomposition of a H2O dataset using the power method.
+Singular value decomposition of an H2O data frame using the power method.
 }
 \examples{
 \donttest{

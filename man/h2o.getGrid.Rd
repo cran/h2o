@@ -3,10 +3,14 @@
 \alias{h2o.getGrid}
 \title{Get a grid object from H2O distributed K/V store.}
 \usage{
-h2o.getGrid(grid_id)
+h2o.getGrid(grid_id, sort_by, decreasing)
 }
 \arguments{
 \item{grid_id}{ID of existing grid object to fetch}
+
+\item{sort_by}{Sort the models in the grid space by a metric. Choices are "logloss", "residual_deviance", "mse", "auc", "r2", "accuracy", "precision", "recall", "f1", etc.}
+
+\item{decreasing}{Specify whether sort order should be decreasing}
 }
 \description{
 Get a grid object from H2O distributed K/V store.

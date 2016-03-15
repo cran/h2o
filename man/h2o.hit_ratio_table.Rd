@@ -6,8 +6,7 @@ If "train", "valid", and "xval" parameters are FALSE (default), then the trainin
 than one parameter is set to TRUE, then a named list of Hit Ratio tables are returned, where the names are "train", "valid"
 or "xval".}
 \usage{
-h2o.hit_ratio_table(object, train = FALSE, valid = FALSE, xval = FALSE,
-  ...)
+h2o.hit_ratio_table(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} object.}
@@ -17,8 +16,6 @@ h2o.hit_ratio_table(object, train = FALSE, valid = FALSE, xval = FALSE,
 \item{valid}{Retrieve the validation Hit Ratio}
 
 \item{xval}{Retrieve the cross-validation Hit Ratio}
-
-\item{\dots}{further arguments to be passed on (currently unimplemented)}
 }
 \description{
 Retrieve the Hit Ratios

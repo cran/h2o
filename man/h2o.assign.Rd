@@ -6,7 +6,7 @@
 h2o.assign(data, key)
 }
 \arguments{
-\item{data}{An H2O Frame object}
+\item{data}{An H2OFrame object}
 
 \item{key}{The hex key to be associated with the H2O parsed data object}
 }

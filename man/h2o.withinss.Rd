@@ -3,12 +3,10 @@
 \alias{h2o.withinss}
 \title{Get the Within SS}
 \usage{
-h2o.withinss(object, ...)
+h2o.withinss(object)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OClusteringModel} object.}
-
-\item{\dots}{further arguments to be passed on (currently unimplemented)}
 }
 \description{
 Get the Within SS
