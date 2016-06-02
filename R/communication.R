@@ -393,7 +393,7 @@
         if (is.matrix(x$data))
           tbl <- t(x$data)
         else
-          tbl <- do.call(cbind, lapply(x$data, sapply, function(cell) if (is.null(cell)) "" else cell))
+          tbl <- do.call(cbind, lapply(x$data, function(cell) if (is.null(cell)) "" else toString(cell)))
         cnms <- sapply(x$columns, `[[`, "name")
         fmts <- sapply(x$columns, `[[`, "format")
         descr <- x$description
@@ -760,6 +760,7 @@ h2o.show_progress <- function() assign("PROGRESS_BAR", TRUE, .pkg.env)
         if (progressBar) {
           close(pb)
         }
+        for(w in job$warnings){ warning(w)}
       }
     }
   },

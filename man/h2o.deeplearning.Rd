@@ -16,25 +16,27 @@ h2o.deeplearning(x, y, training_frame, model_id = "",
   momentum_stable = 0, nesterov_accelerated_gradient = TRUE,
   input_dropout_ratio = 0, hidden_dropout_ratios, l1 = 0, l2 = 0,
   max_w2 = Inf, initial_weight_distribution = c("UniformAdaptive",
-  "Uniform", "Normal"), initial_weight_scale = 1, loss = c("Automatic",
-  "CrossEntropy", "Quadratic", "Absolute", "Huber"), distribution = c("AUTO",
-  "gaussian", "bernoulli", "multinomial", "poisson", "gamma", "tweedie",
-  "laplace", "huber", "quantile"), quantile_alpha = 0.5,
-  tweedie_power = 1.5, score_interval = 5, score_training_samples,
-  score_validation_samples, score_duty_cycle, classification_stop,
-  regression_stop, stopping_rounds = 5, stopping_metric = c("AUTO",
-  "deviance", "logloss", "MSE", "AUC", "r2", "misclassification"),
-  stopping_tolerance = 0, max_runtime_secs = 0, quiet_mode,
-  max_confusion_matrix_size, max_hit_ratio_k, balance_classes = FALSE,
-  class_sampling_factors, max_after_balance_size, score_validation_sampling,
-  missing_values_handling = c("MeanImputation", "Skip"), diagnostics,
-  variable_importances, fast_mode, ignore_const_cols, force_load_balance,
-  replicate_training_data, single_node_mode, shuffle_training_data, sparse,
-  col_major, average_activation, sparsity_beta, max_categorical_features,
-  reproducible = FALSE, export_weights_and_biases = FALSE,
-  offset_column = NULL, weights_column = NULL, nfolds = 0,
-  fold_column = NULL, fold_assignment = c("AUTO", "Random", "Modulo"),
-  keep_cross_validation_predictions = FALSE)
+  "Uniform", "Normal"), initial_weight_scale = 1, initial_weights = NULL,
+  initial_biases = NULL, loss = c("Automatic", "CrossEntropy", "Quadratic",
+  "Absolute", "Huber"), distribution = c("AUTO", "gaussian", "bernoulli",
+  "multinomial", "poisson", "gamma", "tweedie", "laplace", "huber", "quantile"),
+  quantile_alpha = 0.5, tweedie_power = 1.5, score_interval = 5,
+  score_training_samples, score_validation_samples, score_duty_cycle,
+  classification_stop, regression_stop, stopping_rounds = 5,
+  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "AUC", "r2",
+  "misclassification"), stopping_tolerance = 0, max_runtime_secs = 0,
+  quiet_mode, max_confusion_matrix_size, max_hit_ratio_k,
+  balance_classes = FALSE, class_sampling_factors, max_after_balance_size,
+  score_validation_sampling, missing_values_handling = c("MeanImputation",
+  "Skip"), diagnostics, variable_importances, fast_mode, ignore_const_cols,
+  force_load_balance, replicate_training_data, single_node_mode,
+  shuffle_training_data, sparse, col_major, average_activation, sparsity_beta,
+  max_categorical_features, reproducible = FALSE,
+  export_weights_and_biases = FALSE, offset_column = NULL,
+  weights_column = NULL, nfolds = 0, fold_column = NULL,
+  fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
+  keep_cross_validation_predictions = FALSE,
+  keep_cross_validation_fold_assignment = FALSE)
 }
 \arguments{
 \item{x}{A vector containing the \code{character} names of the predictors in the model.}
@@ -105,7 +107,7 @@ training phase. Typical values are between \code{1.0e-10} and \code{1.0e-4}}
 \item{input_dropout_ratio}{A fraction of the features for each training row to be omitted from
 training in order to improve generalization (dimension sampling).}
 
-\item{hidden_dropout_ratios}{Input layer dropout ratio (can improve generalization) specify one
+\item{hidden_dropout_ratios}{Hidden layer dropout ratio (can improve generalization) specify one
 value per hidden layer, defaults to 0.5.}
 
 \item{l1}{L1 regularization (can add stability and improve generalization, causes many weights to
@@ -119,6 +121,10 @@ be small).}
 \item{initial_weight_distribution}{Can be "Uniform", "UniformAdaptive", or "Normal".}
 
 \item{initial_weight_scale}{Uniform: -value ... value, Normal: stddev}
+
+\item{initial_weights}{Vector of frame ids for initial weight matrices}
+
+\item{initial_biases}{Vector of frame ids for initial bias vectors}
 
 \item{loss}{Loss function: "Automatic", "CrossEntropy" (for classification only), "Quadratic", "Absolute"
 (experimental) or "Huber" (experimental)}
@@ -221,14 +227,17 @@ Frames"}
 
 \item{weights_column}{Specify the weights column.}
 
-\item{nfolds}{(Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.}
+\item{nfolds}{(Optional) Number of folds for cross-validation.}
 
 \item{fold_column}{(Optional) Column with cross-validation fold index assignment per observation.}
 
-\item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not specified.
-Must be "AUTO", "Random" or "Modulo".}
+\item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not
+specified, must be "AUTO", "Random",  "Modulo", or "Stratified".  The Stratified option will
+stratify the folds based on the response variable, for classification problems.}
 
 \item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models.}
+
+\item{keep_cross_validation_fold_assignment}{Whether to keep the cross-validation fold assignment.}
 
 \item{...}{extra parameters to pass onto functions (not implemented)}
 }

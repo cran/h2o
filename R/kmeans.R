@@ -30,11 +30,13 @@
 #'        is an initial center. For lists of vectors, each vector is an
 #'        initial center.
 #' @param seed (Optional) Random seed used to initialize the cluster centroids.
-#' @param nfolds (Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.
+#' @param nfolds (Optional) Number of folds for cross-validation.
 #' @param fold_column (Optional) Column with cross-validation fold index assignment per observation
-#' @param fold_assignment Cross-validation fold assignment scheme, if fold_column is not specified
-#'        Must be "AUTO", "Random" or "Modulo"
+#' @param fold_assignment Cross-validation fold assignment scheme, if fold_column is not
+#'        specified, must be "AUTO", "Random",  "Modulo", or "Stratified".  The Stratified option will 
+#'        stratify the folds based on the response variable, for classification problems.
 #' @param keep_cross_validation_predictions Whether to keep the predictions of the cross-validation models
+#' @param keep_cross_validation_fold_assignment Whether to keep the cross-validation fold assignment.
 #' @param max_runtime_secs Maximum allowed runtime in seconds for model training. Use 0 to disable.
 #' @return Returns an object of class \linkS4class{H2OClusteringModel}.
 #' @seealso \code{\link{h2o.cluster_sizes}}, \code{\link{h2o.totss}}, \code{\link{h2o.num_iterations}},
@@ -58,8 +60,9 @@ h2o.kmeans <- function(training_frame, x, k,
                        seed,
                        nfolds = 0,
                        fold_column = NULL,
-                       fold_assignment = c("AUTO","Random","Modulo"),
+                       fold_assignment = c("AUTO","Random","Modulo","Stratified"),
                        keep_cross_validation_predictions = FALSE,
+                       keep_cross_validation_fold_assignment = FALSE,
                        max_runtime_secs=0)
 {
   # Training_frame may be a key or an H2OFrame object
@@ -93,6 +96,7 @@ h2o.kmeans <- function(training_frame, x, k,
   if( !missing(fold_column) )               parms$fold_column            <- fold_column
   if( !missing(fold_assignment) )           parms$fold_assignment        <- fold_assignment
   if( !missing(keep_cross_validation_predictions) )  parms$keep_cross_validation_predictions  <- keep_cross_validation_predictions
+  if( !missing(keep_cross_validation_fold_assignment) )  parms$keep_cross_validation_fold_assignment  <- keep_cross_validation_fold_assignment
   if(!missing(max_runtime_secs)) parms$max_runtime_secs <- max_runtime_secs
 
   # Check if init is an acceptable set of user-specified starting points

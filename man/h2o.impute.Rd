@@ -10,7 +10,7 @@ h2o.impute(data, column = 0, method = c("mean", "median", "mode"),
 \arguments{
 \item{data}{The dataset containing the column to impute.}
 
-\item{column}{The column to impute.}
+\item{column}{A specific column to impute, default of 0 means impute the whole frame.}
 
 \item{method}{"mean" replaces NAs with the column mean; "median" replaces NAs with the column median;
               "mode" replaces with the most common factor (for factor columns only);}
@@ -27,15 +27,15 @@ h2o.impute(data, column = 0, method = c("mean", "median", "mode"),
 an H2OFrame with imputed values
 }
 \description{
-Perform simple imputation on a single vector by filling missing values with aggregates
+Perform inplace imputation by filling missing values with aggregates
  computed on the "na.rm'd" vector. Additionally, it's possible to perform imputation
  based on groupings of columns from within data; these columns can be passed by index or
- name to the by parameter. If a factor column is supplied, then the method must be one
- "mode". Anything else results in a full stop.
+ name to the by parameter. If a factor column is supplied, then the method must be
+ "mode".
 }
 \details{
 The default method is selected based on the type of the column to impute. If the column
- is numeric then "mean" is selected; if it is categorical, then "mode" is selected. Otherwise
+ is numeric then "mean" is selected; if it is categorical, then "mode" is selected. Other
  column types (e.g. String, Time, UUID) are not supported.
 }
 \examples{

@@ -56,12 +56,12 @@ h2o.grid <- function(algorithm,
   algorithm <- .h2o.unifyAlgoName(algorithm)
   model_param_names <- names(dots)
   hyper_param_names <- names(hyper_params)
-  # Reject overlapping definition of parameters
-  if (any(model_param_names %in% hyper_param_names)) {
-    overlapping_params <- intersect(model_param_names, hyper_param_names)
-    stop(paste0("The following parameters are defined as common model parameters and also as hyper parameters: ",
-                .collapse(overlapping_params), "! Please choose only one way!"))
-  }
+  # Reject overlapping definition of parameters, this part is now done in Java backend
+#   if (any(model_param_names %in% hyper_param_names)) {
+#     overlapping_params <- intersect(model_param_names, hyper_param_names)
+#     stop(paste0("The following parameters are defined as common model parameters and also as hyper parameters: ",
+#                 .collapse(overlapping_params), "! Please choose only one way!"))
+#   }
   # Get model builder parameters for this model
   all_params <- .h2o.getModelParameters(algo = algorithm)
 
@@ -158,6 +158,21 @@ h2o.getGrid <- function(grid_id, sort_by, decreasing) {
   failure_stack_traces <- lapply(json$failure_stack_traces, function(msg) { msg })
   failed_raw_params <- if (is.list(json$failed_raw_params)) matrix(nrow=0, ncol=0) else json$failed_raw_params
 
+  # print out the failure/warning messages from Java if it exists
+  if (length(failure_details) > 0) {
+    sprintf("Errors/Warnings building gridsearch model!\n")
+    for (index in 1:length(failure_details)) {
+      
+      if (typeof(failed_params[[index]]) == "list") {
+        for (index2 in 1:length(hyper_names)) {
+            cat(sprintf("Hyper-parameter: %s, %s\n", hyper_names[[index2]], failed_params[[index]][[hyper_names[[index2]]]]))
+        }
+      }
+      cat(sprintf("[%s] failure_details: %s \n", Sys.time(), failure_details[index]))
+      cat(sprintf("[%s] failure_stack_traces: %s \n", Sys.time(), failure_stack_traces[index]))
+    }
+  }
+
   new(class,
       grid_id = grid_id,
       model_ids = model_ids,
@@ -169,5 +184,3 @@ h2o.getGrid <- function(grid_id, sort_by, decreasing) {
       summary_table     = json$summary_table
       )
 }
-
-

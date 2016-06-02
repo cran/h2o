@@ -23,8 +23,11 @@
 #' @param max_depth Maximum depth to grow the tree.
 #' @param min_rows Minimum number of rows to assign to teminal nodes.
 #' @param learn_rate Learning rate (from \code{0.0} to \code{1.0})
-#' @param sample_rate Row sample rate (from \code{0.0} to \code{1.0})
-#' @param col_sample_rate Column sample rate (from \code{0.0} to \code{1.0})
+#' @param learn_rate_annealing Scale the learning rate by this factor after each tree (e.g., 0.99 or 0.999)
+#' @param sample_rate Row sample rate per tree (from \code{0.0} to \code{1.0})
+#' @param sample_rate_per_class Row sample rate per tree per class (one per class, from \code{0.0} to \code{1.0})
+#' @param col_sample_rate Column sample rate per split (from \code{0.0} to \code{1.0})
+#' @param col_sample_rate_change_per_level Relative change of the column sampling rate for every level (from 0.0 to 2.0)
 #' @param col_sample_rate_per_tree Column sample rate per tree (from \code{0.0} to \code{1.0})
 #' @param nbins For numerical columns (real/int), build a histogram of (at least) this many bins, then split at the best point.
 #' @param nbins_top_level For numerical columns (real/int), build a histogram of (at most) this many bins at the root
@@ -35,16 +38,21 @@
 #'        confusion matrix. Defaults to NULL.  If left as NULL, this defaults to the training data when \code{nfolds = 0}.
 #' @param balance_classes logical, indicates whether or not to balance training data class
 #'        counts via over/under-sampling (for imbalanced data).
+#' @param class_sampling_factors Desired over/under-sampling ratios per class (in lexicographic
+#'        order). If not specified, sampling factors will be automatically computed to obtain class
+#'        balance during training. Requires balance_classes.
 #' @param max_after_balance_size Maximum relative size of the training data after balancing class counts (can be less
 #'        than 1.0). Ignored if balance_classes is FALSE, which is the default behavior.
 #' @param seed Seed for random numbers (affects sampling).
 #' @param build_tree_one_node Run on one node only; no network overhead but
 #'        fewer cpus used.  Suitable for small datasets.
-#' @param nfolds (Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.
+#' @param nfolds (Optional) Number of folds for cross-validation.
 #' @param fold_column (Optional) Column with cross-validation fold index assignment per observation
-#' @param fold_assignment Cross-validation fold assignment scheme, if fold_column is not specified
-#'        Must be "AUTO", "Random" or "Modulo".
+#' @param fold_assignment Cross-validation fold assignment scheme, if fold_column is not
+#'        specified, must be "AUTO", "Random",  "Modulo", or "Stratified".  The Stratified option will 
+#'        stratify the folds based on the response variable, for classification problems.
 #' @param keep_cross_validation_predictions Whether to keep the predictions of the cross-validation models
+#' @param keep_cross_validation_fold_assignment Whether to keep the cross-validation fold assignment.
 #' @param score_each_iteration Attempts to score each tree.
 #' @param score_tree_interval Score the model after every so many trees. Disabled if set to 0.
 #' @param stopping_rounds Early stopping based on convergence of stopping_metric.
@@ -58,6 +66,10 @@
 #' @param max_runtime_secs Maximum allowed runtime in seconds for model training. Use 0 to disable.
 #' @param offset_column Specify the offset column.
 #' @param weights_column Specify the weights column.
+#' @param min_split_improvement Minimum relative improvement in squared error reduction for a split to happen.
+#' @param histogram_type What type of histogram to use for finding optimal split points
+#'        Can be one of "AUTO", "UniformAdaptive", "Random", "QuantilesGlobal" or "RoundRobin".
+#' @param max_abs_leafnode_pred Maximum absolute value of a leaf node prediction.
 #' @seealso \code{\link{predict.H2OModel}} for prediction.
 #' @examples
 #' \donttest{
@@ -85,21 +97,26 @@ h2o.gbm <- function(x, y, training_frame,
                     max_depth = 5,
                     min_rows = 10,
                     learn_rate = 0.1,
+                    learn_rate_annealing = 1.0,
                     sample_rate = 1.0,
+                    sample_rate_per_class,
                     col_sample_rate = 1.0,
+                    col_sample_rate_change_per_level = 1.0,
                     col_sample_rate_per_tree = 1.0,
                     nbins = 20,
                     nbins_top_level,
                     nbins_cats = 1024,
                     validation_frame = NULL,
                     balance_classes = FALSE,
+                    class_sampling_factors,
                     max_after_balance_size = 1,
                     seed,
                     build_tree_one_node = FALSE,
                     nfolds = 0,
                     fold_column = NULL,
-                    fold_assignment = c("AUTO","Random","Modulo"),
+                    fold_assignment = c("AUTO","Random","Modulo","Stratified"),
                     keep_cross_validation_predictions = FALSE,
+                    keep_cross_validation_fold_assignment = FALSE,
                     score_each_iteration = FALSE,
                     score_tree_interval = 0,
                     stopping_rounds=0,
@@ -107,7 +124,11 @@ h2o.gbm <- function(x, y, training_frame,
                     stopping_tolerance=1e-3,
                     max_runtime_secs=0,
                     offset_column = NULL,
-                    weights_column = NULL)
+                    weights_column = NULL,
+                    min_split_improvement,
+                    histogram_type=c("AUTO","UniformAdaptive","Random","QuantilesGlobal","RoundRobin"),
+                    max_abs_leafnode_pred
+                    )
 {
   # Required maps for different names params, including deprecated params
   .gbm.map <- c("x" = "ignored_columns",
@@ -156,10 +177,16 @@ h2o.gbm <- function(x, y, training_frame,
     parms$min_rows <- min_rows
   if (!missing(learn_rate))
     parms$learn_rate <- learn_rate
+  if (!missing(learn_rate_annealing))
+    parms$learn_rate_annealing <- learn_rate_annealing
   if (!missing(sample_rate))
     parms$sample_rate <- sample_rate
+  if (!missing(sample_rate_per_class))
+    parms$sample_rate_per_class <- sample_rate_per_class
   if (!missing(col_sample_rate))
     parms$col_sample_rate <- col_sample_rate
+  if(!missing(col_sample_rate_change_per_level))
+    parms$col_sample_rate_change_per_level <- col_sample_rate_change_per_level
   if (!missing(col_sample_rate_per_tree))
     parms$col_sample_rate_per_tree <- col_sample_rate_per_tree
   if (!missing(nbins))
@@ -172,6 +199,8 @@ h2o.gbm <- function(x, y, training_frame,
     parms$validation_frame <- validation_frame
   if (!missing(balance_classes))
     parms$balance_classes <- balance_classes
+  if(!missing(class_sampling_factors))
+    parms$class_sampling_factors <- class_sampling_factors
   if (!missing(max_after_balance_size))
     parms$max_after_balance_size <- max_after_balance_size
   if (!missing(seed))
@@ -187,10 +216,14 @@ h2o.gbm <- function(x, y, training_frame,
   if( !missing(fold_column) )               parms$fold_column            <- fold_column
   if( !missing(fold_assignment) )           parms$fold_assignment        <- fold_assignment
   if( !missing(keep_cross_validation_predictions) )  parms$keep_cross_validation_predictions  <- keep_cross_validation_predictions
+  if( !missing(keep_cross_validation_fold_assignment) )  parms$keep_cross_validation_fold_assignment  <- keep_cross_validation_fold_assignment
   if(!missing(stopping_rounds)) parms$stopping_rounds <- stopping_rounds
   if(!missing(stopping_metric)) parms$stopping_metric <- stopping_metric
   if(!missing(stopping_tolerance)) parms$stopping_tolerance <- stopping_tolerance
   if(!missing(max_runtime_secs)) parms$max_runtime_secs <- max_runtime_secs
+  if(!missing(min_split_improvement)) parms$min_split_improvement <- min_split_improvement
+  if(!missing(histogram_type)) parms$histogram_type <- histogram_type
+  if(!missing(max_abs_leafnode_pred)) parms$max_abs_leafnode_pred <- max_abs_leafnode_pred
 
   .h2o.modelJob('gbm', parms)
 }

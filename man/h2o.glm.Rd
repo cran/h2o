@@ -12,9 +12,10 @@ h2o.glm(x, y, training_frame, model_id, validation_frame = NULL,
   tweedie_link_power = NaN, alpha = 0.5, prior = NULL, lambda = 1e-05,
   lambda_search = FALSE, nlambdas = -1, lambda_min_ratio = -1,
   nfolds = 0, fold_column = NULL, fold_assignment = c("AUTO", "Random",
-  "Modulo"), keep_cross_validation_predictions = FALSE,
-  beta_constraints = NULL, offset_column = NULL, weights_column = NULL,
-  intercept = TRUE, max_active_predictors = -1, objective_epsilon = -1,
+  "Modulo", "Stratified"), keep_cross_validation_predictions = FALSE,
+  keep_cross_validation_fold_assignment = FALSE, beta_constraints = NULL,
+  offset_column = NULL, weights_column = NULL, intercept = TRUE,
+  max_active_predictors = -1, interactions = NULL, objective_epsilon = -1,
   gradient_epsilon = -1, non_negative = FALSE, compute_p_values = FALSE,
   remove_collinear_columns = FALSE, max_runtime_secs = 0,
   missing_values_handling = c("MeanImputation", "Skip"))
@@ -76,14 +77,17 @@ When \code{lambda = 0}, no elastic-net penalty is applied and ordinary generaliz
 the number of variables then \code{lambda_min_ratio} = 0.0001; if the number of observations is less than the number
 of variables then \code{lambda_min_ratio} = 0.01.}
 
-\item{nfolds}{(Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.}
+\item{nfolds}{(Optional) Number of folds for cross-validation.}
 
 \item{fold_column}{(Optional) Column with cross-validation fold index assignment per observation.}
 
-\item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not specified
-Must be "AUTO", "Random" or "Modulo".}
+\item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not
+specified, must be "AUTO", "Random",  "Modulo", or "Stratified".  The Stratified option will
+stratify the folds based on the response variable, for classification problems.}
 
 \item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models.}
+
+\item{keep_cross_validation_fold_assignment}{Whether to keep the cross-validation fold assignment.}
 
 \item{beta_constraints}{A data.frame or H2OParsedData object with the columns ["names",
 "lower_bounds", "upper_bounds", "beta_given", "rho"], where each row corresponds to a predictor
@@ -99,6 +103,8 @@ is then we will take the default rho value of zero.}
 \item{intercept}{Logical, include constant term (intercept) in the model.}
 
 \item{max_active_predictors}{(Optional) Convergence criteria for number of predictors when using L1 penalty.}
+
+\item{interactions}{A vector of column indices to interact pairwise. All combinations of two indices will be computed.}
 
 \item{objective_epsilon}{Convergence criteria. Converge if relative change in objective function is below this threshold.}
 

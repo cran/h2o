@@ -12,9 +12,9 @@ This is a package for running H2O via its REST API from within R. To communicate
 \tabular{ll}{
 Package: \tab h2o\cr
 Type: \tab Package\cr
-Version: \tab 3.8.1.3\cr
-Branch: \tab rel-turan\cr
-Date: \tab Sun Mar 06 14:56:25 PST 2016\cr
+Version: \tab 3.8.2.6\cr
+Branch: \tab rel-turchin\cr
+Date: \tab Tue May 24 10:57:55 PDT 2016\cr
 License: \tab Apache License (== 2.0)\cr
 Depends: \tab R (>= 2.13.0), RCurl, jsonlite, statmod, tools, methods, utils\cr
 }

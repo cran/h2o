@@ -7,7 +7,7 @@ h2o.rbind(...)
 }
 \arguments{
 \item{\dots}{A sequence of H2OFrame arguments. All datasets must exist on the same H2O instance
-(IP and port) and contain the same number of rows.}
+(IP and port) and contain the same number and types of columns.}
 }
 \value{
 An H2OFrame object containing the combined \dots arguments row-wise.

@@ -6,8 +6,9 @@
 h2o.createFrame(rows = 10000, cols = 10, randomize = TRUE, value = 0,
   real_range = 100, categorical_fraction = 0.2, factors = 100,
   integer_fraction = 0.2, integer_range = 100, binary_fraction = 0.1,
-  binary_ones_fraction = 0.02, missing_fraction = 0.01,
-  response_factors = 2, has_response = FALSE, seed)
+  binary_ones_fraction = 0.02, time_fraction = 0, string_fraction = 0,
+  missing_fraction = 0.01, response_factors = 2, has_response = FALSE,
+  seed, seed_for_column_types)
 }
 \arguments{
 \item{rows}{The number of rows of data to generate.}
@@ -32,6 +33,10 @@ h2o.createFrame(rows = 10000, cols = 10, randomize = TRUE, value = 0,
 
 \item{binary_ones_fraction}{The fraction of values in a binary column that are set to 1.}
 
+\item{time_fraction}{The fraction of randomly created date/time columns.}
+
+\item{string_fraction}{The fraction of randomly created string columns.}
+
 \item{missing_fraction}{The fraction of total entries in the data frame that are set to NA.}
 
 \item{response_factors}{If \code{has_response = TRUE}, then this is the number of factor levels in the response column.}
@@ -39,6 +44,8 @@ h2o.createFrame(rows = 10000, cols = 10, randomize = TRUE, value = 0,
 \item{has_response}{A logical value indicating whether an additional response column should be pre-pended to the final H2O data frame. If set to TRUE, the total number of columns will be \code{cols+1}.}
 
 \item{seed}{A seed used to generate random values when \code{randomize = TRUE}.}
+
+\item{seed_for_column_types}{A seed used to generate random column types when \code{randomize = TRUE}.}
 }
 \value{
 Returns an H2OFrame object.

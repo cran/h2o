@@ -23,9 +23,8 @@ Applies conditional statements to numeric vectors in H2O parsed data objects whe
 numeric.
 }
 \details{
-Only numeric values can be tested, and only numeric results can be returned for either condition.
-Categorical data is not currently supported for this funciton and returned values cannot be
-categorical in nature.
+Both numeric and categorical values can be tested. However when returning a yes and no condition
+both conditions must be either both categorical or numeric.
 }
 \examples{
 \donttest{

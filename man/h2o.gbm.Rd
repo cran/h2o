@@ -7,16 +7,21 @@ h2o.gbm(x, y, training_frame, model_id, checkpoint, ignore_const_cols = TRUE,
   distribution = c("AUTO", "gaussian", "bernoulli", "multinomial", "poisson",
   "gamma", "tweedie", "laplace", "quantile"), quantile_alpha = 0.5,
   tweedie_power = 1.5, ntrees = 50, max_depth = 5, min_rows = 10,
-  learn_rate = 0.1, sample_rate = 1, col_sample_rate = 1,
-  col_sample_rate_per_tree = 1, nbins = 20, nbins_top_level,
-  nbins_cats = 1024, validation_frame = NULL, balance_classes = FALSE,
+  learn_rate = 0.1, learn_rate_annealing = 1, sample_rate = 1,
+  sample_rate_per_class, col_sample_rate = 1,
+  col_sample_rate_change_per_level = 1, col_sample_rate_per_tree = 1,
+  nbins = 20, nbins_top_level, nbins_cats = 1024, validation_frame = NULL,
+  balance_classes = FALSE, class_sampling_factors,
   max_after_balance_size = 1, seed, build_tree_one_node = FALSE,
   nfolds = 0, fold_column = NULL, fold_assignment = c("AUTO", "Random",
-  "Modulo"), keep_cross_validation_predictions = FALSE,
+  "Modulo", "Stratified"), keep_cross_validation_predictions = FALSE,
+  keep_cross_validation_fold_assignment = FALSE,
   score_each_iteration = FALSE, score_tree_interval = 0,
   stopping_rounds = 0, stopping_metric = c("AUTO", "deviance", "logloss",
   "MSE", "AUC", "r2", "misclassification"), stopping_tolerance = 0.001,
-  max_runtime_secs = 0, offset_column = NULL, weights_column = NULL)
+  max_runtime_secs = 0, offset_column = NULL, weights_column = NULL,
+  min_split_improvement, histogram_type = c("AUTO", "UniformAdaptive",
+  "Random", "QuantilesGlobal", "RoundRobin"), max_abs_leafnode_pred)
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the GBM model.}
@@ -49,9 +54,15 @@ Must be "AUTO", "bernoulli", "multinomial", "poisson", "gamma", "tweedie", "lapl
 
 \item{learn_rate}{Learning rate (from \code{0.0} to \code{1.0})}
 
-\item{sample_rate}{Row sample rate (from \code{0.0} to \code{1.0})}
+\item{learn_rate_annealing}{Scale the learning rate by this factor after each tree (e.g., 0.99 or 0.999)}
 
-\item{col_sample_rate}{Column sample rate (from \code{0.0} to \code{1.0})}
+\item{sample_rate}{Row sample rate per tree (from \code{0.0} to \code{1.0})}
+
+\item{sample_rate_per_class}{Row sample rate per tree per class (one per class, from \code{0.0} to \code{1.0})}
+
+\item{col_sample_rate}{Column sample rate per split (from \code{0.0} to \code{1.0})}
+
+\item{col_sample_rate_change_per_level}{Relative change of the column sampling rate for every level (from 0.0 to 2.0)}
 
 \item{col_sample_rate_per_tree}{Column sample rate per tree (from \code{0.0} to \code{1.0})}
 
@@ -69,6 +80,10 @@ confusion matrix. Defaults to NULL.  If left as NULL, this defaults to the train
 \item{balance_classes}{logical, indicates whether or not to balance training data class
 counts via over/under-sampling (for imbalanced data).}
 
+\item{class_sampling_factors}{Desired over/under-sampling ratios per class (in lexicographic
+order). If not specified, sampling factors will be automatically computed to obtain class
+balance during training. Requires balance_classes.}
+
 \item{max_after_balance_size}{Maximum relative size of the training data after balancing class counts (can be less
 than 1.0). Ignored if balance_classes is FALSE, which is the default behavior.}
 
@@ -77,14 +92,17 @@ than 1.0). Ignored if balance_classes is FALSE, which is the default behavior.}
 \item{build_tree_one_node}{Run on one node only; no network overhead but
 fewer cpus used.  Suitable for small datasets.}
 
-\item{nfolds}{(Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.}
+\item{nfolds}{(Optional) Number of folds for cross-validation.}
 
 \item{fold_column}{(Optional) Column with cross-validation fold index assignment per observation}
 
-\item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not specified
-Must be "AUTO", "Random" or "Modulo".}
+\item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not
+specified, must be "AUTO", "Random",  "Modulo", or "Stratified".  The Stratified option will
+stratify the folds based on the response variable, for classification problems.}
 
 \item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models}
+
+\item{keep_cross_validation_fold_assignment}{Whether to keep the cross-validation fold assignment.}
 
 \item{score_each_iteration}{Attempts to score each tree.}
 
@@ -106,6 +124,13 @@ improvement is not at least this much, stop)}
 \item{offset_column}{Specify the offset column.}
 
 \item{weights_column}{Specify the weights column.}
+
+\item{min_split_improvement}{Minimum relative improvement in squared error reduction for a split to happen.}
+
+\item{histogram_type}{What type of histogram to use for finding optimal split points
+Can be one of "AUTO", "UniformAdaptive", "Random", "QuantilesGlobal" or "RoundRobin".}
+
+\item{max_abs_leafnode_pred}{Maximum absolute value of a leaf node prediction.}
 }
 \description{
 Builds gradient boosted classification trees, and gradient boosted regression trees on a parsed data set.

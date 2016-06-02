@@ -4,17 +4,22 @@
 \title{Build a Big Data Random Forest Model}
 \usage{
 h2o.randomForest(x, y, training_frame, model_id, validation_frame = NULL,
-  ignore_const_cols = TRUE, checkpoint, mtries = -1, sample_rate = 0.632,
-  col_sample_rate_per_tree = 1, build_tree_one_node = FALSE, ntrees = 50,
-  max_depth = 20, min_rows = 1, nbins = 20, nbins_top_level,
-  nbins_cats = 1024, binomial_double_trees = FALSE,
-  balance_classes = FALSE, max_after_balance_size = 5, seed,
+  ignore_const_cols = TRUE, checkpoint, mtries = -1,
+  col_sample_rate_change_per_level = 1, sample_rate = 0.632,
+  sample_rate_per_class, col_sample_rate_per_tree = 1,
+  build_tree_one_node = FALSE, ntrees = 50, max_depth = 20,
+  min_rows = 1, nbins = 20, nbins_top_level, nbins_cats = 1024,
+  binomial_double_trees = FALSE, balance_classes = FALSE,
+  class_sampling_factors, max_after_balance_size = 5, seed,
   offset_column = NULL, weights_column = NULL, nfolds = 0,
-  fold_column = NULL, fold_assignment = c("AUTO", "Random", "Modulo"),
-  keep_cross_validation_predictions = FALSE, score_each_iteration = FALSE,
-  score_tree_interval = 0, stopping_rounds = 0,
-  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "AUC", "r2",
-  "misclassification"), stopping_tolerance = 0.001, max_runtime_secs = 0)
+  fold_column = NULL, fold_assignment = c("AUTO", "Random", "Modulo",
+  "Stratified"), keep_cross_validation_predictions = FALSE,
+  keep_cross_validation_fold_assignment = FALSE,
+  score_each_iteration = FALSE, score_tree_interval = 0,
+  stopping_rounds = 0, stopping_metric = c("AUTO", "deviance", "logloss",
+  "MSE", "AUC", "r2", "misclassification"), stopping_tolerance = 0.001,
+  max_runtime_secs = 0, min_split_improvement, histogram_type = c("AUTO",
+  "UniformAdaptive", "Random", "QuantilesGlobal", "RoundRobin"))
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables
@@ -41,7 +46,11 @@ none is given, an id will automatically be generated.}
 If set to -1, defaults to sqrt{p} for classification, and p/3 for regression,
 where p is the number of predictors.}
 
-\item{sample_rate}{Sample rate, from 0 to 1.0.}
+\item{col_sample_rate_change_per_level}{Relative change of the column sampling rate for every level (from 0.0 to 2.0)}
+
+\item{sample_rate}{Row sample rate per tree (from \code{0.0} to \code{1.0})}
+
+\item{sample_rate_per_class}{Row sample rate per tree per class (one per class, from \code{0.0} to \code{1.0})}
 
 \item{col_sample_rate_per_tree}{Column sample rate per tree (from \code{0.0} to \code{1.0})}
 
@@ -68,6 +77,10 @@ Higher values can lead to more overfitting.}
 \item{balance_classes}{logical, indicates whether or not to balance training
 data class counts via over/under-sampling (for imbalanced data)}
 
+\item{class_sampling_factors}{Desired over/under-sampling ratios per class (in lexicographic
+order). If not specified, sampling factors will be automatically computed to obtain class
+balance during training. Requires balance_classes.}
+
 \item{max_after_balance_size}{Maximum relative size of the training data after balancing class counts (can be less
 than 1.0). Ignored if balance_classes is FALSE, which is the default behavior.}
 
@@ -78,14 +91,17 @@ reproducible when running single threaded}
 
 \item{weights_column}{Specify the weights column.}
 
-\item{nfolds}{(Optional) Number of folds for cross-validation. If \code{nfolds >= 2}, then \code{validation} must remain empty.}
+\item{nfolds}{(Optional) Number of folds for cross-validation.}
 
 \item{fold_column}{(Optional) Column with cross-validation fold index assignment per observation}
 
-\item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not specified
-Must be "AUTO", "Random" or "Modulo"}
+\item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not
+specified, must be "AUTO", "Random",  "Modulo", or "Stratified".  The Stratified option will
+stratify the folds based on the response variable, for classification problems.}
 
 \item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models}
+
+\item{keep_cross_validation_fold_assignment}{Whether to keep the cross-validation fold assignment.}
 
 \item{score_each_iteration}{Attempts to score each tree.}
 
@@ -103,6 +119,11 @@ Can be one of "AUTO", "deviance", "logloss", "MSE", "AUC", "r2", "misclassificat
 improvement is not at least this much, stop)}
 
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable.}
+
+\item{min_split_improvement}{Minimum relative improvement in squared error reduction for a split to happen.}
+
+\item{histogram_type}{What type of histogram to use for finding optimal split points
+Can be one of "AUTO", "UniformAdaptive", "Random", "QuantilesGlobal" or "RoundRobin".}
 
 \item{...}{(Currently Unimplemented)}
 }

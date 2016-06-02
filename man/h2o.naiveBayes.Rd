@@ -3,8 +3,11 @@
 \alias{h2o.naiveBayes}
 \title{Naive Bayes Model in H2O}
 \usage{
-h2o.naiveBayes(x, y, training_frame, model_id, ignore_const_cols = TRUE,
-  laplace = 0, threshold = 0.001, eps = 0, compute_metrics = TRUE,
+h2o.naiveBayes(x, y, training_frame, validation_frame = NULL, model_id,
+  ignore_const_cols = TRUE, laplace = 0, threshold = 0.001, eps = 0,
+  nfolds = 0, fold_column = NULL, fold_assignment = c("AUTO", "Random",
+  "Modulo", "Stratified"), seed, keep_cross_validation_predictions = FALSE,
+  keep_cross_validation_fold_assignment = FALSE, compute_metrics = TRUE,
   max_runtime_secs = 0)
 }
 \arguments{
@@ -15,6 +18,8 @@ column index number starting at 0, and increasing from left to right. The respon
 variable with at least two levels.}
 
 \item{training_frame}{An H2OFrame object containing the variables in the model.}
+
+\item{validation_frame}{An H2OFrame object containing the variables in the model.  Defaults to NULL.}
 
 \item{model_id}{(Optional) The unique id assigned to the resulting model. If
 none is given, an id will automatically be generated.}
@@ -27,6 +32,20 @@ none is given, an id will automatically be generated.}
 at least 1e-10.}
 
 \item{eps}{A threshold cutoff to deal with numeric instability, must be positive.}
+
+\item{nfolds}{(Optional) Number of folds for cross-validation.}
+
+\item{fold_column}{(Optional) Column with cross-validation fold index assignment per observation}
+
+\item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not
+specified, must be "AUTO", "Random",  "Modulo", or "Stratified".  The Stratified option will
+stratify the folds based on the response variable, for classification problems.}
+
+\item{seed}{Seed for random numbers (affects sampling).}
+
+\item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models}
+
+\item{keep_cross_validation_fold_assignment}{Whether to keep the cross-validation fold assignment.}
 
 \item{compute_metrics}{A logical value indicating whether model metrics should be computed. Set to
 FALSE to reduce the runtime of the algorithm.}
