@@ -40,6 +40,8 @@ is not found at port 54321.
 
 \item{\code{password}}{Password to login with.}
 
+\item{\code{cluster_name}}{Cluster to login to.}
+
 \item{\code{mutable}}{An \code{H2OConnectionMutableState} object to hold the mutable state for the H2O connection.}
 }}
 

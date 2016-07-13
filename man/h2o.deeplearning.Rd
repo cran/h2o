@@ -24,18 +24,18 @@ h2o.deeplearning(x, y, training_frame, model_id = "",
   score_training_samples, score_validation_samples, score_duty_cycle,
   classification_stop, regression_stop, stopping_rounds = 5,
   stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "AUC", "r2",
-  "misclassification"), stopping_tolerance = 0, max_runtime_secs = 0,
-  quiet_mode, max_confusion_matrix_size, max_hit_ratio_k,
-  balance_classes = FALSE, class_sampling_factors, max_after_balance_size,
-  score_validation_sampling, missing_values_handling = c("MeanImputation",
-  "Skip"), diagnostics, variable_importances, fast_mode, ignore_const_cols,
-  force_load_balance, replicate_training_data, single_node_mode,
-  shuffle_training_data, sparse, col_major, average_activation, sparsity_beta,
-  max_categorical_features, reproducible = FALSE,
-  export_weights_and_biases = FALSE, offset_column = NULL,
-  weights_column = NULL, nfolds = 0, fold_column = NULL,
-  fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
-  keep_cross_validation_predictions = FALSE,
+  "misclassification", "mean_per_class_error"), stopping_tolerance = 0,
+  max_runtime_secs = 0, quiet_mode, max_confusion_matrix_size,
+  max_hit_ratio_k, balance_classes = FALSE, class_sampling_factors,
+  max_after_balance_size, score_validation_sampling,
+  missing_values_handling = c("MeanImputation", "Skip"), diagnostics,
+  variable_importances, fast_mode, ignore_const_cols, force_load_balance,
+  replicate_training_data, single_node_mode, shuffle_training_data, sparse,
+  col_major, average_activation, sparsity_beta, max_categorical_features,
+  reproducible = FALSE, export_weights_and_biases = FALSE,
+  offset_column = NULL, weights_column = NULL, nfolds = 0,
+  fold_column = NULL, fold_assignment = c("AUTO", "Random", "Modulo",
+  "Stratified"), keep_cross_validation_predictions = FALSE,
   keep_cross_validation_fold_assignment = FALSE)
 }
 \arguments{
@@ -52,7 +52,7 @@ none is given, an id will automatically be generated.}
 
 \item{validation_frame}{An H2OFrame object indicating the validation dataset used to construct the confusion matrix. Defaults to NULL.  If left as NULL, this defaults to the training data when \code{nfolds = 0}.}
 
-\item{checkpoint}{Model checkpoint (either key or H2ODeepLearningModel) to resume training with.}
+\item{checkpoint}{"Model checkpoint (provide the model_id) to resume training with."}
 
 \item{autoencoder}{Enable auto-encoder for model building.}
 
@@ -158,7 +158,7 @@ Stop if simple moving average of length k of the stopping_metric does not improv
 Can only trigger after at least 2k scoring events. Use 0 to disable.}
 
 \item{stopping_metric}{Metric to use for convergence checking, only for _stopping_rounds > 0
-Can be one of "AUTO", "deviance", "logloss", "MSE", "AUC", "r2", "misclassification".}
+Can be one of "AUTO", "deviance", "logloss", "MSE", "AUC", "r2", "misclassification", or "mean_per_class_error".}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (if relative
 improvement is not at least this much, stop).}

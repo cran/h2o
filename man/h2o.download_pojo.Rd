@@ -3,7 +3,7 @@
 \alias{h2o.download_pojo}
 \title{Download the Scoring POJO (Plain Old Java Object) of an H2O Model}
 \usage{
-h2o.download_pojo(model, path = "", getjar = TRUE)
+h2o.download_pojo(model, path = "", getjar = NULL, get_jar = TRUE)
 }
 \arguments{
 \item{model}{An H2OModel}
@@ -11,7 +11,9 @@ h2o.download_pojo(model, path = "", getjar = TRUE)
 \item{path}{The path to the directory to store the POJO (no trailing slash). If "", then print to
 to console. The file name will be a compilable java file name.}
 
-\item{getjar}{Whether to also download the h2o-genmodel.jar file needed to compile the POJO}
+\item{getjar}{(DEPRECATED) Whether to also download the h2o-genmodel.jar file needed to compile the POJO. This argument is now called `get_jar`.}
+
+\item{get_jar}{Whether to also download the h2o-genmodel.jar file needed to compile the POJO}
 }
 \value{
 If path is "", then pretty print the POJO to the console.
@@ -30,7 +32,7 @@ my_model <- h2o.gbm(x=1:4, y=5, training_frame=fr)
 h2o.download_pojo(my_model)  # print the model to screen
 # h2o.download_pojo(my_model, getwd())  # save the POJO and jar file to the current working
 #                                         directory, NOT RUN
-# h2o.download_pojo(my_model, getwd(), getjar = FALSE )  # save only the POJO to the current
+# h2o.download_pojo(my_model, getwd(), get_jar = FALSE )  # save only the POJO to the current
 #                                                           working directory, NOT RUN
 h2o.download_pojo(my_model, getwd())  # save to the current working directory
 }

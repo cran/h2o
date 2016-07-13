@@ -8,11 +8,12 @@ h2o.glm(x, y, training_frame, model_id, validation_frame = NULL,
   solver = c("IRLSM", "L_BFGS"), standardize = TRUE,
   family = c("gaussian", "binomial", "poisson", "gamma", "tweedie",
   "multinomial"), link = c("family_default", "identity", "logit", "log",
-  "inverse", "tweedie"), tweedie_variance_power = NaN,
-  tweedie_link_power = NaN, alpha = 0.5, prior = NULL, lambda = 1e-05,
-  lambda_search = FALSE, nlambdas = -1, lambda_min_ratio = -1,
-  nfolds = 0, fold_column = NULL, fold_assignment = c("AUTO", "Random",
-  "Modulo", "Stratified"), keep_cross_validation_predictions = FALSE,
+  "inverse", "tweedie"), tweedie_variance_power = 0, tweedie_link_power = 1,
+  alpha = 0.5, prior = NULL, lambda = 1e-05, lambda_search = FALSE,
+  early_stopping = FALSE, nlambdas = -1, lambda_min_ratio = -1,
+  nfolds = 0, seed = NULL, fold_column = NULL,
+  fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
+  keep_cross_validation_predictions = FALSE,
   keep_cross_validation_fold_assignment = FALSE, beta_constraints = NULL,
   offset_column = NULL, weights_column = NULL, intercept = TRUE,
   max_active_predictors = -1, interactions = NULL, objective_epsilon = -1,
@@ -53,9 +54,9 @@ the \code{family} specifications are:\cr
 \code{"gamma"}: \code{"inverse"}, \code{"log"}, \code{"identity"}\cr
 \code{"tweedie"}: \code{"tweedie"}\cr}
 
-\item{tweedie_variance_power}{A numeric specifying the power for the variance function when \code{family = "tweedie"}.}
+\item{tweedie_variance_power}{A numeric specifying the power for the variance function when \code{family = "tweedie"}. Default is 0.}
 
-\item{tweedie_link_power}{A numeric specifying the power for the link function when \code{family = "tweedie"}.}
+\item{tweedie_link_power}{A numeric specifying the power for the link function when \code{family = "tweedie"}. Default is 1.}
 
 \item{alpha}{A numeric in [0, 1] specifying the elastic-net mixing parameter.
 The elastic-net penalty is defined to be:
@@ -71,6 +72,8 @@ When \code{lambda = 0}, no elastic-net penalty is applied and ordinary generaliz
 \item{lambda_search}{A logical value indicating whether to conduct a search over the space of lambda values starting from the lambda max, given
 \code{lambda} is interpreted as lambda min.}
 
+\item{early_stopping}{A logical value indicating whether to stop early when doing lambda search. H2O will stop the computation at the moment when the likelihood stops changing or gets  (on the validation data).}
+
 \item{nlambdas}{The number of lambda values to use when \code{lambda_search = TRUE}.}
 
 \item{lambda_min_ratio}{Smallest value for lambda as a fraction of lambda.max. By default if the number of observations is greater than the
@@ -78,6 +81,8 @@ the number of variables then \code{lambda_min_ratio} = 0.0001; if the number of 
 of variables then \code{lambda_min_ratio} = 0.01.}
 
 \item{nfolds}{(Optional) Number of folds for cross-validation.}
+
+\item{seed}{(Optional) Specify the random number generator (RNG) seed for cross-validation folds.}
 
 \item{fold_column}{(Optional) Column with cross-validation fold index assignment per observation.}
 
@@ -119,9 +124,6 @@ is then we will take the default rho value of zero.}
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable.}
 
 \item{missing_values_handling}{(Optional) Controls handling of missing values. Can be either "MeanImputation" or "Skip". MeanImputation replaces missing values with mean for numeric and most frequent level for categorical,  Skip ignores observations with any missing value. Applied both during model training *AND* scoring.}
-
-\item{...}{(Currently Unimplemented)
-       coefficients.}
 }
 \value{
 A subclass of \code{\linkS4class{H2OModel}} is returned. The specific subclass depends on the machine learning task at hand

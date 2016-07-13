@@ -17,13 +17,14 @@ h2o.randomForest(x, y, training_frame, model_id, validation_frame = NULL,
   keep_cross_validation_fold_assignment = FALSE,
   score_each_iteration = FALSE, score_tree_interval = 0,
   stopping_rounds = 0, stopping_metric = c("AUTO", "deviance", "logloss",
-  "MSE", "AUC", "r2", "misclassification"), stopping_tolerance = 0.001,
-  max_runtime_secs = 0, min_split_improvement, histogram_type = c("AUTO",
-  "UniformAdaptive", "Random", "QuantilesGlobal", "RoundRobin"))
+  "MSE", "AUC", "r2", "misclassification", "mean_per_class_error"),
+  stopping_tolerance = 0.001, max_runtime_secs = 0, min_split_improvement,
+  histogram_type = c("AUTO", "UniformAdaptive", "Random", "QuantilesGlobal",
+  "RoundRobin"))
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables
-to use in building the GBM model.}
+to use in building the RF model.}
 
 \item{y}{The name or index of the response variable. If the data does not
 contain a header, this is the column index number starting at 1, and
@@ -40,7 +41,7 @@ none is given, an id will automatically be generated.}
 
 \item{ignore_const_cols}{A logical value indicating whether or not to ignore all the constant columns in the training frame.}
 
-\item{checkpoint}{"Model checkpoint (either key or H2ODeepLearningModel) to resume training with."}
+\item{checkpoint}{"Model checkpoint (provide the model_id) to resume training with."}
 
 \item{mtries}{Number of variables randomly sampled as candidates at each split.
 If set to -1, defaults to sqrt{p} for classification, and p/3 for regression,
@@ -113,7 +114,7 @@ Stop if simple moving average of length k of the stopping_metric does not improv
 Can only trigger after at least 2k scoring events. Use 0 to disable.}
 
 \item{stopping_metric}{Metric to use for convergence checking, only for _stopping_rounds > 0
-Can be one of "AUTO", "deviance", "logloss", "MSE", "AUC", "r2", "misclassification".}
+Can be one of "AUTO", "deviance", "logloss", "MSE", "AUC", "r2", "misclassification", or "mean_per_class_error".}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (if relative
 improvement is not at least this much, stop)}
@@ -123,7 +124,8 @@ improvement is not at least this much, stop)}
 \item{min_split_improvement}{Minimum relative improvement in squared error reduction for a split to happen.}
 
 \item{histogram_type}{What type of histogram to use for finding optimal split points
-Can be one of "AUTO", "UniformAdaptive", "Random", "QuantilesGlobal" or "RoundRobin".}
+Can be one of "AUTO", "UniformAdaptive", "Random", "QuantilesGlobal" or "RoundRobin". Note that H2O supports
+extremely randomized trees with the "Random" option.}
 
 \item{...}{(Currently Unimplemented)}
 }

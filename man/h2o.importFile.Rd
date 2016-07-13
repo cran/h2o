@@ -4,7 +4,6 @@
 \alias{h2o.importFolder}
 \alias{h2o.importHDFS}
 \alias{h2o.importURL}
-\alias{h2o.read.svmlight}
 \alias{h2o.uploadFile}
 \title{Import Files into H2O}
 \usage{
@@ -21,8 +20,6 @@ h2o.importHDFS(path, pattern = "", destination_frame = "", parse = TRUE,
 h2o.uploadFile(path, destination_frame = "", parse = TRUE, header = NA,
   sep = "", col.names = NULL, col.types = NULL, na.strings = NULL,
   progressBar = FALSE, parse_type = NULL)
-
-h2o.read.svmlight(path, pattern = "", destination_frame = "")
 }
 \arguments{
 \item{path}{The complete URL or normalized file path of the file to be

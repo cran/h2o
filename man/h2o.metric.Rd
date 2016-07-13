@@ -10,6 +10,7 @@
 \alias{h2o.fpr}
 \alias{h2o.maxPerClassError}
 \alias{h2o.mcc}
+\alias{h2o.mean_per_class_accuracy}
 \alias{h2o.metric}
 \alias{h2o.missrate}
 \alias{h2o.precision}
@@ -33,6 +34,8 @@ h2o.accuracy(object, thresholds)
 h2o.error(object, thresholds)
 
 h2o.maxPerClassError(object, thresholds)
+
+h2o.mean_per_class_accuracy(object, thresholds)
 
 h2o.mcc(object, thresholds)
 

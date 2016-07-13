@@ -13,7 +13,7 @@ h2o.impute(data, column = 0, method = c("mean", "median", "mode"),
 \item{column}{A specific column to impute, default of 0 means impute the whole frame.}
 
 \item{method}{"mean" replaces NAs with the column mean; "median" replaces NAs with the column median;
-              "mode" replaces with the most common factor (for factor columns only);}
+"mode" replaces with the most common factor (for factor columns only);}
 
 \item{combine_method}{If method is "median", then choose how to combine quantiles on even sample sizes. This parameter is ignored in all other cases.}
 
@@ -28,15 +28,15 @@ an H2OFrame with imputed values
 }
 \description{
 Perform inplace imputation by filling missing values with aggregates
- computed on the "na.rm'd" vector. Additionally, it's possible to perform imputation
- based on groupings of columns from within data; these columns can be passed by index or
- name to the by parameter. If a factor column is supplied, then the method must be
- "mode".
+computed on the "na.rm'd" vector. Additionally, it's possible to perform imputation
+based on groupings of columns from within data; these columns can be passed by index or
+name to the by parameter. If a factor column is supplied, then the method must be
+"mode".
 }
 \details{
 The default method is selected based on the type of the column to impute. If the column
- is numeric then "mean" is selected; if it is categorical, then "mode" is selected. Other
- column types (e.g. String, Time, UUID) are not supported.
+is numeric then "mean" is selected; if it is categorical, then "mode" is selected. Other
+column types (e.g. String, Time, UUID) are not supported.
 }
 \examples{
 \donttest{
