@@ -5,10 +5,10 @@
 \usage{
 h2o.gbm(x, y, training_frame, model_id, checkpoint, ignore_const_cols = TRUE,
   distribution = c("AUTO", "gaussian", "bernoulli", "multinomial", "poisson",
-  "gamma", "tweedie", "laplace", "quantile"), quantile_alpha = 0.5,
-  tweedie_power = 1.5, ntrees = 50, max_depth = 5, min_rows = 10,
-  learn_rate = 0.1, learn_rate_annealing = 1, sample_rate = 1,
-  sample_rate_per_class, col_sample_rate = 1,
+  "gamma", "tweedie", "laplace", "quantile", "huber"), quantile_alpha = 0.5,
+  tweedie_power = 1.5, huber_alpha, ntrees = 50, max_depth = 5,
+  min_rows = 10, learn_rate = 0.1, learn_rate_annealing = 1,
+  sample_rate = 1, sample_rate_per_class, col_sample_rate = 1,
   col_sample_rate_change_per_level = 1, col_sample_rate_per_tree = 1,
   nbins = 20, nbins_top_level, nbins_cats = 1024, validation_frame = NULL,
   balance_classes = FALSE, class_sampling_factors,
@@ -18,7 +18,7 @@ h2o.gbm(x, y, training_frame, model_id, checkpoint, ignore_const_cols = TRUE,
   keep_cross_validation_fold_assignment = FALSE,
   score_each_iteration = FALSE, score_tree_interval = 0,
   stopping_rounds = 0, stopping_metric = c("AUTO", "deviance", "logloss",
-  "MSE", "AUC", "r2", "misclassification", "mean_per_class_error"),
+  "MSE", "AUC", "misclassification", "mean_per_class_error"),
   stopping_tolerance = 0.001, max_runtime_secs = 0, offset_column = NULL,
   weights_column = NULL, min_split_improvement, histogram_type = c("AUTO",
   "UniformAdaptive", "Random", "QuantilesGlobal", "RoundRobin"),
@@ -41,11 +41,13 @@ none is given, an id will automatically be generated.}
 \item{ignore_const_cols}{A logical value indicating whether or not to ignore all the constant columns in the training frame.}
 
 \item{distribution}{A \code{character} string. The distribution function of the response.
-Must be "AUTO", "bernoulli", "multinomial", "poisson", "gamma", "tweedie", "laplace", "quantile" or "gaussian"}
+Must be "AUTO", "bernoulli", "multinomial", "poisson", "gamma", "tweedie", "laplace", "quantile", "huber" or "gaussian"}
 
-\item{quantile_alpha}{Quantile (only for Quantile regression, must be between 0 and 1)}
+\item{quantile_alpha}{Desired quantile for Quantile regression, must be between 0 and 1.}
 
-\item{tweedie_power}{Tweedie power (only for Tweedie distribution, must be between 1 and 2)}
+\item{tweedie_power}{Tweedie power for Tweedie regression, must be between 1 and 2.}
+
+\item{huber_alpha}{Desired quantile for Huber/M-regression (threshold between quadratic and linear loss, must be between 0 and 1).}
 
 \item{ntrees}{A nonnegative integer that determines the number of trees to grow.}
 
@@ -115,7 +117,7 @@ Stop if simple moving average of length k of the stopping_metric does not improv
 Can only trigger after at least 2k scoring events. Use 0 to disable.}
 
 \item{stopping_metric}{Metric to use for convergence checking, only for _stopping_rounds > 0
-Can be one of "AUTO", "deviance", "logloss", "MSE", "AUC", "r2", "misclassification", or "mean_per_class_error".}
+Can be one of "AUTO", "deviance", "logloss", "MSE", "AUC", "misclassification", or "mean_per_class_error".}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (if relative
 improvement is not at least this much, stop)}

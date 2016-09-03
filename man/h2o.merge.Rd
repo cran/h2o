@@ -3,32 +3,30 @@
 \alias{h2o.merge}
 \title{Merge Two H2O Data Frames}
 \usage{
-h2o.merge(x, y, all.x = FALSE, all.y = FALSE, by.x = NULL, by.y = NULL,
-  method = "hash")
+h2o.merge(x, y, by = intersect(names(x), names(y)), by.x = by, by.y = by,
+  all = FALSE, all.x = all, all.y = all, method = "hash")
 }
 \arguments{
 \item{x,y}{H2OFrame objects}
+
+\item{by}{columns used for merging by default the common names}
+
+\item{by.x}{x columns used for merging by name or number}
+
+\item{by.y}{y columns used for merging by name or number}
+
+\item{all}{TRUE includes all rows in x and all rows in y even if there is no match to the other}
 
 \item{all.x}{If all.x is true, all rows in the x will be included, even if there is no matching
 row in y, and vice-versa for all.y.}
 
 \item{all.y}{see all.x}
 
-\item{by.x}{x columns used for merging.}
-
-\item{by.y}{y columns used for merging.}
-
 \item{method}{auto, radix, or hash (default)}
 }
 \description{
-Merges two H2OFrame objects by shared column names. Unlike the
-base R implementation, \code{h2o.merge} only supports merging through shared
-column names.
-}
-\details{
-In order for \code{h2o.merge} to work in multinode clusters, one of the
-datasets must be small enough to exist in every node. Currently, this
-function only supports \code{all.x = TRUE}. All other permutations will fail.
+Merges two H2OFrame objects with the same arguments and meanings
+as merge() in base R.
 }
 \examples{
 \donttest{

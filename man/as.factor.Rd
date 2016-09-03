@@ -21,6 +21,6 @@ summary(prostate.hex)
 }
 }
 \seealso{
-\code{\link{is.factor}}.
+\code{\link{as.factor}}.
 }
 

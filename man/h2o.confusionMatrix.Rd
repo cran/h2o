@@ -28,7 +28,7 @@ Requires a valid response column.}
 This value is only used in the case of
 \linkS4class{H2OBinomialMetrics} objects.}
 
-\item{metrics}{(Optional) A metric or a list of valid metrics ("min_per_class_accuracy", "absolute_MCC", "tnr", "fnr", "fpr", "tpr", "precision", "accuracy", "f0point5", "f2", "f1").
+\item{metrics}{(Optional) A metric or a list of valid metrics ("min_per_class_accuracy", "absolute_mcc", "tnr", "fnr", "fpr", "tpr", "precision", "accuracy", "f0point5", "f2", "f1").
 This value is only used in the case of
 \linkS4class{H2OBinomialMetrics} objects.}
 }

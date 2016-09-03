@@ -17,7 +17,7 @@ h2o.randomForest(x, y, training_frame, model_id, validation_frame = NULL,
   keep_cross_validation_fold_assignment = FALSE,
   score_each_iteration = FALSE, score_tree_interval = 0,
   stopping_rounds = 0, stopping_metric = c("AUTO", "deviance", "logloss",
-  "MSE", "AUC", "r2", "misclassification", "mean_per_class_error"),
+  "MSE", "AUC", "misclassification", "mean_per_class_error"),
   stopping_tolerance = 0.001, max_runtime_secs = 0, min_split_improvement,
   histogram_type = c("AUTO", "UniformAdaptive", "Random", "QuantilesGlobal",
   "RoundRobin"))
@@ -114,7 +114,7 @@ Stop if simple moving average of length k of the stopping_metric does not improv
 Can only trigger after at least 2k scoring events. Use 0 to disable.}
 
 \item{stopping_metric}{Metric to use for convergence checking, only for _stopping_rounds > 0
-Can be one of "AUTO", "deviance", "logloss", "MSE", "AUC", "r2", "misclassification", or "mean_per_class_error".}
+Can be one of "AUTO", "deviance", "logloss", "MSE", "AUC", "misclassification", or "mean_per_class_error".}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (if relative
 improvement is not at least this much, stop)}

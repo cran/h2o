@@ -41,8 +41,8 @@ gbm <- h2o.gbm(x = 1:10, y = "y", training_frame = train, validation_frame = val
 plot(gbm)
 plot(gbm, timestep = "duration", metric = "deviance")
 plot(gbm, timestep = "number_of_trees", metric = "deviance")
-plot(gbm, timestep = "number_of_trees", metric = "MSE")
-
+plot(gbm, timestep = "number_of_trees", metric = "rmse")
+plot(gbm, timestep = "number_of_trees", metric = "mae")
 }
 }
 \seealso{

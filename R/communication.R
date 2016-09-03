@@ -612,10 +612,16 @@ h2o.clusterInfo <- function() {
   assign("IS_CLIENT", is_client, .pkg.env)
   m <- ": \n"
   if( is_client ) m <- " (in client mode): \n"
+  
+  if (is.null(res$build_too_old)) {
+    res$build_too_old <- TRUE
+    res$build_age <- "PREHISTORIC"
+  }
 
   cat(paste0("R is connected to the H2O cluster", m))
   cat("    H2O cluster uptime:        ", .readableTime(as.numeric(res$cloud_uptime_millis)), "\n")
   cat("    H2O cluster version:       ", res$version, "\n")
+  cat("    H2O cluster version age:   ", res$build_age, if (res$build_too_old) "!!!" else "", "\n")
   cat("    H2O cluster name:          ", res$cloud_name, "\n")
   cat("    H2O cluster total nodes:   ", res$cloud_size, "\n")
   cat("    H2O cluster total memory:  ", sprintf("%.2f GB", freeMem), "\n")
@@ -631,6 +637,9 @@ h2o.clusterInfo <- function() {
   if(any(cpusLimited))
     warning("Number of CPU cores allowed is limited to 1 on some nodes.\n",
             "To remove this limit, set environment variable 'OPENBLAS_MAIN_FREE=1' before starting R.")
+  if (res$build_too_old) {
+    warning(sprintf("\nYour H2O cluster version is too old (%s)!\nPlease download and install the latest version from http://h2o.ai/download/", res$build_age))
+  }
 }
 
 #' Check H2O Server Health

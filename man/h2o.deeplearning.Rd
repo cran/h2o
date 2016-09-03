@@ -20,9 +20,9 @@ h2o.deeplearning(x, y, training_frame, model_id = "",
   initial_biases = NULL, loss = c("Automatic", "CrossEntropy", "Quadratic",
   "Absolute", "Huber"), distribution = c("AUTO", "gaussian", "bernoulli",
   "multinomial", "poisson", "gamma", "tweedie", "laplace", "huber", "quantile"),
-  quantile_alpha = 0.5, tweedie_power = 1.5, score_interval = 5,
-  score_training_samples, score_validation_samples, score_duty_cycle,
-  classification_stop, regression_stop, stopping_rounds = 5,
+  quantile_alpha = 0.5, tweedie_power = 1.5, huber_alpha,
+  score_interval = 5, score_training_samples, score_validation_samples,
+  score_duty_cycle, classification_stop, regression_stop, stopping_rounds = 5,
   stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "AUC", "r2",
   "misclassification", "mean_per_class_error"), stopping_tolerance = 0,
   max_runtime_secs = 0, quiet_mode, max_confusion_matrix_size,
@@ -32,10 +32,12 @@ h2o.deeplearning(x, y, training_frame, model_id = "",
   variable_importances, fast_mode, ignore_const_cols, force_load_balance,
   replicate_training_data, single_node_mode, shuffle_training_data, sparse,
   col_major, average_activation, sparsity_beta, max_categorical_features,
-  reproducible = FALSE, export_weights_and_biases = FALSE,
-  offset_column = NULL, weights_column = NULL, nfolds = 0,
-  fold_column = NULL, fold_assignment = c("AUTO", "Random", "Modulo",
-  "Stratified"), keep_cross_validation_predictions = FALSE,
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
+  "Binary", "Eigen"), reproducible = FALSE,
+  export_weights_and_biases = FALSE, offset_column = NULL,
+  weights_column = NULL, nfolds = 0, fold_column = NULL,
+  fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
+  keep_cross_validation_predictions = FALSE,
   keep_cross_validation_fold_assignment = FALSE)
 }
 \arguments{
@@ -133,9 +135,11 @@ be small).}
 Must be "AUTO", "bernoulli", "multinomial", "poisson", "gamma", "tweedie",
 "laplace", "huber", "quantile" or "gaussian"}
 
-\item{quantile_alpha}{Quantile (only for Quantile regression, must be between 0 and 1)}
+\item{quantile_alpha}{Desired quantile for Quantile regression, must be between 0 and 1.}
 
-\item{tweedie_power}{Tweedie power (only for Tweedie distribution, must be between 1 and 2).}
+\item{tweedie_power}{Tweedie power for Tweedie regression, must be between 1 and 2.}
+
+\item{huber_alpha}{Desired quantile for Huber/M-regression (threshold between quadratic and linear loss, must be between 0 and 1).}
 
 \item{score_interval}{Shortest time interval (in secs) between model scoring.}
 
@@ -158,7 +162,7 @@ Stop if simple moving average of length k of the stopping_metric does not improv
 Can only trigger after at least 2k scoring events. Use 0 to disable.}
 
 \item{stopping_metric}{Metric to use for convergence checking, only for _stopping_rounds > 0
-Can be one of "AUTO", "deviance", "logloss", "MSE", "AUC", "r2", "misclassification", or "mean_per_class_error".}
+Can be one of "AUTO", "deviance", "logloss", "MSE", "AUC", "misclassification", or "mean_per_class_error".}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (if relative
 improvement is not at least this much, stop).}
@@ -217,6 +221,8 @@ propagation, but might slow down backpropagation (Experimental).}
 
 \item{max_categorical_features}{Max. number of categorical features, enforced via hashing
 Experimental).}
+
+\item{categorical_encoding}{Encoding scheme for categorical features, must be "AUTO", "Enum",}
 
 \item{reproducible}{Force reproducibility on small data (requires setting the \code{seed} argument and this will be slow - only uses 1 thread).}
 

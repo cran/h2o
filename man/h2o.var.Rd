@@ -15,7 +15,10 @@ var(x, y = NULL, na.rm = FALSE, use)
 
 \item{na.rm}{\code{logical}. Should missing values be removed?}
 
-\item{use}{An optional character string indicating how to handle missing values. This must be one of the following:}
+\item{use}{An optional character string indicating how to handle missing values. This must be one of the following:
+"everything"            - outputs NaNs whenever one of its contributing observations is missing
+"all.obs"               - presence of missing observations will throw an error
+"complete.obs"          - discards missing values along with all observations in their rows so that only complete observations are used}
 }
 \description{
 Compute the variance or covariance matrix of one or two H2OFrames.

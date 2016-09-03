@@ -1,6 +1,8 @@
 #'
 #' H2O Model Related Functions
 #'
+#' @importFrom graphics strwidth par legend
+
 
 # ------------------------------- Helper Functions --------------------------- #
 # Used to verify data, x, y and turn into the appropriate things
@@ -490,6 +492,9 @@ h2o.crossValidate <- function(model, nfolds, model.type = c("gbm", "glm", "deepl
 #'        match the dataset that was used to train the model, in terms of
 #'        column names, types, and dimensions. If newdata is passed in, then train, valid, and xval are ignored.
 #' @param train A logical value indicating whether to return the training metrics (constructed during training).
+#' 
+#' Note: when the trained h2o model uses balance_classes, the training metrics constructed during training will be from the balanced training dataset.
+#' For more information visit: \url{https://0xdata.atlassian.net/browse/TN-9}
 #' @param valid A logical value indicating whether to return the validation metrics (constructed during training).
 #' @param xval A logical value indicating whether to return the cross-validation metrics (constructed during training). 
 #' @param data (DEPRECATED) An H2OFrame. This argument is now called `newdata`.
@@ -503,6 +508,12 @@ h2o.crossValidate <- function(model, nfolds, model.type = c("gbm", "glm", "deepl
 #' prostate.hex$CAPSULE <- as.factor(prostate.hex$CAPSULE)
 #' prostate.gbm <- h2o.gbm(3:9, "CAPSULE", prostate.hex)
 #' h2o.performance(model = prostate.gbm, newdata=prostate.hex)
+#' 
+#' ## If model uses balance_classes
+#' ## the results from train = TRUE will not match the results from newdata = prostate.hex
+#' prostate.gbm.balanced <- h2o.gbm(3:9, "CAPSULE", prostate.hex, balance_classes = TRUE)
+#' h2o.performance(model = prostate.gbm.balanced, newdata = prostate.hex)
+#' h2o.performance(model = prostate.gbm.balanced, train = TRUE)
 #' }
 #' @export
 h2o.performance <- function(model, newdata=NULL, train=FALSE, valid=FALSE, xval=FALSE, data=NULL) {
@@ -555,6 +566,59 @@ h2o.performance <- function(model, newdata=NULL, train=FALSE, valid=FALSE, xval=
     if( is.null(model@model$cross_validation_metrics@metrics) ) return(NULL) # no newdata, but xval is true, return the crosss_validation metrics
     else                                                        return(model@model$cross_validation_metrics)  
   }
+}
+
+#' Create Model Metrics from predicted and actual values in H2O
+#'
+#' Given predicted values (target for regression, class-1 probabilities or binomial
+#' or per-class probabilities for multinomial), compute a model metrics object
+#'
+#' @param predicted An H2OFrame containing predictions
+#' @param actuals An H2OFrame containing actual values
+#' @param domain Vector with response factors for classification.
+#' @param distribution Distribution for regression.
+#' @return Returns an object of the \linkS4class{H2OModelMetrics} subclass.
+#' @examples
+#' \donttest{
+#' library(h2o)
+#' h2o.init()
+#' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
+#' prostate.hex <- h2o.uploadFile(path = prosPath)
+#' prostate.hex$CAPSULE <- as.factor(prostate.hex$CAPSULE)
+#' prostate.gbm <- h2o.gbm(3:9, "CAPSULE", prostate.hex)
+#' pred <- h2o.predict(prostate.gbm, prostate.hex)[,3] ## class-1 probability
+#' h2o.make_metrics(pred,prostate.hex$CAPSULE)
+#' }
+#' @export
+h2o.make_metrics <- function(predicted, actuals, domain=NULL, distribution=NULL) {
+  params <- list()
+  pred <- h2o.getId(predicted)
+  act <- h2o.getId(actuals)
+  params[["predictions_frame"]] <- pred
+  params[["actuals_frame"]] <- act
+  params[["domain"]] <- domain
+  params[["distribution"]] <- distribution
+
+  if (is.null(domain) && !is.null(h2o.levels(actuals)))
+    domain = h2o.levels(actuals)
+
+  ## pythonify the domain
+  if (!is.null(domain)) {
+    out <- paste0('["',domain[1],'"')
+    for (d in 2:length(domain)) {
+      out <- paste0(out,',"',domain[d],'"')
+    }
+    out <- paste0(out, "]")
+    params[["domain"]] <- out
+  }
+  url <- paste0("ModelMetrics/predictions_frame/",pred,"/actuals_frame/",act)
+  res <- .h2o.__remoteSend(method = "POST", url, .params = params)
+  model_metrics <- res$model_metrics
+  metrics <- model_metrics[!(names(model_metrics) %in% c("__meta", "names", "domains", "model_category"))]
+  name <- "H2ORegressionMetrics"
+  if (!is.null(metrics$AUC)) name <- "H2OBinomialMetrics"
+  else if (!is.null(metrics$hit_ratio_table)) name <- "H2OMultinomialMetrics"
+  new(Class = name, metrics = metrics)
 }
 
 #' Retrieve the AUC
@@ -741,6 +805,7 @@ h2o.aic <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 #' Retrieve the R2 value
 #'
 #' Retrieves the R2 value from an H2O model.
+#' Will return R^2 for GLM Models and will return NaN otherwise.
 #' If "train", "valid", and "xval" parameters are FALSE (default), then the training R2 value is returned. If more
 #' than one parameter is set to TRUE, then a named vector of R2s are returned, where the names are "train", "valid"
 #' or "xval".
@@ -756,7 +821,7 @@ h2o.aic <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 #' h <- h2o.init()
 #' fr <- as.h2o(iris)
 #'
-#' m <- h2o.deeplearning(x=2:5,y=1,training_frame=fr)
+#' m <- h2o.glm(x=2:5,y=1,training_frame=fr)
 #'
 #' h2o.r2(m)
 #' }
@@ -1024,6 +1089,201 @@ h2o.mse <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
   invisible(NULL)
 }
 
+#' Retrieves Root Mean Squared Error Value
+#'
+#' Retrieves the root mean squared error value from an \linkS4class{H2OModelMetrics}
+#' object.
+#' If "train", "valid", and "xval" parameters are FALSE (default), then the training RMSEvalue is returned. If more
+#' than one parameter is set to TRUE, then a named vector of RMSEs are returned, where the names are "train", "valid"
+#' or "xval".
+#'
+#' This function only supports \linkS4class{H2OBinomialMetrics},
+#' \linkS4class{H2OMultinomialMetrics}, and \linkS4class{H2ORegressionMetrics} objects.
+#'
+#' @param object An \linkS4class{H2OModelMetrics} object of the correct type.
+#' @param train Retrieve the training RMSE
+#' @param valid Retrieve the validation RMSE
+#' @param xval Retrieve the cross-validation RMSE
+#' @seealso \code{\link{h2o.auc}} for AUC, \code{\link{h2o.mse}} for RMSE, and
+#'          \code{\link{h2o.metric}} for the various threshold metrics. See
+#'          \code{\link{h2o.performance}} for creating H2OModelMetrics objects.
+#' @examples
+#' \donttest{
+#' library(h2o)
+#' h2o.init()
+#'
+#' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
+#' hex <- h2o.uploadFile(prosPath)
+#'
+#' hex[,2] <- as.factor(hex[,2])
+#' model <- h2o.gbm(x = 3:9, y = 2, training_frame = hex, distribution = "bernoulli")
+#' perf <- h2o.performance(model, hex)
+#' h2o.rmse(perf)
+#' }
+#' @export
+h2o.rmse <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
+  if( is(object, "H2OModelMetrics") ) return( object@metrics$RMSE )
+  if( is(object, "H2OModel") ) {
+    metrics <- NULL # break out special for clustering vs the rest
+    model.parts <- .model.parts(object)
+    if ( !train && !valid && !xval ) {
+      metric <- model.parts$tm@metrics$RMSE
+      if ( !is.null(metric) ) return(metric)
+    }
+    v <- c()
+    v_names <- c()
+    if ( train ) {
+      if( is(object, "H2OClusteringModel") ) v <- model.parts$tm@metrics$centroid_stats$within_cluster_sum_of_squares
+      else v <- c(v,model.parts$tm@metrics$RMSE)
+      v_names <- c(v_names,"train")
+    }
+    if ( valid ) {
+      if( is.null(model.parts$vm) ) return(invisible(.warn.no.validation()))
+      else {
+        if( is(object, "H2OClusteringModel") ) v <- model.parts$vm@metrics$centroid_stats$within_cluster_sum_of_squares
+        else v <- c(v,model.parts$vm@metrics$RMSE)
+        v_names <- c(v_names,"valid")
+      }
+    }
+    if ( xval ) {
+      if( is.null(model.parts$xm) ) return(invisible(.warn.no.cross.validation()))
+      else {
+        if( is(object, "H2OClusteringModel") ) v <- model.parts$xm@metrics$centroid_stats$within_cluster_sum_of_squares
+        else v <- c(v,model.parts$xm@metrics$RMSE)
+        v_names <- c(v_names,"xval")
+      }
+    }
+    if ( !is.null(v) ) {
+      names(v) <- v_names
+      if ( length(v)==1 ) { return( v[[1]] ) } else { return( v ) }
+    }
+  }
+  warning(paste0("No RMSE for ",class(object)))
+  invisible(NULL)
+}
+
+#'
+#' Retrieve the Mean Absolute Error Value
+#'
+#' Retrieves the mean absolute error (MAE) value from an H2O model.
+#' If "train", "valid", and "xval" parameters are FALSE (default), then the training MAE value is returned. If more
+#' than one parameter is set to TRUE, then a named vector of MAEs are returned, where the names are "train", "valid"
+#' or "xval".
+#'
+#' @param object An \linkS4class{H2OModel} object.
+#' @param train Retrieve the training MAE
+#' @param valid  Retrieve the validation set MAE if a validation set was passed in during model build time.
+#' @param xval Retrieve the cross-validation MAE
+#' @examples
+#' \donttest{
+#' library(h2o)
+#'
+#' h <- h2o.init()
+#' fr <- as.h2o(iris)
+#'
+#' m <- h2o.deeplearning(x=2:5,y=1,training_frame=fr)
+#'
+#' h2o.mae(m)
+#' }
+#' @export
+h2o.mae <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
+  if( is(object, "H2OModelMetrics") ) return( object@metrics$mae )
+  if( is(object, "H2OModel") ) {
+    model.parts <- .model.parts(object)
+    if ( !train && !valid && !xval ) {
+      metric <- model.parts$tm@metrics$mae
+      if ( !is.null(metric) ) return(metric)
+    }
+    v <- c()
+    v_names <- c()
+    if ( train ) {
+      v <- c(v,model.parts$tm@metrics$mae)
+      v_names <- c(v_names,"train")
+    }
+    if ( valid ) {
+      if( is.null(model.parts$vm) ) return(invisible(.warn.no.validation()))
+      else {
+        v <- c(v,model.parts$vm@metrics$mae)
+        v_names <- c(v_names,"valid")
+      }
+    }
+    if ( xval ) {
+      if( is.null(model.parts$xm) ) return(invisible(.warn.no.cross.validation()))
+      else {
+        v <- c(v,model.parts$xm@metrics$mae)
+        v_names <- c(v_names,"xval")
+      }
+    }
+    if ( !is.null(v) ) {
+      names(v) <- v_names
+      if ( length(v)==1 ) { return( v[[1]] ) } else { return( v ) }
+    }
+  }
+  warning(paste0("No MAE for ", class(object)))
+  invisible(NULL)
+}
+
+#'
+#' Retrieve the Root Mean Squared Log Error
+#'
+#' Retrieves the root mean squared log error (RMSLE) value from an H2O model.
+#' If "train", "valid", and "xval" parameters are FALSE (default), then the training rmsle value is returned. If more
+#' than one parameter is set to TRUE, then a named vector of rmsles are returned, where the names are "train", "valid"
+#' or "xval".
+#'
+#' @param object An \linkS4class{H2OModel} object.
+#' @param train Retrieve the training rmsle
+#' @param valid  Retrieve the validation set rmsle if a validation set was passed in during model build time.
+#' @param xval Retrieve the cross-validation rmsle
+#' @examples
+#' \donttest{
+#' library(h2o)
+#'
+#' h <- h2o.init()
+#' fr <- as.h2o(iris)
+#'
+#' m <- h2o.deeplearning(x=2:5,y=1,training_frame=fr)
+#'
+#' h2o.rmsle(m)
+#' }
+#' @export
+h2o.rmsle <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
+  if( is(object, "H2OModelMetrics") ) return( object@metrics$rmsle )
+  if( is(object, "H2OModel") ) {
+    model.parts <- .model.parts(object)
+    if ( !train && !valid && !xval ) {
+      metric <- model.parts$tm@metrics$rmsle
+      if ( !is.null(metric) ) return(metric)
+    }
+    v <- c()
+    v_names <- c()
+    if ( train ) {
+      v <- c(v,model.parts$tm@metrics$rmsle)
+      v_names <- c(v_names,"train")
+    }
+    if ( valid ) {
+      if( is.null(model.parts$vm) ) return(invisible(.warn.no.validation()))
+      else {
+        v <- c(v,model.parts$vm@metrics$rmsle)
+        v_names <- c(v_names,"valid")
+      }
+    }
+    if ( xval ) {
+      if( is.null(model.parts$xm) ) return(invisible(.warn.no.cross.validation()))
+      else {
+        v <- c(v,model.parts$xm@metrics$rmsle)
+        v_names <- c(v_names,"xval")
+      }
+    }
+    if ( !is.null(v) ) {
+      names(v) <- v_names
+      if ( length(v)==1 ) { return( v[[1]] ) } else { return( v ) }
+    }
+  }
+  warning(paste0("No rmsle for ", class(object)))
+  invisible(NULL)
+}
+
 #' Retrieve the Log Loss Value
 #'
 #' Retrieves the log loss output for a \linkS4class{H2OBinomialMetrics} or
@@ -1236,6 +1496,7 @@ h2o.hit_ratio_table <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 #' }
 #' @export
 h2o.metric <- function(object, thresholds, metric) {
+  if(!is(object, "H2OModelMetrics")) stop(paste0("No ", metric, " for ",class(object)," .Should be a H2OModelMetrics object!"))
   if(is(object, "H2OBinomialMetrics")){
     if(!missing(thresholds)) lapply(thresholds, function(t,object,metric) h2o.find_row_by_threshold(object, t)[, metric], object, metric)
     else {
@@ -1292,7 +1553,7 @@ h2o.mean_per_class_accuracy <- function(object, thresholds){
 #' @rdname h2o.metric
 #' @export
 h2o.mcc <- function(object, thresholds){
-  h2o.metric(object, thresholds, "absolute_MCC")
+  h2o.metric(object, thresholds, "absolute_mcc")
 }
 
 #' @rdname h2o.metric
@@ -1895,7 +2156,7 @@ setMethod("h2o.gainsLift", "H2OModelMetrics", function(object) {
 #' @param thresholds (Optional) A value or a list of valid values between 0.0 and 1.0.
 #'        This value is only used in the case of
 #'        \linkS4class{H2OBinomialMetrics} objects.
-#' @param metrics (Optional) A metric or a list of valid metrics ("min_per_class_accuracy", "absolute_MCC", "tnr", "fnr", "fpr", "tpr", "precision", "accuracy", "f0point5", "f2", "f1").
+#' @param metrics (Optional) A metric or a list of valid metrics ("min_per_class_accuracy", "absolute_mcc", "tnr", "fnr", "fpr", "tpr", "precision", "accuracy", "f0point5", "f2", "f1").
 #'        This value is only used in the case of
 #'        \linkS4class{H2OBinomialMetrics} objects.
 #' @param valid Retrieve the validation metric.
@@ -1970,7 +2231,7 @@ setMethod("h2o.confusionMatrix", "H2OModelMetrics", function(object, thresholds=
   # error check the metrics_list and thresholds_list
   if( !all(sapply(thresholds_list, f <- function(x) is.numeric(x) && x >= 0 && x <= 1)) )
     stop("All thresholds must be numbers between 0 and 1 (inclusive).")
-  allowable_metrics <- c("min_per_class_accuracy", "absolute_MCC", "tnr", "fnr", "fpr", "tpr","precision", "accuracy", "f0point5", "f2", "f1")
+  allowable_metrics <- c("min_per_class_accuracy", "absolute_mcc", "tnr", "fnr", "fpr", "tpr","precision", "accuracy", "f0point5", "f2", "f1")
   if( !all(sapply(metrics_list, f <- function(x) x %in% allowable_metrics)) )
       stop(paste("The only allowable metrics are ", paste(allowable_metrics, collapse=', ')))
 
@@ -2046,8 +2307,9 @@ setMethod("h2o.confusionMatrix", "H2OModelMetrics", function(object, thresholds=
 #' plot(gbm)
 #' plot(gbm, timestep = "duration", metric = "deviance")
 #' plot(gbm, timestep = "number_of_trees", metric = "deviance")
-#' plot(gbm, timestep = "number_of_trees", metric = "MSE")
-#'
+#' plot(gbm, timestep = "number_of_trees", metric = "rmse")
+#' plot(gbm, timestep = "number_of_trees", metric = "mae")
+
 #' }
 #' @export
 plot.H2OModel <- function(x, timestep = "AUTO", metric = "AUTO", ...) {
@@ -2075,20 +2337,20 @@ plot.H2OModel <- function(x, timestep = "AUTO", metric = "AUTO", ...) {
     if (is(x, "H2OBinomialModel")) {
       if (metric == "AUTO") {
         metric <- "logloss"
-      } else if (!(metric %in% c("logloss","AUC","classification_error","MSE"))) {
-        stop("metric for H2OBinomialModel must be one of: AUTO, logloss, AUC, classification_error, MSE")
+      } else if (!(metric %in% c("logloss","auc","classification_error","rmse"))) {
+        stop("metric for H2OBinomialModel must be one of: AUTO, logloss, auc, classification_error, rmse")
       }
     } else if (is(x, "H2OMultinomialModel")) {
       if (metric == "AUTO") {
         metric <- "classification_error"
-      } else if (!(metric %in% c("logloss","classification_error","MSE"))) {
-        stop("metric for H2OMultinomialModel must be one of: AUTO, logloss, classification_error, MSE")
+      } else if (!(metric %in% c("logloss","classification_error","rmse"))) {
+        stop("metric for H2OMultinomialModel must be one of: AUTO, logloss, classification_error, rmse")
       }
     } else if (is(x, "H2ORegressionModel")) {
       if (metric == "AUTO") {
-        metric <- "MSE"
-      } else if (!(metric %in% c("MSE","deviance"))) {
-        stop("metric for H2ORegressionModel must be one of: AUTO, MSE, deviance")
+        metric <- "rmse"
+      } else if (!(metric %in% c("rmse","deviance","mae"))) {
+        stop("metric for H2ORegressionModel must be one of: AUTO, rmse, mae, or deviance")
       }
     } else {
       stop("Must be one of: H2OBinomialModel, H2OMultinomialModel or H2ORegressionModel")
@@ -2109,7 +2371,7 @@ plot.H2OModel <- function(x, timestep = "AUTO", metric = "AUTO", ...) {
         timestep <- "epochs"
       } else if (!(timestep %in% c("epochs","samples","duration"))) {
         stop("timestep for deeplearning must be one of: epochs, samples, duration")
-      }
+             }
     }
     training_metric <- sprintf("training_%s", metric)
     validation_metric <- sprintf("validation_%s", metric)
@@ -2142,6 +2404,169 @@ plot.H2OModel <- function(x, timestep = "AUTO", metric = "AUTO", ...) {
   } else { # algo is not glm, deeplearning, drf, gbm
   	stop("Plotting not implemented for this type of model")
   }
+}
+
+#' Plot Variable Importances
+#'
+# Plot a trained model's variable importances.
+#'
+#' @param model A trained model (accepts a trained random forest, GBM,
+#' or deep learning model, will use \code{\link{h2o.std_coef_plot}}
+#' for a trained GLM
+#' @param num_of_features The number of features to be shown in the plot
+#' @seealso \code{\link{h2o.std_coef_plot}} for GLM.
+#' @examples
+#' \donttest{
+#' library(h2o)
+#' h2o.init()
+#' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
+#' hex <- h2o.importFile(prosPath)
+#' hex[,2] <- as.factor(hex[,2])
+#' model <- h2o.gbm(x = 3:9, y = 2, training_frame = hex, distribution = "bernoulli")
+#' h2o.varimp_plot(model)
+#'
+#' # for deep learning set the variable_importance parameter to TRUE
+#' iris.hex <- as.h2o(iris)
+#' iris.dl <- h2o.deeplearning(x = 1:4, y = 5, training_frame = iris.hex,
+#' variable_importances = TRUE)
+#' h2o.varimp_plot(iris.dl)
+#' }
+#' @export
+h2o.varimp_plot <- function(model, num_of_features = NULL){
+  # if glm use h2o.std_coef_plot() instead to get std. coef. magnitudes
+  if(model@algorithm[1] == 'glm') {h2o.std_coef_plot(model, num_of_features = num_of_features )}
+  else{
+  # store the variable importance table as vi
+  vi <- h2o.varimp(model)
+
+  # check if num_of_features was passed as an integer, otherwise use all features
+  if(is.null(num_of_features)) {num_of_features = length(vi$variable)}
+  else if ((num_of_features != round(num_of_features)) || (num_of_features <= 0)) stop("num_of_features must be an integer greater than 0")
+
+  # check the model type and then update the model title
+  if(model@algorithm[1] == "deeplearning") {title = "Variable Importance: Deep Learning"}
+  else {title = paste("Variable Importance: ", model_type = toupper(model@algorithm[1]), sep="")}
+
+  # use the longest ylable to adjust margins so ylabels don't cut off long string labels
+  ylabels = vi$variable
+  ymargin <-  max(strwidth(ylabels, "inch")+0.4, na.rm = TRUE)
+  par(mai=c(1.02,ymargin,0.82,0.42))
+
+  # if num_of_features = 1, creat only one bar (adjust size to look nice)
+  if(num_of_features == 1) {
+    barplot(rev(head(vi$scaled_importance, n = num_of_features)),
+            names.arg = rev(head(vi$variable, n = num_of_features)),
+            width = 0.2,
+            space = 1,
+            horiz = TRUE, las = 2,
+            ylim=c(0 ,2),
+            xlim = c(0,1),
+            axes = TRUE,
+            col ='#1F77B4',
+            main = title)
+  }
+
+  # plot num_of_features > 1
+  else if (num_of_features > 1) {
+    barplot(rev(head(vi$scaled_importance, n = num_of_features)),
+            names.arg = rev(head(vi$variable, n = num_of_features)),
+            space = 1,las = 2,
+            horiz = TRUE,
+            col ='#1F77B4', # blue
+            main = title)
+  }
+
+  }
+}
+  
+#' Plot Standardized Coefficient Magnitudes
+#'
+#' Plot a GLM model's standardized coefficient magnitudes.
+#'
+#' @param model A trained generalized linear model
+#' @param num_of_features The number of features to be shown in the plot
+#' @seealso \code{\link{h2o.varimp_plot}} for variable importances plot of
+#'          random forest, GBM, deep learning.
+#' @examples
+#' \donttest{
+#' library(h2o)
+#' h2o.init()
+#'
+#' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
+#' prostate.hex <- h2o.importFile(prosPath)
+#' prostate.hex[,2] <- as.factor(prostate.hex[,2])
+#' prostate.glm <- h2o.glm(y = "CAPSULE", x = c("AGE","RACE","PSA","DCAPS"),
+#'                          training_frame = prostate.hex, family = "binomial",
+#'                          nfolds = 0, alpha = 0.5, lambda_search = FALSE)
+#' h2o.std_coef_plot(prostate.glm)
+#' }
+#' @export
+h2o.std_coef_plot <- function(model, num_of_features = NULL){
+  # check that the model is a glm
+  if(model@algorithm[1] != "glm") stop("Warning: model must be a GLM")
+
+  # get the coefficients table
+  coeff_table_complete <- model@model$coefficients_table
+  # remove the intercept row from the complete coeff_table_complete
+  coeff_table <- coeff_table_complete[coeff_table_complete$names != "Intercept",]
+  # order the coeffcients table by the absolute value of the standardized_coefficients
+  sorted_table <- coeff_table[order(abs(coeff_table$standardized_coefficients)),]
+
+  # get a vector of normalized coefs. and abs norm coefs., and the corresponding labels
+  norm_coef <- sorted_table$standardized_coefficients
+  sort_norm <- abs(sorted_table$standardized_coefficients)
+  labels <- sorted_table$names
+
+  # check if num_of_features was passed as an integer, otherwise use all features
+  if(is.null(num_of_features)) {num_of_features = length(norm_coef)}
+  else if ((num_of_features != round(num_of_features)) || (num_of_features <= 0)) stop("num_of_features must be an integer greater than 0")
+
+  # initialize a vector of color codes, based on norm_coef values
+  color_code <- c()
+  for(element in norm_coef)
+  {if(element >= 0) color_code <- append(color_code, "#1F77B4")  # blue
+  else color_code <- append(color_code, '#FF7F0E')} # orange
+
+  # get the color sign, needed for the legend
+  color_sign <- c()
+  for(element in norm_coef)
+  {if(element >= 0) color_sign <- append(color_sign, "Positive")  # blue
+  else color_sign <- append(color_sign, 'Negative')} # orange
+
+  # use the longest ylable to adjust margins so ylabels don't cut off long string labels
+  ylabels = labels
+  ymargin <-  max(strwidth(ylabels, "inch")+0.4, na.rm = TRUE)
+  par(mai=c(1.02,ymargin,0.82,0.42))
+
+  # check if num_of_features = 1 and plot only one bar
+  if(num_of_features == 1) {
+    barplot(rev(sort_norm)[num_of_features],
+            names.arg = rev(labels)[num_of_features],
+            width = 0.2,
+            space = 1,
+            horiz = TRUE, las = 1,
+            ylim=c(0 ,2),
+            xlim = c(0,1),
+            col = rev(color_code)[num_of_features],
+            main = "Standardized Coef. Magnitudes")
+  }
+
+  # create horizontal barplot for one or more features
+  else {
+    barplot(tail(sort_norm, n = num_of_features),
+        names.arg = tail(labels, n = num_of_features),
+        legend.text = TRUE,
+        space = 1,
+        horiz = TRUE, las = 1,
+        col = tail(color_code, n = num_of_features),
+        xlim = c(0,1),
+        main = "Standardized Coef. Magnitudes")
+  }
+
+  # add legend, that adapts if one to all bars are plotted
+  legend('bottomright', legend = unique(tail(color_sign, n = num_of_features)),
+  col = unique(tail(color_code, n = num_of_features)), pch = 20)
+
 }
 
 #' @export

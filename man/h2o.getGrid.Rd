@@ -8,7 +8,7 @@ h2o.getGrid(grid_id, sort_by, decreasing)
 \arguments{
 \item{grid_id}{ID of existing grid object to fetch}
 
-\item{sort_by}{Sort the models in the grid space by a metric. Choices are "logloss", "residual_deviance", "mse", "auc", "r2", "accuracy", "precision", "recall", "f1", etc.}
+\item{sort_by}{Sort the models in the grid space by a metric. Choices are "logloss", "residual_deviance", "mse", "auc", "accuracy", "precision", "recall", "f1", etc.}
 
 \item{decreasing}{Specify whether sort order should be decreasing}
 }

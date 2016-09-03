@@ -14,7 +14,10 @@ on this dataset, and subsequently score them. The dataset should
 match the dataset that was used to train the model, in terms of
 column names, types, and dimensions. If newdata is passed in, then train, valid, and xval are ignored.}
 
-\item{train}{A logical value indicating whether to return the training metrics (constructed during training).}
+\item{train}{A logical value indicating whether to return the training metrics (constructed during training).
+
+Note: when the trained h2o model uses balance_classes, the training metrics constructed during training will be from the balanced training dataset.
+For more information visit: \url{https://0xdata.atlassian.net/browse/TN-9}}
 
 \item{valid}{A logical value indicating whether to return the validation metrics (constructed during training).}
 
@@ -38,6 +41,12 @@ prostate.hex <- h2o.uploadFile(path = prosPath)
 prostate.hex$CAPSULE <- as.factor(prostate.hex$CAPSULE)
 prostate.gbm <- h2o.gbm(3:9, "CAPSULE", prostate.hex)
 h2o.performance(model = prostate.gbm, newdata=prostate.hex)
+
+## If model uses balance_classes
+## the results from train = TRUE will not match the results from newdata = prostate.hex
+prostate.gbm.balanced <- h2o.gbm(3:9, "CAPSULE", prostate.hex, balance_classes = TRUE)
+h2o.performance(model = prostate.gbm.balanced, newdata = prostate.hex)
+h2o.performance(model = prostate.gbm.balanced, train = TRUE)
 }
 }
 
