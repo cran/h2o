@@ -3,12 +3,12 @@
 \alias{h2o.download_pojo}
 \title{Download the Scoring POJO (Plain Old Java Object) of an H2O Model}
 \usage{
-h2o.download_pojo(model, path = "", getjar = NULL, get_jar = TRUE)
+h2o.download_pojo(model, path = NULL, getjar = NULL, get_jar = TRUE)
 }
 \arguments{
 \item{model}{An H2OModel}
 
-\item{path}{The path to the directory to store the POJO (no trailing slash). If "", then print to
+\item{path}{The path to the directory to store the POJO (no trailing slash). If NULL, then print to
 to console. The file name will be a compilable java file name.}
 
 \item{getjar}{(DEPRECATED) Whether to also download the h2o-genmodel.jar file needed to compile the POJO. This argument is now called `get_jar`.}
@@ -16,8 +16,8 @@ to console. The file name will be a compilable java file name.}
 \item{get_jar}{Whether to also download the h2o-genmodel.jar file needed to compile the POJO}
 }
 \value{
-If path is "", then pretty print the POJO to the console.
-        Otherwise save it to the specified directory.
+If path is NULL, then pretty print the POJO to the console.
+        Otherwise save it to the specified directory and return POJO file name.
 }
 \description{
 Download the Scoring POJO (Plain Old Java Object) of an H2O Model

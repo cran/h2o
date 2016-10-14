@@ -2288,28 +2288,28 @@ setMethod("h2o.confusionMatrix", "H2OModelMetrics", function(object, thresholds=
 #' @param metric A unit of measurement for the y-axis.
 #' @param ... additional arguments to pass on.
 #' @return Returns a scoring history plot.
-#' @seealso \code{link{h2o.deeplearning}}, \code{link{h2o.gbm}},
-#'          \code{link{h2o.glm}}, \code{link{h2o.randomForest}} for model
+#' @seealso \code{\link{h2o.deeplearning}}, \code{\link{h2o.gbm}},
+#'          \code{\link{h2o.glm}}, \code{\link{h2o.randomForest}} for model
 #'          generation in h2o.
 #' @examples
 #' \donttest{
-#' library(h2o)
-#' library(mlbench)
-#' h2o.init()
-#'
-#' df <- as.h2o(mlbench::mlbench.friedman1(10000,1))
-#' rng <- h2o.runif(df, seed=1234)
-#' train <- df[rng<0.8,]
-#' valid <- df[rng>=0.8,]
-#'
-#' gbm <- h2o.gbm(x = 1:10, y = "y", training_frame = train, validation_frame = valid,
-#'   ntrees=500, learn_rate=0.01, score_each_iteration = TRUE)
-#' plot(gbm)
-#' plot(gbm, timestep = "duration", metric = "deviance")
-#' plot(gbm, timestep = "number_of_trees", metric = "deviance")
-#' plot(gbm, timestep = "number_of_trees", metric = "rmse")
-#' plot(gbm, timestep = "number_of_trees", metric = "mae")
-
+#' if (requireNamespace("mlbench", quietly=TRUE)) {
+#'     library(h2o)
+#'     h2o.init()
+#'     
+#'     df <- as.h2o(mlbench::mlbench.friedman1(10000,1))
+#'     rng <- h2o.runif(df, seed=1234)
+#'     train <- df[rng<0.8,]
+#'     valid <- df[rng>=0.8,]
+#'     
+#'     gbm <- h2o.gbm(x = 1:10, y = "y", training_frame = train, validation_frame = valid,
+#'                    ntrees=500, learn_rate=0.01, score_each_iteration = TRUE)
+#'     plot(gbm)
+#'     plot(gbm, timestep = "duration", metric = "deviance")
+#'     plot(gbm, timestep = "number_of_trees", metric = "deviance")
+#'     plot(gbm, timestep = "number_of_trees", metric = "rmse")
+#'     plot(gbm, timestep = "number_of_trees", metric = "mae")
+#' }
 #' }
 #' @export
 plot.H2OModel <- function(x, timestep = "AUTO", metric = "AUTO", ...) {
@@ -2828,4 +2828,75 @@ h2o.cross_validation_predictions <- function(object) {
     stop("object must be an H2O model")
   if (is.null(object@model$cross_validation_predictions)) return(NULL)
   lapply(object@model$cross_validation_predictions, function(x) h2o.getFrame(x$name))
+}
+
+#' Partial Dependence Plots
+#'
+#' Partial dependence plot gives a graphical depiction of the marginal effect of a variable on the response. The effect
+#' of a variable is measured in change in the mean response. Note: Unlike randomForest's partialPlot when plotting
+#' partial dependence the mean response (probabilities) is returned rather than the mean of the log class probability.
+#'
+#' @param object An \linkS4class{H2OModel} object.
+#' @param data An H2OFrame object used for scoring and constructing the plot.
+#' @param cols Feature(s) for which partial dependence will be calculated.
+#' @param destination_key An key reference to the created partial dependence tables in H2O.
+#' @param nbins Number of bins used.
+#' @param plot A logical specifying whether to plot partial dependence table.
+#' @return Plot and list of calculated mean response tables for each feature requested.
+#' @examples
+#' \donttest{
+#' library(h2o)
+#' h2o.init(nthreads = -1)
+#' prostate.path = system.file("extdata", "prostate.csv", package="h2o")
+#' prostate.hex = h2o.uploadFile(path = prostate.path, destination_frame = "prostate.hex")
+#' prostate.hex[, "CAPSULE"] <- as.factor(prostate.hex[, "CAPSULE"] )
+#' prostate.hex[, "RACE"] <- as.factor(prostate.hex[,"RACE"] )
+#' prostate.gbm = h2o.gbm(x = c("AGE","RACE"),
+#'                        y = "CAPSULE",
+#'                        training_frame = prostate.hex,
+#'                        ntrees = 10,
+#'                        max_depth = 5,
+#'                        learn_rate = 0.1)
+#' h2o.partialPlot(object = prostate.gbm, data = prostate.hex, cols = c("AGE", "RACE"))
+#' }
+#' @export
+
+h2o.partialPlot <- function(object, data, cols, destination_key, nbins=20, plot = TRUE) {
+  if(!is(object, "H2OModel")) stop("object must be an H2Omodel")
+  if( is(object, "H2OMultinomialModel")) stop("object must be a regression model or binary classfier")
+  if(!is(data, "H2OFrame")) stop("data must be H2OFrame")
+  if(!is.numeric(nbins) | !(nbins > 0) ) stop("nbins must be a positive numeric")
+  if(missing(cols)) cols =  object@parameters$x
+
+  y = object@parameters$y
+  x = cols
+  args <- .verify_dataxy(data, x, y)
+
+  parms = list()
+  parms$cols <- paste0("[", paste (args$x, collapse = ','), "]")
+  parms$model_id  <- attr(object, "model_id")
+  parms$frame_id <- attr(data, "id")
+  parms$nbins <- nbins
+  if(!missing(destination_key)) parms$destination_key = destination_key
+
+  res <- .h2o.__remoteSend(method = "POST", h2oRestApiVersion = 3, page = "PartialDependence/", .params = parms)
+  .h2o.__waitOnJob(res$key$name)
+  url <- gsub("/3/", "", res$dest$URL)
+  res <- .h2o.__remoteSend(url, method = "GET", h2oRestApiVersion = 3)
+
+
+  col_types = unlist(h2o.getTypes(data))
+  col_names = tolower( names(data))
+  pp.plot <- function(pp) {
+    type = col_types[which(col_names == tolower( names(pp)[1] ))]
+    if(type == "enum") pp[,1] = as.factor( pp[,1])
+    plot(pp, type = "l", main = attr(x,"description"))
+  }
+
+  if(plot) lapply(res$partial_dependence_data, pp.plot)
+  if(length( res$partial_dependence_data) == 1) {
+    return(res$partial_dependence_data[[1]])
+  } else {
+    return(res$partial_dependence_data)
+  }
 }

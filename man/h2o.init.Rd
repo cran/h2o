@@ -9,7 +9,7 @@ h2o.init(ip = "localhost", port = 54321, startH2O = TRUE,
   ice_root = tempdir(), strict_version_check = TRUE,
   proxy = NA_character_, https = FALSE, insecure = FALSE,
   username = NA_character_, password = NA_character_,
-  cluster_name = NA_character_)
+  cluster_id = NA_integer_, cookies = NA_character_)
 }
 \arguments{
 \item{ip}{Object of class \code{character} representing the IP address of the server where H2O is running.}
@@ -44,7 +44,9 @@ h2o.init(ip = "localhost", port = 54321, startH2O = TRUE,
 
 \item{password}{(Optional) Password to login with.}
 
-\item{cluster_name}{(Optional) Cluster to login to.}
+\item{cluster_id}{(Optional) Cluster to login to. Used for Steam connections.}
+
+\item{cookies}{(Optional) Vector(or list) of cookies to add to request.}
 }
 \value{
 this method will load it and return a \code{H2OConnection} object containing the IP address and port number of the H2O server.

@@ -3,12 +3,14 @@
 \alias{h2o.kmeans}
 \title{KMeans Model in H2O}
 \usage{
-h2o.kmeans(training_frame, x, k, model_id, ignore_const_cols = TRUE,
-  max_iterations = 1000, standardize = TRUE, init = c("Furthest",
-  "Random", "PlusPlus"), seed, nfolds = 0, fold_column = NULL,
-  fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
-  keep_cross_validation_predictions = FALSE,
-  keep_cross_validation_fold_assignment = FALSE, max_runtime_secs = 0)
+h2o.kmeans(training_frame, x, k, estimate_k = FALSE, model_id,
+  ignore_const_cols = TRUE, max_iterations = 10, standardize = TRUE,
+  init = c("Furthest", "Random", "PlusPlus"), seed, nfolds = 0,
+  fold_column = NULL, fold_assignment = c("AUTO", "Random", "Modulo",
+  "Stratified"), keep_cross_validation_predictions = FALSE,
+  keep_cross_validation_fold_assignment = FALSE,
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
+  "Binary", "Eigen"), max_runtime_secs = 0)
 }
 \arguments{
 \item{training_frame}{An H2OFrame object containing the
@@ -17,18 +19,17 @@ variables in the model.}
 \item{x}{(Optional) A vector containing the data columns on
 which k-means operates.}
 
-\item{k}{The number of clusters. Must be between 1 and
-1e7 inclusive. k may be omitted if the user specifies the
-initial centers in the init parameter. If k is not omitted,
-in this case, then it should be equal to the number of
-user-specified centers.}
+\item{k}{The max. number of clusters. If estimate_k is disabled, the model will find k centroids, otherwise it will find up to k centroids.}
+
+\item{estimate_k}{Whether to estimate the number of clusters (<=k) iteratively and deterministically.}
 
 \item{model_id}{(Optional) The unique id assigned to the resulting model. If
 none is given, an id will automatically be generated.}
 
 \item{ignore_const_cols}{A logical value indicating whether or not to ignore all the constant columns in the training frame.}
 
-\item{max_iterations}{The maximum number of iterations allowed. Must be between 0}
+\item{max_iterations}{Maximum training iterations (if estimate_k is enabled, then this is for each inner Lloyds iteration).
+Must be between 0 and 1e6 inclusive.}
 
 \item{standardize}{Logical, indicates whether the data should be
 standardized before running k-means.}
@@ -56,6 +57,9 @@ stratify the folds based on the response variable, for classification problems.}
 \item{keep_cross_validation_predictions}{Whether to keep the predictions of the cross-validation models}
 
 \item{keep_cross_validation_fold_assignment}{Whether to keep the cross-validation fold assignment.}
+
+\item{categorical_encoding}{Encoding scheme for categorical features
+Can be one of "AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary", "Eigen". Default is "AUTO", which is "Enum".}
 
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable.}
 }

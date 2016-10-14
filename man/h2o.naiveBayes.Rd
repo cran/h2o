@@ -11,7 +11,8 @@ h2o.naiveBayes(x, y, training_frame, validation_frame = NULL, model_id,
   max_runtime_secs = 0)
 }
 \arguments{
-\item{x}{A vector containing the names or indices of the predictor variables to use in building the model.}
+\item{x}{A vector containing the names or indices of the predictor variables to use in building the model.
+If x is missing,then all columns except y are used.}
 
 \item{y}{The name or index of the response variable. If the data does not contain a header, this is the
 column index number starting at 0, and increasing from left to right. The response must be a categorical

@@ -34,4 +34,7 @@ Valid types are "ARFF", "XLS", "CSV", "SVMLight"}
 \description{
 Get a parse setup back for the staged data.
 }
+\seealso{
+\link{h2o.parseRaw}
+}
 

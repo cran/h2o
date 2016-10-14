@@ -22,7 +22,8 @@ h2o.glm(x, y, training_frame, model_id, validation_frame = NULL,
   missing_values_handling = c("MeanImputation", "Skip"))
 }
 \arguments{
-\item{x}{A vector containing the names or indices of the predictor variables to use in building the GLM model.}
+\item{x}{A vector containing the names or indices of the predictor variables to use in building the GLM model.
+If x is missing,then all columns except y are used.}
 
 \item{y}{A character string or index that represent the response variable in the model.}
 
@@ -74,11 +75,12 @@ When \code{lambda = 0}, no elastic-net penalty is applied and ordinary generaliz
 
 \item{early_stopping}{A logical value indicating whether to stop early when doing lambda search. H2O will stop the computation at the moment when the likelihood stops changing or gets  (on the validation data).}
 
-\item{nlambdas}{The number of lambda values to use when \code{lambda_search = TRUE}.}
+\item{nlambdas}{The number of lambda values to use when \code{lambda_search = TRUE}. If \code{alpha = 0}, with \code{lambda_search = TRUE},
+the value of \code{nlamdas} is set to 30 (fewer lambdas are needed for ridge regression) otherwise it is set to 100.}
 
 \item{lambda_min_ratio}{Smallest value for lambda as a fraction of lambda.max. By default if the number of observations is greater than the
-the number of variables then \code{lambda_min_ratio} = 0.0001; if the number of observations is less than the number
-of variables then \code{lambda_min_ratio} = 0.01.}
+the number of variables then \code{lambda_min_ratio = 0.0001}; if the number of observations is less than the number
+of variables then \code{lambda_min_ratio = 0.01}.}
 
 \item{nfolds}{(Optional) Number of folds for cross-validation.}
 
@@ -107,13 +109,18 @@ is then we will take the default rho value of zero.}
 
 \item{intercept}{Logical, include constant term (intercept) in the model.}
 
-\item{max_active_predictors}{(Optional) Convergence criteria for number of predictors when using L1 penalty.}
+\item{max_active_predictors}{(Optional) Convergence criteria for number of predictors when using L1 penalty. If
+the IRLSM solver is used, the value of \code{max_active_predictors} is set to 7000 otherwise it is set to 100000000.}
 
 \item{interactions}{A vector of column indices to interact pairwise. All combinations of two indices will be computed.}
 
-\item{objective_epsilon}{Convergence criteria. Converge if relative change in objective function is below this threshold.}
+\item{objective_epsilon}{Convergence criteria. Converge if relative change in objective function is below this threshold.
+If \code{lambda_search = TRUE} the value of \code{objective_epsilon} is set to .0001. If the \code{lambda_search = False}
+and \code{lambda = 0}, the value of \code{objective_epsilon} is set to .000001, for any other value of lambda the value of \code{objective_epsilon} is set to .0001.}
 
-\item{gradient_epsilon}{Convergence criteria. Converge if gradient l-infinity norm is below this threshold.}
+\item{gradient_epsilon}{Convergence criteria. Converge if gradient l-infinity norm is below this threshold. If
+\code{lambda_search = FALSE} and \code{lambda = 0}, the default value of gradient_epsilon is equal to
+.000001, otherwise the default value is .0001. If \code{lambda_search = TRUE}, the conditional values above are 1E-8 and 1E-6 respectively.}
 
 \item{non_negative}{Logical, allow only positive coefficients.}
 

@@ -33,7 +33,7 @@ none is given, a key will automatically be generated based on the URL
 path.}
 
 \item{parse}{(Optional) A logical value indicating whether the file should be
-parsed after import.}
+parsed after import, for details see \link{h2o.parseRaw}.}
 
 \item{header}{(Optional) A logical value indicating whether the first line of
 the file contains column headers. If left empty, the parser will try
@@ -91,5 +91,8 @@ prostate.hex = h2o.importFile(path = prosPath, destination_frame = "prostate.hex
 class(prostate.hex)
 summary(prostate.hex)
 }
+}
+\seealso{
+\link{h2o.import_sql_select}, \link{h2o.import_sql_table}, \link{h2o.parseRaw}
 }
 

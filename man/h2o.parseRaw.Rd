@@ -43,4 +43,7 @@ The second phase in the data ingestion step.
 \details{
 Parse the Raw Data produced by the import phase.
 }
+\seealso{
+\link{h2o.importFile}, \link{h2o.parseSetup}
+}
 

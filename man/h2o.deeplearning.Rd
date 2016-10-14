@@ -41,7 +41,8 @@ h2o.deeplearning(x, y, training_frame, model_id = "",
   keep_cross_validation_fold_assignment = FALSE)
 }
 \arguments{
-\item{x}{A vector containing the \code{character} names of the predictors in the model.}
+\item{x}{A vector containing the \code{character} names of the predictors in the model.
+If x is missing,then all columns except y are used.}
 
 \item{y}{The name of the response variable in the model.}
 

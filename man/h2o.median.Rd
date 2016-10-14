@@ -21,6 +21,7 @@ Compute the median of an H2OFrame.
 h2o.init()
 prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 prostate.hex <- h2o.uploadFile(path = prosPath, destination_frame = "prostate.hex")
+h2o.median(prostate.hex)
 }
 }
 
