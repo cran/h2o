@@ -250,7 +250,7 @@ h2o.download_pojo <- function(model, path=NULL, getjar=NULL, get_jar=TRUE) {
   # HACK: munge model._id so that it conforms to Java class name. For example, change K-means to K_means.
   # TODO: clients should extract Java class name from header.
   pojoname = gsub("[+\\-* !@#$%^&()={}\\[\\]|;:'\"<>,.?/]","_",model_id,perl=T)
-  
+
   file.path <- paste0(path, "/", pojoname, ".java")
   if( is.null(path) ){
     cat(java)
@@ -304,8 +304,8 @@ h2o.download_mojo <- function(model, path=getwd(), get_genmodel_jar=FALSE) {
     stop("The 'get_genmodel_jar' variable should be of type logical/boolean")
   }
 
-  if(!(model@algorithm %in% c("drf","gbm"))){
-    stop("MOJOs are currently supported for Distributed Random Forest and Gradient Boosting Method models only.")
+  if(!(model@algorithm %in% c("drf","gbm","deepwater","glrm","glm"))){
+    stop("MOJOs are currently supported for Distributed Random Forest, Gradient Boosting Method, Deep Water, GLM and GLRM models only.")
   }
 
   if(!(file.exists(path))){

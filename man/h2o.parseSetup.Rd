@@ -5,7 +5,7 @@
 \usage{
 h2o.parseSetup(data, destination_frame = "", header = NA, sep = "",
   col.names = NULL, col.types = NULL, na.strings = NULL,
-  parse_type = NULL)
+  parse_type = NULL, chunk_size = NULL)
 }
 \arguments{
 \item{data}{An H2OFrame object to be parsed.}
@@ -30,6 +30,8 @@ over columns.}
 
 \item{parse_type}{(Optional) Specify which parser type H2O will use.
 Valid types are "ARFF", "XLS", "CSV", "SVMLight"}
+
+\item{chunk_size}{size of chunk of (input) data in bytes}
 }
 \description{
 Get a parse setup back for the staged data.

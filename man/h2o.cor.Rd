@@ -6,7 +6,7 @@
 \usage{
 h2o.cor(x, y = NULL, na.rm = FALSE, use)
 
-cor(x, y = NULL, na.rm = FALSE, use)
+cor(x, ...)
 }
 \arguments{
 \item{x}{An H2OFrame object.}
@@ -19,6 +19,8 @@ cor(x, y = NULL, na.rm = FALSE, use)
 "everything"            - outputs NaNs whenever one of its contributing observations is missing
 "all.obs"               - presence of missing observations will throw an error
 "complete.obs"          - discards missing values along with all observations in their rows so that only complete observations are used}
+
+\item{...}{Further arguments to be passed down from other methods.}
 }
 \description{
 Compute the correlation matrix of one or two H2OFrames.

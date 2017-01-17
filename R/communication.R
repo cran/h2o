@@ -8,7 +8,6 @@
 #' @import RCurl
 #' @importFrom graphics barplot lines
 #' @importFrom stats binomial Gamma gaussian poisson runif quantile screeplot na.omit
-#' @importFrom statmod tweedie
 #' @importFrom tools md5sum
 #' @importFrom utils download.file packageVersion read.csv
 #'           setTxtProgressBar txtProgressBar URLencode write.csv head tail
@@ -78,7 +77,7 @@
   }
   if (!is.na(conn@proxy)) {
     opts = curlOptions(proxy = conn@proxy, .opts = opts)
-  } 
+  }
 
   queryString = ""
   i = 1L
@@ -743,6 +742,10 @@ h2o.show_progress <- function() assign("PROGRESS_BAR", TRUE, .pkg.env)
         cat("\n\n")
         cat(job$exception)
         cat("\n\n")
+        
+        if (!is.null(job$stacktrace)) {cat(job$stacktrace)}
+        cat("\n")
+        
         m <- strsplit(jobs[[1]]$exception, "\n")[[1]][1]
         m <- gsub(".*msg ","",m)
         stop(m, call.=FALSE)

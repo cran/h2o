@@ -15,7 +15,7 @@ h2o.partialPlot(object, data, cols, destination_key, nbins = 20,
 
 \item{destination_key}{An key reference to the created partial dependence tables in H2O.}
 
-\item{nbins}{Number of bins used.}
+\item{nbins}{Number of bins used. For categorical columns make sure the number of bins exceed the level count.}
 
 \item{plot}{A logical specifying whether to plot partial dependence table.}
 }

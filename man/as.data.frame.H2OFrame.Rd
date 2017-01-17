@@ -13,6 +13,9 @@
 \description{
 Downloads the H2O data and then scans it in to an R data frame.
 }
+\details{
+Method \code{as.data.frame.H2OFrame} will use \code{\link[data.table]{fread}} if data.table package is installed in required version.
+}
 \examples{
 \donttest{
 h2o.init()
@@ -20,5 +23,8 @@ prosPath <- system.file("extdata", "prostate.csv", package="h2o")
 prostate.hex <- h2o.uploadFile(path = prosPath)
 as.data.frame(prostate.hex)
 }
+}
+\seealso{
+\code{\link{use.package}}
 }
 

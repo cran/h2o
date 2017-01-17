@@ -12,9 +12,9 @@ This is a package for running H2O via its REST API from within R. To communicate
 \tabular{ll}{
 Package: \tab h2o\cr
 Type: \tab Package\cr
-Version: \tab 3.10.0.8\cr
-Branch: \tab rel-turing\cr
-Date: \tab Mon Oct 10 13:47:51 PDT 2016\cr
+Version: \tab 3.10.2.2\cr
+Branch: \tab rel-tutte\cr
+Date: \tab Thu Jan 12 18:50:40 PST 2017\cr
 License: \tab Apache License (== 2.0)\cr
 Depends: \tab R (>= 2.13.0), RCurl, jsonlite, statmod, tools, methods, utils\cr
 }
@@ -36,7 +36,7 @@ Maintainer: Tom Kraljevic <tomk@0xdata.com>
 \itemize{
   \item \href{http://www.h2o.ai}{H2O.ai Homepage}
   \item \href{http://docs.h2o.ai}{H2O Documentation}
-  \item \href{https://github.com/h2oai/h2o-dev}{H2O on GitHub}
+  \item \href{https://github.com/h2oai/h2o-3}{H2O on GitHub}
   }
 }
 \keyword{ package }

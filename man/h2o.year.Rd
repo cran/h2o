@@ -15,8 +15,7 @@ year(x)
 \item{x}{An H2OFrame object.}
 }
 \value{
-An H2OFrame object containig the entries of \code{x} converted to years
-        starting from 1900, e.g. 69 corresponds to the year 1969.
+An H2OFrame object containing the entries of \code{x} converted to years
 }
 \description{
 Convert the entries of an H2OFrame object from milliseconds to years, indexed
