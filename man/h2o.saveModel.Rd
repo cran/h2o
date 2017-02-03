@@ -24,10 +24,10 @@ Otherwise, the operation will fail.
 # library(h2o)
 # h2o.init()
 # prostate.hex <- h2o.importFile(path = paste("https://raw.github.com",
-#   "h2oai/h2o-2/master/smalldata/logreg/prostate.csv", sep = "/"),
-#   destination_frame = "prostate.hex")
+#    "h2oai/h2o-2/master/smalldata/logreg/prostate.csv", sep = "/"),
+#    destination_frame = "prostate.hex")
 # prostate.glm <- h2o.glm(y = "CAPSULE", x = c("AGE","RACE","PSA","DCAPS"),
-#   training_frame = prostate.hex, family = "binomial", alpha = 0.5)
+#    training_frame = prostate.hex, family = "binomial", alpha = 0.5)
 # h2o.saveModel(object = prostate.glm, path = "/Users/UserName/Desktop", force=TRUE)
 }
 }

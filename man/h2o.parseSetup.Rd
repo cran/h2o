@@ -3,12 +3,15 @@
 \alias{h2o.parseSetup}
 \title{Get a parse setup back for the staged data.}
 \usage{
-h2o.parseSetup(data, destination_frame = "", header = NA, sep = "",
-  col.names = NULL, col.types = NULL, na.strings = NULL,
+h2o.parseSetup(data, pattern = "", destination_frame = "", header = NA,
+  sep = "", col.names = NULL, col.types = NULL, na.strings = NULL,
   parse_type = NULL, chunk_size = NULL)
 }
 \arguments{
 \item{data}{An H2OFrame object to be parsed.}
+
+\item{pattern}{(Optional) Character string containing a regular expression to match file(s) in
+the folder.}
 
 \item{destination_frame}{(Optional) The hex key assigned to the parsed file.}
 

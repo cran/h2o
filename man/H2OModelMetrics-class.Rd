@@ -10,6 +10,7 @@
 \alias{H2OMultinomialMetrics-class}
 \alias{H2ORegressionMetrics-class}
 \alias{H2OUnknownMetrics-class}
+\alias{H2OWordEmbeddingMetrics-class}
 \alias{show,H2OAutoEncoderMetrics-method}
 \alias{show,H2OBinomialMetrics-method}
 \alias{show,H2OClusteringMetrics-method}

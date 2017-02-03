@@ -28,13 +28,13 @@ h2o.deepwater(x, y, training_frame, model_id = NULL, checkpoint = NULL,
   ignore_const_cols = TRUE, shuffle_training_data = TRUE,
   mini_batch_size = 32, clip_gradient = 10, network = c("auto", "user",
   "lenet", "alexnet", "vgg", "googlenet", "inception_bn", "resnet"),
-  backend = c("auto", "mxnet", "caffe", "tensorflow"), image_shape = c(0,
-  0), channels = 3, sparse = FALSE, gpu = TRUE, device_id = c(0),
+  backend = c("mxnet", "caffe", "tensorflow"), image_shape = c(0, 0),
+  channels = 3, sparse = FALSE, gpu = TRUE, device_id = c(0),
   network_definition_file = NULL, network_parameters_file = NULL,
   mean_image_file = NULL, export_native_parameters_prefix = NULL,
   activation = c("Rectifier", "Tanh"), hidden = NULL,
   input_dropout_ratio = 0, hidden_dropout_ratios = NULL,
-  problem_type = c("auto", "image", "text", "dataset"))
+  problem_type = c("auto", "image", "dataset"))
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the model.
@@ -152,7 +152,7 @@ much) Defaults to 0.}
 \item{network}{Network architecture. Must be one of: "auto", "user", "lenet", "alexnet", "vgg", "googlenet", "inception_bn",
 "resnet". Defaults to auto.}
 
-\item{backend}{Deep Learning Backend. Must be one of: "auto", "mxnet", "caffe", "tensorflow". Defaults to mxnet.}
+\item{backend}{Deep Learning Backend. Must be one of: "mxnet", "caffe", "tensorflow". Defaults to mxnet.}
 
 \item{image_shape}{Width and height of image. Defaults to [0, 0].}
 
@@ -186,7 +186,7 @@ only for problem_type=dataset.}
 the path (URI or URL) to the images in the first column. If set to text, the H2OFrame must contain a string
 column containing the text in the first column. If set to dataset, Deep Water behaves just like any other H2O
 Model and builds a model on the provided H2OFrame (non-String columns). Must be one of: "auto", "image",
-"text", "dataset". Defaults to auto.}
+"dataset". Defaults to auto.}
 }
 \description{
 Build a Deep Learning model using multiple native GPU backends

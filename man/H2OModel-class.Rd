@@ -9,6 +9,7 @@
 \alias{H2OMultinomialModel-class}
 \alias{H2ORegressionModel-class}
 \alias{H2OUnknownModel-class}
+\alias{H2OWordEmbeddingModel-class}
 \alias{show,H2OModel-method}
 \title{The H2OModel object.}
 \usage{

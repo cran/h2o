@@ -3,12 +3,15 @@
 \alias{h2o.parseRaw}
 \title{H2O Data Parsing}
 \usage{
-h2o.parseRaw(data, destination_frame = "", header = NA, sep = "",
-  col.names = NULL, col.types = NULL, na.strings = NULL,
+h2o.parseRaw(data, pattern = "", destination_frame = "", header = NA,
+  sep = "", col.names = NULL, col.types = NULL, na.strings = NULL,
   blocking = FALSE, parse_type = NULL, chunk_size = NULL)
 }
 \arguments{
 \item{data}{An H2OFrame object to be parsed.}
+
+\item{pattern}{(Optional) Character string containing a regular expression to match file(s) in
+the folder.}
 
 \item{destination_frame}{(Optional) The hex key assigned to the parsed file.}
 

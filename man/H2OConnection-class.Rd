@@ -44,6 +44,8 @@ is not found at port 54321.
 
 \item{\code{cookies}}{Cookies to add to request}
 
+\item{\code{context_path}}{Context path which is appended to H2O server location.}
+
 \item{\code{mutable}}{An \code{H2OConnectionMutableState} object to hold the mutable state for the H2O connection.}
 }}
 

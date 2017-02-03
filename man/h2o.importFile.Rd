@@ -90,6 +90,14 @@ prosPath = system.file("extdata", "prostate.csv", package = "h2o")
 prostate.hex = h2o.importFile(path = prosPath, destination_frame = "prostate.hex")
 class(prostate.hex)
 summary(prostate.hex)
+
+#Import files with a certain regex pattern by utilizing h2o.importFolder()
+#In this example we import all .csv files in the directory prostate_folder
+prosPath = system.file("extdata", "prostate_folder", package = "h2o")
+prostate_pattern.hex = h2o.importFolder(path = prosPath, pattern = ".*.csv",
+                        destination_frame = "prostate.hex")
+class(prostate_pattern.hex)
+summary(prostate_pattern.hex)
 }
 }
 \seealso{
