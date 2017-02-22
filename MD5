@@ -1,8 +1,8 @@
-be2b9d12dd3ebc766357a3409b162295 *DESCRIPTION
+234e20cca4b0710f945dfaed53cb5062 *DESCRIPTION
 278bf41936c0a7a944cb0f46e69be331 *NAMESPACE
 6fe38e24a23a87bd379ad2b4751f95f1 *NEWS
 3f4ee1978c2a2239edb3815832b5c33d *R/astfun.R
-4e47e7c5de4e6b83d797f5ef82c57f0e *R/classes.R
+ddeb45a7f7c5ce0113c211427994829d *R/classes.R
 be5ed83e81420449373766ea3a3d5b4f *R/communication.R
 0c6957c9e56e39a410bee1bda7d24b93 *R/config.R
 e1f16e4a0c28a24338fe7ff04112b7ce *R/connection.R
@@ -22,7 +22,7 @@ b76f210535ac59a595e52199eb39a82e *R/import.R
 6cf86e502d99ddc927400169d54d50f6 *R/kvstore.R
 8ad61f0ce52057c5f800931dd7d5a7e1 *R/locate.R
 3b030d408bc88aee670e83b10ce32189 *R/logging.R
-1bf37f2487e2d863cf8dce57ee758de8 *R/models.R
+c819f47986c37044672d8d15791cff45 *R/models.R
 2f466fcad25763091e34096579b6468d *R/naivebayes.R
 0520e6c6ec84dbc2cd13bb0a0f249a20 *R/parse.R
 dd87ac57fe9769827599b469c1b6efb4 *R/pca.R
@@ -43,7 +43,7 @@ dcab4a64fc5d2007723ff2a174b0b35e *demo/h2o.kmeans.R
 49d02e01f8f52c313d633ba07fb44100 *demo/h2o.prcomp.R
 9922fd14a111c81d856f9eebddbea22a *demo/h2o.randomForest.R
 b85d6047209581c4614f8d70ba055c2f *inst/branch.txt
-6d7fce9fee471194aa8b5b6e47267f03 *inst/buildnum.txt
+9ae0ea9e3c9c6e1b9b6252c8395efdc1 *inst/buildnum.txt
 c2009f0054eecbceac0e820e4927e455 *inst/extdata/australia.csv
 fdbd7a2797e683a8f352462c6b140b7d *inst/extdata/housevotes.csv
 42615765a885ddf54427f12c34a0a070 *inst/extdata/iris.csv
@@ -79,7 +79,7 @@ adb7f7f64d0df92c726ccd38abbb1835 *man/as.vector.H2OFrame.Rd
 d8309400b50b364a5f54ce1caeb935d8 *man/colnames.Rd
 9d4e55ade47ab8cf9befe874b586317e *man/dim.H2OFrame.Rd
 15d78c66866db0b1987df3744a6cc37f *man/dimnames.H2OFrame.Rd
-9b1ec1d4b44c61237b7b20efd8f3c8b5 *man/h2o-package.Rd
+ef4bd456750ba3f5e83122141c09ead0 *man/h2o-package.Rd
 0c251277b91e72c92d5f721fbcf00bcd *man/h2o.abs.Rd
 c52ca3e7571e4aa72795585c5c9917fb *man/h2o.acos.Rd
 45b10146a19de1f20b240c396a0a2cd5 *man/h2o.aic.Rd
