@@ -21,15 +21,15 @@ dataset.
 \donttest{
 library(h2o)
 h2o.init()
-prosPath = system.file("extdata", "prostate.csv", package="h2o")
-prostate.hex = h2o.importFile(path = prosPath, destination_frame = "prostate.hex")
-s = h2o.runif(prostate.hex)
+prosPath <- system.file("extdata", "prostate.csv", package="h2o")
+prostate.hex <- h2o.importFile(path = prosPath, destination_frame = "prostate.hex")
+s <- h2o.runif(prostate.hex)
 summary(s)
 
-prostate.train = prostate.hex[s <= 0.8,]
-prostate.train = h2o.assign(prostate.train, "prostate.train")
-prostate.test = prostate.hex[s > 0.8,]
-prostate.test = h2o.assign(prostate.test, "prostate.test")
+prostate.train <- prostate.hex[s <= 0.8,]
+prostate.train <- h2o.assign(prostate.train, "prostate.train")
+prostate.test <- prostate.hex[s > 0.8,]
+prostate.test <- h2o.assign(prostate.test, "prostate.test")
 nrow(prostate.train) + nrow(prostate.test)
 }
 }

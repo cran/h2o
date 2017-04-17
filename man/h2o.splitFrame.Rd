@@ -16,6 +16,9 @@ specified plus one.}
 
 \item{seed}{Random seed.}
 }
+\value{
+Returns a list of split H2OFrame's
+}
 \description{
 Split an existing H2O data set according to user-specified ratios. The number of
 subsets is always 1 more than the number of given ratios. Note that this does not give
@@ -30,9 +33,9 @@ close to exact.
 \donttest{
 library(h2o)
 h2o.init()
-irisPath = system.file("extdata", "iris.csv", package = "h2o")
-iris.hex = h2o.importFile(path = irisPath)
-iris.split = h2o.splitFrame(iris.hex, ratios = c(0.2, 0.5))
+irisPath <- system.file("extdata", "iris.csv", package = "h2o")
+iris.hex <- h2o.importFile(path = irisPath)
+iris.split <- h2o.splitFrame(iris.hex, ratios = c(0.2, 0.5))
 head(iris.split[[1]])
 summary(iris.split[[1]])
 }

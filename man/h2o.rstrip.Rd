@@ -11,8 +11,16 @@ h2o.rstrip(x, set = " ")
 \item{set}{string of characters to be removed}
 }
 \description{
-Return a copy of the target column with leading characters removed. The set argument
+Return a copy of the target column with trailing characters removed. The set argument
 is a string specifying the set of characters to be removed. If omitted, the set
 argument defaults to removing whitespace.
+}
+\examples{
+\donttest{
+library(h2o)
+h2o.init()
+string_to_rstrip <- as.h2o("1234567890")
+rstrip_string <- h2o.rstrip(string_to_rstrip,"890") #Remove "890"
+}
 }
 

@@ -9,7 +9,7 @@ h2o.getTypes(x)
 \item{x}{An H2OFrame}
 }
 \value{
-A list of types
+A list of types per column
 }
 \description{
 Get the types-per-column

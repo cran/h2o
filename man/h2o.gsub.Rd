@@ -18,4 +18,12 @@ h2o.gsub(pattern, replacement, x, ignore.case = FALSE)
 Creates a copy of the target column in which each string has all occurence of
 the regex pattern replaced with the replacement substring.
 }
+\examples{
+\donttest{
+library(h2o)
+h2o.init()
+string_to_gsub <- as.h2o("r tutorial")
+sub_string <- h2o.gsub("r ","H2O ",string_to_gsub)
+}
+}
 

@@ -29,8 +29,8 @@ both conditions must be either both categorical or numeric.
 \examples{
 \donttest{
 h2o.init()
-ausPath = system.file("extdata", "australia.csv", package="h2o")
-australia.hex = h2o.importFile(path = ausPath)
+ausPath <- system.file("extdata", "australia.csv", package="h2o")
+australia.hex <- h2o.importFile(path = ausPath)
 australia.hex[,9] <- ifelse(australia.hex[,3] < 279.9, 1, 0)
 summary(australia.hex)
 }

@@ -11,4 +11,12 @@ h2o.trim(x)
 \description{
 Trim Space
 }
+\examples{
+\donttest{
+library(h2o)
+h2o.init()
+string_to_trim <- as.h2o("r tutorial")
+trim_string <- h2o.trim(string_to_trim)
+}
+}
 

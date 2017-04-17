@@ -8,6 +8,9 @@ h2o.unique(x)
 \arguments{
 \item{x}{An H2OFrame object.}
 }
+\value{
+Returns an H2OFrame object.
+}
 \description{
 Extract unique values in the column.
 }

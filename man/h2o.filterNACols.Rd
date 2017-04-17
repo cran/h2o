@@ -10,6 +10,9 @@ h2o.filterNACols(data, frac = 0.2)
 
 \item{frac}{The threshold of NAs to allow per column (columns >= this threshold are filtered)}
 }
+\value{
+Returns a numeric vector of indexes that pertain to non-NA columns
+}
 \description{
 Filter NA Columns
 }

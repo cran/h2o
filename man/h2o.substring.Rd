@@ -22,4 +22,12 @@ to the end of the original string. If start is longer than the number of charact
 in the original string, or is greater than stop, an empty string is returned. Negative start
 is coerced to 0.
 }
+\examples{
+\donttest{
+library(h2o)
+h2o.init()
+string_to_substring <- as.h2o("1234567890")
+substr <- h2o.substring(string_to_substring,2) #Get substring from second index onwards
+}
+}
 

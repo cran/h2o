@@ -3,10 +3,10 @@
 \alias{h2o.word2vec}
 \title{Trains a word2vec model on a String column of an H2O data frame.}
 \usage{
-h2o.word2vec(training_frame, model_id = NULL, min_word_freq = 5,
+h2o.word2vec(training_frame = NULL, model_id = NULL, min_word_freq = 5,
   word_model = c("SkipGram"), norm_model = c("HSM"), vec_size = 100,
   window_size = 5, sent_sample_rate = 0.001, init_learning_rate = 0.025,
-  epochs = 5)
+  epochs = 5, pre_trained = NULL)
 }
 \arguments{
 \item{training_frame}{Id of the training data frame (Not required, to allow initial validation of model parameters).}
@@ -29,6 +29,8 @@ will be randomly down-sampled; useful range is (0, 1e-5) Defaults to 0.001.}
 \item{init_learning_rate}{Set the starting learning rate Defaults to 0.025.}
 
 \item{epochs}{Number of training iterations to run Defaults to 5.}
+
+\item{pre_trained}{Id of a data frame that contains a pre-trained (external) word2vec model}
 }
 \description{
 Trains a word2vec model on a String column of an H2O data frame.

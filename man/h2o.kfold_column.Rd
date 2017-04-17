@@ -12,6 +12,9 @@ h2o.kfold_column(data, nfolds, seed = -1)
 
 \item{seed}{A random seed, -1 indicates that H2O will choose one.}
 }
+\value{
+Returns an H2OFrame object with fold assignments.
+}
 \description{
 Create a k-fold vector useful for H2O algorithms that take a fold_assignments argument.
 }

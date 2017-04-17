@@ -13,6 +13,9 @@ h2o.median(x, na.rm = TRUE)
 
 \item{na.rm}{a logical, indicating whether na's are omitted.}
 }
+\value{
+Returns a list containing the median for each column (NaN for non-numeric columns)
+}
 \description{
 Compute the median of an H2OFrame.
 }

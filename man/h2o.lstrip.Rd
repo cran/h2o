@@ -15,4 +15,12 @@ Return a copy of the target column with leading characters removed. The set argu
 is a string specifying the set of characters to be removed. If omitted, the set
 argument defaults to removing whitespace.
 }
+\examples{
+\donttest{
+library(h2o)
+h2o.init()
+string_to_lstrip <- as.h2o("1234567890")
+lstrip_string <- h2o.lstrip(string_to_lstrip,"123") #Remove "123"
+}
+}
 

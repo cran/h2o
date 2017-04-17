@@ -33,8 +33,8 @@ this behavior by setting up exact_quantiles argument to true.
 \donttest{
 library(h2o)
 h2o.init()
-prosPath = system.file("extdata", "prostate.csv", package="h2o")
-prostate.hex = h2o.importFile(path = prosPath)
+prosPath <- system.file("extdata", "prostate.csv", package="h2o")
+prostate.hex <- h2o.importFile(path = prosPath)
 summary(prostate.hex)
 summary(prostate.hex$GLEASON)
 summary(prostate.hex[,4:6])

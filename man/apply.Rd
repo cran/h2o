@@ -26,8 +26,8 @@ Method for apply on H2OFrame objects.
 \examples{
 \donttest{
 h2o.init()
-irisPath = system.file("extdata", "iris.csv", package="h2o")
-iris.hex = h2o.importFile(path = irisPath, destination_frame = "iris.hex")
+irisPath <- system.file("extdata", "iris.csv", package="h2o")
+iris.hex <- h2o.importFile(path = irisPath, destination_frame = "iris.hex")
 summary(apply(iris.hex, 2, sum))
 }
 }

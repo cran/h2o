@@ -45,7 +45,7 @@ iris.hex <- h2o.uploadFile(path = irisPath, destination_frame = "iris.hex")
 summary(iris.hex)
 
 # Cut sepal length column into intervals determined by min/max/quantiles
-sepal_len.cut = cut(iris.hex$sepal_len, c(4.2, 4.8, 5.8, 6, 8))
+sepal_len.cut <- cut(iris.hex$sepal_len, c(4.2, 4.8, 5.8, 6, 8))
 head(sepal_len.cut)
 summary(sepal_len.cut)
 }

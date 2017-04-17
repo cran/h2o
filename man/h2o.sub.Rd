@@ -18,4 +18,12 @@ h2o.sub(pattern, replacement, x, ignore.case = FALSE)
 Creates a copy of the target column in which each string has the first occurence of
 the regex pattern replaced with the replacement substring.
 }
+\examples{
+\donttest{
+library(h2o)
+h2o.init()
+string_to_sub <- as.h2o("r tutorial")
+sub_string <- h2o.sub("r ","H2O ",string_to_sub)
+}
+}
 

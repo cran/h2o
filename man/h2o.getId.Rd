@@ -9,7 +9,7 @@ h2o.getId(x)
 \item{x}{An H2OFrame}
 }
 \value{
-The id
+The id of the H2OFrame
 }
 \description{
 Get back-end distributed key/value store id from an H2OFrame.

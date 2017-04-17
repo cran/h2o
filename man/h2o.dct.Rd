@@ -16,6 +16,9 @@ For 1D, use c(L,1,1), for 2D, use C(N,M,1).}
 
 \item{inverse}{Whether to perform the inverse transform}
 }
+\value{
+Returns an H2OFrame object.
+}
 \description{
 Compute the Discrete Cosine Transform of every row in the H2OFrame
 }

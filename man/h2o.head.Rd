@@ -30,7 +30,7 @@ Returns the first or last rows of an H2OFrame object.
 \examples{
 \donttest{
 library(h2o)
-h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
+h2o.init(ip <- "localhost", port = 54321, startH2O = TRUE)
 ausPath <- system.file("extdata", "australia.csv", package="h2o")
 australia.hex <- h2o.uploadFile(path = ausPath)
 head(australia.hex, 10)

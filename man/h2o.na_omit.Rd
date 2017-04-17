@@ -10,6 +10,9 @@ h2o.na_omit(object, ...)
 
 \item{...}{Ignored}
 }
+\value{
+Returns an H2OFrame object containing non-NA rows.
+}
 \description{
 Remove Rows With NAs
 }

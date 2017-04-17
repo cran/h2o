@@ -30,8 +30,8 @@ Automatically generated if none is provided.}
 \item{transform}{Transformation of training data Must be one of: "NONE", "STANDARDIZE", "NORMALIZE", "DEMEAN", "DESCALE".
 Defaults to NONE.}
 
-\item{svd_method}{Method for computing SVD (Caution: Power and Randomized are currently experimental and unstable) Must be one
-of: "GramSVD", "Power", "Randomized". Defaults to GramSVD.}
+\item{svd_method}{Method for computing SVD (Caution: Randomized is currently experimental and unstable) Must be one of:
+"GramSVD", "Power", "Randomized". Defaults to GramSVD.}
 
 \item{nv}{Number of right singular vectors Defaults to 1.}
 

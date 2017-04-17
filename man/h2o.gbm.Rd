@@ -33,8 +33,8 @@ h2o.gbm(x, y, training_frame, model_id = NULL, validation_frame = NULL,
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the model.
 If x is missing,then all columns except y are used.}
 
-\item{y}{The name of the response variable in the model.If the data does not contain a header, this is the column index
-number starting at 0, and increasing from left to right. (The response must be either an integer or a
+\item{y}{The name of the response variable in the model.If the data does not contain a header, this is the first column
+index, and increasing from left to right. (The response must be either an integer or a
 categorical variable).}
 
 \item{training_frame}{Id of the training data frame (Not required, to allow initial validation of model parameters).}

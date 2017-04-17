@@ -11,4 +11,12 @@ h2o.nchar(x)
 \description{
 String length
 }
+\examples{
+\donttest{
+library(h2o)
+h2o.init()
+string_to_nchar <- as.h2o("r tutorial")
+nchar_string <- h2o.nchar(string_to_nchar)
+}
+}
 

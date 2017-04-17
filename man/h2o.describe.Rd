@@ -19,8 +19,8 @@ information about column types, mins/maxs/missing/zero counts/stds/number of lev
 \donttest{
 library(h2o)
 h2o.init()
-prosPath = system.file("extdata", "prostate.csv", package="h2o")
-prostate.hex = h2o.importFile(path = prosPath)
+prosPath <- system.file("extdata", "prostate.csv", package="h2o")
+prostate.hex <- h2o.importFile(path = prosPath)
 h2o.describe(prostate.hex)
 }
 }

@@ -28,8 +28,8 @@ h2o.prcomp(training_frame, x, model_id = NULL, validation_frame = NULL,
 \item{transform}{Transformation of training data Must be one of: "NONE", "STANDARDIZE", "NORMALIZE", "DEMEAN", "DESCALE".
 Defaults to NONE.}
 
-\item{pca_method}{Method for computing PCA (Caution: Power and GLRM are currently experimental and unstable) Must be one of:
-"GramSVD", "Power", "Randomized", "GLRM". Defaults to GramSVD.}
+\item{pca_method}{Method for computing PCA (Caution: GLRM is currently experimental and unstable) Must be one of: "GramSVD",
+"Power", "Randomized", "GLRM". Defaults to GramSVD.}
 
 \item{k}{Rank of matrix approximation Defaults to 1.}
 

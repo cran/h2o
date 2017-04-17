@@ -8,6 +8,9 @@ h2o.nacnt(x)
 \arguments{
 \item{x}{An H2OFrame object.}
 }
+\value{
+Returns a list containing the count of NAs per column
+}
 \description{
 Gives the count of NAs per column.
 }

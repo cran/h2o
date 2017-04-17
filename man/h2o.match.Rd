@@ -23,6 +23,9 @@ values to be matched.}
 \code{x} matching a value in this vector is assigned the
 \code{nomatch} value.}
 }
+\value{
+Returns a vector of the positions of (first) matches of its first argument in its second
+}
 \description{
 \code{match} and \code{\%in\%} return values similar to the base R generic
 functions.

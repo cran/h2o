@@ -8,6 +8,9 @@ h2o.which(x)
 \arguments{
 \item{x}{An H2OFrame object.}
 }
+\value{
+Returns an H2OFrame object.
+}
 \description{
 Give the TRUE indices of a logical object, allowing for array indices.
 }

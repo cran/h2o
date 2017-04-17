@@ -4,7 +4,7 @@
 \title{Partial Dependence Plots}
 \usage{
 h2o.partialPlot(object, data, cols, destination_key, nbins = 20,
-  plot = TRUE)
+  plot = TRUE, plot_stddev = TRUE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} object.}
@@ -18,6 +18,8 @@ h2o.partialPlot(object, data, cols, destination_key, nbins = 20,
 \item{nbins}{Number of bins used. For categorical columns make sure the number of bins exceed the level count.}
 
 \item{plot}{A logical specifying whether to plot partial dependence table.}
+
+\item{plot_stddev}{A logical specifying whether to add std err to partial dependence plot.}
 }
 \value{
 Plot and list of calculated mean response tables for each feature requested.

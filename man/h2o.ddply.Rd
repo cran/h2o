@@ -31,10 +31,10 @@ h2o.init()
 irisPath <- system.file("extdata", "iris_wheader.csv", package = "h2o")
 iris.hex <- h2o.uploadFile(path = irisPath, destination_frame = "iris.hex")
 # Add function taking mean of sepal_len column
-fun = function(df) { sum(df[,1], na.rm = TRUE)/nrow(df) }
+fun <- function(df) { sum(df[,1], na.rm = TRUE)/nrow(df) }
 # Apply function to groups by class of flower
 # uses h2o's ddply, since iris.hex is an H2OFrame object
-res = h2o.ddply(iris.hex, "class", fun)
+res <- h2o.ddply(iris.hex, "class", fun)
 head(res)
 }
 }

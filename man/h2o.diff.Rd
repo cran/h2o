@@ -8,6 +8,9 @@ h2o.difflag1(object)
 \arguments{
 \item{object}{H2OFrame object}
 }
+\value{
+Returns an H2OFrame object.
+}
 \description{
 Conduct a lag 1 transform on a numeric H2OFrame column
 }

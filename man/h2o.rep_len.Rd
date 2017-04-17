@@ -6,16 +6,16 @@
 h2o.rep_len(x, length.out)
 }
 \arguments{
-\item{x}{a vector (of any mode including a list) or a factor}
+\item{x}{an H2O frame}
 
 \item{length.out}{non negative integer. The desired length of the output
 vector.}
 }
 \value{
-Creates an H2OFrame vector of the same type as x
+Creates an H2OFrame of the same type as x
 }
 \description{
-\code{h2o.rep} performs just as \code{rep} does. It replicates the values in
+\code{h2o.rep_len} performs just as \code{rep} does. It replicates the values in
 \code{x} in the H2O backend.
 }
 

@@ -40,8 +40,6 @@ is not found at port 54321.
 
 \item{\code{password}}{Password to login with.}
 
-\item{\code{cluster_id}}{Cluster to login to. Used for Steam connections}
-
 \item{\code{cookies}}{Cookies to add to request}
 
 \item{\code{context_path}}{Context path which is appended to H2O server location.}
