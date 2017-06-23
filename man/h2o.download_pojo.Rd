@@ -3,7 +3,8 @@
 \alias{h2o.download_pojo}
 \title{Download the Scoring POJO (Plain Old Java Object) of an H2O Model}
 \usage{
-h2o.download_pojo(model, path = NULL, getjar = NULL, get_jar = TRUE)
+h2o.download_pojo(model, path = NULL, getjar = NULL, get_jar = TRUE,
+  jar_name = "")
 }
 \arguments{
 \item{model}{An H2OModel}
@@ -14,6 +15,8 @@ to console. The file name will be a compilable java file name.}
 \item{getjar}{(DEPRECATED) Whether to also download the h2o-genmodel.jar file needed to compile the POJO. This argument is now called `get_jar`.}
 
 \item{get_jar}{Whether to also download the h2o-genmodel.jar file needed to compile the POJO}
+
+\item{jar_name}{Custom name of genmodel jar.}
 }
 \value{
 If path is NULL, then pretty print the POJO to the console.
@@ -25,7 +28,7 @@ Download the Scoring POJO (Plain Old Java Object) of an H2O Model
 \examples{
 \donttest{
 library(h2o)
-h <- h2o.init(nthreads=-1)
+h <- h2o.init()
 fr <- as.h2o(iris)
 my_model <- h2o.gbm(x=1:4, y=5, training_frame=fr)
 

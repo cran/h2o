@@ -10,7 +10,8 @@ h2o.naiveBayes(x, y, training_frame, model_id = NULL, nfolds = 0,
   ignore_const_cols = TRUE, score_each_iteration = FALSE,
   balance_classes = FALSE, class_sampling_factors = NULL,
   max_after_balance_size = 5, max_hit_ratio_k = 0, laplace = 0,
-  threshold = 0.001, eps = 0, compute_metrics = TRUE,
+  threshold = 0.001, min_sdev = 0.001, eps = 0, eps_sdev = 0,
+  min_prob = 0.001, eps_prob = 0, compute_metrics = TRUE,
   max_runtime_secs = 0)
 }
 \arguments{
@@ -60,10 +61,19 @@ Defaults to 0.}
 
 \item{laplace}{Laplace smoothing parameter Defaults to 0.}
 
-\item{threshold}{The minimum standard deviation to use for observations without enough data.
+\item{threshold}{This argument is deprecated, use `min_sdev` instead. The minimum standard deviation to use for observations without enough data.
 Must be at least 1e-10.}
 
-\item{eps}{A threshold cutoff to deal with numeric instability, must be positive.}
+\item{min_sdev}{The minimum standard deviation to use for observations without enough data.
+Must be at least 1e-10.}
+
+\item{eps}{This argument is deprecated, use `eps_sdev` instead. A threshold cutoff to deal with numeric instability, must be positive.}
+
+\item{eps_sdev}{A threshold cutoff to deal with numeric instability, must be positive.}
+
+\item{min_prob}{Min. probability to use for observations with not enough data.}
+
+\item{eps_prob}{Cutoff below which probability is replaced with min_prob.}
 
 \item{compute_metrics}{\code{Logical}. Compute metrics on training data Defaults to TRUE.}
 

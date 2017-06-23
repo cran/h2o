@@ -24,7 +24,8 @@ h2o.randomForest(x, y, training_frame, model_id = NULL,
   min_split_improvement = 1e-05, histogram_type = c("AUTO",
   "UniformAdaptive", "Random", "QuantilesGlobal", "RoundRobin"),
   categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-  "Binary", "Eigen"))
+  "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  calibrate_model = FALSE, calibration_frame = NULL)
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the model.
@@ -118,7 +119,7 @@ classification and p/3 for regression (where p is the # of predictors Defaults t
 
 \item{sample_rate}{Row sample rate per tree (from 0.0 to 1.0) Defaults to 0.6320000291.}
 
-\item{sample_rate_per_class}{Row sample rate per tree per class (from 0.0 to 1.0)}
+\item{sample_rate_per_class}{A list of row sample rates per class (relative fraction for each class, from 0.0 to 1.0), for each tree}
 
 \item{binomial_double_trees}{\code{Logical}. For binary classification: Build 2x as many trees (one per class) - can lead to higher
 accuracy. Defaults to FALSE.}
@@ -135,7 +136,12 @@ accuracy. Defaults to FALSE.}
 "Random", "QuantilesGlobal", "RoundRobin". Defaults to AUTO.}
 
 \item{categorical_encoding}{Encoding scheme for categorical features Must be one of: "AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-"Binary", "Eigen". Defaults to AUTO.}
+"Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to AUTO.}
+
+\item{calibrate_model}{\code{Logical}. Use Platt Scaling to calculate calibrated class probabilities. Calibration can provide more
+accurate estimates of class probabilities. Defaults to FALSE.}
+
+\item{calibration_frame}{Calibration frame for Platt Scaling}
 }
 \value{
 Creates a \linkS4class{H2OModel} object of the right type.

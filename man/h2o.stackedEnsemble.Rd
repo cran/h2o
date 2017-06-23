@@ -5,8 +5,7 @@
 learning algorithms specified by the user.}
 \usage{
 h2o.stackedEnsemble(x, y, training_frame, model_id = NULL,
-  validation_frame = NULL, base_models = list(),
-  selection_strategy = c("choose_all"))
+  validation_frame = NULL, base_models = list())
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the model.
@@ -22,12 +21,8 @@ categorical variable).}
 
 \item{validation_frame}{Id of the validation data frame.}
 
-\item{base_models}{List of model ids which we can stack together.  Which ones are chosen depends on the selection_strategy
-(currently, all models will be used since selection_strategy can only be set to choose_all).  Models must have
-been cross-validated using nfolds > 1, fold_assignment equal to Modulo, and keep_cross_validation_folds must
-be set to True. Defaults to [].}
-
-\item{selection_strategy}{Strategy for choosing which models to stack. Must be one of: "choose_all".}
+\item{base_models}{List of model ids which we can stack together. Models must have been cross-validated using nfolds > 1, and
+folds must be identical across models. Defaults to [].}
 }
 \description{
 Build a stacked ensemble (aka. Super Learner) using the H2O base

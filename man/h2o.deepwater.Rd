@@ -12,14 +12,14 @@ h2o.deepwater(x, y, training_frame, model_id = NULL, checkpoint = NULL,
   "Random", "Modulo", "Stratified"), fold_column = NULL,
   offset_column = NULL, weights_column = NULL,
   score_each_iteration = FALSE, categorical_encoding = c("AUTO", "Enum",
-  "OneHotInternal", "OneHotExplicit", "Binary", "Eigen"),
-  overwrite_with_best_model = TRUE, epochs = 10,
-  train_samples_per_iteration = -2, target_ratio_comm_to_comp = 0.05,
-  seed = -1, standardize = TRUE, learning_rate = 0.005,
-  learning_rate_annealing = 1e-06, momentum_start = 0.9,
-  momentum_ramp = 10000, momentum_stable = 0.99, distribution = c("AUTO",
-  "bernoulli", "multinomial", "gaussian", "poisson", "gamma", "tweedie",
-  "laplace", "quantile", "huber"), score_interval = 5,
+  "OneHotInternal", "OneHotExplicit", "Binary", "Eigen", "LabelEncoder",
+  "SortByResponse", "EnumLimited"), overwrite_with_best_model = TRUE,
+  epochs = 10, train_samples_per_iteration = -2,
+  target_ratio_comm_to_comp = 0.05, seed = -1, standardize = TRUE,
+  learning_rate = 0.001, learning_rate_annealing = 1e-06,
+  momentum_start = 0.9, momentum_ramp = 10000, momentum_stable = 0.9,
+  distribution = c("AUTO", "bernoulli", "multinomial", "gaussian", "poisson",
+  "gamma", "tweedie", "laplace", "quantile", "huber"), score_interval = 5,
   score_training_samples = 10000, score_validation_samples = 0,
   score_duty_cycle = 0.1, classification_stop = 0, regression_stop = 0,
   stopping_rounds = 5, stopping_metric = c("AUTO", "deviance", "logloss",
@@ -30,11 +30,12 @@ h2o.deepwater(x, y, training_frame, model_id = NULL, checkpoint = NULL,
   "lenet", "alexnet", "vgg", "googlenet", "inception_bn", "resnet"),
   backend = c("mxnet", "caffe", "tensorflow"), image_shape = c(0, 0),
   channels = 3, sparse = FALSE, gpu = TRUE, device_id = c(0),
-  network_definition_file = NULL, network_parameters_file = NULL,
-  mean_image_file = NULL, export_native_parameters_prefix = NULL,
-  activation = c("Rectifier", "Tanh"), hidden = NULL,
-  input_dropout_ratio = 0, hidden_dropout_ratios = NULL,
-  problem_type = c("auto", "image", "dataset"))
+  cache_data = TRUE, network_definition_file = NULL,
+  network_parameters_file = NULL, mean_image_file = NULL,
+  export_native_parameters_prefix = NULL, activation = c("Rectifier",
+  "Tanh"), hidden = NULL, input_dropout_ratio = 0,
+  hidden_dropout_ratios = NULL, problem_type = c("auto", "image",
+  "dataset"))
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the model.
@@ -84,7 +85,7 @@ weights are not allowed.}
 \item{score_each_iteration}{\code{Logical}. Whether to score during each iteration of model training. Defaults to FALSE.}
 
 \item{categorical_encoding}{Encoding scheme for categorical features Must be one of: "AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-"Binary", "Eigen". Defaults to AUTO.}
+"Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to AUTO.}
 
 \item{overwrite_with_best_model}{\code{Logical}. If enabled, override the final model with the best model found during training. Defaults to
 TRUE.}
@@ -104,7 +105,7 @@ Defaults to -1 (time-based random number).}
 \item{standardize}{\code{Logical}. If enabled, automatically standardize the data. If disabled, the user must provide properly
 scaled input data. Defaults to TRUE.}
 
-\item{learning_rate}{Learning rate (higher => less stable, lower => slower convergence). Defaults to 0.005.}
+\item{learning_rate}{Learning rate (higher => less stable, lower => slower convergence). Defaults to 0.001.}
 
 \item{learning_rate_annealing}{Learning rate annealing: rate / (1 + rate_annealing * samples). Defaults to 1e-06.}
 
@@ -112,7 +113,7 @@ scaled input data. Defaults to TRUE.}
 
 \item{momentum_ramp}{Number of training samples for which momentum increases. Defaults to 10000.}
 
-\item{momentum_stable}{Final momentum after the ramp is over (try 0.99). Defaults to 0.99.}
+\item{momentum_stable}{Final momentum after the ramp is over (try 0.99). Defaults to 0.9.}
 
 \item{distribution}{Distribution function Must be one of: "AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
 "tweedie", "laplace", "quantile", "huber". Defaults to AUTO.}
@@ -163,6 +164,9 @@ much) Defaults to 0.}
 \item{gpu}{\code{Logical}. Whether to use a GPU (if available). Defaults to TRUE.}
 
 \item{device_id}{Device IDs (which GPUs to use). Defaults to [0].}
+
+\item{cache_data}{\code{Logical}. Whether to cache the data in memory (automatically disabled if data size is too large).
+Defaults to TRUE.}
 
 \item{network_definition_file}{Path of file containing network definition (graph, architecture).}
 

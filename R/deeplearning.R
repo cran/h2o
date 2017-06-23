@@ -106,7 +106,7 @@
 #' @param force_load_balance \code{Logical}. Force extra load balancing to increase training speed for small datasets (to keep all cores
 #'        busy). Defaults to TRUE.
 #' @param variable_importances \code{Logical}. Compute variable importances for input features (Gedeon method) - can be slow for large
-#'        networks. Defaults to FALSE.
+#'        networks. Defaults to TRUE.
 #' @param replicate_training_data \code{Logical}. Replicate the entire training dataset onto every node for faster training on small datasets.
 #'        Defaults to TRUE.
 #' @param single_node_mode \code{Logical}. Run on a single node for fine-tuning of model parameters. Defaults to FALSE.
@@ -126,7 +126,7 @@
 #' @param export_weights_and_biases \code{Logical}. Whether to export Neural Network weights and biases to H2O Frames. Defaults to FALSE.
 #' @param mini_batch_size Mini-batch size (smaller leads to better fit, larger can speed up and generalize better). Defaults to 1.
 #' @param categorical_encoding Encoding scheme for categorical features Must be one of: "AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-#'        "Binary", "Eigen". Defaults to AUTO.
+#'        "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to AUTO.
 #' @param elastic_averaging \code{Logical}. Elastic averaging between compute nodes can improve distributed model convergence.
 #'        #Experimental Defaults to FALSE.
 #' @param elastic_averaging_moving_rate Elastic averaging moving rate (only if elastic averaging is enabled). Defaults to 0.9.
@@ -208,7 +208,7 @@ h2o.deeplearning <- function(x, y, training_frame,
                              diagnostics = TRUE,
                              fast_mode = TRUE,
                              force_load_balance = TRUE,
-                             variable_importances = FALSE,
+                             variable_importances = TRUE,
                              replicate_training_data = TRUE,
                              single_node_mode = FALSE,
                              shuffle_training_data = FALSE,
@@ -223,23 +223,23 @@ h2o.deeplearning <- function(x, y, training_frame,
                              reproducible = FALSE,
                              export_weights_and_biases = FALSE,
                              mini_batch_size = 1,
-                             categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary", "Eigen"),
+                             categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
                              elastic_averaging = FALSE,
                              elastic_averaging_moving_rate = 0.9,
                              elastic_averaging_regularization = 0.001
                              ) 
 {
-  #If x is missing, then assume user wants to use all columns as features.
-  if(missing(x)){
-     if(is.numeric(y)){
-         x <- setdiff(col(training_frame),y)
-     }else{
-         x <- setdiff(colnames(training_frame),y)
+  # If x is missing, then assume user wants to use all columns as features.
+  if (missing(x)) {
+     if (is.numeric(y)) {
+         x <- setdiff(col(training_frame), y)
+     } else {
+         x <- setdiff(colnames(training_frame), y)
      }
   }
 
   # Required args: training_frame
-  if( missing(training_frame) ) stop("argument 'training_frame' is missing, with no default")
+  if (missing(training_frame)) stop("argument 'training_frame' is missing, with no default")
   # Training_frame must be a key or an H2OFrame object
   if (!is.H2OFrame(training_frame))
      tryCatch(training_frame <- h2o.getFrame(training_frame),
@@ -436,7 +436,7 @@ h2o.deeplearning <- function(x, y, training_frame,
   if (!missing(elastic_averaging_regularization))
     parms$elastic_averaging_regularization <- elastic_averaging_regularization
   # Error check and build model
-  .h2o.modelJob('deeplearning', parms, h2oRestApiVersion=3) 
+  .h2o.modelJob('deeplearning', parms, h2oRestApiVersion = 3) 
 }
 
 #' Anomaly Detection via H2O Deep Learning Model
@@ -470,40 +470,5 @@ url <- paste0('Predictions/models/', object@model_id, '/frames/',h2o.getId(data)
 res <- .h2o.__remoteSend(url, method = "POST", reconstruction_error=TRUE, reconstruction_error_per_feature=per_feature)
 key <- res$model_metrics[[1L]]$predictions$frame_id$name
 h2o.getFrame(key)
-}
-
-#' Feature Generation via H2O Deep Learning Model
-#'
-#' Extract the non-linear feature from an H2O data set using an H2O deep learning
-#' model.
-#' @param object An \linkS4class{H2OModel} object that represents the deep
-#' learning model to be used for feature extraction.
-#' @param data An H2OFrame object.
-#' @param layer Index of the hidden layer to extract.
-#' @return Returns an H2OFrame object with as many features as the
-#'         number of units in the hidden layer of the specified index.
-#' @seealso \code{link{h2o.deeplearning}} for making deep learning models.
-#' @examples
-#' \donttest{
-#' library(h2o)
-#' h2o.init()
-#' prosPath = system.file("extdata", "prostate.csv", package = "h2o")
-#' prostate.hex = h2o.importFile(path = prosPath)
-#' prostate.dl = h2o.deeplearning(x = 3:9, y = 2, training_frame = prostate.hex,
-#'                                hidden = c(100, 200), epochs = 5)
-#' prostate.deepfeatures_layer1 = h2o.deepfeatures(prostate.dl, prostate.hex, layer = 1)
-#' prostate.deepfeatures_layer2 = h2o.deepfeatures(prostate.dl, prostate.hex, layer = 2)
-#' head(prostate.deepfeatures_layer1)
-#' head(prostate.deepfeatures_layer2)
-#' }
-#' @export
-h2o.deepfeatures <- function(object, data, layer = 1) {
-index = layer - 1
-url <- paste0('Predictions/models/', object@model_id, '/frames/', h2o.getId(data))
-res <- .h2o.__remoteSend(url, method = "POST", deep_features_hidden_layer=index, h2oRestApiVersion = 4)
-job_key <- res$key$name
-dest_key <- res$dest$name
-.h2o.__waitOnJob(job_key)
-h2o.getFrame(dest_key)
 }
 

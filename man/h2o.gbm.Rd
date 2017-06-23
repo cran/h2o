@@ -27,7 +27,8 @@ h2o.gbm(x, y, training_frame, model_id = NULL, validation_frame = NULL,
   "UniformAdaptive", "Random", "QuantilesGlobal", "RoundRobin"),
   max_abs_leafnode_pred = Inf, pred_noise_bandwidth = 0,
   categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-  "Binary", "Eigen"))
+  "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  calibrate_model = FALSE, calibration_frame = NULL)
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the model.
@@ -134,7 +135,7 @@ Defaults to FALSE.}
 
 \item{sample_rate}{Row sample rate per tree (from 0.0 to 1.0) Defaults to 1.}
 
-\item{sample_rate_per_class}{Row sample rate per tree per class (from 0.0 to 1.0)}
+\item{sample_rate_per_class}{A list of row sample rates per class (relative fraction for each class, from 0.0 to 1.0), for each tree}
 
 \item{col_sample_rate}{Column sample rate (from 0.0 to 1.0) Defaults to 1.}
 
@@ -152,7 +153,12 @@ Defaults to FALSE.}
 \item{pred_noise_bandwidth}{Bandwidth (sigma) of Gaussian multiplicative noise ~N(1,sigma) for tree node predictions Defaults to 0.}
 
 \item{categorical_encoding}{Encoding scheme for categorical features Must be one of: "AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-"Binary", "Eigen". Defaults to AUTO.}
+"Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to AUTO.}
+
+\item{calibrate_model}{\code{Logical}. Use Platt Scaling to calculate calibrated class probabilities. Calibration can provide more
+accurate estimates of class probabilities. Defaults to FALSE.}
+
+\item{calibration_frame}{Calibration frame for Platt Scaling}
 }
 \description{
 The default distribution function will guess the model type based on the response column type.

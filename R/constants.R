@@ -26,7 +26,7 @@ assign("LOG_FILE_NAME", NULL,  .pkg.env)
   "cos", "sin", "acos", "cosh", "tan", "tanh", "exp", "log", "sqrt", 
   "abs", "ceiling", "floor", 
   "mean", "sd", "sum", "prod", "all", "any", "min", "max", 
-  "is.factor", "nrow", "ncol", "length" 
+  "is.factor", "nrow", "ncol", "length" , "which.max", "which.min"
 )
 
 
@@ -51,6 +51,11 @@ assign("LOG_FILE_NAME", NULL,  .pkg.env)
                    data.frame(type = "character", scalar = TRUE,  row.names = "string",       stringsAsFactors = FALSE),
                    data.frame(type = "character", scalar = FALSE, row.names = "string[]",     stringsAsFactors = FALSE),
                    data.frame(type = "character", scalar = TRUE,  row.names = "VecSpecifier", stringsAsFactors = FALSE))
+
+#' Capabilities endpoints
+.h2o.__ALL_CAPABILITIES  <- "Capabilities"
+.h2o.__CORE_CAPABILITIES <- "Capabilities/Core"
+.h2o.__API_CAPABILITIES  <- "Capabilities/API"
 
 #' Administrative Endpoints
 .h2o.__JOBS           <- "Jobs"          # Jobs/$90w3r52hfej_JOB_KEY_12389471jsdfs

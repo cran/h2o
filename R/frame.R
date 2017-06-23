@@ -1042,10 +1042,25 @@ h2o.impute <- function(data, column=0, method=c("mean","median","mode"), # TODO:
 
   # this AST: (h2o.impute %fr #colidx method combine_method inplace max_gap by)
   chk.H2OFrame(data)
-  if( !is.null(groupByFrame) ) chk.H2OFrame(groupByFrame)
+  if (!is.null(groupByFrame)) chk.H2OFrame(groupByFrame)
   else groupByFrame <- "_"  # NULL value for rapids backend
 
-  if( is.null(values) ) values <- "_"  # TODO: exposes categorical-int mapping! Fix this with an object that hides mapping...
+  if (is.null(values)) {
+    values <- "_"  # TODO: exposes categorical-int mapping! Fix this with an object that hides mapping...
+  } else {
+    if (length(values) != ncol(data)) {
+      stop("Length of values does not match length of columns")
+    } else {
+      values2 <- c()
+      for (i in 1:length(values)) {
+        if (is.factor(data[i]) && !(values[i] %in% h2o.levels(data[i]))) {
+          stop(paste0("Impute value of: ",values[i]," not found in existing levels of column: ",colnames(data[i])))
+        }
+        values2[i] <- values[i]
+      }
+      values <- values2
+    }
+  }
 
   # sanity check `column` then convert to 0-based index.
   if( length(column) > 1L ) stop("`column` must be a single column.")
@@ -1094,6 +1109,83 @@ h2o.impute <- function(data, column=0, method=c("mean","median","mode"), # TODO:
 #' @param na.rm ignore missing values
 #' @export
 range.H2OFrame <- function(...,na.rm = TRUE) c(min(...,na.rm=na.rm), max(...,na.rm=na.rm))
+
+#' Pivot the frame designated by the three columns: index, column, and value. Index and column should be
+#' of type enum, int, or time.
+#' For cases of multiple indexes for a column label, the aggregation method is to pick the first occurrence in the data frame
+#'
+#' @param x an H2OFrame
+#' @param index the column where pivoted rows should be aligned on
+#' @param column the column to pivot
+#' @param value values of the pivoted table
+#' @return An H2OFrame with columns from the columns arg, aligned on the index arg, with values from values arg
+#' @export
+h2o.pivot <- function(x, index, column, value){
+  if(! index %in% colnames(x)) stop("index column not found in dataframe")
+  if(! column %in% colnames(x)) stop("column column not found in dataframe")
+  if(! value %in% colnames(x)) stop("value column not found in dataframe")
+  if( ! h2o.getTypes(x)[grep(index,colnames(x))] %in% c("enum","time","int")) {
+    stop("index must be enum, time or int")
+  }
+  .newExpr("pivot", x, .quote(index), .quote(column), .quote(value))
+}
+
+# H2O topBottomN
+#
+# topBottomN function will will grab the top N percent or botom N percent of values of a column and return it in a
+#  H2OFrame.
+#
+# @param x an H2OFrame
+# @param column is a column name or column index to grab the top N percent value from
+# @param nPercent a top percentage values to grab
+# @param getBottom if 0 grab top percentage, 1 grab bottom percentage
+# @return An H2OFrame with 2 columns: first column is the original row indices, second column contains the values
+h2o.topBottomN <- function(x, column, nPercent, getBottom){
+  cnames = names(x)
+  colIndex=0
+  if (typeof(column)=="character") {  # verify column
+    if (!column %in% cnames) stop("column name not found in dataframe")
+    colIndex = ((which(column==cnames ))-1)
+
+  } else {  # column is number
+    if ((column <= 0) || (column > ncol(x))) stop("Illegal column index")
+    colIndex = (column-1)
+  }
+
+  # verify nPercent
+  if ((nPercent <  0) || nPercent > 100) stop("nPercent is between 0 and 100.")
+  if (nPercent*0.01*nrow(x) < 1) stop("Increase nPercent.  Current value will result in top 0 row.")
+  if (!h2o.isnumeric(x[colIndex+1])) stop("Wrong column type!  Selected column must be numeric.")
+
+  .newExpr("topn", x, colIndex, nPercent,getBottom)
+}
+
+#' H2O topN
+#'
+#' Extract the top N percent  of values of a column and return it in a H2OFrame.
+#'
+#' @param x an H2OFrame
+#' @param column is a column name or column index to grab the top N percent value from
+#' @param nPercent is a top percentage value to grab
+#' @return An H2OFrame with 2 columns.  The first column is the original row indices, second column contains the topN values
+#' @export
+h2o.topN <- function(x, column, nPercent) {
+  h2o.topBottomN(x, column, nPercent, 0)
+}
+#' H2O bottomN
+#'
+#' bottomN function will will grab the bottom N percent of values of a column and return it in a H2OFrame.
+#' Extract the top N percent of values of a column and return it in a H2OFrame.
+#'
+#' @param x an H2OFrame
+#' @param column is a column name or column index to grab the top N percent value from
+#' @param nPercent is a bottom percentage value to grab
+#' @return An H2OFrame with 2 columns.  The first column is the original row indices, second column contains the bottomN values
+#' @export
+h2o.bottomN <- function(x, column, nPercent) {
+  h2o.topBottomN(x, column, nPercent, 1)
+}
+
 #-----------------------------------------------------------------------------------------------------------------------
 # Time & Date
 #-----------------------------------------------------------------------------------------------------------------------
@@ -1545,6 +1637,46 @@ h2o.which <- function(x) {
   if( !is.H2OFrame(x) ) stop("must be an H2OFrame")
   else .newExpr("which",x) + 1
 }
+
+#' Which indice contains the max value?
+#'
+#' Get the index of the max value in a column or row
+#'
+#' @param x An H2OFrame object.
+#' @param na.rm \code{logical}. Indicate whether missing values should be removed.
+#' @param axis \code{integer}. Indicate whether to calculate the mean down a column (0) or across a row (1).
+#' @return Returns an H2OFrame object.
+#' @seealso \code{\link[base]{which.max}} for the base R method.
+#' @export
+h2o.which_max <- function(x,na.rm = TRUE,axis = 0) {
+  if( !is.H2OFrame(x) ){
+    stop("must be an H2OFrame")
+  }
+  .newExpr("which.max", chk.H2OFrame(x), na.rm, axis) + 1
+}
+
+#' @rdname h2o.which_max
+#' @export
+which.max.H2OFrame <- h2o.which_max
+
+#' Which index contains the min value?
+#'
+#' Get the index of the min value in a column or row
+#'
+#' @param x An H2OFrame object.
+#' @param na.rm \code{logical}. Indicate whether missing values should be removed.
+#' @param axis \code{integer}. Indicate whether to calculate the mean down a column (0) or across a row (1).
+#' @return Returns an H2OFrame object.
+#' @seealso \code{\link[base]{which.min}} for the base R method.
+#' @export
+h2o.which_min <- function(x,na.rm = TRUE,axis = 0) {
+  if( !is.H2OFrame(x) ) stop("must be an H2OFrame")
+  else .newExpr("which.min",x,na.rm,axis) + 1
+}
+
+#' @rdname h2o.which_max
+#' @export
+which.min.H2OFrame <- h2o.which_min
 
 #' Count of NAs per column
 #'
@@ -2107,7 +2239,10 @@ h2o.describe <- function(frame) {
                                                           )
                                                           })))
   names(res) <- c("Label", "Type", "Missing", "Zeros", "PosInf", "NegInf", "Min", "Max", "Mean", "Sigma", "Cardinality")
-  res
+
+  res2 <- apply(res[,3:ncol(res)], 2, as.numeric)
+  res2 <- cbind(res[,1:2], res2)
+  return(res2)
 }
 
 #' @rdname h2o.summary
@@ -2310,6 +2445,31 @@ h2o.cor <- function(x, y=NULL,na.rm = FALSE, use){
   expr <- .newExpr("cor",x,y,.quote(use))
   if( (nrow(x)==1L || (ncol(x)==1L && ncol(y)==1L)) ) .eval.scalar(expr)
   else .fetch.data(expr,ncol(x))
+}
+
+#'
+#' Compute a pairwise distance measure between all rows of two numeric H2OFrames.
+#'
+#' @param x An H2OFrame object (large, references).
+#' @param y An H2OFrame object (small, queries).
+#' @param measure An optional string indicating what distance measure to use. Must be one of:
+#'   "l1"                   - Absolute distance (L1-norm, >=0)
+#'   "l2"                   - Euclidean distance (L2-norm, >=0)
+#'   "cosine"               - Cosine similarity (-1...1)
+#'   "cosine_sq"            - Squared Cosine similarity (0...1)
+#' @examples
+#' \donttest{
+#' h2o.init()
+#' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
+#' prostate.hex <- h2o.uploadFile(path = prosPath)
+#' h2o.distance(prostate.hex[11:30,], prostate.hex[1:10,], "cosine")
+#' }
+#' @export
+h2o.distance <- function(x, y, measure){
+  if(missing(measure)) {
+    measure <- "l2"
+  }
+  .newExpr("distance",x,y,.quote(measure))
 }
 
 #' @rdname h2o.cor
@@ -3473,15 +3633,36 @@ h2o.relevel <- function(x,y) {
 #' \code{"all"} will include \code{NAs} in computation of functions. \code{"rm"} will completely
 #' remove all \code{NA} fields. \code{"ignore"} will remove \code{NAs} from the numerator but keep
 #' the rows for computational purposes. If a list smaller than the number of columns groups is
-#' supplied, the list will be padded by \code{"ignore"}.
+#' supplied, the list will be padded by \code{"ignore"}. 
 #'
-#' Similar to \code{na.methods}, \code{col.names} will pad the list with the default column names if
-#' the length is less than the number of colums groups supplied.
+#' Note that to specify a list of column names in the \code{gb.control} list, you must add the 
+#' \code{col.names} argument. Similar to \code{na.methods}, \code{col.names} will pad the list with 
+#' the default column names if the length is less than the number of colums groups supplied. 
+#'
+#' Supported functions include \code{nrow}. This function is required and accepts a string for the 
+#' name of the generated column. Other supported aggregate functions accept \code{col} and \code{na} 
+#' arguments for specifying columns and the handling of NAs (\code{"all"}, \code{"ignore"}, and 
+#  \code{"rm"}) and include the following: \code{count} counts the number of rows in each group of a 
+#' GroupBy object; \code{max} calculates the maximum of each column specified in \code{col} for each 
+#' group of a GroupBy object; \code{mean} calculates the mean of each column specified in \code{col} 
+#' for each group of a GroupBy object; \code{min} calculates the minimum of each column specified in 
+#' \code{col} for each group of a GroupBy object; \code{mode} calculates the mode of each column 
+#' specified in \code{col} for each group of a GroupBy object; \code{sd} calculates the standard 
+#' deviation of each column specified in \code{col} for each group of a GroupBy object; \code{ss} 
+#' calculates the sum of squares of each column specified in \code{col} for each group of a GroupBy 
+#' object; \code{sum} calculates the sum of each column specified in \code{col} for each group of a 
+#' GroupBy object; and \code{var} calculates the variance of each column specified in \code{col} for 
+#' each group of a GroupBy object. If an aggregate is provided without a value (for example, as 
+#' \code{max} in \code{sum(col="X1", na="all").mean(col="X5", na="all").max()}), then it is assumed 
+#' that the aggregation should apply to all columns except the GroupBy columns. Note again that 
+#' \code{nrow} is required and cannot be empty.
+#'
 #' @param data an H2OFrame object.
 #' @param by a list of column names
-#' @param \dots any supported aggregate function.
+#' @param \dots any supported aggregate function. See \code{Details:} for more help.
 #' @param gb.control a list of how to handle \code{NA} values in the dataset as well as how to name
-#'        output columns. See \code{Details:} for more help.
+#'        output columns. The method is specified using the \code{rm.method} argument. See 
+#'        \code{Details:} for more help.
 #' @return Returns a new H2OFrame object with columns equivalent to the number of
 #'         groups created
 #' @export
@@ -3723,6 +3904,10 @@ apply <- function(X, MARGIN, FUN, ...) {
     if( nargs > 0 ) extra_args <- c(extra_args,tail(args,nargs))
     fcn <- if( length(extra_args)==0 ) fname
            else paste0("{ COL . (",fname," COL ",paste(extra_args,collapse=" "),")}")
+
+    if(fname == "which.max" || fname == "which.min"){
+      return(.newExpr("apply",X,MARGIN,fcn) + 1)
+    }
     return(.newExpr("apply",X,MARGIN,fcn))
   }
 
@@ -3809,6 +3994,33 @@ h2o.isax <- function(x, num_words, max_cardinality, optimize_card = FALSE){
     stop("max_cardinality must be greater than 0!")
   }
   .newExpr("isax", x, num_words, max_cardinality, optimize_card)
+}
+
+
+#'
+#' fillNA
+#'
+#' Fill NA's in a sequential manner up to a specified limit
+#'
+#' @param x an H2OFrame
+#' @param method A String: "forward" or "backward"
+#' @param axis An Integer 1 for row-wise fill (default), 2 for column-wise fill
+#' @param maxlen An Integer for maximum number of consecutive NA's to fill
+#' @return An H2OFrame after filling missing values
+#' @examples
+#' \donttest{
+#' library(h2o)
+#' h2o.init()
+#' fr.with.nas = h2o.createFrame(categorical_fraction=0.0,missing_fraction=0.7,rows=6,cols=2,seed=123)
+#' fr <- h2o.fillna(fr.with.nas, "forward", axis=1, maxlen=2L)
+#' }
+#' @export
+h2o.fillna <- function(x, method="forward", axis=1, maxlen=1L) {
+  if(! axis %in% c(1,2)) stop("axis must be 1 or 2")
+  if(axis == 2) axis_arg=0 else axis_arg=1
+  if(! method %in% c("forward","backward")) stop("method must be forward or backward")
+  if(! is.integer(maxlen)) stop("max len must be an integer (e.g., 2L)")
+  .newExpr("h2o.fillna", x, .quote(method), axis_arg, maxlen)
 }
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -4070,3 +4282,31 @@ h2o.entropy <- function(x) .newExpr("entropy", x)
 #' @param path  Path to text file containing line-separated strings to be referenced. 
 #' @export
 h2o.num_valid_substrings <- function(x, path) .newExpr("num_valid_substrings", x, .quote(path))
+
+#'
+#' Compute element-wise string distances between two H2OFrames. Both frames need to have the same
+#' shape (N x M) and only contain string/factor columns. Return a matrix (H2OFrame) of shape N x M.
+#'
+#' @param x An H2OFrame
+#' @param y A comparison H2OFrame
+#' @param method A string identifier indicating what string distance measure to use. Must be one of:
+#'   "lv"                   - Levenshtein distance
+#'   "lcs"                  - Longest common substring distance
+#'   "qgram"                - q-gram distance
+#'   "jaccard"              - Jaccard distance between q-gram profiles
+#'   "jw"                   - Jaro, or Jaro-Winker distance
+#'   "soundex"              - Distance based on soundex encoding
+#' @examples
+#' \donttest{
+#' h2o.init()
+#' x <- as.h2o(c("Martha", "Dwayne", "Dixon"))
+#' y <- as.character(as.h2o(c("Marhta", "Duane", "Dicksonx")))
+#' h2o.stringdist(x, y, method = "jw")
+#' }
+#' @export
+h2o.stringdist <- function(x, y, method = c("lv", "lcs", "qgram", "jaccard", "jw", "soundex")) {
+  if (! is.H2OFrame(x)) stop("`x` parameter needs to be an H2OFrame")
+  if (! is.H2OFrame(y)) stop("`y` parameter needs to be an H2OFrame")
+  method <- match.arg(method)
+  .newExpr("strDistance", x, y, .quote(method))
+}

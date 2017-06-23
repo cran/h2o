@@ -77,15 +77,16 @@ number of predictors and for lambda-search with L1 penalty, L_BFGS scales better
 columns. Coordinate descent is experimental (beta). Must be one of: "AUTO", "IRLSM", "L_BFGS",
 "COORDINATE_DESCENT_NAIVE", "COORDINATE_DESCENT". Defaults to AUTO.}
 
-\item{alpha}{distribution of regularization between L1 and L2. Default value of alpha is 0 when SOLVER = 'L-BFGS', 0.5
-otherwise}
+\item{alpha}{Distribution of regularization between the L1 (Lasso) and L2 (Ridge) penalties. A value of 1 for alpha
+represents Lasso regression, a value of 0 produces Ridge regression, and anything in between specifies the
+amount of mixing between the two. Default value of alpha is 0 when SOLVER = 'L-BFGS'; 0.5 otherwise.}
 
-\item{lambda}{regularization strength}
+\item{lambda}{Regularization strength}
 
-\item{lambda_search}{\code{Logical}. use lambda search starting at lambda max, given lambda is then interpreted as lambda min
+\item{lambda_search}{\code{Logical}. Use lambda search starting at lambda max, given lambda is then interpreted as lambda min
 Defaults to FALSE.}
 
-\item{early_stopping}{\code{Logical}. stop early when there is no more relative improvement on train or validation (if provided)
+\item{early_stopping}{\code{Logical}. Stop early when there is no more relative improvement on train or validation (if provided)
 Defaults to TRUE.}
 
 \item{nlambdas}{Number of lambdas to be used in a search. Default indicates: If alpha is zero, with lambda search set to True,
@@ -97,12 +98,12 @@ Defaults to -1.}
 \item{missing_values_handling}{Handling of missing values. Either MeanImputation or Skip. Must be one of: "MeanImputation", "Skip". Defaults
 to MeanImputation.}
 
-\item{compute_p_values}{\code{Logical}. request p-values computation, p-values work only with IRLSM solver and no regularization
+\item{compute_p_values}{\code{Logical}. Request p-values computation, p-values work only with IRLSM solver and no regularization
 Defaults to FALSE.}
 
-\item{remove_collinear_columns}{\code{Logical}. in case of linearly dependent columns remove some of the dependent columns Defaults to FALSE.}
+\item{remove_collinear_columns}{\code{Logical}. In case of linearly dependent columns, remove some of the dependent columns Defaults to FALSE.}
 
-\item{intercept}{\code{Logical}. include constant term in the model Defaults to TRUE.}
+\item{intercept}{\code{Logical}. Include constant term in the model Defaults to TRUE.}
 
 \item{non_negative}{\code{Logical}. Restrict coefficients (not intercept) to be non-negative Defaults to FALSE.}
 
@@ -113,7 +114,7 @@ value of objective_epsilon is set to .0001. If the lambda_search is set to False
 the value of objective_epsilon is set to .000001, for any other value of lambda the default value of
 objective_epsilon is set to .0001. Defaults to -1.}
 
-\item{beta_epsilon}{converge if  beta changes less (using L-infinity norm) than beta esilon, ONLY applies to IRLSM solver
+\item{beta_epsilon}{Converge if  beta changes less (using L-infinity norm) than beta esilon, ONLY applies to IRLSM solver
 Defaults to 0.0001.}
 
 \item{gradient_epsilon}{Converge if  objective changes less (using L-infinity norm) than this, ONLY applies to L-BFGS solver. Default
@@ -124,14 +125,14 @@ values above are 1E-8 and 1E-6 respectively. Defaults to -1.}
 \item{link}{Must be one of: "family_default", "identity", "logit", "log", "inverse", "tweedie". Defaults to
 family_default.}
 
-\item{prior}{prior probability for y==1. To be used only for logistic regression iff the data has been sampled and the mean
+\item{prior}{Prior probability for y==1. To be used only for logistic regression iff the data has been sampled and the mean
 of response does not reflect reality. Defaults to -1.}
 
-\item{lambda_min_ratio}{Min lambda used in lambda search, specified as a ratio of lambda_max. Default indicates: if the number of
+\item{lambda_min_ratio}{Minimum lambda used in lambda search, specified as a ratio of lambda_max. Default indicates: if the number of
 observations is greater than the number of variables then lambda_min_ratio is set to 0.0001; if the number of
 observations is less than the number of variables then lambda_min_ratio is set to 0.01. Defaults to -1.}
 
-\item{beta_constraints}{beta constraints}
+\item{beta_constraints}{Beta constraints}
 
 \item{max_active_predictors}{Maximum number of active predictors during computation. Use as a stopping criterion to prevent expensive model
 building with many predictors. Default indicates: If the IRLSM solver is used, the value of
@@ -148,7 +149,7 @@ be automatically computed to obtain class balance during training. Requires bala
 \item{max_after_balance_size}{Maximum relative size of the training data after balancing class counts (can be less than 1.0). Requires
 balance_classes. Defaults to 5.0.}
 
-\item{max_hit_ratio_k}{Max. number (top K) of predictions to use for hit ratio computation (for multi-class only, 0 to disable)
+\item{max_hit_ratio_k}{Maximum number (top K) of predictions to use for hit ratio computation (for multi-class only, 0 to disable)
 Defaults to 0.}
 
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.}

@@ -77,7 +77,7 @@ Defaults to -1 (time-based random number).}
 \item{init}{Initialization mode Must be one of: "Random", "SVD", "PlusPlus", "User". Defaults to PlusPlus.}
 
 \item{svd_method}{Method for computing SVD during initialization (Caution: Randomized is currently experimental and unstable)
-Must be one of: "GramSVD", "Power", "Randomized". Defaults to Power.}
+Must be one of: "GramSVD", "Power", "Randomized". Defaults to Randomized.}
 
 \item{user_y}{User-specified initial Y}
 

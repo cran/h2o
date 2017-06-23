@@ -12,7 +12,7 @@ h2o.kmeans(training_frame, x, model_id = NULL, validation_frame = NULL,
   standardize = TRUE, seed = -1, init = c("Random", "PlusPlus",
   "Furthest", "User"), max_runtime_secs = 0,
   categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-  "Binary", "Eigen"))
+  "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"))
 }
 \arguments{
 \item{training_frame}{Id of the training data frame (Not required, to allow initial validation of model parameters).}
@@ -62,7 +62,7 @@ Defaults to -1 (time-based random number).}
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.}
 
 \item{categorical_encoding}{Encoding scheme for categorical features Must be one of: "AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-"Binary", "Eigen". Defaults to AUTO.}
+"Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to AUTO.}
 }
 \value{
 Returns an object of class \linkS4class{H2OClusteringModel}.

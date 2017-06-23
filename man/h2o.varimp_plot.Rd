@@ -10,7 +10,7 @@ h2o.varimp_plot(model, num_of_features = NULL)
 or deep learning model, will use \code{\link{h2o.std_coef_plot}}
 for a trained GLM}
 
-\item{num_of_features}{The number of features to be shown in the plot}
+\item{num_of_features}{The number of features shown in the plot (default is 10 or all if less than 10).}
 }
 \description{
 Plot Variable Importances

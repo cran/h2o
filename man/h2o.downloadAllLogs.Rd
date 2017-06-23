@@ -8,9 +8,14 @@ h2o.downloadAllLogs(dirname = ".", filename = NULL)
 \arguments{
 \item{dirname}{(Optional) A character string indicating the directory that the log file should be saved in.}
 
-\item{filename}{(Optional) A character string indicating the name that the log file should be saved to.}
+\item{filename}{(Optional) A character string indicating the name that the log file should be saved to. Note that the saved format is .zip, so the file name must include the .zip extension.}
 }
 \description{
-\code{h2o.downloadAllLogs} downloads all H2O log files to local disk. Generally used for debugging purposes.
+\code{h2o.downloadAllLogs} downloads all H2O log files to local disk in .zip format. Generally used for debugging purposes.
+}
+\examples{
+\donttest{
+h2o.downloadAllLogs(dirname='./your_directory_name/', filename = 'autoh2o_log.zip')
+}
 }
 

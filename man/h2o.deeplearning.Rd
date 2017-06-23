@@ -36,7 +36,7 @@ h2o.deeplearning(x, y, training_frame, model_id = NULL,
   "mean_per_class_error"), stopping_tolerance = 0, max_runtime_secs = 0,
   score_validation_sampling = c("Uniform", "Stratified"),
   diagnostics = TRUE, fast_mode = TRUE, force_load_balance = TRUE,
-  variable_importances = FALSE, replicate_training_data = TRUE,
+  variable_importances = TRUE, replicate_training_data = TRUE,
   single_node_mode = FALSE, shuffle_training_data = FALSE,
   missing_values_handling = c("MeanImputation", "Skip"), quiet_mode = FALSE,
   autoencoder = FALSE, sparse = FALSE, col_major = FALSE,
@@ -44,8 +44,8 @@ h2o.deeplearning(x, y, training_frame, model_id = NULL,
   max_categorical_features = 2147483647, reproducible = FALSE,
   export_weights_and_biases = FALSE, mini_batch_size = 1,
   categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-  "Binary", "Eigen"), elastic_averaging = FALSE,
-  elastic_averaging_moving_rate = 0.9,
+  "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  elastic_averaging = FALSE, elastic_averaging_moving_rate = 0.9,
   elastic_averaging_regularization = 0.001)
 }
 \arguments{
@@ -216,7 +216,7 @@ Uniform.}
 busy). Defaults to TRUE.}
 
 \item{variable_importances}{\code{Logical}. Compute variable importances for input features (Gedeon method) - can be slow for large
-networks. Defaults to FALSE.}
+networks. Defaults to TRUE.}
 
 \item{replicate_training_data}{\code{Logical}. Replicate the entire training dataset onto every node for faster training on small datasets.
 Defaults to TRUE.}
@@ -251,7 +251,7 @@ propagation, but might slow down backpropagation. Defaults to FALSE.}
 \item{mini_batch_size}{Mini-batch size (smaller leads to better fit, larger can speed up and generalize better). Defaults to 1.}
 
 \item{categorical_encoding}{Encoding scheme for categorical features Must be one of: "AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-"Binary", "Eigen". Defaults to AUTO.}
+"Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to AUTO.}
 
 \item{elastic_averaging}{\code{Logical}. Elastic averaging between compute nodes can improve distributed model convergence.
 #Experimental Defaults to FALSE.}

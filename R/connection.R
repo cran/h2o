@@ -3,7 +3,7 @@
 #' Attempts to start and/or connect to and H2O instance.
 #'
 #' By default, this method first checks if an H2O instance is connectible. If it cannot connect and \code{start = TRUE} with \code{ip = "localhost"}, it will attempt to start and instance of H2O at localhost:54321.
-#' If an open ip & port of your choice are passed in, then this method will attempt to start an H2O instance at that specified ip & port.
+#' If an open ip and port of your choice are passed in, then this method will attempt to start an H2O instance at that specified ip  port.
 #'
 #' When initializing H2O locally, this method searches for h2o.jar in the R library resources (\code{system.file("java", "h2o.jar", package = "h2o")}), and if the file does not exist, it will automatically attempt to download the correct version from Amazon S3. The user must have Internet access for this process to be successful.
 #'
@@ -15,7 +15,7 @@
 #' @param forceDL (Optional) A \code{logical} value indicating whether to force download of the H2O executable. Defaults to FALSE, so the executable will only be downloaded if it does not already exist in the h2o R library resources directory \code{h2o/java/h2o.jar}.  This value is only used when R starts H2O.
 #' @param enable_assertions (Optional) A \code{logical} value indicating whether H2O should be launched with assertions enabled. Used mainly for error checking and debugging purposes.  This value is only used when R starts H2O.
 #' @param license (Optional) A \code{character} string value specifying the full path of the license file.  This value is only used when R starts H2O.
-#' @param nthreads (Optional) Number of threads in the thread pool.  This relates very closely to the number of CPUs used.  -2 means use the CRAN default of 2 CPUs.  -1 means use all CPUs on the host.  A positive integer specifies the number of CPUs directly.  This value is only used when R starts H2O.
+#' @param nthreads (Optional) Number of threads in the thread pool.  This relates very closely to the number of CPUs used. -1 means use all CPUs on the host (Default).  A positive integer specifies the number of CPUs directly.  This value is only used when R starts H2O.
 #' @param max_mem_size (Optional) A \code{character} string specifying the maximum size, in bytes, of the memory allocation pool to H2O. This value must a multiple of 1024 greater than 2MB. Append the letter m or M to indicate megabytes, or g or G to indicate gigabytes.  This value is only used when R starts H2O.
 #' @param min_mem_size (Optional) A \code{character} string specifying the minimum size, in bytes, of the memory allocation pool to H2O. This value must a multiple of 1024 greater than 2MB. Append the letter m or M to indicate megabytes, or g or G to indicate gigabytes.  This value is only used when R starts H2O.
 #' @param ice_root (Optional) A directory to handle object spillage. The defaul varies by OS.
@@ -53,7 +53,7 @@
 #' }
 #' @export
 h2o.init <- function(ip = "localhost", port = 54321, startH2O = TRUE, forceDL = FALSE,
-                     enable_assertions = TRUE, license = NULL, nthreads = -2,
+                     enable_assertions = TRUE, license = NULL, nthreads = -1,
                      max_mem_size = NULL, min_mem_size = NULL,
                      ice_root = tempdir(), strict_version_check = TRUE, proxy = NA_character_,
                      https = FALSE, insecure = FALSE, username = NA_character_, password = NA_character_,
@@ -762,4 +762,14 @@ h2o.networkTest <- function() {
 # Trigger an explicit garbage collection across all nodes in the H2O cluster.
 .h2o.garbageCollect <- function() {
   res <- .h2o.__remoteSend("GarbageCollect", method = "POST")
+}
+
+#' Open H2O Flow
+#'
+#' Open H2O Flow in your browser
+#'
+#' @importFrom utils browseURL
+#' @export
+h2o.flow <- function(){
+  browseURL(.h2o.calcBaseURL(urlSuffix=""))
 }

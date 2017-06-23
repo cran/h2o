@@ -101,21 +101,20 @@
     queryString = sprintf("%s%s=%s", queryString, name, escaped_value)
     i = i + 1L
   }
-
   postBody = ""
   if (missing(fileUploadInfo)) {
-    # This is the typical case.
-    if (method == "POST") {
-      postBody = queryString
-    } else if (nzchar(queryString)) {
-      url = sprintf("%s?%s", url, queryString)
+      # This is the typical case.
+      if (method == "POST") {
+          postBody = queryString
+      } else if (nzchar(queryString)) {
+          url = sprintf("%s?%s", url, queryString)
+      }
+    } else {
+      stopifnot(method == "POST")
+      if (nzchar(queryString)) {
+        url = sprintf("%s?%s", url, queryString)
+      }
     }
-  } else {
-    stopifnot(method == "POST")
-    if (nzchar(queryString)) {
-      url = sprintf("%s?%s", url, queryString)
-    }
-  }
 
   .__curlError = FALSE
   .__curlErrorMessage = ""
@@ -336,7 +335,7 @@
                    parms = parms, method = method, fileUploadInfo = fileUploadInfo, ...)
 
   if (rv$curlError) {
-  
+
     stop(sprintf("Unexpected CURL error: %s", rv$curlErrorMessage))
   } else if (rv$httpStatusCode != 200) {
     cat("\n")
@@ -567,8 +566,11 @@ print.H2OTable <- function(x, header=TRUE, ...) {
 
   rawREST <- ""
 
-  if( !is.null(timeout) ) rawREST <- .h2o.doSafeREST(h2oRestApiVersion = h2oRestApiVersion, urlSuffix = page, parms = .params, method = method, timeout = timeout)
-  else                    rawREST <- .h2o.doSafeREST(h2oRestApiVersion = h2oRestApiVersion, urlSuffix = page, parms = .params, method = method)
+  if( !is.null(timeout) ){
+    rawREST <- .h2o.doSafeREST(h2oRestApiVersion = h2oRestApiVersion, urlSuffix = page, parms = .params, method = method, timeout = timeout)
+  }else{
+    rawREST <- .h2o.doSafeREST(h2oRestApiVersion = h2oRestApiVersion, urlSuffix = page, parms = .params, method = method)
+  }
 
   if( raw ) rawREST
   else      .h2o.fromJSON(jsonlite::fromJSON(rawREST,simplifyDataFrame=FALSE))
@@ -604,6 +606,29 @@ h2o.clusterIsUp <- function(conn = h2o.getConnection()) {
 #' @export
 h2o.killMinus3 <- function() {
   rv <- .h2o.doSafeGET(urlSuffix="KillMinus3")
+}
+
+.h2o.list_extensions <- function(endpoint){
+  res <- .h2o.fromJSON(jsonlite::fromJSON(.h2o.doSafeGET(urlSuffix = endpoint), simplifyDataFrame=FALSE))
+  lapply(res$capabilities, function(x) x$name)
+}
+
+#' List all H2O registered extensions
+#' @export
+h2o.list_all_extensions <- function() {
+  .h2o.list_extensions(endpoint = .h2o.__ALL_CAPABILITIES)
+}
+
+#' List registered core extensions
+#' @export
+h2o.list_core_extensions <- function() {
+  .h2o.list_extensions(endpoint = .h2o.__CORE_CAPABILITIES)
+}
+
+#' List registered API extensions
+#' @export
+h2o.list_api_extensions <- function() {
+  .h2o.list_extensions(endpoint = .h2o.__API_CAPABILITIES)
 }
 
 #' Print H2O cluster info
@@ -645,7 +670,7 @@ h2o.clusterInfo <- function() {
   assign("IS_CLIENT", is_client, .pkg.env)
   m <- ": \n"
   if( is_client ) m <- " (in client mode): \n"
-  
+
   if (is.null(res$build_too_old)) {
     res$build_too_old <- TRUE
     res$build_age <- "PREHISTORIC"
@@ -666,7 +691,7 @@ h2o.clusterInfo <- function() {
   cat("    H2O Connection proxy:      ", proxy, "\n")
   cat("    H2O Internal Security:     ", res$internal_security_enabled, "\n")
   cat("    R Version:                 ", R.version.string, "\n")
-  
+
   cpusLimited = sapply(nodeInfo, function(x) x[['num_cpus']] > 1L && x[['nthreads']] != 1L && x[['cpus_allowed']] == 1L)
   if(any(cpusLimited))
     warning("Number of CPU cores allowed is limited to 1 on some nodes.\n",
@@ -723,19 +748,19 @@ h2o.is_client <- function() get("IS_CLIENT", .pkg.env)
 
 #'
 #' Disable Progress Bar
-#' 
+#'
 #' @export
 h2o.no_progress <- function() assign("PROGRESS_BAR", FALSE, .pkg.env)
 
 #'
 #' Enable Progress Bar
-#' 
+#'
 #' @export
 h2o.show_progress <- function() assign("PROGRESS_BAR", TRUE, .pkg.env)
 
 #'
-#' Check if Progress Bar is Enabled 
-#' 
+#' Check if Progress Bar is Enabled
+#'
 .h2o.is_progress <- function() {
   progress <- mget("PROGRESS_BAR", .pkg.env, ifnotfound=TRUE)
   if (is.list(progress)) progress <- unlist(progress)
@@ -772,10 +797,10 @@ h2o.show_progress <- function() assign("PROGRESS_BAR", TRUE, .pkg.env)
         cat("\n\n")
         cat(job$exception)
         cat("\n\n")
-        
+
         if (!is.null(job$stacktrace)) {cat(job$stacktrace)}
         cat("\n")
-        
+
         m <- strsplit(jobs[[1]]$exception, "\n")[[1]][1]
         m <- gsub(".*msg ","",m)
         stop(m, call.=FALSE)

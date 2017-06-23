@@ -13,7 +13,8 @@ h2o.saveModel(object, path = "", force = FALSE)
 \item{force}{logical, indicates how to deal with files that already exist.}
 }
 \description{
-Save an \linkS4class{H2OModel} to disk.
+Save an \linkS4class{H2OModel} to disk. (Note that ensemble binary models
+can be saved.)
 }
 \details{
 In the case of existing files \code{force = TRUE} will overwrite the file.

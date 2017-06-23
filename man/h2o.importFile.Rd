@@ -3,7 +3,6 @@
 \alias{h2o.importFile}
 \alias{h2o.importFolder}
 \alias{h2o.importHDFS}
-\alias{h2o.importURL}
 \alias{h2o.uploadFile}
 \title{Import Files into H2O}
 \usage{
@@ -13,9 +12,6 @@ h2o.importFile(path, destination_frame = "", parse = TRUE, header = NA,
 h2o.importFolder(path, pattern = "", destination_frame = "", parse = TRUE,
   header = NA, sep = "", col.names = NULL, col.types = NULL,
   na.strings = NULL)
-
-h2o.importURL(path, destination_frame = "", parse = TRUE, header = NA,
-  sep = "", col.names = NULL, na.strings = NULL)
 
 h2o.importHDFS(path, pattern = "", destination_frame = "", parse = TRUE,
   header = NA, sep = "", col.names = NULL, na.strings = NULL)
@@ -80,8 +76,7 @@ stored on or flowing through the client.
 will be relative to the start location of the H2O instance. The default
 behavior is to pass-through to the parse phase automatically.
 
-\code{h2o.importURL} and \code{h2o.importHDFS} are both deprecated functions. Instead, use
-\code{h2o.importFile}
+\code{h2o.importHDFS} is deprecated. Instead, use \code{h2o.importFile}.
 }
 \examples{
 \donttest{

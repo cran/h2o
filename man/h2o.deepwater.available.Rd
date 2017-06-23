@@ -2,15 +2,15 @@
 \name{h2o.deepwater.available}
 \alias{h2o.deepwater.available}
 \title{Ask the H2O server whether a Deep Water model can be built (depends on availability of native backends)
-Returns True if a deep water model can be built, or False otherwise.}
+Returns TRUE if a Deep Water model can be built, or FALSE otherwise.}
 \usage{
 h2o.deepwater.available(h2oRestApiVersion = .h2o.__REST_API_VERSION)
 }
 \arguments{
-\item{h2oRestApiVersion}{(Optional) Specific version of the REST API to use}
+\item{h2oRestApiVersion}{(Optional) Specific version of the REST API to use.}
 }
 \description{
 Ask the H2O server whether a Deep Water model can be built (depends on availability of native backends)
-Returns True if a deep water model can be built, or False otherwise.
+Returns TRUE if a Deep Water model can be built, or FALSE otherwise.
 }
 

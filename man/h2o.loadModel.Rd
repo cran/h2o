@@ -14,7 +14,8 @@ Returns a \linkS4class{H2OModel} object of the class corresponding to the type o
         built.
 }
 \description{
-Load a saved H2O model from disk.
+Load a saved H2O model from disk. (Note that ensemble binary models
+can now be loaded using this method.)
 }
 \examples{
 \dontrun{
