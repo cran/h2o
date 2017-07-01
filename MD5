@@ -1,9 +1,9 @@
-9fdb52b31a9aaaf33157407ad80ede4d *DESCRIPTION
-fe61221dd84a6b434562266ba81fe8cf *NAMESPACE
+04510fcf521642d354de8f1baffac488 *DESCRIPTION
+81648e3dd3f5c8eb79c85adcbeaab033 *NAMESPACE
 6fe38e24a23a87bd379ad2b4751f95f1 *NEWS
 3f4ee1978c2a2239edb3815832b5c33d *R/astfun.R
 50382843bdc94d5872748651ac72b900 *R/classes.R
-b30d3ccb03cddbe8e4a4528f3f522844 *R/communication.R
+30b9fb7aad5c5998c2d486cc5c267702 *R/communication.R
 26c44d8ceb7a96e6a6b365a97592632b *R/config.R
 2680ce69b475a265682ead7dfef1a828 *R/connection.R
 0730c350c686ecaff4ee057d228a0e64 *R/constants.R
@@ -18,7 +18,6 @@ ffac444107d28a0fba24bdbffc0d8c94 *R/glm.R
 1056a68cf7d1ddf7c134c126f3e47500 *R/glrm.R
 c8c416a315e4e8e7bc747af4fac2db86 *R/grid.R
 16eb570225b556f4143bd38a86de1cf5 *R/import.R
-3dc8e4713f98dce863e13c9b3d56a624 *R/klime.R
 4bcfb23a665a8bb04d3cca54c5f94d27 *R/kmeans.R
 89f69635b9c0eb63e8d60486b2fb880e *R/kvstore.R
 8ad61f0ce52057c5f800931dd7d5a7e1 *R/locate.R
@@ -33,7 +32,7 @@ c41afdd22d8cbbcfa04466dd26069ac6 *R/stackedensemble.R
 61980db5b34844f83fcbfd74d50b65f1 *R/svd.R
 25a21ed048468bca5eb729021b0e88e8 *R/w2vutils.R
 7bdb1d767d4d3f43271ab38405d9ffa7 *R/word2vec.R
-5af674da2e4f08a29395a3c0ee0709cd *R/xgboost.R
+dc2333458026ddde0b20b04d996f4a8d *R/xgboost.R
 5b3fc31225e9cfa7b582f5bce026db70 *R/zzz.R
 37470e8b841dfacb9152dca3a7576a7a *demo/00Index
 506ebeb7d4629bc95fb191b4a95f1e76 *demo/h2o.anomaly.R
@@ -46,7 +45,7 @@ dcab4a64fc5d2007723ff2a174b0b35e *demo/h2o.kmeans.R
 49d02e01f8f52c313d633ba07fb44100 *demo/h2o.prcomp.R
 9922fd14a111c81d856f9eebddbea22a *demo/h2o.randomForest.R
 5ccd83cc059b6221fa111a7bdd64e631 *inst/branch.txt
-26ab0db90d72e28ad0ba1e22ee510510 *inst/buildnum.txt
+6d7fce9fee471194aa8b5b6e47267f03 *inst/buildnum.txt
 c2009f0054eecbceac0e820e4927e455 *inst/extdata/australia.csv
 fdbd7a2797e683a8f352462c6b140b7d *inst/extdata/housevotes.csv
 42615765a885ddf54427f12c34a0a070 *inst/extdata/iris.csv
@@ -83,7 +82,7 @@ adb7f7f64d0df92c726ccd38abbb1835 *man/as.vector.H2OFrame.Rd
 d8309400b50b364a5f54ce1caeb935d8 *man/colnames.Rd
 9d4e55ade47ab8cf9befe874b586317e *man/dim.H2OFrame.Rd
 15d78c66866db0b1987df3744a6cc37f *man/dimnames.H2OFrame.Rd
-54c7a0428433f79bad54f203d91663d9 *man/h2o-package.Rd
+f90f973a0e77042f14eec05e82515cc4 *man/h2o-package.Rd
 0c251277b91e72c92d5f721fbcf00bcd *man/h2o.abs.Rd
 c52ca3e7571e4aa72795585c5c9917fb *man/h2o.acos.Rd
 45b10146a19de1f20b240c396a0a2cd5 *man/h2o.aic.Rd
@@ -197,7 +196,6 @@ f36a682fa565428a50b1ec20479a613f *man/h2o.init.Rd
 0169e721fab6cbe98ae6f0504608997f *man/h2o.isnumeric.Rd
 2c79a3fb5cbac0cd25b7ebb8eec13e94 *man/h2o.kfold_column.Rd
 7a744e80c03c35f593f42025c1532c25 *man/h2o.killMinus3.Rd
-7bbb7c4ef3b733d40eb33f86a2b1a1fd *man/h2o.klime.Rd
 a4b8cee211a9cc444a0c9637efa5a5dc *man/h2o.kmeans.Rd
 3967b870fab8f29a6c3731b88bdb6698 *man/h2o.kurtosis.Rd
 7041df225361adbd04291f1690d362a2 *man/h2o.levels.Rd
@@ -326,7 +324,7 @@ a3b380e2dac790d01bac884d1a277cb9 *man/h2o.which_min.Rd
 3b4ae2cae07a262860ea644f8a09e127 *man/h2o.withinss.Rd
 0cdd9a156704a6ed78e2208eab56a47a *man/h2o.word2vec.Rd
 48edc79be079346d5dec0ac36f5d6922 *man/h2o.xgboost.Rd
-92291bab2a8dbf44aa0b629f5ec63bff *man/h2o.xgboost.available.Rd
+6cf883e294f749a4cbef72a4e3cd9e05 *man/h2o.xgboost.available.Rd
 8ca3f5333c8ca43fe9336582a16b91e8 *man/h2o.year.Rd
 d5a2ce9edf379b4626acbacc7c476b40 *man/housevotes.Rd
 9ce19ebb1600293403060428454795c5 *man/iris.Rd

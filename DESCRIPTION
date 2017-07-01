@@ -1,8 +1,8 @@
 Package: h2o
-Version: 3.10.5.2
+Version: 3.10.5.3
 Type: Package
 Title: R Interface for H2O
-Date: 2017-06-19
+Date: 2017-06-30
 Author: The H2O.ai team
 Maintainer: Tom Kraljevic <tomk@0xdata.com>
 Description: R scripting functionality for H2O, the open source
@@ -18,6 +18,6 @@ SystemRequirements: Java (>= 1.7)
 Depends: R (>= 2.13.0), methods, stats
 Imports: graphics, tools, utils, RCurl, jsonlite
 Suggests: ggplot2, mlbench, Matrix, data.table (>= 1.9.8)
-Packaged: 2017-06-20 01:01:04 UTC; jenkins
+Packaged: 2017-06-30 23:15:29 UTC; jenkins
 Repository: CRAN
-Date/Publication: 2017-06-23 10:31:53 UTC
+Date/Publication: 2017-07-01 07:53:41 UTC
