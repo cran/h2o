@@ -94,13 +94,13 @@
 }
 
 
-.h2o.modelJob <- function( algo, params, h2oRestApiVersion=.h2o.__REST_API_VERSION ) {
+.h2o.modelJob <- function( algo, params, h2oRestApiVersion=.h2o.__REST_API_VERSION, verbose=FALSE) {
   if( !is.null(params$validation_frame) )
     .eval.frame(params$training_frame)
   if( !is.null(params$validation_frame) )
     .eval.frame(params$validation_frame)
   job <- .h2o.startModelJob(algo, params, h2oRestApiVersion)
-  h2o.getFutureModel(job)
+  h2o.getFutureModel(job, verbose = verbose)
 }
 
 .h2o.startModelJob <- function(algo, params, h2oRestApiVersion) {
@@ -159,9 +159,10 @@
 #'
 #' @rdname h2o.getFutureModel
 #' @param object H2OModel
+#' @param verbose Print model progress to console. Default is FALSE
 #' @export
-h2o.getFutureModel <- function(object) {
-  .h2o.__waitOnJob(object@job_key)
+h2o.getFutureModel <- function(object,verbose=FALSE) {
+  .h2o.__waitOnJob(object@job_key,verboseModelScoringHistory=verbose)
   h2o.getModel(object@model_id)
 }
 
@@ -394,8 +395,12 @@ predict.H2OModel <- function(object, newdata, ...) {
 
 #' @rdname predict.H2OModel
 #' @export
-h2o.predict <- function(object, newdata, ...) {
-  return(predict.H2OModel(object, newdata, ...))
+h2o.predict <- function(object, newdata, ...){
+  if(class(object) == "H2OAutoML"){
+    return(predict.H2OAutoML(object, newdata, ...))
+  }else{
+    return(predict.H2OModel(object, newdata, ...))
+  }
 }
 #' Predict the Leaf Node Assignment on an H2O Model
 #'
@@ -1002,7 +1007,7 @@ h2o.giniCoef <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 h2o.coef <- function(object) {
   if (is(object, "H2OModel")) {
     if (is.null(object@model$coefficients_table)) stop("Can only extract coefficeints from GLMs")
-    if (object@parameters$family != "multinomial") {
+    if (object@allparameters$family != "multinomial") {
       coefs <- object@model$coefficients_table$coefficients
       names(coefs) <- object@model$coefficients_table$names
     } else {

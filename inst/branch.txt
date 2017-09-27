@@ -1,1 +1,1 @@
-rel-vajda
+rel-weierstrass

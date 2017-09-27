@@ -1138,9 +1138,9 @@ h2o.pivot <- function(x, index, column, value){
 # @param x an H2OFrame
 # @param column is a column name or column index to grab the top N percent value from
 # @param nPercent a top percentage values to grab
-# @param getBottom if 0 grab top percentage, 1 grab bottom percentage
+# @param grabTopN if -1 grab bottom percentage, 1 grab top percentage
 # @return An H2OFrame with 2 columns: first column is the original row indices, second column contains the values
-h2o.topBottomN <- function(x, column, nPercent, getBottom){
+h2o.topBottomN <- function(x, column, nPercent, grabTopN){
   cnames = names(x)
   colIndex=0
   if (typeof(column)=="character") {  # verify column
@@ -1157,7 +1157,7 @@ h2o.topBottomN <- function(x, column, nPercent, getBottom){
   if (nPercent*0.01*nrow(x) < 1) stop("Increase nPercent.  Current value will result in top 0 row.")
   if (!h2o.isnumeric(x[colIndex+1])) stop("Wrong column type!  Selected column must be numeric.")
 
-  .newExpr("topn", x, colIndex, nPercent,getBottom)
+  .newExpr("topn", x, colIndex, nPercent,grabTopN)
 }
 
 #' H2O topN
@@ -1170,7 +1170,7 @@ h2o.topBottomN <- function(x, column, nPercent, getBottom){
 #' @return An H2OFrame with 2 columns.  The first column is the original row indices, second column contains the topN values
 #' @export
 h2o.topN <- function(x, column, nPercent) {
-  h2o.topBottomN(x, column, nPercent, 0)
+  h2o.topBottomN(x, column, nPercent, 1)
 }
 #' H2O bottomN
 #'
@@ -1183,7 +1183,7 @@ h2o.topN <- function(x, column, nPercent) {
 #' @return An H2OFrame with 2 columns.  The first column is the original row indices, second column contains the bottomN values
 #' @export
 h2o.bottomN <- function(x, column, nPercent) {
-  h2o.topBottomN(x, column, nPercent, 1)
+  h2o.topBottomN(x, column, nPercent, -1)
 }
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -1794,16 +1794,29 @@ h2o.nlevels <- function(x) {
   if (!is.list(levels)) length(levels)
   else lapply(levels,length)
 }
+
+
 #'
 #' Set Levels of H2O Factor Column
 #'
 #' Works on a single categorical vector. New domains must be aligned with the old domains.
-#' This call has SIDE EFFECTS and mutates the column in place (does not make a copy).
+#' This call has SIDE EFFECTS and mutates the column in place (change of the levels will also affect all the frames
+#' that are referencing this column). If you want to make a copy of the column instead, use parameter in.place = FALSE.
 #'
 #' @param x A single categorical column.
 #' @param levels A character vector specifying the new levels. The number of new levels must match the number of old levels.
+#' @param in.place Indicates whether new domain will be directly applied to the column (in place change) or if a copy
+#'        of the column will be created with the given domain levels.
 #' @export
-h2o.setLevels <- function(x, levels) .newExpr("setDomain", chk.H2OFrame(x), levels)
+#' @examples
+#' \donttest{
+#' h2o.init()
+#' iris.hex <- as.h2o(iris)
+#' new.levels <- c("setosa", "versicolor", "caroliniana")
+#' iris.hex$Species <- h2o.setLevels(iris.hex$Species, new.levels, in.place = FALSE)
+#' h2o.levels(iris.hex$Species)
+#' }
+h2o.setLevels <- function(x, levels, in.place = TRUE) .newExpr("setDomain", chk.H2OFrame(x), in.place, levels)
 
 
 #'
@@ -3116,6 +3129,14 @@ use.package <- function(package,
   stopifnot(is.character(package), length(package)==1L,
             is.character(version), length(version)==1L,
             is.logical(use), length(use)==1L)
+
+  # if (package=="data.table" && use) { # not sure if this is needed.  Keeping it for now.
+  #   if (!("bit64" %in% rownames(installed.packages())) || (packageVersion("bit64") < as.package_version("0.9.7"))) {
+  #      # print out warning to install bit64 in order to use data.table
+  #     warning("data.table cannot be used without R package bit64 version 0.9.7 or higher.  Please upgrade to take advangage of data.table speedups.")
+  #     return(FALSE)
+  #   }
+  # }
   use && requireNamespace(package, quietly=TRUE) && (packageVersion(package) >= as.package_version(version))
 }
 
@@ -3218,6 +3239,9 @@ as.h2o.data.frame <- function(x, destination_frame="", ...) {
 
 #' @rdname as.h2o
 #' @method as.h2o Matrix
+#' @details
+#' To speedup execution time for large sparse matrices, use h2o datatable.  Make sure you have installed and imported data.table and slam packages.
+#' Turn on h2o datatable by options("h2o.use.data.table"=TRUE)
 #' @export
 as.h2o.Matrix <- function(x, destination_frame="", ...) {
   
@@ -3228,12 +3252,22 @@ as.h2o.Matrix <- function(x, destination_frame="", ...) {
   .key.validate(destination_frame)
   if ( destination_frame=="" ) # .h2o.readSVMLight wont handle ""
     destination_frame <- .key.make("Matrix") # only used if `x` variable name not valid key
-  
-  tmpf <- tempfile(fileext = ".svm")
-  .h2o.write.matrix.svmlight(x, file = tmpf)
-  h2f <- .h2o.readSVMLight(tmpf, destination_frame = destination_frame)
-  file.remove(tmpf)
-  h2f
+
+  if (use.package("data.table") && use.package("slam", version="0.1.40", TRUE)) {
+    drs <- slam::as.simple_triplet_matrix(x)# need to convert sparse matrix x to a simple triplet matrix format
+    thefile <- tempfile()
+    .h2o.write_stm_svm(drs, file = thefile)
+    h2f <<- h2o.uploadFile(thefile, parse_type = "SVMLight", destination_frame=destination_frame)
+    unlink(thefile)
+    h2f[, -1]   # remove the first column
+  } else {
+    warning("as.h2o can be slow for large sparse matrices.  Install packages data.table and slam to speed up as.h2o.")
+    tmpf <- tempfile(fileext = ".svm")
+    .h2o.write.matrix.svmlight(x, file = tmpf)
+    h2f <- .h2o.readSVMLight(tmpf, destination_frame = destination_frame)
+    file.remove(tmpf)
+    h2f
+  }
 }
 
 .h2o.write.matrix.svmlight <- function(matrix, file) {
@@ -3248,6 +3282,44 @@ as.h2o.Matrix <- function(x, destination_frame="", ...) {
     line <- sprintf("%s %s\n", target, features)
     cat(line)
   })
+}
+
+.h2o.calc_stm_svm <- function(stm, y){
+  # Convert a simple triplet matrix to svm format
+  # author Peter Ellis
+  # return a character vector of length n
+  # fixed bug to return rows of zeros instead of repeating other rows
+  # returns a character vector of length y ready for writing in svm format
+  if(!"simple_triplet_matrix" %in% class(stm)){
+    stop("stm must be a simple triple matrix")
+  }
+  if(!is.vector(y) | nrow(stm) != length(y)){
+    stop("y should be a vector of length equal to number of rows of stm")
+  }
+  n <- length(y)
+
+  # data table solution thanks to roland
+  rowLeft <- setdiff(c(1:n), unique(stm$i))
+  nrowLeft <- length(rowLeft)
+  i=NULL  # serves no purpose except to pass the R cmd cran check
+  j=NULL
+  v=NULL
+  jv=NULL
+  stm2 <- data.table::data.table(i = c(stm$i,rowLeft), j = c(stm$j,rep(1,nrowLeft)), v = c(stm$v,rep(0,nrowLeft)))
+  res <- stm2[, list(i, jv = paste(j, v, sep = ":"))][order(i), list(res = paste(jv, collapse = " ")), by = i][["res"]]
+
+  out <- paste(y, res)
+
+  return(out)
+}
+
+.h2o.write_stm_svm <- function(stm, y = rep(1, nrow(stm)), file){
+  # param stm a simple triplet matrix (class exported slam) of features (ie explanatory variables)
+  # param y a vector of labels.  If not provided, a dummy of 1s is provided
+  # param file file to write to.
+  # author Peter Ellis
+  out <- .h2o.calc_stm_svm(stm, y)
+  writeLines(out, con = file)
 }
 
 #'
@@ -3596,7 +3668,7 @@ h2o.merge <- function(x, y, by=intersect(names(x), names(y)), by.x=by, by.y=by, 
 }
 
 
-#' Sorts H2OFrame by the columns specified. Returns a new H2OFrame, like dplyr::arrange.
+#' Sorts H2OFrame by the columns specified. H2OFrame should not contain any String columns.  Otherwise, an error will be thrown.  Returns a new H2OFrame, like dplyr::arrange.
 #'
 #' @param x The H2OFrame input to be sorted.
 #' @param \dots The column names to sort by.
