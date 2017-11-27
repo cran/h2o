@@ -6,15 +6,14 @@
 #' Fits a generalized linear model, specified by a response variable, a set of predictors, and a
 #' description of the error distribution.
 #' 
-#' @param x A vector containing the names or indices of the predictor variables to use in building the model.
-#'        If x is missing,then all columns except y are used.
-#' @param y The name of the response variable in the model.If the data does not contain a header, this is the first column
-#'        index, and increasing from left to right. (The response must be either an integer or a
-#'        categorical variable).
+#' @param x (Optional) A vector containing the names or indices of the predictor variables to use in building the model.
+#'        If x is missing, then all columns except y are used.
+#' @param y The name or column index of the response variable in the data. The response must be either a numeric or a
+#'        categorical/factor variable. If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.
 #' @param model_id Destination id for this model; auto-generated if not specified.
-#' @param training_frame Id of the training data frame (Not required, to allow initial validation of model parameters).
+#' @param training_frame Id of the training data frame.
 #' @param validation_frame Id of the validation data frame.
-#' @param nfolds Number of folds for N-fold cross-validation (0 to disable or >= 2). Defaults to 0.
+#' @param nfolds Number of folds for K-fold cross-validation (0 to disable or >= 2). Defaults to 0.
 #' @param seed Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default)
 #'        Defaults to -1 (time-based random number).
 #' @param keep_cross_validation_predictions \code{Logical}. Whether to keep the predictions of the cross-validation models. Defaults to FALSE.
@@ -28,7 +27,9 @@
 #' @param offset_column Offset column. This will be added to the combination of columns before applying the link function.
 #' @param weights_column Column with observation weights. Giving some observation a weight of zero is equivalent to excluding it from
 #'        the dataset; giving an observation a relative weight of 2 is equivalent to repeating that row twice. Negative
-#'        weights are not allowed.
+#'        weights are not allowed. Note: Weights are per-row observation weights and do not increase the size of the
+#'        data frame. This is typically the number of times a row is repeated, but non-integer values are supported as
+#'        well. During training, rows with higher weights matter more, due to the larger loss function pre-factor.
 #' @param family Family. Use binomial for classification with logistic regression, others are for regression problems. Must be
 #'        one of: "gaussian", "binomial", "quasibinomial", "multinomial", "poisson", "gamma", "tweedie". Defaults to
 #'        gaussian.
@@ -72,13 +73,14 @@
 #'        family_default.
 #' @param prior Prior probability for y==1. To be used only for logistic regression iff the data has been sampled and the mean
 #'        of response does not reflect reality. Defaults to -1.
-#' @param lambda_min_ratio Minimum lambda used in lambda search, specified as a ratio of lambda_max. Default indicates: if the number of
-#'        observations is greater than the number of variables then lambda_min_ratio is set to 0.0001; if the number of
-#'        observations is less than the number of variables then lambda_min_ratio is set to 0.01. Defaults to -1.
+#' @param lambda_min_ratio Minimum lambda used in lambda search, specified as a ratio of lambda_max (the smallest lambda that drives all
+#'        coefficients to zero). Default indicates: if the number of observations is greater than the number of
+#'        variables, then lambda_min_ratio is set to 0.0001; if the number of observations is less than the number of
+#'        variables, then lambda_min_ratio is set to 0.01. Defaults to -1.
 #' @param beta_constraints Beta constraints
 #' @param max_active_predictors Maximum number of active predictors during computation. Use as a stopping criterion to prevent expensive model
 #'        building with many predictors. Default indicates: If the IRLSM solver is used, the value of
-#'        max_active_predictors is set to 7000 otherwise it is set to 100000000. Defaults to -1.
+#'        max_active_predictors is set to 5000 otherwise it is set to 100000000. Defaults to -1.
 #' @param interactions A list of predictor column indices to interact. All pairwise combinations will be computed for the list.
 #' @param balance_classes \code{Logical}. Balance training data class counts via over/under-sampling (for imbalanced data). Defaults to
 #'        FALSE.
@@ -89,6 +91,7 @@
 #' @param max_hit_ratio_k Maximum number (top K) of predictions to use for hit ratio computation (for multi-class only, 0 to disable)
 #'        Defaults to 0.
 #' @param max_runtime_secs Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.
+#' @param custom_metric_func Reference to custom evaluation function, format: `language:keyName=funcName`
 #' @return A subclass of \code{\linkS4class{H2OModel}} is returned. The specific subclass depends on the machine
 #'         learning task at hand (if it's binomial classification, then an \code{\linkS4class{H2OBinomialModel}} is
 #'         returned, if it's regression then a \code{\linkS4class{H2ORegressionModel}} is returned). The default print-
@@ -172,7 +175,8 @@ h2o.glm <- function(x, y, training_frame,
                     class_sampling_factors = NULL,
                     max_after_balance_size = 5.0,
                     max_hit_ratio_k = 0,
-                    max_runtime_secs = 0
+                    max_runtime_secs = 0,
+                    custom_metric_func = NULL
                     ) 
 {
   # If x is missing, then assume user wants to use all columns as features.
@@ -296,6 +300,8 @@ h2o.glm <- function(x, y, training_frame,
     parms$max_hit_ratio_k <- max_hit_ratio_k
   if (!missing(max_runtime_secs))
     parms$max_runtime_secs <- max_runtime_secs
+  if (!missing(custom_metric_func))
+    parms$custom_metric_func <- custom_metric_func
 
   if( !missing(interactions) ) {
     # interactions are column names => as-is
@@ -404,8 +410,8 @@ h2o.getFrame(res$destination_frame$name)
 #    args <- .verify_dataxy(training_frame, x, y)
 #    parms$ignored_columns <- args$x_ignore
 #    parms$response_column <- args$y
-#    parms$training_frame  = training_frame
-#    parms$beta_constraints = beta_constraints
+#    parms$training_frame  <- training_frame
+#    parms$beta_constraints <- beta_constraints
 #    if(!missing(model_id))
 #      parms$model_id <- model_id
 #    if(!missing(validation_frame))

@@ -9,15 +9,14 @@
 #' In order to run properly, the response column must be an numeric for "gaussian" or an
 #' enum for "bernoulli" or "multinomial".
 #' 
-#' @param x A vector containing the names or indices of the predictor variables to use in building the model.
-#'        If x is missing,then all columns except y are used.
-#' @param y The name of the response variable in the model.If the data does not contain a header, this is the first column
-#'        index, and increasing from left to right. (The response must be either an integer or a
-#'        categorical variable).
+#' @param x (Optional) A vector containing the names or indices of the predictor variables to use in building the model.
+#'        If x is missing, then all columns except y are used.
+#' @param y The name or column index of the response variable in the data. The response must be either a numeric or a
+#'        categorical/factor variable. If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.
 #' @param model_id Destination id for this model; auto-generated if not specified.
-#' @param training_frame Id of the training data frame (Not required, to allow initial validation of model parameters).
+#' @param training_frame Id of the training data frame.
 #' @param validation_frame Id of the validation data frame.
-#' @param nfolds Number of folds for N-fold cross-validation (0 to disable or >= 2). Defaults to 0.
+#' @param nfolds Number of folds for K-fold cross-validation (0 to disable or >= 2). Defaults to 0.
 #' @param keep_cross_validation_predictions \code{Logical}. Whether to keep the predictions of the cross-validation models. Defaults to FALSE.
 #' @param keep_cross_validation_fold_assignment \code{Logical}. Whether to keep the cross-validation fold assignment. Defaults to FALSE.
 #' @param score_each_iteration \code{Logical}. Whether to score during each iteration of model training. Defaults to FALSE.
@@ -30,7 +29,9 @@
 #' @param offset_column Offset column. This will be added to the combination of columns before applying the link function.
 #' @param weights_column Column with observation weights. Giving some observation a weight of zero is equivalent to excluding it from
 #'        the dataset; giving an observation a relative weight of 2 is equivalent to repeating that row twice. Negative
-#'        weights are not allowed.
+#'        weights are not allowed. Note: Weights are per-row observation weights and do not increase the size of the
+#'        data frame. This is typically the number of times a row is repeated, but non-integer values are supported as
+#'        well. During training, rows with higher weights matter more, due to the larger loss function pre-factor.
 #' @param balance_classes \code{Logical}. Balance training data class counts via over/under-sampling (for imbalanced data). Defaults to
 #'        FALSE.
 #' @param class_sampling_factors Desired over/under-sampling ratios per class (in lexicographic order). If not specified, sampling factors will
@@ -87,6 +88,7 @@
 #' @param calibrate_model \code{Logical}. Use Platt Scaling to calculate calibrated class probabilities. Calibration can provide more
 #'        accurate estimates of class probabilities. Defaults to FALSE.
 #' @param calibration_frame Calibration frame for Platt Scaling
+#' @param custom_metric_func Reference to custom evaluation function, format: `language:keyName=funcName`
 #' @param verbose \code{Logical}. Print scoring history to the console (Metrics per tree for GBM, DRF, & XGBoost. Metrics per epoch for Deep Learning). Defaults to FALSE.
 #' @seealso \code{\link{predict.H2OModel}} for prediction
 #' @examples
@@ -153,6 +155,7 @@ h2o.gbm <- function(x, y, training_frame,
                     categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
                     calibrate_model = FALSE,
                     calibration_frame = NULL,
+                    custom_metric_func = NULL,
                     verbose = FALSE 
                     ) 
 {
@@ -290,6 +293,8 @@ h2o.gbm <- function(x, y, training_frame,
     parms$calibrate_model <- calibrate_model
   if (!missing(calibration_frame))
     parms$calibration_frame <- calibration_frame
+  if (!missing(custom_metric_func))
+    parms$custom_metric_func <- custom_metric_func
   # Error check and build model
   .h2o.modelJob('gbm', parms, h2oRestApiVersion = 3, verbose=verbose) 
 }

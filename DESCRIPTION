@@ -1,8 +1,8 @@
 Package: h2o
-Version: 3.14.0.3
+Version: 3.16.0.1
 Type: Package
 Title: R Interface for H2O
-Date: 2017-09-22
+Date: 2017-11-24
 Author: The H2O.ai team
 Maintainer: Tom Kraljevic <tomk@0xdata.com>
 Description: R scripting functionality for H2O, the open source
@@ -19,14 +19,14 @@ Depends: R (>= 2.13.0), methods, stats
 Imports: graphics, tools, utils, RCurl, jsonlite
 Suggests: ggplot2, mlbench, Matrix, slam, bit64 (>= 0.9.7), data.table
         (>= 1.9.8)
-Collate: 'astfun.R' 'automl.R' 'classes.R' 'config.R' 'connection.R'
-        'constants.R' 'datasets.R' 'logging.R' 'communication.R'
-        'kvstore.R' 'frame.R' 'import.R' 'parse.R' 'export.R'
-        'edicts.R' 'models.R' 'kmeans.R' 'gbm.R' 'glm.R' 'glrm.R'
-        'pca.R' 'svd.R' 'deeplearning.R' 'stackedensemble.R'
+Collate: 'aggregator.R' 'astfun.R' 'automl.R' 'classes.R' 'config.R'
+        'connection.R' 'constants.R' 'datasets.R' 'logging.R'
+        'communication.R' 'kvstore.R' 'frame.R' 'import.R' 'parse.R'
+        'export.R' 'edicts.R' 'models.R' 'kmeans.R' 'gbm.R' 'glm.R'
+        'glrm.R' 'pca.R' 'svd.R' 'deeplearning.R' 'stackedensemble.R'
         'deepwater.R' 'xgboost.R' 'randomforest.R' 'naivebayes.R'
         'word2vec.R' 'w2vutils.R' 'locate.R' 'grid.R' 'predict.R'
         'zzz.R'
-Packaged: 2017-09-22 21:40:11 UTC; jenkins
+Packaged: 2017-11-24 19:48:58 UTC; jenkins
 Repository: CRAN
-Date/Publication: 2017-09-27 08:29:42 UTC
+Date/Publication: 2017-11-28 00:16:23 UTC

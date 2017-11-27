@@ -24,23 +24,23 @@ h2o.glm(x, y, training_frame, model_id = NULL, validation_frame = NULL,
   "tweedie"), prior = -1, lambda_min_ratio = -1, beta_constraints = NULL,
   max_active_predictors = -1, interactions = NULL,
   balance_classes = FALSE, class_sampling_factors = NULL,
-  max_after_balance_size = 5, max_hit_ratio_k = 0, max_runtime_secs = 0)
+  max_after_balance_size = 5, max_hit_ratio_k = 0, max_runtime_secs = 0,
+  custom_metric_func = NULL)
 }
 \arguments{
-\item{x}{A vector containing the names or indices of the predictor variables to use in building the model.
-If x is missing,then all columns except y are used.}
+\item{x}{(Optional) A vector containing the names or indices of the predictor variables to use in building the model.
+If x is missing, then all columns except y are used.}
 
-\item{y}{The name of the response variable in the model.If the data does not contain a header, this is the first column
-index, and increasing from left to right. (The response must be either an integer or a
-categorical variable).}
+\item{y}{The name or column index of the response variable in the data. The response must be either a numeric or a
+categorical/factor variable. If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
 
-\item{training_frame}{Id of the training data frame (Not required, to allow initial validation of model parameters).}
+\item{training_frame}{Id of the training data frame.}
 
 \item{model_id}{Destination id for this model; auto-generated if not specified.}
 
 \item{validation_frame}{Id of the validation data frame.}
 
-\item{nfolds}{Number of folds for N-fold cross-validation (0 to disable or >= 2). Defaults to 0.}
+\item{nfolds}{Number of folds for K-fold cross-validation (0 to disable or >= 2). Defaults to 0.}
 
 \item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default)
 Defaults to -1 (time-based random number).}
@@ -63,7 +63,9 @@ stratify the folds based on the response variable, for classification problems. 
 
 \item{weights_column}{Column with observation weights. Giving some observation a weight of zero is equivalent to excluding it from
 the dataset; giving an observation a relative weight of 2 is equivalent to repeating that row twice. Negative
-weights are not allowed.}
+weights are not allowed. Note: Weights are per-row observation weights and do not increase the size of the
+data frame. This is typically the number of times a row is repeated, but non-integer values are supported as
+well. During training, rows with higher weights matter more, due to the larger loss function pre-factor.}
 
 \item{family}{Family. Use binomial for classification with logistic regression, others are for regression problems. Must be
 one of: "gaussian", "binomial", "quasibinomial", "multinomial", "poisson", "gamma", "tweedie". Defaults to
@@ -129,15 +131,16 @@ family_default.}
 \item{prior}{Prior probability for y==1. To be used only for logistic regression iff the data has been sampled and the mean
 of response does not reflect reality. Defaults to -1.}
 
-\item{lambda_min_ratio}{Minimum lambda used in lambda search, specified as a ratio of lambda_max. Default indicates: if the number of
-observations is greater than the number of variables then lambda_min_ratio is set to 0.0001; if the number of
-observations is less than the number of variables then lambda_min_ratio is set to 0.01. Defaults to -1.}
+\item{lambda_min_ratio}{Minimum lambda used in lambda search, specified as a ratio of lambda_max (the smallest lambda that drives all
+coefficients to zero). Default indicates: if the number of observations is greater than the number of
+variables, then lambda_min_ratio is set to 0.0001; if the number of observations is less than the number of
+variables, then lambda_min_ratio is set to 0.01. Defaults to -1.}
 
 \item{beta_constraints}{Beta constraints}
 
 \item{max_active_predictors}{Maximum number of active predictors during computation. Use as a stopping criterion to prevent expensive model
 building with many predictors. Default indicates: If the IRLSM solver is used, the value of
-max_active_predictors is set to 7000 otherwise it is set to 100000000. Defaults to -1.}
+max_active_predictors is set to 5000 otherwise it is set to 100000000. Defaults to -1.}
 
 \item{interactions}{A list of predictor column indices to interact. All pairwise combinations will be computed for the list.}
 
@@ -154,6 +157,8 @@ balance_classes. Defaults to 5.0.}
 Defaults to 0.}
 
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.}
+
+\item{custom_metric_func}{Reference to custom evaluation function, format: `language:keyName=funcName`}
 }
 \value{
 A subclass of \code{\linkS4class{H2OModel}} is returned. The specific subclass depends on the machine

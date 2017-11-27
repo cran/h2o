@@ -16,18 +16,17 @@ h2o.naiveBayes(x, y, training_frame, model_id = NULL, nfolds = 0,
   max_runtime_secs = 0)
 }
 \arguments{
-\item{x}{A vector containing the names or indices of the predictor variables to use in building the model.
-If x is missing,then all columns except y are used.}
+\item{x}{(Optional) A vector containing the names or indices of the predictor variables to use in building the model.
+If x is missing, then all columns except y are used.}
 
-\item{y}{The name of the response variable in the model.If the data does not contain a header, this is the first column
-index, and increasing from left to right. (The response must be either an integer or a
-categorical variable).}
+\item{y}{The name or column index of the response variable in the data. The response must be either a numeric or a
+categorical/factor variable. If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
 
-\item{training_frame}{Id of the training data frame (Not required, to allow initial validation of model parameters).}
+\item{training_frame}{Id of the training data frame.}
 
 \item{model_id}{Destination id for this model; auto-generated if not specified.}
 
-\item{nfolds}{Number of folds for N-fold cross-validation (0 to disable or >= 2). Defaults to 0.}
+\item{nfolds}{Number of folds for K-fold cross-validation (0 to disable or >= 2). Defaults to 0.}
 
 \item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default)
 Defaults to -1 (time-based random number).}

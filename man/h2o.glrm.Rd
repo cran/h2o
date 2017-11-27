@@ -23,7 +23,7 @@ h2o.glrm(training_frame, cols = NULL, model_id = NULL,
   recover_svd = FALSE, max_runtime_secs = 0)
 }
 \arguments{
-\item{training_frame}{Id of the training data frame (Not required, to allow initial validation of model parameters).}
+\item{training_frame}{Id of the training data frame.}
 
 \item{cols}{(Optional) A vector containing the data columns on which k-means operates.}
 

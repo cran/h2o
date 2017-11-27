@@ -6,16 +6,26 @@
 #' Build a stacked ensemble (aka. Super Learner) using the H2O base
 #' learning algorithms specified by the user.
 #' 
-#' @param x A vector containing the names or indices of the predictor variables to use in building the model.
-#'        If x is missing,then all columns except y are used.
-#' @param y The name of the response variable in the model.If the data does not contain a header, this is the first column
-#'        index, and increasing from left to right. (The response must be either an integer or a
-#'        categorical variable).
+#' @param x (Optional). A vector containing the names or indices of the predictor variables to use in building the model.
+#'           If x is missing, then all columns except y are used.  Training frame is used only to compute ensemble training metrics. 
+#' @param y The name or column index of the response variable in the data. The response must be either a numeric or a
+#'        categorical/factor variable. If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.
 #' @param model_id Destination id for this model; auto-generated if not specified.
-#' @param training_frame Id of the training data frame (Not required, to allow initial validation of model parameters).
+#' @param training_frame Id of the training data frame.
 #' @param validation_frame Id of the validation data frame.
-#' @param base_models List of model ids which we can stack together. Models must have been cross-validated using nfolds > 1, and
-#'        folds must be identical across models. Defaults to [].
+#' @param base_models List of models (or model ids) to ensemble/stack together. Models must have been cross-validated using nfolds >
+#'        1, and folds must be identical across models. Defaults to [].
+#' @param metalearner_algorithm Type of algorithm to use as the metalearner. Options include 'AUTO' (GLM with non negative weights; if
+#'        validation_frame is present, a lambda search is performed), 'glm' (GLM with default parameters), 'gbm' (GBM
+#'        with default parameters), 'drf' (Random Forest with default parameters), or 'deeplearning' (Deep Learning with
+#'        default parameters). Must be one of: "AUTO", "glm", "gbm", "drf", "deeplearning". Defaults to AUTO.
+#' @param metalearner_nfolds Number of folds for K-fold cross-validation of the metalearner algorithm (0 to disable or >= 2). Defaults to
+#'        0.
+#' @param metalearner_fold_assignment Cross-validation fold assignment scheme for metalearner cross-validation.  Defaults to AUTO (which is
+#'        currently set to Random). The 'Stratified' option will stratify the folds based on the response variable, for
+#'        classification problems. Must be one of: "AUTO", "Random", "Modulo", "Stratified".
+#' @param metalearner_fold_column Column with cross-validation fold index assignment per observation for cross-validation of the metalearner.
+#' @param keep_levelone_frame \code{Logical}. Keep level one frame used for metalearner training. Defaults to FALSE.
 #' @examples
 #' 
 #' # See example R code here:
@@ -25,7 +35,12 @@
 h2o.stackedEnsemble <- function(x, y, training_frame,
                                 model_id = NULL,
                                 validation_frame = NULL,
-                                base_models = list()
+                                base_models = list(),
+                                metalearner_algorithm = c("AUTO", "glm", "gbm", "drf", "deeplearning"),
+                                metalearner_nfolds = 0,
+                                metalearner_fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
+                                metalearner_fold_column = NULL,
+                                keep_levelone_frame = FALSE
                                 ) 
 {
   # If x is missing, then assume user wants to use all columns as features.
@@ -73,6 +88,16 @@ h2o.stackedEnsemble <- function(x, y, training_frame,
     parms$validation_frame <- validation_frame
   if (!missing(base_models))
     parms$base_models <- base_models
+  if (!missing(metalearner_algorithm))
+    parms$metalearner_algorithm <- metalearner_algorithm
+  if (!missing(metalearner_nfolds))
+    parms$metalearner_nfolds <- metalearner_nfolds
+  if (!missing(metalearner_fold_assignment))
+    parms$metalearner_fold_assignment <- metalearner_fold_assignment
+  if (!missing(metalearner_fold_column))
+    parms$metalearner_fold_column <- metalearner_fold_column
+  if (!missing(keep_levelone_frame))
+    parms$keep_levelone_frame <- keep_levelone_frame
   # Error check and build model
   .h2o.modelJob('stackedensemble', parms, h2oRestApiVersion = 99) 
 }

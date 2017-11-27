@@ -29,23 +29,23 @@ h2o.gbm(x, y, training_frame, model_id = NULL, validation_frame = NULL,
   max_abs_leafnode_pred = Inf, pred_noise_bandwidth = 0,
   categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
   "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
-  calibrate_model = FALSE, calibration_frame = NULL, verbose = FALSE)
+  calibrate_model = FALSE, calibration_frame = NULL,
+  custom_metric_func = NULL, verbose = FALSE)
 }
 \arguments{
-\item{x}{A vector containing the names or indices of the predictor variables to use in building the model.
-If x is missing,then all columns except y are used.}
+\item{x}{(Optional) A vector containing the names or indices of the predictor variables to use in building the model.
+If x is missing, then all columns except y are used.}
 
-\item{y}{The name of the response variable in the model.If the data does not contain a header, this is the first column
-index, and increasing from left to right. (The response must be either an integer or a
-categorical variable).}
+\item{y}{The name or column index of the response variable in the data. The response must be either a numeric or a
+categorical/factor variable. If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
 
-\item{training_frame}{Id of the training data frame (Not required, to allow initial validation of model parameters).}
+\item{training_frame}{Id of the training data frame.}
 
 \item{model_id}{Destination id for this model; auto-generated if not specified.}
 
 \item{validation_frame}{Id of the validation data frame.}
 
-\item{nfolds}{Number of folds for N-fold cross-validation (0 to disable or >= 2). Defaults to 0.}
+\item{nfolds}{Number of folds for K-fold cross-validation (0 to disable or >= 2). Defaults to 0.}
 
 \item{keep_cross_validation_predictions}{\code{Logical}. Whether to keep the predictions of the cross-validation models. Defaults to FALSE.}
 
@@ -67,7 +67,9 @@ stratify the folds based on the response variable, for classification problems. 
 
 \item{weights_column}{Column with observation weights. Giving some observation a weight of zero is equivalent to excluding it from
 the dataset; giving an observation a relative weight of 2 is equivalent to repeating that row twice. Negative
-weights are not allowed.}
+weights are not allowed. Note: Weights are per-row observation weights and do not increase the size of the
+data frame. This is typically the number of times a row is repeated, but non-integer values are supported as
+well. During training, rows with higher weights matter more, due to the larger loss function pre-factor.}
 
 \item{balance_classes}{\code{Logical}. Balance training data class counts via over/under-sampling (for imbalanced data). Defaults to
 FALSE.}
@@ -160,6 +162,8 @@ Defaults to FALSE.}
 accurate estimates of class probabilities. Defaults to FALSE.}
 
 \item{calibration_frame}{Calibration frame for Platt Scaling}
+
+\item{custom_metric_func}{Reference to custom evaluation function, format: `language:keyName=funcName`}
 
 \item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree for GBM, DRF, & XGBoost. Metrics per epoch for Deep Learning). Defaults to FALSE.}
 }

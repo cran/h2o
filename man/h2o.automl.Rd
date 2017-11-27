@@ -5,11 +5,12 @@
 \title{Automatic Machine Learning}
 \usage{
 h2o.automl(x, y, training_frame, validation_frame = NULL,
-  leaderboard_frame = NULL, fold_column = NULL, weights_column = NULL,
-  max_runtime_secs = 3600, max_models = NULL, stopping_metric = c("AUTO",
-  "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "lift_top_group",
-  "misclassification", "mean_per_class_error"), stopping_tolerance = NULL,
-  stopping_rounds = 3, seed = NULL, project_name = NULL)
+  leaderboard_frame = NULL, nfolds = 5, fold_column = NULL,
+  weights_column = NULL, max_runtime_secs = 3600, max_models = NULL,
+  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE",
+  "RMSLE", "AUC", "lift_top_group", "misclassification",
+  "mean_per_class_error"), stopping_tolerance = NULL, stopping_rounds = 3,
+  seed = NULL, project_name = NULL)
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the model.
@@ -22,6 +23,8 @@ If x is missing, then all columns except y are used.}
 \item{validation_frame}{Validation data frame (or ID); Optional.}
 
 \item{leaderboard_frame}{Leaderboard data frame (or ID).  The Leaderboard will be scored using this data set. Optional.}
+
+\item{nfolds}{Number of folds for k-fold cross-validation. Defaults to 5. Use 0 to disable cross-validation; this will also disable Stacked Ensemble (thus decreasing the overall model performance).}
 
 \item{fold_column}{Column with cross-validation fold index assignment per observation; used to override the default, randomized, 5-fold cross-validation scheme for individual models in the AutoML run.}
 

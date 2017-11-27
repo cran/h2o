@@ -5,7 +5,7 @@
 \title{Merge Two H2O Data Frames}
 \usage{
 h2o.merge(x, y, by = intersect(names(x), names(y)), by.x = by, by.y = by,
-  all = FALSE, all.x = all, all.y = all, method = "hash")
+  all = FALSE, all.x = all, all.y = all, method = "auto")
 }
 \arguments{
 \item{x,y}{H2OFrame objects}
@@ -23,11 +23,17 @@ row in y, and vice-versa for all.y.}
 
 \item{all.y}{see all.x}
 
-\item{method}{auto, radix, or hash (default)}
+\item{method}{auto(default), radix, hash}
 }
 \description{
 Merges two H2OFrame objects with the same arguments and meanings
-as merge() in base R.
+as merge() in base R.  However, we do not support all=TRUE, all.x=TRUE and all.y=TRUE.  The default method is auto
+where the program will choose for you which merge method (hash or radix) to use automatically depending on the
+contents of your left and right frames.  If there are duplicated
+rows in your rite frame, they will not be included if you use the hash method.  Since it is rare to perform merge
+with duplicated rows an the right frames, this should be okay.  On the other hand, the radix method will return the
+correct merge result regardless of duplicated rows in the right frame.  However, it cannot merge frames containing
+string columns.  User will have to convert the string columns to enum before proceeding.
 }
 \examples{
 \donttest{

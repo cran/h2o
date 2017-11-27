@@ -10,7 +10,7 @@ h2o.word2vec(training_frame = NULL, model_id = NULL, min_word_freq = 5,
   epochs = 5, pre_trained = NULL, max_runtime_secs = 0)
 }
 \arguments{
-\item{training_frame}{Id of the training data frame (Not required, to allow initial validation of model parameters).}
+\item{training_frame}{Id of the training data frame.}
 
 \item{model_id}{Destination id for this model; auto-generated if not specified.}
 

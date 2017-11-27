@@ -16,7 +16,7 @@ h2o.kmeans(training_frame, x, model_id = NULL, validation_frame = NULL,
   "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"))
 }
 \arguments{
-\item{training_frame}{Id of the training data frame (Not required, to allow initial validation of model parameters).}
+\item{training_frame}{Id of the training data frame.}
 
 \item{x}{A vector containing the \code{character} names of the predictors in the model.}
 
@@ -24,7 +24,7 @@ h2o.kmeans(training_frame, x, model_id = NULL, validation_frame = NULL,
 
 \item{validation_frame}{Id of the validation data frame.}
 
-\item{nfolds}{Number of folds for N-fold cross-validation (0 to disable or >= 2). Defaults to 0.}
+\item{nfolds}{Number of folds for K-fold cross-validation (0 to disable or >= 2). Defaults to 0.}
 
 \item{keep_cross_validation_predictions}{\code{Logical}. Whether to keep the predictions of the cross-validation models. Defaults to FALSE.}
 

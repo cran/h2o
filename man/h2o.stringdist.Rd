@@ -6,7 +6,7 @@
 shape (N x M) and only contain string/factor columns. Return a matrix (H2OFrame) of shape N x M.}
 \usage{
 h2o.stringdist(x, y, method = c("lv", "lcs", "qgram", "jaccard", "jw",
-  "soundex"))
+  "soundex"), compare_empty = TRUE)
 }
 \arguments{
 \item{x}{An H2OFrame}
@@ -20,6 +20,8 @@ h2o.stringdist(x, y, method = c("lv", "lcs", "qgram", "jaccard", "jw",
 "jaccard"              - Jaccard distance between q-gram profiles
 "jw"                   - Jaro, or Jaro-Winker distance
 "soundex"              - Distance based on soundex encoding}
+
+\item{compare_empty}{if set to FALSE, empty strings will be handled as NaNs}
 }
 \description{
 Compute element-wise string distances between two H2OFrames. Both frames need to have the same

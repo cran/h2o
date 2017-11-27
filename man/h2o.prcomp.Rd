@@ -14,7 +14,7 @@ h2o.prcomp(training_frame, x, model_id = NULL, validation_frame = NULL,
   max_runtime_secs = 0)
 }
 \arguments{
-\item{training_frame}{Id of the training data frame (Not required, to allow initial validation of model parameters).}
+\item{training_frame}{Id of the training data frame.}
 
 \item{x}{A vector containing the \code{character} names of the predictors in the model.}
 
