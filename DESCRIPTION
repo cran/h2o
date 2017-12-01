@@ -1,8 +1,8 @@
 Package: h2o
-Version: 3.16.0.1
+Version: 3.16.0.2
 Type: Package
 Title: R Interface for H2O
-Date: 2017-11-24
+Date: 2017-11-30
 Author: The H2O.ai team
 Maintainer: Tom Kraljevic <tomk@0xdata.com>
 Description: R scripting functionality for H2O, the open source
@@ -27,6 +27,6 @@ Collate: 'aggregator.R' 'astfun.R' 'automl.R' 'classes.R' 'config.R'
         'deepwater.R' 'xgboost.R' 'randomforest.R' 'naivebayes.R'
         'word2vec.R' 'w2vutils.R' 'locate.R' 'grid.R' 'predict.R'
         'zzz.R'
-Packaged: 2017-11-24 19:48:58 UTC; jenkins
+Packaged: 2017-12-01 02:13:26 UTC; jenkins
 Repository: CRAN
-Date/Publication: 2017-11-28 00:16:23 UTC
+Date/Publication: 2017-12-01 23:16:06 UTC

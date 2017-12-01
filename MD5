@@ -1,4 +1,4 @@
-26f567c7040b5af7abf93aec653e2ac3 *DESCRIPTION
+5dc0b447ae93b4d9ab8ea2123e87c629 *DESCRIPTION
 38ec249e696d52119212d82a9cb1b63b *NAMESPACE
 6fe38e24a23a87bd379ad2b4751f95f1 *NEWS
 693b2458dc31c17d2686dcd98d60963b *R/aggregator.R
@@ -47,7 +47,7 @@ dcab4a64fc5d2007723ff2a174b0b35e *demo/h2o.kmeans.R
 49d02e01f8f52c313d633ba07fb44100 *demo/h2o.prcomp.R
 9922fd14a111c81d856f9eebddbea22a *demo/h2o.randomForest.R
 a02249ba34dac7cc9e6e692dbcec14f8 *inst/branch.txt
-b026324c6904b2a9cb4b88d6d61c81d1 *inst/buildnum.txt
+26ab0db90d72e28ad0ba1e22ee510510 *inst/buildnum.txt
 c2009f0054eecbceac0e820e4927e455 *inst/extdata/australia.csv
 fdbd7a2797e683a8f352462c6b140b7d *inst/extdata/housevotes.csv
 42615765a885ddf54427f12c34a0a070 *inst/extdata/iris.csv
@@ -87,7 +87,7 @@ e5ff35c30609710b3af10697d26c9d50 *man/as.vector.H2OFrame.Rd
 72d54e457c899f00e7a2462f5b8b117f *man/colnames.Rd
 9a24f094ea3ca9ffd990dd4132b8510b *man/dim.H2OFrame.Rd
 508be11d4bfba3f05ff0e4268ae309fc *man/dimnames.H2OFrame.Rd
-36022d6d405226c5ca067643dc403c5f *man/h2o-package.Rd
+01b0925180001285ed4dc0636c58d05a *man/h2o-package.Rd
 566234f4ed285d672bcd572795e68527 *man/h2o.abs.Rd
 7fc6d384f296f84b2ea8e7ef9966e042 *man/h2o.acos.Rd
 0dc151b243e4a100ec4d1226c06d8390 *man/h2o.aggregated_frame.Rd
