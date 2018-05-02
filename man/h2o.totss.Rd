@@ -2,10 +2,7 @@
 % Please edit documentation in R/models.R
 \name{h2o.totss}
 \alias{h2o.totss}
-\title{Get the total sum of squares.
-If "train", "valid", and "xval" parameters are FALSE (default), then the training totss value is returned. If more
-than one parameter is set to TRUE, then a named vector of totss' are returned, where the names are "train", "valid"
-or "xval".}
+\title{Get the total sum of squares.}
 \usage{
 h2o.totss(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
@@ -19,7 +16,6 @@ h2o.totss(object, train = FALSE, valid = FALSE, xval = FALSE)
 \item{xval}{Retrieve the cross-validation total sum of squares}
 }
 \description{
-Get the total sum of squares.
 If "train", "valid", and "xval" parameters are FALSE (default), then the training totss value is returned. If more
 than one parameter is set to TRUE, then a named vector of totss' are returned, where the names are "train", "valid"
 or "xval".

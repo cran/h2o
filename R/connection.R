@@ -70,26 +70,26 @@ h2o.init <- function(ip = "localhost", port = 54321, startH2O = TRUE, forceDL = 
       #Read in config if available
       if(!(is.null(config_path))){
 
-        h2oconfig = .parse.h2oconfig(config_path,print_path=TRUE)
+        h2oconfig <- .parse.h2oconfig(config_path,print_path=TRUE)
 
         #Check for each `allowed_config_keys` in the config file and set to counterparts in `h2o.init()`
         if(strict_version_check == TRUE && "init.check_version" %in% colnames(h2oconfig)){
-          strict_version_check = as.logical(trimws(toupper(as.character(h2oconfig$init.check_version))))
+          strict_version_check <- as.logical(trimws(toupper(as.character(h2oconfig$init.check_version))))
         }
         if(is.na(proxy) && "init.proxy" %in% colnames(h2oconfig)){
-          proxy = trimws(as.character(h2oconfig$init.proxy))
+          proxy <- trimws(as.character(h2oconfig$init.proxy))
         }
         if(insecure == FALSE && "init.verify_ssl_certificates" %in% colnames(h2oconfig)){
-          insecure = as.logical(trimws(toupper(as.character(h2oconfig$init.verify_ssl_certificates))))
+          insecure <- as.logical(trimws(toupper(as.character(h2oconfig$init.verify_ssl_certificates))))
         }
         if(is.na(cookies) && "init.cookies" %in% colnames(h2oconfig)){
-          cookies = as.vector(trimws(strsplit(as.character(h2oconfig$init.cookies),";")[[1]]))
+          cookies <- as.vector(trimws(strsplit(as.character(h2oconfig$init.cookies),";")[[1]]))
         }
         if(is.na(username) && "init.username" %in% colnames(h2oconfig)){
-          username = trimws(as.character(h2oconfig$init.username))
+          username <- trimws(as.character(h2oconfig$init.username))
         }
         if(is.na(password) && "init.password" %in% colnames(h2oconfig)){
-          password = trimws(as.character(h2oconfig$init.password))
+          password <- trimws(as.character(h2oconfig$init.password))
         }
       }
     }
@@ -191,7 +191,7 @@ h2o.init <- function(ip = "localhost", port = 54321, startH2O = TRUE, forceDL = 
         print(rv$curlErrorMessage)
 
         #try a hail mary curl
-          print(system("curl 'http://localhost:54321'"))
+        print(system("curl 'http://localhost:54321'"))
         stop("H2O failed to start, stopping execution.")
       }
     } else
@@ -470,25 +470,27 @@ h2o.clusterStatus <- function() {
 }
 
 .onDetach <- function(libpath) {
-  ip_   <- "127.0.0.1"
-  port_  <- if(!is.null(.h2o.jar.env$port)) .h2o.jar.env$port else 54321
-  myURL <- paste0("http://", ip_, ":", port_)
-  print("A shutdown has been triggered. ")
-  if( url.exists(myURL) ) {
-    tryCatch(h2o.shutdown(prompt = FALSE), error = function(e) {
-      msg = paste(
-        "\n",
-        "----------------------------------------------------------------------\n",
-            "\n",
-            "Could not shut down the H2O Java Process!\n",
-            "Please shutdown H2O manually by navigating to `http://localhost:54321/Shutdown`\n\n",
-            "Windows requires the shutdown of h2o before re-installing -or- updating the h2o package.\n",
-            "For more information visit http://docs.h2o.ai\n",
-            "\n",
-            "----------------------------------------------------------------------\n",
-            sep = "")
-      warning(msg)
-    })
+  if (! getOption("h2o.dev.shutdown.disable", default = FALSE)) { # we can disable shutdown in dev (good with devtools)
+    ip_   <- "127.0.0.1"
+    port_  <- if(!is.null(.h2o.jar.env$port)) .h2o.jar.env$port else 54321
+    myURL <- paste0("http://", ip_, ":", port_)
+    print("A shutdown has been triggered. ")
+    if( url.exists(myURL) ) {
+      tryCatch(h2o.shutdown(prompt = FALSE), error = function(e) {
+        msg = paste(
+          "\n",
+          "----------------------------------------------------------------------\n",
+              "\n",
+              "Could not shut down the H2O Java Process!\n",
+              "Please shutdown H2O manually by navigating to `http://localhost:54321/Shutdown`\n\n",
+              "Windows requires the shutdown of h2o before re-installing -or- updating the h2o package.\n",
+              "For more information visit http://docs.h2o.ai\n",
+              "\n",
+              "----------------------------------------------------------------------\n",
+              sep = "")
+        warning(msg)
+      })
+    }
   }
   try(.h2o.__remoteSend("InitID", method = "DELETE"), TRUE)
 }

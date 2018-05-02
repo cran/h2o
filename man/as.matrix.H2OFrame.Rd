@@ -14,4 +14,15 @@
 \description{
 Convert an H2OFrame to a matrix
 }
+\examples{
+\donttest{
+h2o.init()
+irisPath <- system.file("extdata", "iris.csv", package="h2o")
+iris <- h2o.uploadFile(path = irisPath)
+iris.hex <- as.h2o(iris)
+describe <- h2o.describe(iris.hex)
+mins = as.matrix(apply(iris.hex, 2, min))
+print(mins)
+}
+}
 

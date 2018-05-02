@@ -3,7 +3,9 @@
 #'
 # -------------------------- Random Forest Model in H2O -------------------------- #
 #' 
-#' Builds a Random Forest Model on an H2OFrame
+#' Build a Random Forest model
+#' 
+#' Builds a Random Forest model on an H2OFrame.
 #' 
 #' @param x (Optional) A vector containing the names or indices of the predictor variables to use in building the model.
 #'        If x is missing, then all columns except y are used.
@@ -22,7 +24,7 @@
 #'        "Random", "Modulo", "Stratified". Defaults to AUTO.
 #' @param fold_column Column with cross-validation fold index assignment per observation.
 #' @param ignore_const_cols \code{Logical}. Ignore constant columns. Defaults to TRUE.
-#' @param offset_column Offset column. This will be added to the combination of columns before applying the link function.
+#' @param offset_column Offset column. This argument is deprecated and has no use for Random Forest.
 #' @param weights_column Column with observation weights. Giving some observation a weight of zero is equivalent to excluding it from
 #'        the dataset; giving an observation a relative weight of 2 is equivalent to repeating that row twice. Negative
 #'        weights are not allowed. Note: Weights are per-row observation weights and do not increase the size of the
@@ -67,7 +69,7 @@
 #' @param binomial_double_trees \code{Logical}. For binary classification: Build 2x as many trees (one per class) - can lead to higher
 #'        accuracy. Defaults to FALSE.
 #' @param checkpoint Model checkpoint to resume training with.
-#' @param col_sample_rate_change_per_level Relative change of the column sampling rate for every level (from 0.0 to 2.0) Defaults to 1.
+#' @param col_sample_rate_change_per_level Relative change of the column sampling rate for every level (must be > 0.0 and <= 2.0) Defaults to 1.
 #' @param col_sample_rate_per_tree Column sample rate per tree (from 0.0 to 1.0) Defaults to 1.
 #' @param min_split_improvement Minimum relative improvement in squared error reduction for a split to happen Defaults to 1e-05.
 #' @param histogram_type What type of histogram to use for finding optimal split points Must be one of: "AUTO", "UniformAdaptive",
@@ -77,8 +79,7 @@
 #' @param calibrate_model \code{Logical}. Use Platt Scaling to calculate calibrated class probabilities. Calibration can provide more
 #'        accurate estimates of class probabilities. Defaults to FALSE.
 #' @param calibration_frame Calibration frame for Platt Scaling
-#' @param distribution Distribution function Must be one of: "AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
-#'        "tweedie", "laplace", "quantile", "huber". Defaults to AUTO.
+#' @param distribution Distribution. This argument is deprecated and has no use for Random Forest.
 #' @param custom_metric_func Reference to custom evaluation function, format: `language:keyName=funcName`
 #' @param verbose \code{Logical}. Print scoring history to the console (Metrics per tree for GBM, DRF, & XGBoost. Metrics per epoch for Deep Learning). Defaults to FALSE.
 #' @return Creates a \linkS4class{H2OModel} object of the right type.
@@ -187,7 +188,8 @@ h2o.randomForest <- function(x, y, training_frame,
   if (!missing(ignore_const_cols))
     parms$ignore_const_cols <- ignore_const_cols
   if (!missing(offset_column))
-    parms$offset_column <- offset_column
+    warning("Argument offset_column is deprecated and has no use for Random Forest.")
+    parms$offset_column <- NULL
   if (!missing(weights_column))
     parms$weights_column <- weights_column
   if (!missing(balance_classes))
@@ -249,7 +251,8 @@ h2o.randomForest <- function(x, y, training_frame,
   if (!missing(calibration_frame))
     parms$calibration_frame <- calibration_frame
   if (!missing(distribution))
-    parms$distribution <- distribution
+    warning("Argument distribution is deprecated and has no use for Random Forest.")
+    parms$distribution <- 'AUTO'
   if (!missing(custom_metric_func))
     parms$custom_metric_func <- custom_metric_func
   # Error check and build model

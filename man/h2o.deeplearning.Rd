@@ -2,8 +2,7 @@
 % Please edit documentation in R/deeplearning.R
 \name{h2o.deeplearning}
 \alias{h2o.deeplearning}
-\title{Build a Deep Neural Network model using CPUs
-Builds a feed-forward multilayer artificial neural network on an H2OFrame}
+\title{Build a Deep Neural Network model using CPUs}
 \usage{
 h2o.deeplearning(x, y, training_frame, model_id = NULL,
   validation_frame = NULL, nfolds = 0,
@@ -265,8 +264,7 @@ propagation, but might slow down backpropagation. Defaults to FALSE.}
 \item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree for GBM, DRF, & XGBoost. Metrics per epoch for Deep Learning). Defaults to FALSE.}
 }
 \description{
-Build a Deep Neural Network model using CPUs
-Builds a feed-forward multilayer artificial neural network on an H2OFrame
+Builds a feed-forward multilayer artificial neural network on an H2OFrame.
 }
 \examples{
 \donttest{

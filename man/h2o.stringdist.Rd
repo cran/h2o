@@ -2,8 +2,7 @@
 % Please edit documentation in R/frame.R
 \name{h2o.stringdist}
 \alias{h2o.stringdist}
-\title{Compute element-wise string distances between two H2OFrames. Both frames need to have the same
-shape (N x M) and only contain string/factor columns. Return a matrix (H2OFrame) of shape N x M.}
+\title{Compute element-wise string distances between two H2OFrames}
 \usage{
 h2o.stringdist(x, y, method = c("lv", "lcs", "qgram", "jaccard", "jw",
   "soundex"), compare_empty = TRUE)

@@ -2,10 +2,7 @@
 % Please edit documentation in R/models.R
 \name{h2o.cluster_sizes}
 \alias{h2o.cluster_sizes}
-\title{Retrieve the cluster sizes
-If "train", "valid", and "xval" parameters are FALSE (default), then the training cluster sizes value is returned. If more
-than one parameter is set to TRUE, then a named list of cluster size vectors are returned, where the names are "train", "valid"
-or "xval".}
+\title{Retrieve the cluster sizes}
 \usage{
 h2o.cluster_sizes(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
@@ -19,7 +16,7 @@ h2o.cluster_sizes(object, train = FALSE, valid = FALSE, xval = FALSE)
 \item{xval}{Retrieve the cross-validation cluster sizes}
 }
 \description{
-Retrieve the cluster sizes
+Retrieve the cluster sizes.
 If "train", "valid", and "xval" parameters are FALSE (default), then the training cluster sizes value is returned. If more
 than one parameter is set to TRUE, then a named list of cluster size vectors are returned, where the names are "train", "valid"
 or "xval".

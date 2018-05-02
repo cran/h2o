@@ -1110,6 +1110,8 @@ h2o.impute <- function(data, column=0, method=c("mean","median","mode"), # TODO:
 #' @export
 range.H2OFrame <- function(...,na.rm = TRUE) c(min(...,na.rm=na.rm), max(...,na.rm=na.rm))
 
+#' Pivot a frame
+#'
 #' Pivot the frame designated by the three columns: index, column, and value. Index and column should be
 #' of type enum, int, or time.
 #' For cases of multiple indexes for a column label, the aggregation method is to pick the first occurrence in the data frame
@@ -1321,6 +1323,8 @@ h2o.mktime <- function(year=1970,month=0,day=0,hour=0,minute=0,second=0,msec=0) 
   .newExpr("mktime", year,month,day,hour,minute,second,msec)
 }
 
+#' Convert between character representations and objects of Date class
+#'
 #' Functions to convert between character representations and objects of class "Date" representing calendar dates.
 #'
 #' @param x H2OFrame column of strings or factors to be converted
@@ -1720,7 +1724,21 @@ nrow.H2OFrame <- function(x) { .fetch.data(x,10L); attr(.eval.frame(x), "nrow") 
 ncol.H2OFrame <- function(x) { .fetch.data(x,10L); attr(.eval.frame(x), "ncol") }
 
 #' Column names of an H2OFrame
+#'
+#' Set column names of an H2O Frame
 #' @param x An H2OFrame
+#' @examples
+#' \donttest{
+#' h2o.init()
+#' n <- 2000
+#' #  Generate variables V1, ... V10
+#' X <- matrix(rnorm(10*n), n, 10)
+#' #  y = +1 if sum_i x_{ij}^2 > chisq median on 10 df
+#' y <- rep(-1, n)
+#' y[apply(X*X, 1, sum) > qchisq(.5, 10)] <- 1
+#' #  Assign names to the columns of X:
+#' dimnames(X)[[2]] <- c("V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8", "V9", "V10")
+#' }
 #' @export
 dimnames.H2OFrame <- function(x) .Primitive("dimnames")(.fetch.data(x,1L))
 
@@ -1734,6 +1752,12 @@ names.H2OFrame <- function(x) .Primitive("names")(.fetch.data(x,1L))
 #' @param x An H2OFrame object.
 #' @param do.NULL logical. If FALSE and names are NULL, names are created.
 #' @param prefix for created names.
+#' @examples
+#' \donttest{
+#' h2o.init()
+#' iris.hex <- as.h2o(iris)
+#' colnames(iris)  # Returns "Sepal.Length" "Sepal.Width"  "Petal.Length" "Petal.Width"  "Species"
+#' }
 #' @export
 colnames <- function(x, do.NULL=TRUE, prefix = "col") {
   if (is.data.frame(x)) {
@@ -2630,7 +2654,8 @@ h2o.log1p <- function(x) {
   log1p(x)
 }
 
-#'
+#' Truncate values in x toward 0
+#' 
 #' trunc takes a single numeric argument x and returns a numeric vector containing the integers
 #' formed by truncating the values in x toward 0.
 #'
@@ -2801,6 +2826,13 @@ h2o.sin <- function(x) {
 #' @name h2o.acos
 #' @param x An H2OFrame object.
 #' @seealso \code{\link[base]{acos}} for the base R implementation.
+#' @examples
+#' \donttest{
+#' h2o.init()
+#' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
+#' prostate.hex <- h2o.uploadFile(path = prosPath)
+#' h2o.acos(prostate.hex[,2])
+#' }
 #' @export
 h2o.acos <- function(x) {
   acos(x)
@@ -2879,11 +2911,25 @@ h2o.sqrt <- function(x) {
 #' @name h2o.abs
 #' @param x An H2OFrame object.
 #' @seealso \code{\link[base]{abs}} for the base R implementation.
+#' @examples
+#' \donttest{
+#' h2o.init()
+#' url <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/gbm_test/smtrees.csv"
+#' smtreesH2O <- h2o.importFile(url)
+#' smtreesR <- read.csv("https://s3.amazonaws.com/h2o-public-test-data/smalldata/gbm_test/smtrees.csv")
+#' fith2o <- h2o.gbm(x=c("girth", "height"), y="vol", ntrees=3, max_depth=1, distribution="gaussian", 
+#'                  min_rows=2, learn_rate=.1, training_frame=smtreesH2O)
+#' pred <- as.data.frame(predict(fith2o, newdata=smtreesH2O))
+#' diff <- pred-smtreesR[,4]
+#' diff_abs <- abs(diff)
+#' print(diff_abs)
+#' }
 #' @export
 h2o.abs <- function(x) {
   abs(x)
 }
 
+#' Take a single numeric argument and return a numeric vector with the smallest integers
 #'
 #' ceiling takes a single numeric argument x and returns a
 #' numeric vector containing the smallest integers not less than the
@@ -2897,6 +2943,7 @@ h2o.ceiling <- function(x) {
   ceiling(x)
 }
 
+#' Take a single numeric argument and return a numeric vector with the largest integers
 #'
 #' floor takes a single numeric argument x and returns a numeric
 #' vector containing the largest integers not greater than the
@@ -3410,6 +3457,16 @@ as.data.frame.H2OFrame <- function(x, ...) {
 #'
 #' @param x An H2OFrame object
 #' @param ... Further arguments to be passed down from other methods.
+#' @examples
+#' \donttest{
+#' h2o.init()
+#' irisPath <- system.file("extdata", "iris.csv", package="h2o")
+#' iris <- h2o.uploadFile(path = irisPath)
+#' iris.hex <- as.h2o(iris)
+#' describe <- h2o.describe(iris.hex)
+#' mins = as.matrix(apply(iris.hex, 2, min))
+#' print(mins)
+#' }
 #' @export
 as.matrix.H2OFrame <- function(x, ...) as.matrix(as.data.frame.H2OFrame(x, ...))
 
@@ -3419,6 +3476,19 @@ as.matrix.H2OFrame <- function(x, ...) as.matrix(as.data.frame.H2OFrame(x, ...))
 #' @param mode Mode to coerce vector to
 #' @usage \method{as.vector}{H2OFrame}(x,mode)
 #' @method as.vector H2OFrame
+#' @examples
+#' \donttest{
+#' h2o.init()
+#' irisPath <- system.file("extdata", "iris.csv", package="h2o")
+#' iris <- h2o.uploadFile(path = irisPath)
+#' hex <- as.h2o(iris)
+#' cor_R <- cor(as.matrix(iris[,1]))
+#' cor_h2o <- cor(hex[,1])
+#' iris_Rcor <- cor(iris[,1:4])
+#' iris_H2Ocor <- as.data.frame(cor(hex[,1:4]))
+#' h2o_vec <- as.vector(unlist(iris_H2Ocor))
+#' r_vec <- as.vector(unlist(iris_Rcor))
+#' }
 #' @export
 as.vector.H2OFrame <- function(x, mode="any") base::as.vector(as.matrix.H2OFrame(x), mode=mode)
 
@@ -3469,6 +3539,16 @@ as.factor <- function(x) {
 #'
 #' @param x An H2OFrame object
 #' @param ... Further arguments to be passed from or to other methods.
+#' @examples
+#' \donttest{
+#' h2o.init()
+#' pretrained.frame <- as.h2o(data.frame(
+#'        C1 = c("a", "b"), C2 = c(0, 1), C3 = c(1, 0), C4 = c(0.2, 0.8),
+#'        stringsAsFactors = FALSE))
+#' pretrained.w2v <- h2o.word2vec(pre_trained = pretrained.frame, vec_size = 3)
+#' words <- as.character(as.h2o(c("b", "a", "c", NA, "a")))
+#' vecs <- h2o.transform(pretrained.w2v, words = words)
+#' }
 #' @export
 as.character.H2OFrame <- function(x, ...) {
   if( is.H2OFrame(x) ) .newExpr("as.character",x)
@@ -3632,12 +3712,12 @@ checkMatch = function(x,y) {
 #'
 #' Merges two H2OFrame objects with the same arguments and meanings
 #' as merge() in base R.  However, we do not support all=TRUE, all.x=TRUE and all.y=TRUE.  The default method is auto
-#' where the program will choose for you which merge method (hash or radix) to use automatically depending on the
-#' contents of your left and right frames.  If there are duplicated
-#' rows in your rite frame, they will not be included if you use the hash method.  Since it is rare to perform merge
-#' with duplicated rows an the right frames, this should be okay.  On the other hand, the radix method will return the
-#' correct merge result regardless of duplicated rows in the right frame.  However, it cannot merge frames containing
-#' string columns.  User will have to convert the string columns to enum before proceeding.
+#' and it will default to the
+#' radix method.  The radix method will return the correct merge result regardless of duplicated rows
+#' in the right frame.  In addition, the radix method can perform merge even if you have string columns
+#' in your frames.  If there are duplicated rows in your rite frame, they will not be included if you use
+#' the hash method.  The hash method cannot perform merge if you have string columns in your left frame.
+#' Hence, we consider the radix method superior to the hash method and is the default method to use.
 #'
 #' @param x,y H2OFrame objects
 #' @param by columns used for merging by default the common names
@@ -3674,7 +3754,10 @@ h2o.merge <- function(x, y, by=intersect(names(x), names(y)), by.x=by, by.y=by, 
 }
 
 
-#' Sorts H2OFrame by the columns specified. H2OFrame should not contain any String columns.  Otherwise, an error will
+#' Sorts an H2O frame by columns
+#'
+#' Sorts H2OFrame by the columns specified. H2OFrame can contain String columns but should not sort on any
+#' String columns.  Otherwise, an error will
 #'  be thrown.  To sort column c1 in descending order, do desc(c1).  Returns a new H2OFrame, like dplyr::arrange.
 #'
 #' @param x The H2OFrame input to be sorted.
@@ -4181,7 +4264,8 @@ h2o.tolower <- function(x) .newExpr("tolower", x)
 #' @export
 h2o.toupper <- function(x) .newExpr("toupper", x)
 
-#'
+#' Search for matches to an argument pattern
+#' 
 #' Searches for matches to argument `pattern` within each element
 #'  of a string column.
 #'
@@ -4372,6 +4456,7 @@ h2o.entropy <- function(x) .newExpr("entropy", x)
 #' @export
 h2o.num_valid_substrings <- function(x, path) .newExpr("num_valid_substrings", x, .quote(path))
 
+#' Compute element-wise string distances between two H2OFrames
 #'
 #' Compute element-wise string distances between two H2OFrames. Both frames need to have the same
 #' shape (N x M) and only contain string/factor columns. Return a matrix (H2OFrame) of shape N x M.
@@ -4399,4 +4484,277 @@ h2o.stringdist <- function(x, y, method = c("lv", "lcs", "qgram", "jaccard", "jw
   if (! is.H2OFrame(y)) stop("`y` parameter needs to be an H2OFrame")
   method <- match.arg(method)
   .newExpr("strDistance", x, y, .quote(method), compare_empty)
+}
+
+#'
+#' Create Target Encoding Map
+#' 
+#' Creates a target encoding map based on group-by columns (`x`) and a numeric or binary target column (`y`). Computing target encoding for high cardinality categorical columns can improve performance of supervised learning models.
+#' 
+#' @param data An H2OFrame object with which to create the target encoding map.
+#' @param x A list containing the names or indices of the variables to encode.  A target encoding map will be created for each element in the list.  Items in the list can be multiple columns.  For example, if `x = list(c("A"), c("B", "C"))`, then there will be one mapping frame for A and one mapping frame for B & C (in this case, we group by two columns). 
+#' @param y The name or column index of the response variable in the data. The response variable can be either numeric or binary.
+#' @param fold_column (Optional) The name or column index of the fold column in the data. Defaults to NULL (no `fold_column`).
+#' @return Returns a list of H2OFrame objects containing the target encoding mapping for each column in `x`.
+#' @seealso \code{\link{h2o.target_encode_apply}} for applying the target encoding mapping to a frame.
+#' @examples
+#' \donttest{
+#' library(h2o)
+#' h2o.init()
+#' 
+#' # Get Target Encoding Map on bank-additional-full data with numeric response
+#' data <- h2o.importFile(
+#' path = "https://s3.amazonaws.com/h2o-public-test-data/smalldata/demos/bank-additional-full.csv",
+#' destination_frame = "data")
+#' mapping_age <- h2o.target_encode_create(data = data, x = list(c("job"), c("job", "marital")), 
+#' y = "age")
+#' head(mapping_age)
+#' 
+#' # Get Target Encoding Map on bank-additional-full data with binary response
+#' mapping_y <- h2o.target_encode_create(data = data, x = list(c("job"), c("job", "marital")), 
+#' y = "y")
+#' head(mapping_y)
+#' 
+#' }
+#' @export
+
+h2o.target_encode_create <- function(data, x, y, fold_column = NULL){
+  
+  if (missing(data)) {
+    stop("argument 'data' is missing, with no default")
+  }  
+  if (missing(y)) {
+    stop("argument 'y' is missing, with no default")
+  }  
+  if (missing(x)) {
+    stop("argument 'x' is missing, with no default")
+  }
+  if (!is.list(x)) {
+    stop("argument 'x' must be a list")
+  }
+  if (!is.h2o(data)) {
+    stop("argument `data` must be a valid H2OFrame")
+  }
+  if (any(is.numeric(data[unlist(x)])) || length(data[unlist(x)]) == 0L) {
+    stop("`x` must be categorical columns")
+  }
+  if (is.factor(data[[y]])) {
+    y_levels <- h2o.levels(data[[y]])
+    if (length(y_levels) == 2) {
+      data[[y]] <- h2o.ifelse(is.na(data[[y]]), NA, h2o.ifelse(data[[y]] == y_levels[[1]], 0, 1))
+    } else { 
+      stop(paste0("`y` must be a numeric or binary vector - has ", length(y_levels), " levels"))
+    }
+  }
+  
+  if (is.numeric(unlist(x))) {
+    x <- sapply(x, function(i) colnames(data)[i])
+  }
+  if (is.numeric(y)) {
+    y <- colnames(data)[y]
+  }
+  if (is.numeric(fold_column)) {
+    fold_column <- colnames(data)[fold_column]
+  }
+  
+  # Remove records where y is NA
+  encoding_data <- data[!is.na(data[[y]]), ]
+  
+  # Calculate target encoding mapping for each x
+  te_mapping <- list()
+  for(cols in x){
+    
+    # Calculate sum of y and number of rows per level of data
+    if (is.null(fold_column)) {
+      x_mapping <- h2o.group_by(encoding_data, cols, sum(y), nrow(y))
+    } else {
+      x_mapping <- h2o.group_by(encoding_data, c(cols, "fold"), sum(y), nrow(y))
+    }
+    
+    colnames(x_mapping)[which(colnames(x_mapping) == paste0("sum_", y))] <- "numerator"
+    colnames(x_mapping)[which(colnames(x_mapping) == "nrow")] <- "denominator"
+    
+    te_mapping <- c(te_mapping, x_mapping)
+  }
+  
+  names(te_mapping) <- sapply(x, function(i) paste(i, collapse = ":"))
+  
+  return(te_mapping)
+}
+
+#' Apply Target Encoding Map to Frame
+#' 
+#' Applies a target encoding map to an H2OFrame object.  Computing target encoding for high cardinality categorical columns can improve performance of supervised learning models.
+#' 
+#' @param data An H2OFrame object with which to apply the target encoding map.
+#' @param x A list containing the names or indices of the variables to encode.  A target encoding column will be created for each element in the list.  Items in the list can be multiple columns.  For example, if `x = list(c("A"), c("B", "C"))`, then the resulting frame will have a target encoding column for A and a target encoding column for B & C (in this case, we group by two columns). 
+#' @param y The name or column index of the response variable in the data. The response variable can be either numeric or binary.
+#' @param target_encode_map A list of H2OFrame objects that is the results of the \code{\link{h2o.target_encode_create}} function.
+#' @param holdout_type The holdout type used. Must be one of: "LeaveOneOut", "KFold", "None".
+#' @param fold_column (Optional) The name or column index of the fold column in the data. Defaults to NULL (no `fold_column`). Only required if `holdout_type` = "KFold".
+#' @param blended_avg \code{Logical}. (Optional) Whether to perform blended average.
+#' @param noise_level (Optional) The amount of random noise added to the target encoding.  This helps prevent overfitting. Defaults to 0.01 * range of y.
+#' @param seed (Optional) A random seed used to generate draws from the uniform distribution for random noise. Defaults to -1.
+#' @return Returns an H2OFrame object containing the target encoding per record.
+#' @seealso \code{\link{h2o.target_encode_create}} for creating the target encoding map
+#' @examples
+#' \donttest{
+#' library(h2o)
+#' h2o.init()
+#' 
+#' # Get Target Encoding Frame on bank-additional-full data with numeric `y`
+#' data <- h2o.importFile(
+#' path = "https://s3.amazonaws.com/h2o-public-test-data/smalldata/demos/bank-additional-full.csv",
+#' destination_frame = "data")
+#' splits <- h2o.splitFrame(data, seed = 1234)
+#' train <- splits[[1]]
+#' test <- splits[[2]]
+#' mapping <- h2o.target_encode_create(data = train, x = list(c("job"), c("job", "marital")), 
+#' y = "age")
+#' 
+#' # Apply mapping to the training dataset
+#' train_encode <- h2o.target_encode_apply(data = train, x = list(c("job"), c("job", "marital")), 
+#' y = "age", mapping, holdout_type = "LeaveOneOut")
+#' # Apply mapping to a test dataset
+#' test_encode <- h2o.target_encode_apply(data = test, x = list(c("job"), c("job", "marital")), 
+#' y = "age", target_encode_map = mapping, holdout_type = "None")
+#' 
+#' }
+#' @export
+h2o.target_encode_apply <- function(data, x, y, target_encode_map, holdout_type, 
+                                    fold_column = NULL, blended_avg = TRUE, noise_level = NULL, seed = -1) {
+  
+  if (missing(data)) {
+    stop("argument 'data' is missing, with no default")
+  }
+  if (missing(target_encode_map)) {
+    stop("argument 'target_encode_map' is missing, with no default")
+  }
+  if (!is.h2o(data)) {
+    stop("argument `data` must be a valid H2OFrame")
+  }  
+  if (!is.logical(blended_avg)) {
+    stop("`blended_avg` must be logical")
+  }
+  if (holdout_type == "KFold") {
+    if (is.null(fold_column)) {
+      stop("`fold_column` must be provided for `holdout_type = KFold")
+    }
+  }
+  if (!is.null(noise_level)) {
+    if (!is.numeric(noise_level) || length(noise_level) > 1L) {
+      stop("`noise_level` must be a numeric vector of length 1")
+    }  else if (noise_level < 0) {
+    stop("`noise_level` must be non-negative")
+    }  
+  }
+  if (is.numeric(y)) {
+    y <- colnames(data)[y]
+  }
+  if (is.numeric(unlist(x))) {
+    x <- sapply(x, function(i) colnames(data)[i])
+  }
+  if (is.numeric(fold_column)) {
+    fold_column <- colnames(data)[fold_column]
+  }
+  
+  if (is.null(noise_level)) {
+    # If `noise_level` is NULL, value chosen based on `y` distribution
+    noise_level <- ifelse(is.factor(data[[y]]), 0.01, (max(data[[y]], na.rm = TRUE) - min(data[[y]], na.rm = TRUE))*0.01)
+  }
+  
+  # Remove string columns from `data` (see: https://0xdata.atlassian.net/browse/PUBDEV-5266)
+  dd <- h2o.describe(data)
+  string_cols <- as.character(dd[which(dd$Type == "string"), "Label"])
+  if (length(string_cols) > 0) {
+    data <- data[setdiff(colnames(data), string_cols)]
+    warning(paste0("The string columns: ", paste(string_cols, collapse = ", "), " were dropped from the dataset"))
+  }
+  
+  te_frame <- data
+  for (cols in x){
+    
+    x_map <- target_encode_map[[paste(cols, collapse = ":")]]
+    
+    if (holdout_type == "KFold") {
+      
+      holdout_encode_map <- NULL
+      
+      folds <- as.matrix(h2o.unique(x_map[[fold_column]]))[, 1]
+      for (i in folds){
+        out_fold <- x_map[x_map[[fold_column]] != i, ]
+        
+        # Calculate sum of y and number of rows per level on out of fold data
+        out_fold <- h2o.group_by(out_fold, cols, sum("numerator"), sum("denominator"))
+        colnames(out_fold)[which(colnames(out_fold) == "sum_numerator")] <- "numerator"
+        colnames(out_fold)[which(colnames(out_fold) == "sum_denominator")] <- "denominator"
+        out_fold$fold <- i
+        
+        holdout_encode_map <- h2o.rbind(holdout_encode_map, out_fold)
+      }
+      
+      te_frame <- h2o.merge(te_frame, holdout_encode_map, by = c(cols, "fold"), all.x = TRUE)
+    }
+    
+    if (holdout_type == "LeaveOneOut") {
+      
+      # Merge Target Encoding Mapping to data
+      te_frame <- h2o.merge(te_frame, x_map, by = cols, all.x = TRUE, all.y = FALSE)
+      
+      # Calculate Numerator and Denominator
+      te_frame$numerator <- h2o.ifelse(is.na(te_frame[[y]]), 
+                                       te_frame$numerator, 
+                                       te_frame$numerator - te_frame[[y]])
+      
+      te_frame$denominator <- h2o.ifelse(is.na(te_frame[[y]]),
+                                         te_frame$denominator, 
+                                         te_frame$denominator - 1)
+    }
+    if (holdout_type == "None") {
+      
+      if (!is.null(fold_column)) {
+        # Roll up to the x level - we do not need to know per fold information
+        x_map <- h2o.group_by(x_map, cols, sum("numerator"), sum("denominator"))
+        colnames(x_map)[which(colnames(x_map) == "sum_denominator")] <- "denominator"
+        colnames(x_map)[which(colnames(x_map) == "sum_numerator")] <- "numerator"
+      }
+      # Merge Target Encoding Mapping to data
+      te_frame <- h2o.merge(te_frame, x_map, by = cols, all.x = TRUE, all.y = FALSE)
+    }
+    
+    # Calculate Mean Per Group
+    if (blended_avg) {
+      
+      # Calculate Blended Mean Per Group
+      # See https://kaggle2.blob.core.windows.net/forum-message-attachments/225952/7441/high%20cardinality%20categoricals.pdf
+      # Equations (3), (4)
+      k <- 20
+      f <- 10
+      global_mean <- sum(x_map$numerator)/sum(x_map$denominator)
+      lambda <- 1/(1 + exp((-1)* (te_frame$denominator - k)/f))
+      te_frame$target_encode <- ((1 - lambda) * global_mean) + (lambda * te_frame$numerator/te_frame$denominator)
+      
+    } else {
+      
+      # Calculate Mean Target per Group
+      te_frame$target_encode  <- te_frame$numerator/te_frame$denominator
+    }
+    
+    # Add Random Noise
+    if (noise_level > 0) {
+      # Generate random floats sampled from a uniform distribution  
+      random_noise <- h2o.runif(te_frame, seed = seed)
+      # Scale within noise_level
+      random_noise <- random_noise * 2 * noise_level - noise_level
+      # Add noise to target_encoding
+      te_frame$target_encode  <- te_frame$target_encode  + random_noise
+    }
+    
+    te_frame$numerator <- NULL
+    te_frame$denominator <- NULL
+    colnames(te_frame)[which(colnames(te_frame) == "target_encode")] <- paste0("TargetEncode_", paste(cols, collapse = ":"))
+  }
+  
+  
+  return(te_frame)
 }

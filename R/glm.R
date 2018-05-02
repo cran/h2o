@@ -3,6 +3,8 @@
 #'
 # -------------------------- H2O Generalized Linear Models -------------------------- #
 #' 
+#' Fit a generalized linear model
+#' 
 #' Fits a generalized linear model, specified by a response variable, a set of predictors, and a
 #' description of the error distribution.
 #' 
@@ -31,14 +33,15 @@
 #'        data frame. This is typically the number of times a row is repeated, but non-integer values are supported as
 #'        well. During training, rows with higher weights matter more, due to the larger loss function pre-factor.
 #' @param family Family. Use binomial for classification with logistic regression, others are for regression problems. Must be
-#'        one of: "gaussian", "binomial", "quasibinomial", "multinomial", "poisson", "gamma", "tweedie". Defaults to
-#'        gaussian.
+#'        one of: "gaussian", "binomial", "quasibinomial", "ordinal", "multinomial", "poisson", "gamma", "tweedie".
+#'        Defaults to gaussian.
 #' @param tweedie_variance_power Tweedie variance power Defaults to 0.
 #' @param tweedie_link_power Tweedie link power Defaults to 1.
 #' @param solver AUTO will set the solver based on given data and the other parameters. IRLSM is fast on on problems with small
 #'        number of predictors and for lambda-search with L1 penalty, L_BFGS scales better for datasets with many
 #'        columns. Coordinate descent is experimental (beta). Must be one of: "AUTO", "IRLSM", "L_BFGS",
-#'        "COORDINATE_DESCENT_NAIVE", "COORDINATE_DESCENT". Defaults to AUTO.
+#'        "COORDINATE_DESCENT_NAIVE", "COORDINATE_DESCENT", "GRADIENT_DESCENT_LH", "GRADIENT_DESCENT_SQERR". Defaults to
+#'        AUTO.
 #' @param alpha Distribution of regularization between the L1 (Lasso) and L2 (Ridge) penalties. A value of 1 for alpha
 #'        represents Lasso regression, a value of 0 produces Ridge regression, and anything in between specifies the
 #'        amount of mixing between the two. Default value of alpha is 0 when SOLVER = 'L-BFGS'; 0.5 otherwise.
@@ -69,8 +72,8 @@
 #'        indicates: If lambda_search is set to False and lambda is equal to zero, the default value of gradient_epsilon
 #'        is equal to .000001, otherwise the default value is .0001. If lambda_search is set to True, the conditional
 #'        values above are 1E-8 and 1E-6 respectively. Defaults to -1.
-#' @param link  Must be one of: "family_default", "identity", "logit", "log", "inverse", "tweedie". Defaults to
-#'        family_default.
+#' @param link  Must be one of: "family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit", "oprobit",
+#'        "ologlog". Defaults to family_default.
 #' @param prior Prior probability for y==1. To be used only for logistic regression iff the data has been sampled and the mean
 #'        of response does not reflect reality. Defaults to -1.
 #' @param lambda_min_ratio Minimum lambda used in lambda search, specified as a ratio of lambda_max (the smallest lambda that drives all
@@ -82,6 +85,8 @@
 #'        building with many predictors. Default indicates: If the IRLSM solver is used, the value of
 #'        max_active_predictors is set to 5000 otherwise it is set to 100000000. Defaults to -1.
 #' @param interactions A list of predictor column indices to interact. All pairwise combinations will be computed for the list.
+#' @param interaction_pairs A list of pairwise (first order) column interactions.
+#' @param obj_reg Likelihood divider in objective value computation, default is 1/nobs Defaults to -1.
 #' @param balance_classes \code{Logical}. Balance training data class counts via over/under-sampling (for imbalanced data). Defaults to
 #'        FALSE.
 #' @param class_sampling_factors Desired over/under-sampling ratios per class (in lexicographic order). If not specified, sampling factors will
@@ -146,10 +151,10 @@ h2o.glm <- function(x, y, training_frame,
                     score_each_iteration = FALSE,
                     offset_column = NULL,
                     weights_column = NULL,
-                    family = c("gaussian", "binomial", "quasibinomial", "multinomial", "poisson", "gamma", "tweedie"),
+                    family = c("gaussian", "binomial", "quasibinomial", "ordinal", "multinomial", "poisson", "gamma", "tweedie"),
                     tweedie_variance_power = 0,
                     tweedie_link_power = 1,
-                    solver = c("AUTO", "IRLSM", "L_BFGS", "COORDINATE_DESCENT_NAIVE", "COORDINATE_DESCENT"),
+                    solver = c("AUTO", "IRLSM", "L_BFGS", "COORDINATE_DESCENT_NAIVE", "COORDINATE_DESCENT", "GRADIENT_DESCENT_LH", "GRADIENT_DESCENT_SQERR"),
                     alpha = NULL,
                     lambda = NULL,
                     lambda_search = FALSE,
@@ -165,12 +170,14 @@ h2o.glm <- function(x, y, training_frame,
                     objective_epsilon = -1,
                     beta_epsilon = 0.0001,
                     gradient_epsilon = -1,
-                    link = c("family_default", "identity", "logit", "log", "inverse", "tweedie"),
+                    link = c("family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit", "oprobit", "ologlog"),
                     prior = -1,
                     lambda_min_ratio = -1,
                     beta_constraints = NULL,
                     max_active_predictors = -1,
                     interactions = NULL,
+                    interaction_pairs = NULL,
+                    obj_reg = -1,
                     balance_classes = FALSE,
                     class_sampling_factors = NULL,
                     max_after_balance_size = 5.0,
@@ -290,6 +297,10 @@ h2o.glm <- function(x, y, training_frame,
     parms$lambda_min_ratio <- lambda_min_ratio
   if (!missing(max_active_predictors))
     parms$max_active_predictors <- max_active_predictors
+  if (!missing(interaction_pairs))
+    parms$interaction_pairs <- interaction_pairs
+  if (!missing(obj_reg))
+    parms$obj_reg <- obj_reg
   if (!missing(balance_classes))
     parms$balance_classes <- balance_classes
   if (!missing(class_sampling_factors))
@@ -339,7 +350,9 @@ names(m@model$coefficients) <- m@model$coefficients_table[,1]
 m
 }
 
-#' Extract full regularization path from glm model (assuming it was run with lambda search option)
+#' Extract full regularization path from a GLM model
+#'
+#' Extract the full regularization path from a GLM model (assuming it was run with the lambda search option).
 #'
 #' @param model an \linkS4class{H2OModel} corresponding from a \code{h2o.glm} call.
 #' @export

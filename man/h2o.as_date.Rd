@@ -2,7 +2,7 @@
 % Please edit documentation in R/frame.R
 \name{h2o.as_date}
 \alias{h2o.as_date}
-\title{Functions to convert between character representations and objects of class "Date" representing calendar dates.}
+\title{Convert between character representations and objects of Date class}
 \usage{
 h2o.as_date(x, format, ...)
 }

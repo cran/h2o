@@ -14,4 +14,18 @@
 \description{
 Convert an H2OFrame to a vector
 }
+\examples{
+\donttest{
+h2o.init()
+irisPath <- system.file("extdata", "iris.csv", package="h2o")
+iris <- h2o.uploadFile(path = irisPath)
+hex <- as.h2o(iris)
+cor_R <- cor(as.matrix(iris[,1]))
+cor_h2o <- cor(hex[,1])
+iris_Rcor <- cor(iris[,1:4])
+iris_H2Ocor <- as.data.frame(cor(hex[,1:4]))
+h2o_vec <- as.vector(unlist(iris_H2Ocor))
+r_vec <- as.vector(unlist(iris_Rcor))
+}
+}
 

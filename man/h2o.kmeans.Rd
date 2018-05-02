@@ -2,7 +2,7 @@
 % Please edit documentation in R/kmeans.R
 \name{h2o.kmeans}
 \alias{h2o.kmeans}
-\title{Performs k-means clustering on an H2O dataset.}
+\title{Performs k-means clustering on an H2O dataset}
 \usage{
 h2o.kmeans(training_frame, x, model_id = NULL, validation_frame = NULL,
   nfolds = 0, keep_cross_validation_predictions = FALSE,
@@ -69,7 +69,7 @@ Defaults to -1 (time-based random number).}
 Returns an object of class \linkS4class{H2OClusteringModel}.
 }
 \description{
-Performs k-means clustering on an H2O dataset.
+Performs k-means clustering on an H2O dataset
 }
 \examples{
 \donttest{

@@ -2,10 +2,7 @@
 % Please edit documentation in R/models.R
 \name{h2o.tot_withinss}
 \alias{h2o.tot_withinss}
-\title{Get the total within cluster sum of squares.
-If "train", "valid", and "xval" parameters are FALSE (default), then the training tot_withinss value is returned. If more
-than one parameter is set to TRUE, then a named vector of tot_withinss' are returned, where the names are "train", "valid"
-or "xval".}
+\title{Get the total within cluster sum of squares.}
 \usage{
 h2o.tot_withinss(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
@@ -19,7 +16,6 @@ h2o.tot_withinss(object, train = FALSE, valid = FALSE, xval = FALSE)
 \item{xval}{Retrieve the cross-validation total within cluster sum of squares}
 }
 \description{
-Get the total within cluster sum of squares.
 If "train", "valid", and "xval" parameters are FALSE (default), then the training tot_withinss value is returned. If more
 than one parameter is set to TRUE, then a named vector of tot_withinss' are returned, where the names are "train", "valid"
 or "xval".

@@ -2,8 +2,7 @@
 % Please edit documentation in R/frame.R
 \name{h2o.grep}
 \alias{h2o.grep}
-\title{Searches for matches to argument `pattern` within each element
- of a string column.}
+\title{Search for matches to an argument pattern}
 \usage{
 h2o.grep(pattern, x, ignore.case = FALSE, invert = FALSE,
   output.logical = FALSE)
@@ -24,6 +23,10 @@ H2OFrame holding the matching positions or a logical vector
 if `output.logical` is enabled.
 }
 \description{
+Searches for matches to argument `pattern` within each element
+ of a string column.
+}
+\details{
 This function has similar semantics as R's native grep function
 and it supports a subset of its parameters. Default behavior is
 to return indices of the elements matching the pattern. Parameter

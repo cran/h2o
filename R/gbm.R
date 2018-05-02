@@ -3,8 +3,9 @@
 #'
 # -------------------------- Gradient Boosting Machine -------------------------- #
 #' 
-#' Builds gradient boosted classification trees and gradient boosted regression trees on a parsed data set.
+#' Build gradient boosted classification or regression trees
 #' 
+#' Builds gradient boosted classification trees and gradient boosted regression trees on a parsed data set.
 #' The default distribution function will guess the model type based on the response column type.
 #' In order to run properly, the response column must be an numeric for "gaussian" or an
 #' enum for "bernoulli" or "multinomial".
@@ -66,8 +67,8 @@
 #'        Defaults to FALSE.
 #' @param learn_rate Learning rate (from 0.0 to 1.0) Defaults to 0.1.
 #' @param learn_rate_annealing Scale the learning rate by this factor after each tree (e.g., 0.99 or 0.999)  Defaults to 1.
-#' @param distribution Distribution function Must be one of: "AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
-#'        "tweedie", "laplace", "quantile", "huber". Defaults to AUTO.
+#' @param distribution Distribution function Must be one of: "AUTO", "bernoulli", "quasibinomial", "multinomial", "gaussian",
+#'        "poisson", "gamma", "tweedie", "laplace", "quantile", "huber". Defaults to AUTO.
 #' @param quantile_alpha Desired quantile for Quantile regression, must be between 0 and 1. Defaults to 0.5.
 #' @param tweedie_power Tweedie power for Tweedie regression, must be between 1 and 2. Defaults to 1.5.
 #' @param huber_alpha Desired quantile for Huber/M-regression (threshold between quadratic and linear loss, must be between 0 and
@@ -76,7 +77,7 @@
 #' @param sample_rate Row sample rate per tree (from 0.0 to 1.0) Defaults to 1.
 #' @param sample_rate_per_class A list of row sample rates per class (relative fraction for each class, from 0.0 to 1.0), for each tree
 #' @param col_sample_rate Column sample rate (from 0.0 to 1.0) Defaults to 1.
-#' @param col_sample_rate_change_per_level Relative change of the column sampling rate for every level (from 0.0 to 2.0) Defaults to 1.
+#' @param col_sample_rate_change_per_level Relative change of the column sampling rate for every level (must be > 0.0 and <= 2.0) Defaults to 1.
 #' @param col_sample_rate_per_tree Column sample rate per tree (from 0.0 to 1.0) Defaults to 1.
 #' @param min_split_improvement Minimum relative improvement in squared error reduction for a split to happen Defaults to 1e-05.
 #' @param histogram_type What type of histogram to use for finding optimal split points Must be one of: "AUTO", "UniformAdaptive",
@@ -138,7 +139,7 @@ h2o.gbm <- function(x, y, training_frame,
                     build_tree_one_node = FALSE,
                     learn_rate = 0.1,
                     learn_rate_annealing = 1,
-                    distribution = c("AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma", "tweedie", "laplace", "quantile", "huber"),
+                    distribution = c("AUTO", "bernoulli", "quasibinomial", "multinomial", "gaussian", "poisson", "gamma", "tweedie", "laplace", "quantile", "huber"),
                     quantile_alpha = 0.5,
                     tweedie_power = 1.5,
                     huber_alpha = 0.9,

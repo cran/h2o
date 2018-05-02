@@ -2,8 +2,7 @@
 % Please edit documentation in R/frame.R
 \name{h2o.trunc}
 \alias{h2o.trunc}
-\title{trunc takes a single numeric argument x and returns a numeric vector containing the integers
-formed by truncating the values in x toward 0.}
+\title{Truncate values in x toward 0}
 \usage{
 h2o.trunc(x)
 }

@@ -2,13 +2,12 @@
 % Please edit documentation in R/xgboost.R
 \name{h2o.xgboost.available}
 \alias{h2o.xgboost.available}
-\title{Ask the H2O server whether a XGBoost model can be built (depends on availability of native backend)
-Returns True if a XGBoost model can be built, or False otherwise.}
+\title{Determines whether an XGBoost model can be built}
 \usage{
 h2o.xgboost.available()
 }
 \description{
-Ask the H2O server whether a XGBoost model can be built (depends on availability of native backend)
+Ask the H2O server whether a XGBoost model can be built. (Depends on availability of native backend.)
 Returns True if a XGBoost model can be built, or False otherwise.
 }
 

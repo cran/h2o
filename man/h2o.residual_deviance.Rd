@@ -2,10 +2,7 @@
 % Please edit documentation in R/models.R
 \name{h2o.residual_deviance}
 \alias{h2o.residual_deviance}
-\title{Retrieve the residual deviance
-If "train", "valid", and "xval" parameters are FALSE (default), then the training residual deviance value is returned. If more
-than one parameter is set to TRUE, then a named vector of residual deviances are returned, where the names are "train", "valid"
-or "xval".}
+\title{Retrieve the residual deviance}
 \usage{
 h2o.residual_deviance(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
@@ -19,7 +16,6 @@ h2o.residual_deviance(object, train = FALSE, valid = FALSE, xval = FALSE)
 \item{xval}{Retrieve the cross-validation residual deviance}
 }
 \description{
-Retrieve the residual deviance
 If "train", "valid", and "xval" parameters are FALSE (default), then the training residual deviance value is returned. If more
 than one parameter is set to TRUE, then a named vector of residual deviances are returned, where the names are "train", "valid"
 or "xval".

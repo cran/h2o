@@ -16,4 +16,11 @@ colnames(x, do.NULL = TRUE, prefix = "col")
 \description{
 Returns the column names of an H2OFrame
 }
+\examples{
+\donttest{
+h2o.init()
+iris.hex <- as.h2o(iris)
+colnames(iris)  # Returns "Sepal.Length" "Sepal.Width"  "Petal.Length" "Petal.Width"  "Species"
+}
+}
 

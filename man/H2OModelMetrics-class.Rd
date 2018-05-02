@@ -5,10 +5,12 @@
 \alias{H2OAutoEncoderMetrics-class}
 \alias{H2OBinomialMetrics-class}
 \alias{H2OClusteringMetrics-class}
+\alias{H2OCoxPHMetrics-class}
 \alias{H2ODimReductionMetrics-class}
 \alias{H2OModelMetrics}
 \alias{H2OModelMetrics-class}
 \alias{H2OMultinomialMetrics-class}
+\alias{H2OOrdinalMetrics-class}
 \alias{H2ORegressionMetrics-class}
 \alias{H2OUnknownMetrics-class}
 \alias{H2OWordEmbeddingMetrics-class}
@@ -18,6 +20,7 @@
 \alias{show,H2ODimReductionMetrics-method}
 \alias{show,H2OModelMetrics-method}
 \alias{show,H2OMultinomialMetrics-method}
+\alias{show,H2OOrdinalMetrics-method}
 \alias{show,H2ORegressionMetrics-method}
 \title{The H2OModelMetrics Object.}
 \usage{
@@ -26,6 +29,8 @@
 \S4method{show}{H2OBinomialMetrics}(object)
 
 \S4method{show}{H2OMultinomialMetrics}(object)
+
+\S4method{show}{H2OOrdinalMetrics}(object)
 
 \S4method{show}{H2ORegressionMetrics}(object)
 

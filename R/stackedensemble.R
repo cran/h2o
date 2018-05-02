@@ -3,6 +3,8 @@
 #'
 # -------------------------- H2O Stacked Ensemble -------------------------- #
 #' 
+#' Builds a Stacked Ensemble
+#' 
 #' Build a stacked ensemble (aka. Super Learner) using the H2O base
 #' learning algorithms specified by the user.
 #' 
@@ -26,6 +28,9 @@
 #'        classification problems. Must be one of: "AUTO", "Random", "Modulo", "Stratified".
 #' @param metalearner_fold_column Column with cross-validation fold index assignment per observation for cross-validation of the metalearner.
 #' @param keep_levelone_frame \code{Logical}. Keep level one frame used for metalearner training. Defaults to FALSE.
+#' @param metalearner_params Parameters for metalearner algorithm Defaults to NULL.
+#' @param seed Seed for random numbers; passed through to the metalearner algorithm. Defaults to -1 (time-based random number)
+#'        Defaults to -1 (time-based random number).
 #' @examples
 #' 
 #' # See example R code here:
@@ -40,7 +45,9 @@ h2o.stackedEnsemble <- function(x, y, training_frame,
                                 metalearner_nfolds = 0,
                                 metalearner_fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
                                 metalearner_fold_column = NULL,
-                                keep_levelone_frame = FALSE
+                                keep_levelone_frame = FALSE,
+                                seed = -1,
+                                metalearner_params = NULL 
                                 ) 
 {
   # If x is missing, then assume user wants to use all columns as features.
@@ -82,6 +89,8 @@ h2o.stackedEnsemble <- function(x, y, training_frame,
     }
   }
  
+  if (!missing(metalearner_params))
+      parms$metalearner_params <- as.character(toJSON(metalearner_params, pretty = TRUE))
   if (!missing(model_id))
     parms$model_id <- model_id
   if (!missing(validation_frame))
@@ -98,6 +107,13 @@ h2o.stackedEnsemble <- function(x, y, training_frame,
     parms$metalearner_fold_column <- metalearner_fold_column
   if (!missing(keep_levelone_frame))
     parms$keep_levelone_frame <- keep_levelone_frame
+  if (!missing(seed))
+    parms$seed <- seed
   # Error check and build model
-  .h2o.modelJob('stackedensemble', parms, h2oRestApiVersion = 99) 
+  model <- .h2o.modelJob('stackedensemble', parms, h2oRestApiVersion = 99)
+  #Convert metalearner_params back to list if not NULL
+  if (!missing(metalearner_params)) {
+      model@parameters$metalearner_params <- list(fromJSON(model@parameters$metalearner_params))
+  }
+  return(model)
 }

@@ -2,8 +2,7 @@
 % Please edit documentation in R/glm.R
 \name{h2o.glm}
 \alias{h2o.glm}
-\title{Fits a generalized linear model, specified by a response variable, a set of predictors, and a
-description of the error distribution.}
+\title{Fit a generalized linear model}
 \usage{
 h2o.glm(x, y, training_frame, model_id = NULL, validation_frame = NULL,
   nfolds = 0, seed = -1, keep_cross_validation_predictions = FALSE,
@@ -11,18 +10,20 @@ h2o.glm(x, y, training_frame, model_id = NULL, validation_frame = NULL,
   "Random", "Modulo", "Stratified"), fold_column = NULL,
   ignore_const_cols = TRUE, score_each_iteration = FALSE,
   offset_column = NULL, weights_column = NULL, family = c("gaussian",
-  "binomial", "quasibinomial", "multinomial", "poisson", "gamma", "tweedie"),
-  tweedie_variance_power = 0, tweedie_link_power = 1, solver = c("AUTO",
-  "IRLSM", "L_BFGS", "COORDINATE_DESCENT_NAIVE", "COORDINATE_DESCENT"),
+  "binomial", "quasibinomial", "ordinal", "multinomial", "poisson", "gamma",
+  "tweedie"), tweedie_variance_power = 0, tweedie_link_power = 1,
+  solver = c("AUTO", "IRLSM", "L_BFGS", "COORDINATE_DESCENT_NAIVE",
+  "COORDINATE_DESCENT", "GRADIENT_DESCENT_LH", "GRADIENT_DESCENT_SQERR"),
   alpha = NULL, lambda = NULL, lambda_search = FALSE,
   early_stopping = TRUE, nlambdas = -1, standardize = TRUE,
   missing_values_handling = c("MeanImputation", "Skip"),
   compute_p_values = FALSE, remove_collinear_columns = FALSE,
   intercept = TRUE, non_negative = FALSE, max_iterations = -1,
   objective_epsilon = -1, beta_epsilon = 1e-04, gradient_epsilon = -1,
-  link = c("family_default", "identity", "logit", "log", "inverse",
-  "tweedie"), prior = -1, lambda_min_ratio = -1, beta_constraints = NULL,
-  max_active_predictors = -1, interactions = NULL,
+  link = c("family_default", "identity", "logit", "log", "inverse", "tweedie",
+  "ologit", "oprobit", "ologlog"), prior = -1, lambda_min_ratio = -1,
+  beta_constraints = NULL, max_active_predictors = -1,
+  interactions = NULL, interaction_pairs = NULL, obj_reg = -1,
   balance_classes = FALSE, class_sampling_factors = NULL,
   max_after_balance_size = 5, max_hit_ratio_k = 0, max_runtime_secs = 0,
   custom_metric_func = NULL)
@@ -68,8 +69,8 @@ data frame. This is typically the number of times a row is repeated, but non-int
 well. During training, rows with higher weights matter more, due to the larger loss function pre-factor.}
 
 \item{family}{Family. Use binomial for classification with logistic regression, others are for regression problems. Must be
-one of: "gaussian", "binomial", "quasibinomial", "multinomial", "poisson", "gamma", "tweedie". Defaults to
-gaussian.}
+one of: "gaussian", "binomial", "quasibinomial", "ordinal", "multinomial", "poisson", "gamma", "tweedie".
+Defaults to gaussian.}
 
 \item{tweedie_variance_power}{Tweedie variance power Defaults to 0.}
 
@@ -78,7 +79,8 @@ gaussian.}
 \item{solver}{AUTO will set the solver based on given data and the other parameters. IRLSM is fast on on problems with small
 number of predictors and for lambda-search with L1 penalty, L_BFGS scales better for datasets with many
 columns. Coordinate descent is experimental (beta). Must be one of: "AUTO", "IRLSM", "L_BFGS",
-"COORDINATE_DESCENT_NAIVE", "COORDINATE_DESCENT". Defaults to AUTO.}
+"COORDINATE_DESCENT_NAIVE", "COORDINATE_DESCENT", "GRADIENT_DESCENT_LH", "GRADIENT_DESCENT_SQERR". Defaults to
+AUTO.}
 
 \item{alpha}{Distribution of regularization between the L1 (Lasso) and L2 (Ridge) penalties. A value of 1 for alpha
 represents Lasso regression, a value of 0 produces Ridge regression, and anything in between specifies the
@@ -125,8 +127,8 @@ indicates: If lambda_search is set to False and lambda is equal to zero, the def
 is equal to .000001, otherwise the default value is .0001. If lambda_search is set to True, the conditional
 values above are 1E-8 and 1E-6 respectively. Defaults to -1.}
 
-\item{link}{Must be one of: "family_default", "identity", "logit", "log", "inverse", "tweedie". Defaults to
-family_default.}
+\item{link}{Must be one of: "family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit", "oprobit",
+"ologlog". Defaults to family_default.}
 
 \item{prior}{Prior probability for y==1. To be used only for logistic regression iff the data has been sampled and the mean
 of response does not reflect reality. Defaults to -1.}
@@ -143,6 +145,10 @@ building with many predictors. Default indicates: If the IRLSM solver is used, t
 max_active_predictors is set to 5000 otherwise it is set to 100000000. Defaults to -1.}
 
 \item{interactions}{A list of predictor column indices to interact. All pairwise combinations will be computed for the list.}
+
+\item{interaction_pairs}{A list of pairwise (first order) column interactions.}
+
+\item{obj_reg}{Likelihood divider in objective value computation, default is 1/nobs Defaults to -1.}
 
 \item{balance_classes}{\code{Logical}. Balance training data class counts via over/under-sampling (for imbalanced data). Defaults to
 FALSE.}

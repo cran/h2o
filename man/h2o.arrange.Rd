@@ -2,8 +2,7 @@
 % Please edit documentation in R/frame.R
 \name{h2o.arrange}
 \alias{h2o.arrange}
-\title{Sorts H2OFrame by the columns specified. H2OFrame should not contain any String columns.  Otherwise, an error will
- be thrown.  To sort column c1 in descending order, do desc(c1).  Returns a new H2OFrame, like dplyr::arrange.}
+\title{Sorts an H2O frame by columns}
 \usage{
 h2o.arrange(x, ...)
 }
@@ -13,7 +12,8 @@ h2o.arrange(x, ...)
 \item{\dots}{The column names to sort by.}
 }
 \description{
-Sorts H2OFrame by the columns specified. H2OFrame should not contain any String columns.  Otherwise, an error will
+Sorts H2OFrame by the columns specified. H2OFrame can contain String columns but should not sort on any
+String columns.  Otherwise, an error will
  be thrown.  To sort column c1 in descending order, do desc(c1).  Returns a new H2OFrame, like dplyr::arrange.
 }
 

@@ -14,4 +14,15 @@
 \description{
 Convert an H2OFrame to a String
 }
+\examples{
+\donttest{
+h2o.init()
+pretrained.frame <- as.h2o(data.frame(
+       C1 = c("a", "b"), C2 = c(0, 1), C3 = c(1, 0), C4 = c(0.2, 0.8),
+       stringsAsFactors = FALSE))
+pretrained.w2v <- h2o.word2vec(pre_trained = pretrained.frame, vec_size = 3)
+words <- as.character(as.h2o(c("b", "a", "c", NA, "a")))
+vecs <- h2o.transform(pretrained.w2v, words = words)
+}
+}
 

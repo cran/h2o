@@ -12,6 +12,14 @@ h2o.acos(x)
 \description{
 Compute the arc cosine of x
 }
+\examples{
+\donttest{
+h2o.init()
+prosPath <- system.file("extdata", "prostate.csv", package="h2o")
+prostate.hex <- h2o.uploadFile(path = prosPath)
+h2o.acos(prostate.hex[,2])
+}
+}
 \seealso{
 \code{\link[base]{acos}} for the base R implementation.
 }

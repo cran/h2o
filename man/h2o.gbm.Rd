@@ -2,7 +2,7 @@
 % Please edit documentation in R/gbm.R
 \name{h2o.gbm}
 \alias{h2o.gbm}
-\title{Builds gradient boosted classification trees and gradient boosted regression trees on a parsed data set.}
+\title{Build gradient boosted classification or regression trees}
 \usage{
 h2o.gbm(x, y, training_frame, model_id = NULL, validation_frame = NULL,
   nfolds = 0, keep_cross_validation_predictions = FALSE,
@@ -19,8 +19,8 @@ h2o.gbm(x, y, training_frame, model_id = NULL, validation_frame = NULL,
   "misclassification", "mean_per_class_error"), stopping_tolerance = 0.001,
   max_runtime_secs = 0, seed = -1, build_tree_one_node = FALSE,
   learn_rate = 0.1, learn_rate_annealing = 1, distribution = c("AUTO",
-  "bernoulli", "multinomial", "gaussian", "poisson", "gamma", "tweedie",
-  "laplace", "quantile", "huber"), quantile_alpha = 0.5,
+  "bernoulli", "quasibinomial", "multinomial", "gaussian", "poisson", "gamma",
+  "tweedie", "laplace", "quantile", "huber"), quantile_alpha = 0.5,
   tweedie_power = 1.5, huber_alpha = 0.9, checkpoint = NULL,
   sample_rate = 1, sample_rate_per_class = NULL, col_sample_rate = 1,
   col_sample_rate_change_per_level = 1, col_sample_rate_per_tree = 1,
@@ -124,8 +124,8 @@ Defaults to FALSE.}
 
 \item{learn_rate_annealing}{Scale the learning rate by this factor after each tree (e.g., 0.99 or 0.999)  Defaults to 1.}
 
-\item{distribution}{Distribution function Must be one of: "AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
-"tweedie", "laplace", "quantile", "huber". Defaults to AUTO.}
+\item{distribution}{Distribution function Must be one of: "AUTO", "bernoulli", "quasibinomial", "multinomial", "gaussian",
+"poisson", "gamma", "tweedie", "laplace", "quantile", "huber". Defaults to AUTO.}
 
 \item{quantile_alpha}{Desired quantile for Quantile regression, must be between 0 and 1. Defaults to 0.5.}
 
@@ -142,7 +142,7 @@ Defaults to FALSE.}
 
 \item{col_sample_rate}{Column sample rate (from 0.0 to 1.0) Defaults to 1.}
 
-\item{col_sample_rate_change_per_level}{Relative change of the column sampling rate for every level (from 0.0 to 2.0) Defaults to 1.}
+\item{col_sample_rate_change_per_level}{Relative change of the column sampling rate for every level (must be > 0.0 and <= 2.0) Defaults to 1.}
 
 \item{col_sample_rate_per_tree}{Column sample rate per tree (from 0.0 to 1.0) Defaults to 1.}
 
@@ -168,6 +168,7 @@ accurate estimates of class probabilities. Defaults to FALSE.}
 \item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree for GBM, DRF, & XGBoost. Metrics per epoch for Deep Learning). Defaults to FALSE.}
 }
 \description{
+Builds gradient boosted classification trees and gradient boosted regression trees on a parsed data set.
 The default distribution function will guess the model type based on the response column type.
 In order to run properly, the response column must be an numeric for "gaussian" or an
 enum for "bernoulli" or "multinomial".

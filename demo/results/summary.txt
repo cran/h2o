@@ -1,0 +1,22 @@
+
+Starting 0 tests on 1 clouds with 1 total H2O worker nodes...
+
+
+----------------------------------------------------------------------
+
+SUMMARY OF RESULTS
+
+----------------------------------------------------------------------
+
+Total tests:               0
+Passed:                    0
+Did not pass:              0
+Did not complete:          0
+H2O INTERNAL tests:        0
+H2O INTERNAL failures:     0
+NOPASS tests (not run):    0
+NOFEATURE tests (not run): 0
+
+Total time:              6.54 sec
+Time/completed test:     N/A
+

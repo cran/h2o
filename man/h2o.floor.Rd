@@ -2,9 +2,7 @@
 % Please edit documentation in R/frame.R
 \name{h2o.floor}
 \alias{h2o.floor}
-\title{floor takes a single numeric argument x and returns a numeric
-vector containing the largest integers not greater than the
-corresponding elements of x.}
+\title{Take a single numeric argument and return a numeric vector with the largest integers}
 \usage{
 h2o.floor(x)
 }

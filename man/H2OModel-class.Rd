@@ -8,6 +8,7 @@
 \alias{H2OModel}
 \alias{H2OModel-class}
 \alias{H2OMultinomialModel-class}
+\alias{H2OOrdinalModel-class}
 \alias{H2ORegressionModel-class}
 \alias{H2OUnknownModel-class}
 \alias{H2OWordEmbeddingModel-class}

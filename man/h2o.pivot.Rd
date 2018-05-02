@@ -2,9 +2,7 @@
 % Please edit documentation in R/frame.R
 \name{h2o.pivot}
 \alias{h2o.pivot}
-\title{Pivot the frame designated by the three columns: index, column, and value. Index and column should be
-of type enum, int, or time.
-For cases of multiple indexes for a column label, the aggregation method is to pick the first occurrence in the data frame}
+\title{Pivot a frame}
 \usage{
 h2o.pivot(x, index, column, value)
 }

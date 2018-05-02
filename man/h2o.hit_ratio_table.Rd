@@ -2,10 +2,7 @@
 % Please edit documentation in R/models.R
 \name{h2o.hit_ratio_table}
 \alias{h2o.hit_ratio_table}
-\title{Retrieve the Hit Ratios
-If "train", "valid", and "xval" parameters are FALSE (default), then the training Hit Ratios value is returned. If more
-than one parameter is set to TRUE, then a named list of Hit Ratio tables are returned, where the names are "train", "valid"
-or "xval".}
+\title{Retrieve the Hit Ratios}
 \usage{
 h2o.hit_ratio_table(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
@@ -19,7 +16,6 @@ h2o.hit_ratio_table(object, train = FALSE, valid = FALSE, xval = FALSE)
 \item{xval}{Retrieve the cross-validation Hit Ratio}
 }
 \description{
-Retrieve the Hit Ratios
 If "train", "valid", and "xval" parameters are FALSE (default), then the training Hit Ratios value is returned. If more
 than one parameter is set to TRUE, then a named list of Hit Ratio tables are returned, where the names are "train", "valid"
 or "xval".

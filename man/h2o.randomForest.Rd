@@ -2,7 +2,7 @@
 % Please edit documentation in R/randomforest.R
 \name{h2o.randomForest}
 \alias{h2o.randomForest}
-\title{Builds a Random Forest Model on an H2OFrame}
+\title{Build a Random Forest model}
 \usage{
 h2o.randomForest(x, y, training_frame, model_id = NULL,
   validation_frame = NULL, nfolds = 0,
@@ -62,7 +62,7 @@ stratify the folds based on the response variable, for classification problems. 
 
 \item{ignore_const_cols}{\code{Logical}. Ignore constant columns. Defaults to TRUE.}
 
-\item{offset_column}{Offset column. This will be added to the combination of columns before applying the link function.}
+\item{offset_column}{Offset column. This argument is deprecated and has no use for Random Forest.}
 
 \item{weights_column}{Column with observation weights. Giving some observation a weight of zero is equivalent to excluding it from
 the dataset; giving an observation a relative weight of 2 is equivalent to repeating that row twice. Negative
@@ -131,7 +131,7 @@ accuracy. Defaults to FALSE.}
 
 \item{checkpoint}{Model checkpoint to resume training with.}
 
-\item{col_sample_rate_change_per_level}{Relative change of the column sampling rate for every level (from 0.0 to 2.0) Defaults to 1.}
+\item{col_sample_rate_change_per_level}{Relative change of the column sampling rate for every level (must be > 0.0 and <= 2.0) Defaults to 1.}
 
 \item{col_sample_rate_per_tree}{Column sample rate per tree (from 0.0 to 1.0) Defaults to 1.}
 
@@ -148,8 +148,7 @@ accurate estimates of class probabilities. Defaults to FALSE.}
 
 \item{calibration_frame}{Calibration frame for Platt Scaling}
 
-\item{distribution}{Distribution function Must be one of: "AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
-"tweedie", "laplace", "quantile", "huber". Defaults to AUTO.}
+\item{distribution}{Distribution. This argument is deprecated and has no use for Random Forest.}
 
 \item{custom_metric_func}{Reference to custom evaluation function, format: `language:keyName=funcName`}
 
@@ -159,7 +158,7 @@ accurate estimates of class probabilities. Defaults to FALSE.}
 Creates a \linkS4class{H2OModel} object of the right type.
 }
 \description{
-Builds a Random Forest Model on an H2OFrame
+Builds a Random Forest model on an H2OFrame.
 }
 \seealso{
 \code{\link{predict.H2OModel}} for prediction

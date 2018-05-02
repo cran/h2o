@@ -2,10 +2,7 @@
 % Please edit documentation in R/models.R
 \name{h2o.centroid_stats}
 \alias{h2o.centroid_stats}
-\title{Retrieve the centroid statistics
-If "train", "valid", and "xval" parameters are FALSE (default), then the training centroid stats value is returned. If more
-than one parameter is set to TRUE, then a named list of centroid stats data frames are returned, where the names are "train", "valid"
-or "xval".}
+\title{Retrieve centroid statistics}
 \usage{
 h2o.centroid_stats(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
@@ -19,7 +16,7 @@ h2o.centroid_stats(object, train = FALSE, valid = FALSE, xval = FALSE)
 \item{xval}{Retrieve the cross-validation centroid statistics}
 }
 \description{
-Retrieve the centroid statistics
+Retrieve the centroid statistics.
 If "train", "valid", and "xval" parameters are FALSE (default), then the training centroid stats value is returned. If more
 than one parameter is set to TRUE, then a named list of centroid stats data frames are returned, where the names are "train", "valid"
 or "xval".

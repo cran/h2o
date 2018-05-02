@@ -3,7 +3,7 @@
 #'
 # -------------------------- KMeans Model in H2O -------------------------- #
 #' 
-#' Performs k-means clustering on an H2O dataset.
+#' Performs k-means clustering on an H2O dataset
 #' 
 #' @param x A vector containing the \code{character} names of the predictors in the model.
 #' @param model_id Destination id for this model; auto-generated if not specified.
@@ -88,8 +88,12 @@ h2o.kmeans <- function(training_frame, x,
   # Parameter list to send to model builder
   parms <- list()
   parms$training_frame <- training_frame
-  if(!missing(x))
+  if(!missing(x)){
     parms$ignored_columns <- .verify_datacols(training_frame, x)$cols_ignore
+    if(!missing(fold_column)){
+      parms$ignored_columns <- setdiff(parms$ignored_columns, fold_column)
+    }
+  }
   if (!missing(model_id))
     parms$model_id <- model_id
   if (!missing(validation_frame))

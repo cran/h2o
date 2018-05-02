@@ -290,6 +290,8 @@ h2o.getFutureModel <- function(object,verbose=FALSE) {
                           })
       if (type == "character")
         paramValue <- .collapse.char(paramValue)
+      else if (paramDef$type == "StringPair[]")
+        paramValue <- .collapse(sapply(paramValue, .collapse.tuple))
       else
         paramValue <- .collapse(paramValue)
     }
@@ -297,6 +299,18 @@ h2o.getFutureModel <- function(object,verbose=FALSE) {
   if( is.H2OFrame(paramValue) )
     paramValue <- h2o.getId(paramValue)
   paramValue
+}
+
+.collapse.tuple <- function(x) {
+  names <- names(x)
+  if (is.null(names))
+    names <- letters[1:length(x)]
+  r <- c()
+  for (i in 1:length(x)) {
+    s <- paste0(names[i], ": \"", x[i], "\"")
+    r <- c(r, s)
+  }
+  paste0("{", paste0(r, collapse = ","), "}")
 }
 
 # Validate a given set of hyper parameters
@@ -624,6 +638,7 @@ h2o.make_metrics <- function(predicted, actuals, domain=NULL, distribution=NULL)
   metrics <- model_metrics[!(names(model_metrics) %in% c("__meta", "names", "domains", "model_category"))]
   name <- "H2ORegressionMetrics"
   if (!is.null(metrics$AUC)) name <- "H2OBinomialMetrics"
+  else if (!is.null(distribution) && distribution == "ordinal") name <- "H2OOrdinalMetrics"
   else if (!is.null(metrics$hit_ratio_table)) name <- "H2OMultinomialMetrics"
   new(Class = name, metrics = metrics)
 }
@@ -761,7 +776,9 @@ h2o.mean_per_class_error <- function(object, train=FALSE, valid=FALSE, xval=FALS
 }
 
 #'
-#' Retrieve the AIC.
+#' Retrieve the Akaike information criterion (AIC) value
+#'
+#' Retrieves the AIC value.
 #' If "train", "valid", and "xval" parameters are FALSE (default), then the training AIC value is returned. If more
 #' than one parameter is set to TRUE, then a named vector of AICs are returned, where the names are "train", "valid"
 #' or "xval".
@@ -770,6 +787,17 @@ h2o.mean_per_class_error <- function(object, train=FALSE, valid=FALSE, xval=FALS
 #' @param train Retrieve the training AIC
 #' @param valid Retrieve the validation AIC
 #' @param xval Retrieve the cross-validation AIC
+#' @examples
+#' \donttest{
+#' h2o.init()
+#' prosPath <- system.file("extdata", "prostate.csv", package="h2o")
+#' prostate.hex <- h2o.uploadFile(path = prosPath)
+#' p.sid <- h2o.runif(prostate.hex)
+#' prostate.train <- h2o.assign(prostate.hex[p.sid > .2,], "prostate.train")
+#' prostate.glm <- h2o.glm(x=3:7, y=2, training_frame=prostate.train)
+#' aic.basic <- h2o.aic(prostate.glm)
+#' print(aic.basic)
+#' }
 #' @export
 h2o.aic <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
   if( is(object, "H2OModelMetrics") ) return( object@metrics$AIC )
@@ -1007,7 +1035,7 @@ h2o.giniCoef <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 h2o.coef <- function(object) {
   if (is(object, "H2OModel")) {
     if (is.null(object@model$coefficients_table)) stop("Can only extract coefficeints from GLMs")
-    if (object@allparameters$family != "multinomial") {
+    if (object@allparameters$family != "multinomial" && object@allparameters$family != "ordinal") {
       coefs <- object@model$coefficients_table$coefficients
       names(coefs) <- object@model$coefficients_table$names
     } else {
@@ -1027,7 +1055,7 @@ h2o.coef <- function(object) {
 h2o.coef_norm <- function(object) {
   if (is(object, "H2OModel")) {
     if (is.null(object@model$coefficients_table)) stop("Can only extract coefficeints from GLMs")
-    if (object@parameters$family != "multinomial") {
+    if (object@parameters$family != "multinomial"  && object@parameters$family != "ordinal") {
       coefs <- object@model$coefficients_table$standardized_coefficients
       names(coefs) <- object@model$coefficients_table$names
     } else {
@@ -1435,6 +1463,7 @@ h2o.biases <- function(object, vector_id=1){
 
 #'
 #' Retrieve the Hit Ratios
+#'
 #' If "train", "valid", and "xval" parameters are FALSE (default), then the training Hit Ratios value is returned. If more
 #' than one parameter is set to TRUE, then a named list of Hit Ratio tables are returned, where the names are "train", "valid"
 #' or "xval".
@@ -1696,6 +1725,7 @@ h2o.withinss <- function(object) { h2o.mse(object) }
 
 #'
 #' Get the total within cluster sum of squares.
+#' 
 #' If "train", "valid", and "xval" parameters are FALSE (default), then the training tot_withinss value is returned. If more
 #' than one parameter is set to TRUE, then a named vector of tot_withinss' are returned, where the names are "train", "valid"
 #' or "xval".
@@ -1732,7 +1762,8 @@ h2o.tot_withinss <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
   if ( length(v)==1 ) { return( v[[1]] ) } else { return( v ) }
 }
 
-#'
+#' Get the between cluster sum of squares
+#' 
 #' Get the between cluster sum of squares.
 #' If "train", "valid", and "xval" parameters are FALSE (default), then the training betweenss value is returned. If more
 #' than one parameter is set to TRUE, then a named vector of betweenss' are returned, where the names are "train", "valid"
@@ -1772,6 +1803,7 @@ h2o.betweenss <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 
 #'
 #' Get the total sum of squares.
+#' 
 #' If "train", "valid", and "xval" parameters are FALSE (default), then the training totss value is returned. If more
 #' than one parameter is set to TRUE, then a named vector of totss' are returned, where the names are "train", "valid"
 #' or "xval".
@@ -1817,7 +1849,9 @@ h2o.totss <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 h2o.num_iterations <- function(object) { object@model$model_summary$number_of_iterations }
 
 #'
-#' Retrieve the centroid statistics
+#' Retrieve centroid statistics
+#'
+#' Retrieve the centroid statistics.
 #' If "train", "valid", and "xval" parameters are FALSE (default), then the training centroid stats value is returned. If more
 #' than one parameter is set to TRUE, then a named list of centroid stats data frames are returned, where the names are "train", "valid"
 #' or "xval".
@@ -1856,6 +1890,8 @@ h2o.centroid_stats <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 
 #'
 #' Retrieve the cluster sizes
+#'
+#' Retrieve the cluster sizes.
 #' If "train", "valid", and "xval" parameters are FALSE (default), then the training cluster sizes value is returned. If more
 #' than one parameter is set to TRUE, then a named list of cluster size vectors are returned, where the names are "train", "valid"
 #' or "xval".
@@ -1895,6 +1931,7 @@ h2o.cluster_sizes <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 
 #'
 #' Retrieve the null deviance
+#'
 #' If "train", "valid", and "xval" parameters are FALSE (default), then the training null deviance value is returned. If more
 #' than one parameter is set to TRUE, then a named vector of null deviances are returned, where the names are "train", "valid"
 #' or "xval".
@@ -1943,6 +1980,7 @@ h2o.null_deviance <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
     
 
 #' Retrieve the residual deviance
+#' 
 #' If "train", "valid", and "xval" parameters are FALSE (default), then the training residual deviance value is returned. If more
 #' than one parameter is set to TRUE, then a named vector of residual deviances are returned, where the names are "train", "valid"
 #' or "xval".
@@ -1991,6 +2029,7 @@ h2o.residual_deviance <- function(object, train=FALSE, valid=FALSE, xval=FALSE) 
 
 
 #' Retrieve the residual degrees of freedom
+#'
 #' If "train", "valid", and "xval" parameters are FALSE (default), then the training residual degrees of freedom value is returned. If more
 #' than one parameter is set to TRUE, then a named vector of residual degrees of freedom are returned, where the names are "train", "valid"
 #' or "xval".
@@ -2039,6 +2078,7 @@ h2o.residual_dof <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
     
 
 #' Retrieve the null degrees of freedom
+#' 
 #' If "train", "valid", and "xval" parameters are FALSE (default), then the training null degrees of freedom value is returned. If more
 #' than one parameter is set to TRUE, then a named vector of null degrees of freedom are returned, where the names are "train", "valid"
 #' or "xval".
@@ -2231,7 +2271,7 @@ setMethod("h2o.confusionMatrix", "H2OModel", function(object, newdata, valid=FAL
 #' @export
 setMethod("h2o.confusionMatrix", "H2OModelMetrics", function(object, thresholds=NULL, metrics=NULL) {
   if( !is(object, "H2OBinomialMetrics") ) {
-    if( is(object, "H2OMultinomialMetrics") )
+    if( is(object, "H2OMultinomialMetrics") ||  is(object, "H2OOrdinalMetrics"))
       return(object@metrics$cm$table)
     warning(paste0("No Confusion Matrices for ",class(object)))
     return(NULL)
@@ -2373,11 +2413,11 @@ plot.H2OModel <- function(x, timestep = "AUTO", metric = "AUTO", ...) {
       } else if (!(metric %in% c("logloss","auc","classification_error","rmse"))) {
         stop("metric for H2OBinomialModel must be one of: logloss, auc, classification_error, rmse")
       }
-    } else if (is(x, "H2OMultinomialModel")) {
+    } else if (is(x, "H2OMultinomialModel") || is(x, "H2OOrdinalModel")) {
       if (metric == "AUTO") {
         metric <- "classification_error"
       } else if (!(metric %in% c("logloss","classification_error","rmse"))) {
-        stop("metric for H2OMultinomialModel must be one of: logloss, classification_error, rmse")
+        stop("metric for H2OMultinomialModel/H2OOrdinalModel must be one of: logloss, classification_error, rmse")
       }
     } else if (is(x, "H2ORegressionModel")) {
       if (metric == "AUTO") {
@@ -2386,7 +2426,7 @@ plot.H2OModel <- function(x, timestep = "AUTO", metric = "AUTO", ...) {
         stop("metric for H2ORegressionModel must be one of: rmse, mae, or deviance")
       }
     } else {
-      stop("Must be one of: H2OBinomialModel, H2OMultinomialModel or H2ORegressionModel")
+      stop("Must be one of: H2OBinomialModel, H2OMultinomialModel, H2OOrdinalModel or H2ORegressionModel")
     }
     # Set timestep
     if (x@algorithm %in% c("gbm", "drf")) {
@@ -2907,6 +2947,7 @@ h2o.cross_validation_predictions <- function(object) {
 h2o.partialPlot <- function(object, data, cols, destination_key, nbins=20, plot = TRUE, plot_stddev = TRUE) {
   if(!is(object, "H2OModel")) stop("object must be an H2Omodel")
   if( is(object, "H2OMultinomialModel")) stop("object must be a regression model or binary classfier")
+  if( is(object, "H2OOrdinalModel")) stop("object must be a regression model or binary classfier")
   if(!is(data, "H2OFrame")) stop("data must be H2OFrame")
   if(!is.numeric(nbins) | !(nbins > 0) ) stop("nbins must be a positive numeric")
   if(!is.logical(plot)) stop("plot must be a logical value")
@@ -2938,7 +2979,7 @@ h2o.partialPlot <- function(object, data, cols, destination_key, nbins=20, plot 
   pp.plot <- function(pp) {
     if(!all(is.na(pp))) {
       type = col_types[which(col_names == names(pp)[1])]
-      if(type == "enum") pp[,1] = as.factor( pp[,1])
+      if(type == "enum") pp[,1] = factor( pp[,1], levels=pp[,1])
       
       ## Plot one standard deviation above and below the mean
       if( plot_stddev) {

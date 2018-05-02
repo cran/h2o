@@ -2,9 +2,7 @@
 % Please edit documentation in R/frame.R
 \name{h2o.ceiling}
 \alias{h2o.ceiling}
-\title{ceiling takes a single numeric argument x and returns a
-numeric vector containing the smallest integers not less than the
-corresponding elements of x.}
+\title{Take a single numeric argument and return a numeric vector with the smallest integers}
 \usage{
 h2o.ceiling(x)
 }

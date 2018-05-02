@@ -2,8 +2,7 @@
 % Please edit documentation in R/pca.R
 \name{h2o.prcomp}
 \alias{h2o.prcomp}
-\title{Principal components analysis of an H2O data frame using the power method
-to calculate the singular value decomposition of the Gram matrix.}
+\title{Principal component analysis of an H2O data frame}
 \usage{
 h2o.prcomp(training_frame, x, model_id = NULL, validation_frame = NULL,
   ignore_const_cols = TRUE, score_each_iteration = FALSE,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/w2vutils.R
 \name{h2o.toFrame}
 \alias{h2o.toFrame}
-\title{Converts a given word2vec model into H2OFrame. The frame represents learned word embeddings}
+\title{Convert a word2vec model into an H2OFrame}
 \usage{
 h2o.toFrame(word2vec)
 }
@@ -10,7 +10,7 @@ h2o.toFrame(word2vec)
 \item{word2vec}{A word2vec model.}
 }
 \description{
-Converts a given word2vec model into H2OFrame. The frame represents learned word embeddings
+Converts a given word2vec model into an H2OFrame. The frame represents learned word embeddings
 }
 \examples{
 \donttest{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/glrm.R
 \name{h2o.glrm}
 \alias{h2o.glrm}
-\title{Generalized low rank decomposition of an H2O data frame.}
+\title{Generalized low rank decomposition of an H2O data frame}
 \usage{
 h2o.glrm(training_frame, cols = NULL, model_id = NULL,
   validation_frame = NULL, ignore_const_cols = TRUE,
@@ -96,7 +96,7 @@ Must be one of: "GramSVD", "Power", "Randomized". Defaults to Randomized.}
 Returns an object of class \linkS4class{H2ODimReductionModel}.
 }
 \description{
-Generalized low rank decomposition of an H2O data frame.
+Builds a generalized low rank decomposition of an H2O data frame
 }
 \examples{
 \donttest{

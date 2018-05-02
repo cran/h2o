@@ -2,8 +2,7 @@
 % Please edit documentation in R/deepwater.R
 \name{h2o.deepwater.available}
 \alias{h2o.deepwater.available}
-\title{Ask the H2O server whether a Deep Water model can be built (depends on availability of native backends)
-Returns TRUE if a Deep Water model can be built, or FALSE otherwise.}
+\title{Determines whether Deep Water is available}
 \usage{
 h2o.deepwater.available(h2oRestApiVersion = .h2o.__REST_API_VERSION)
 }
@@ -11,7 +10,7 @@ h2o.deepwater.available(h2oRestApiVersion = .h2o.__REST_API_VERSION)
 \item{h2oRestApiVersion}{(Optional) Specific version of the REST API to use.}
 }
 \description{
-Ask the H2O server whether a Deep Water model can be built (depends on availability of native backends)
+Ask the H2O server whether a Deep Water model can be built. (Depends on availability of native backends.)
 Returns TRUE if a Deep Water model can be built, or FALSE otherwise.
 }
 

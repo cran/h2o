@@ -2,7 +2,7 @@
 % Please edit documentation in R/aggregator.R
 \name{h2o.aggregated_frame}
 \alias{h2o.aggregated_frame}
-\title{Retrieve an aggregated frame from the Aggregator model}
+\title{Retrieve an aggregated frame from an Aggregator model}
 \usage{
 h2o.aggregated_frame(model)
 }
@@ -10,6 +10,23 @@ h2o.aggregated_frame(model)
 \item{model}{an \linkS4class{H2OClusteringModel} corresponding from a \code{h2o.aggregator} call.}
 }
 \description{
-Retrieve an aggregated frame from the Aggregator model
+Retrieve an aggregated frame from the Aggregator model and use it to create a new frame.
+}
+\examples{
+\donttest{
+library(h2o)
+h2o.init()
+df <- h2o.createFrame(rows=100, cols=5, categorical_fraction=0.6, integer_fraction=0,
+                      binary_fraction=0, real_range=100, integer_range=100, missing_fraction=0)
+target_num_exemplars=1000
+rel_tol_num_exemplars=0.5
+encoding="Eigen"
+agg <- h2o.aggregator(training_frame=df,
+                     target_num_exemplars=target_num_exemplars,
+                     rel_tol_num_exemplars=rel_tol_num_exemplars,
+                     categorical_encoding=encoding)
+# Use the aggregated frame to create a new dataframe
+new_df <- h2o.aggregated_frame(agg)
+}
 }
 

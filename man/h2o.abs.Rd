@@ -12,6 +12,20 @@ h2o.abs(x)
 \description{
 Compute the absolute value of x
 }
+\examples{
+\donttest{
+h2o.init()
+url <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/gbm_test/smtrees.csv"
+smtreesH2O <- h2o.importFile(url)
+smtreesR <- read.csv("https://s3.amazonaws.com/h2o-public-test-data/smalldata/gbm_test/smtrees.csv")
+fith2o <- h2o.gbm(x=c("girth", "height"), y="vol", ntrees=3, max_depth=1, distribution="gaussian",
+                 min_rows=2, learn_rate=.1, training_frame=smtreesH2O)
+pred <- as.data.frame(predict(fith2o, newdata=smtreesH2O))
+diff <- pred-smtreesR[,4]
+diff_abs <- abs(diff)
+print(diff_abs)
+}
+}
 \seealso{
 \code{\link[base]{abs}} for the base R implementation.
 }

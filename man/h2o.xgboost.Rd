@@ -2,7 +2,7 @@
 % Please edit documentation in R/xgboost.R
 \name{h2o.xgboost}
 \alias{h2o.xgboost}
-\title{Builds a eXtreme Gradient Boosting model using the native XGBoost backend}
+\title{Build an eXtreme Gradient Boosting model}
 \usage{
 h2o.xgboost(x, y, training_frame, model_id = NULL, validation_frame = NULL,
   nfolds = 0, keep_cross_validation_predictions = FALSE,
@@ -90,7 +90,7 @@ Defaults to -1 (time-based random number).}
 \item{tweedie_power}{Tweedie power for Tweedie regression, must be between 1 and 2. Defaults to 1.5.}
 
 \item{categorical_encoding}{Encoding scheme for categorical features Must be one of: "AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-"Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to LabelEncoder.}
+"Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to AUTO.}
 
 \item{quiet_mode}{\code{Logical}. Enable quiet mode Defaults to TRUE.}
 
@@ -169,6 +169,6 @@ auto.}
 \item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree for GBM, DRF, & XGBoost. Metrics per epoch for Deep Learning). Defaults to FALSE.}
 }
 \description{
-Builds a eXtreme Gradient Boosting model using the native XGBoost backend
+Builds a eXtreme Gradient Boosting model using the native XGBoost backend.
 }
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/svd.R
 \name{h2o.svd}
 \alias{h2o.svd}
-\title{Singular value decomposition of an H2O data frame using the power method.}
+\title{Singular value decomposition of an H2O data frame using the power method}
 \usage{
 h2o.svd(training_frame, x, destination_key, model_id = NULL,
   validation_frame = NULL, ignore_const_cols = TRUE,
@@ -53,7 +53,7 @@ Defaults to -1 (time-based random number).}
 Returns an object of class \linkS4class{H2ODimReductionModel}.
 }
 \description{
-Singular value decomposition of an H2O data frame using the power method.
+Singular value decomposition of an H2O data frame using the power method
 }
 \examples{
 \donttest{

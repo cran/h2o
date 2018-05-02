@@ -2,13 +2,14 @@
 % Please edit documentation in R/aggregator.R
 \name{h2o.aggregator}
 \alias{h2o.aggregator}
-\title{Builds an Aggregated Frame of an H2OFrame}
+\title{Build an Aggregated Frame}
 \usage{
 h2o.aggregator(training_frame, x, model_id = NULL, ignore_const_cols = TRUE,
   target_num_exemplars = 5000, rel_tol_num_exemplars = 0.5,
   transform = c("NONE", "STANDARDIZE", "NORMALIZE", "DEMEAN", "DESCALE"),
   categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-  "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"))
+  "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  save_mapping_frame = FALSE)
 }
 \arguments{
 \item{training_frame}{Id of the training data frame.}
@@ -28,8 +29,25 @@ Defaults to NORMALIZE.}
 
 \item{categorical_encoding}{Encoding scheme for categorical features Must be one of: "AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
 "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to AUTO.}
+
+\item{save_mapping_frame}{\code{Logical}. Whether to export the mapping of the aggregated frame Defaults to FALSE.}
 }
 \description{
-Builds an Aggregated Frame of an H2OFrame
+Builds an Aggregated Frame of an H2OFrame.
+}
+\examples{
+\donttest{
+library(h2o)
+h2o.init()
+df <- h2o.createFrame(rows=100, cols=5, categorical_fraction=0.6, integer_fraction=0,
+binary_fraction=0, real_range=100, integer_range=100, missing_fraction=0)
+target_num_exemplars=1000
+rel_tol_num_exemplars=0.5
+encoding="Eigen"
+agg <- h2o.aggregator(training_frame=df,
+target_num_exemplars=target_num_exemplars,
+rel_tol_num_exemplars=rel_tol_num_exemplars,
+categorical_encoding=encoding)
+}
 }
 

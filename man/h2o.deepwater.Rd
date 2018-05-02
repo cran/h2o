@@ -2,8 +2,7 @@
 % Please edit documentation in R/deepwater.R
 \name{h2o.deepwater}
 \alias{h2o.deepwater}
-\title{Build a Deep Learning model using multiple native GPU backends
-Builds a deep neural network on an H2OFrame containing various data sources}
+\title{Build a Deep Learning model using multiple native GPU backends}
 \usage{
 h2o.deepwater(x, y, training_frame, model_id = NULL, checkpoint = NULL,
   autoencoder = FALSE, validation_frame = NULL, nfolds = 0,
@@ -195,7 +194,6 @@ Model and builds a model on the provided H2OFrame (non-String columns). Must be 
 "dataset". Defaults to auto.}
 }
 \description{
-Build a Deep Learning model using multiple native GPU backends
-Builds a deep neural network on an H2OFrame containing various data sources
+Builds a deep neural network on an H2OFrame containing various data sources.
 }
 

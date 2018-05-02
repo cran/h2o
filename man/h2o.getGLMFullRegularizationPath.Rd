@@ -2,7 +2,7 @@
 % Please edit documentation in R/glm.R
 \name{h2o.getGLMFullRegularizationPath}
 \alias{h2o.getGLMFullRegularizationPath}
-\title{Extract full regularization path from glm model (assuming it was run with lambda search option)}
+\title{Extract full regularization path from a GLM model}
 \usage{
 h2o.getGLMFullRegularizationPath(model)
 }
@@ -10,6 +10,6 @@ h2o.getGLMFullRegularizationPath(model)
 \item{model}{an \linkS4class{H2OModel} corresponding from a \code{h2o.glm} call.}
 }
 \description{
-Extract full regularization path from glm model (assuming it was run with lambda search option)
+Extract the full regularization path from a GLM model (assuming it was run with the lambda search option).
 }
 

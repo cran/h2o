@@ -2,7 +2,7 @@
 % Please edit documentation in R/word2vec.R
 \name{h2o.word2vec}
 \alias{h2o.word2vec}
-\title{Trains a word2vec model on a String column of an H2O data frame.}
+\title{Trains a word2vec model on a String column of an H2O data frame}
 \usage{
 h2o.word2vec(training_frame = NULL, model_id = NULL, min_word_freq = 5,
   word_model = c("SkipGram"), norm_model = c("HSM"), vec_size = 100,
@@ -36,6 +36,6 @@ will be randomly down-sampled; useful range is (0, 1e-5) Defaults to 0.001.}
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.}
 }
 \description{
-Trains a word2vec model on a String column of an H2O data frame.
+Trains a word2vec model on a String column of an H2O data frame
 }
 

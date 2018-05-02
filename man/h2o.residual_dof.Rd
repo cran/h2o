@@ -2,10 +2,7 @@
 % Please edit documentation in R/models.R
 \name{h2o.residual_dof}
 \alias{h2o.residual_dof}
-\title{Retrieve the residual degrees of freedom
-If "train", "valid", and "xval" parameters are FALSE (default), then the training residual degrees of freedom value is returned. If more
-than one parameter is set to TRUE, then a named vector of residual degrees of freedom are returned, where the names are "train", "valid"
-or "xval".}
+\title{Retrieve the residual degrees of freedom}
 \usage{
 h2o.residual_dof(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
@@ -19,7 +16,6 @@ h2o.residual_dof(object, train = FALSE, valid = FALSE, xval = FALSE)
 \item{xval}{Retrieve the cross-validation residual degrees of freedom}
 }
 \description{
-Retrieve the residual degrees of freedom
 If "train", "valid", and "xval" parameters are FALSE (default), then the training residual degrees of freedom value is returned. If more
 than one parameter is set to TRUE, then a named vector of residual degrees of freedom are returned, where the names are "train", "valid"
 or "xval".
