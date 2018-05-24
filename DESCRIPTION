@@ -1,8 +1,8 @@
 Package: h2o
-Version: 3.18.0.8
+Version: 3.18.0.11
 Type: Package
 Title: R Interface for 'H2O'
-Date: 2018-05-01
+Date: 2018-05-24
 Authors@R: c(
     person(given = "Tom", family = "Kraljevic", role = c("aut", "cre"), email = "tomk@0xdata.com"),
     person(given = "H2O.ai", role = c("cph"))
@@ -29,9 +29,10 @@ Collate: 'aggregator.R' 'astfun.R' 'automl.R' 'classes.R' 'config.R'
         'deeplearning.R' 'stackedensemble.R' 'deepwater.R' 'xgboost.R'
         'randomforest.R' 'naivebayes.R' 'word2vec.R' 'w2vutils.R'
         'locate.R' 'grid.R' 'predict.R' 'zzz.R'
-Packaged: 2018-05-01 22:13:58 UTC; mkurka
+RoxygenNote: 6.0.1
+Packaged: 2018-05-24 08:44:22 UTC; jenkins
 Author: Tom Kraljevic [aut, cre],
   H2O.ai [cph]
 Maintainer: Tom Kraljevic <tomk@0xdata.com>
 Repository: CRAN
-Date/Publication: 2018-05-02 07:58:06 UTC
+Date/Publication: 2018-05-24 21:48:52 UTC
