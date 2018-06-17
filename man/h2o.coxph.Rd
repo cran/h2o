@@ -6,8 +6,10 @@
 \usage{
 h2o.coxph(x, event_column, training_frame, model_id = NULL,
   start_column = NULL, stop_column = NULL, weights_column = NULL,
-  offset_column = NULL, ties = c("efron", "breslow"), init = 0,
-  lre_min = 9, iter_max = 20)
+  offset_column = NULL, stratify_by = NULL, ties = c("efron", "breslow"),
+  init = 0, lre_min = 9, max_iterations = 20, interactions = NULL,
+  interaction_pairs = NULL, interactions_only = NULL,
+  use_all_factor_levels = FALSE)
 }
 \arguments{
 \item{x}{(Optional) A vector containing the names or indices of the predictor variables to use in building the model.
@@ -19,9 +21,9 @@ If x is missing, then all columns except event_column, start_column and stop_col
 
 \item{model_id}{Destination id for this model; auto-generated if not specified.}
 
-\item{start_column}{start_column}
+\item{start_column}{Start Time Column.}
 
-\item{stop_column}{stop_column}
+\item{stop_column}{Stop Time Column.}
 
 \item{weights_column}{Column with observation weights. Giving some observation a weight of zero is equivalent to excluding it from
 the dataset; giving an observation a relative weight of 2 is equivalent to repeating that row twice. Negative
@@ -31,13 +33,25 @@ well. During training, rows with higher weights matter more, due to the larger l
 
 \item{offset_column}{Offset column. This will be added to the combination of columns before applying the link function.}
 
-\item{ties}{ties Must be one of: "efron", "breslow". Defaults to efron.}
+\item{stratify_by}{List of columns to use for stratification.}
 
-\item{init}{init Defaults to 0.}
+\item{ties}{Method for Handling Ties. Must be one of: "efron", "breslow". Defaults to efron.}
 
-\item{lre_min}{lre_min Defaults to 9.}
+\item{init}{Coefficient starting value. Defaults to 0.}
 
-\item{iter_max}{iter_max Defaults to 20.}
+\item{lre_min}{Minimum log-relative error. Defaults to 9.}
+
+\item{max_iterations}{Maximum number of iterations. Defaults to 20.}
+
+\item{interactions}{A list of predictor column indices to interact. All pairwise combinations will be computed for the list.}
+
+\item{interaction_pairs}{A list of pairwise (first order) column interactions.}
+
+\item{interactions_only}{A list of columns that should only be used to create interactions but should not itself participate in model
+training.}
+
+\item{use_all_factor_levels}{\code{Logical}. (Internal. For development only!) Indicates whether to use all factor levels. Defaults to
+FALSE.}
 }
 \description{
 Trains a Cox Proportional Hazards Model (CoxPH) on an H2O dataset

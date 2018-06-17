@@ -17,3 +17,20 @@ new reordered factor column
 \description{
 The levels of a factor are reordered os that the reference level is at level 0, remaining levels are moved down as needed.
 }
+\examples{
+\donttest{
+library(h2o)
+h2o.init()
+
+# Convert iris dataset to an H2OFrame
+hf <- as.h2o(iris)
+# Look at current ordering of the Species column levels
+h2o.levels(hf["Species"])
+# "setosa"     "versicolor" "virginica" 
+# Change the reference level to "virginica"
+hf["Species"] <- h2o.relevel(x = hf["Species"], y = "virginica")
+# Observe new ordering
+h2o.levels(hf["Species"])
+# "virginica"  "setosa"     "versicolor"
+}
+}

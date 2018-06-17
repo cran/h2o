@@ -31,7 +31,8 @@ Returns an object of the \linkS4class{H2OModelMetrics} subclass.
 }
 \description{
 Given a trained h2o model, compute its performance on the given
-dataset
+dataset.  However, if the dataset does not contain the response/target column, no performance will be returned.
+Instead, a warning message will be printed.
 }
 \examples{
 \donttest{

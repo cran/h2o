@@ -6,11 +6,15 @@
 \usage{
 h2o.automl(x, y, training_frame, validation_frame = NULL,
   leaderboard_frame = NULL, nfolds = 5, fold_column = NULL,
-  weights_column = NULL, max_runtime_secs = 3600, max_models = NULL,
-  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE",
-  "RMSLE", "AUC", "lift_top_group", "misclassification",
-  "mean_per_class_error"), stopping_tolerance = NULL, stopping_rounds = 3,
-  seed = NULL, project_name = NULL, exclude_algos = NULL)
+  weights_column = NULL, balance_classes = FALSE,
+  class_sampling_factors = NULL, max_after_balance_size = 5,
+  max_runtime_secs = 3600, max_models = NULL, stopping_metric = c("AUTO",
+  "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "lift_top_group",
+  "misclassification", "mean_per_class_error"), stopping_tolerance = NULL,
+  stopping_rounds = 3, seed = NULL, project_name = NULL,
+  exclude_algos = NULL, keep_cross_validation_predictions = TRUE,
+  keep_cross_validation_models = TRUE, sort_metric = c("AUTO", "deviance",
+  "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "mean_per_class_error"))
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the model.
@@ -34,6 +38,15 @@ this data frame intead of using cross-validation metrics, which is the default.}
 \item{weights_column}{Column with observation weights. Giving some observation a weight of zero is equivalent to excluding it from 
 the dataset; giving an observation a relative weight of 2 is equivalent to repeating that row twice. Negative weights are not allowed.}
 
+\item{balance_classes}{\code{Logical}. Balance training data class counts via over/under-sampling (for imbalanced data). Defaults to
+FALSE.}
+
+\item{class_sampling_factors}{Desired over/under-sampling ratios per class (in lexicographic order). If not specified, sampling factors will
+be automatically computed to obtain class balance during training. Requires balance_classes.}
+
+\item{max_after_balance_size}{Maximum relative size of the training data after balancing class counts (can be less than 1.0). Requires
+balance_classes. Defaults to 5.0.}
+
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for the entire model training process. Use 0 to disable. Defaults to 3600 secs (1 hour).}
 
 \item{max_models}{Maximum number of models to build in the AutoML process (does not include Stacked Ensembles). Defaults to NULL.}
@@ -56,6 +69,15 @@ because max_runtime_secs is resource limited, meaning that if the resources are 
 \item{exclude_algos}{Vector of character strings naming the algorithms to skip during the model-building phase.  An example use is exclude_algos = c("GLM", "DeepLearning", "DRF"), 
 and the full list of options is: "GLM", "GBM", "DRF" (Random Forest and Extremely-Randomized Trees), "DeepLearning" and "StackedEnsemble". Defaults to NULL, which means that 
 all appropriate H2O algorithms will be used, if the search stopping criteria allow. Optional.}
+
+\item{keep_cross_validation_predictions}{\code{Logical}. Whether to keep the predictions of the cross-validation predictions. If set to FALSE then running the same AutoML object for repeated runs will cause an exception as CV predictions are are required to build additional Stacked Ensemble models in AutoML. Defaults to TRUE.}
+
+\item{keep_cross_validation_models}{\code{Logical}. Whether to keep the cross-validated models. Deleting cross-validation models will save memory in the H2O cluster. Defaults to TRUE.}
+
+\item{sort_metric}{Metric to sort the leaderboard by. For binomial classification choose between "AUC", "logloss", "mean_per_class_error", "RMSE", "MSE".
+For regression choose between "mean_residual_deviance", "RMSE", "MSE", "MAE", and "RMSLE". For multinomial classification choose between
+"mean_per_class_error", "logloss", "RMSE", "MSE". Default is "AUTO". If set to "AUTO", then "AUC" will be used for binomial classification, 
+"mean_per_class_error" for multinomial classification, and "mean_residual_deviance" for regression.}
 }
 \value{
 An \linkS4class{H2OAutoML} object.

@@ -4,7 +4,19 @@
 \name{H2OCoxPHModelSummary-class}
 \alias{H2OCoxPHModelSummary-class}
 \alias{H2OCoxPHModelSummary}
+\alias{show,H2OCoxPHModelSummary-method}
+\alias{coef.H2OCoxPHModelSummary}
 \title{The H2OCoxPHModelSummary object.}
+\usage{
+\S4method{show}{H2OCoxPHModelSummary}(object)
+
+\method{coef}{H2OCoxPHModelSummary}(object, ...)
+}
+\arguments{
+\item{object}{An \code{H2OCoxPHModelSummary} object.}
+
+\item{...}{additional arguments to pass on.}
+}
 \description{
 Wrapper object for summary information compatible with survival package.
 }

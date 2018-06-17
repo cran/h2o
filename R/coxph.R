@@ -10,18 +10,25 @@
 #' @param event_column The name of binary data column in the training frame indicating the occurrence of an event.
 #' @param model_id Destination id for this model; auto-generated if not specified.
 #' @param training_frame Id of the training data frame.
-#' @param start_column start_column
-#' @param stop_column stop_column
+#' @param start_column Start Time Column.
+#' @param stop_column Stop Time Column.
 #' @param weights_column Column with observation weights. Giving some observation a weight of zero is equivalent to excluding it from
 #'        the dataset; giving an observation a relative weight of 2 is equivalent to repeating that row twice. Negative
 #'        weights are not allowed. Note: Weights are per-row observation weights and do not increase the size of the
 #'        data frame. This is typically the number of times a row is repeated, but non-integer values are supported as
 #'        well. During training, rows with higher weights matter more, due to the larger loss function pre-factor.
 #' @param offset_column Offset column. This will be added to the combination of columns before applying the link function.
-#' @param ties ties Must be one of: "efron", "breslow". Defaults to efron.
-#' @param init init Defaults to 0.
-#' @param lre_min lre_min Defaults to 9.
-#' @param iter_max iter_max Defaults to 20.
+#' @param stratify_by List of columns to use for stratification.
+#' @param ties Method for Handling Ties. Must be one of: "efron", "breslow". Defaults to efron.
+#' @param init Coefficient starting value. Defaults to 0.
+#' @param lre_min Minimum log-relative error. Defaults to 9.
+#' @param max_iterations Maximum number of iterations. Defaults to 20.
+#' @param interactions A list of predictor column indices to interact. All pairwise combinations will be computed for the list.
+#' @param interaction_pairs A list of pairwise (first order) column interactions.
+#' @param interactions_only A list of columns that should only be used to create interactions but should not itself participate in model
+#'        training.
+#' @param use_all_factor_levels \code{Logical}. (Internal. For development only!) Indicates whether to use all factor levels. Defaults to
+#'        FALSE.
 #' @export
 h2o.coxph <- function(x, event_column, training_frame,
                       model_id = NULL,
@@ -29,10 +36,15 @@ h2o.coxph <- function(x, event_column, training_frame,
                       stop_column = NULL,
                       weights_column = NULL,
                       offset_column = NULL,
+                      stratify_by = NULL,
                       ties = c("efron", "breslow"),
                       init = 0,
                       lre_min = 9,
-                      iter_max = 20
+                      max_iterations = 20,
+                      interactions = NULL,
+                      interaction_pairs = NULL,
+                      interactions_only = NULL,
+                      use_all_factor_levels = FALSE
                       ) 
 {
 
@@ -43,6 +55,15 @@ h2o.coxph <- function(x, event_column, training_frame,
      } else {
          x <- setdiff(colnames(training_frame), event_column)
      }
+  }
+  if (is.null(interactions_only) && (! is.null(interactions) || ! is.null(interaction_pairs))) {
+     used <- unique(c(interactions, unlist(sapply(interaction_pairs, function(x) {x[1]})), unlist(sapply(interaction_pairs, function(x) {x[2]}))))
+     interactions_only <- setdiff(used, x)
+     x <- c(x, interactions_only)
+  }
+  if (! is.null(stratify_by)) {
+     stratify_by_only <- setdiff(stratify_by, x)
+     x <- c(x, stratify_by_only)
   }
   # Required args: training_frame
   if (missing(training_frame)) stop("argument 'training_frame' is missing, with no default")
@@ -65,7 +86,6 @@ h2o.coxph <- function(x, event_column, training_frame,
 
   if (!missing(model_id))
     parms$model_id <- model_id
-  parms$rcall <- deparse(match.call())
   if (!missing(start_column))
     parms$start_column <- start_column
   if (!missing(stop_column))
@@ -74,14 +94,24 @@ h2o.coxph <- function(x, event_column, training_frame,
     parms$weights_column <- weights_column
   if (!missing(offset_column))
     parms$offset_column <- offset_column
+  if (!missing(stratify_by))
+    parms$stratify_by <- stratify_by
   if (!missing(ties))
     parms$ties <- ties
   if (!missing(init))
     parms$init <- init
   if (!missing(lre_min))
     parms$lre_min <- lre_min
-  if (!missing(iter_max))
-    parms$iter_max <- iter_max
+  if (!missing(max_iterations))
+    parms$max_iterations <- max_iterations
+  if (!missing(interactions))
+    parms$interactions <- interactions
+  if (!missing(interaction_pairs))
+    parms$interaction_pairs <- interaction_pairs
+  if (!missing(interactions_only))
+    parms$interactions_only <- interactions_only
+  if (!missing(use_all_factor_levels))
+    parms$use_all_factor_levels <- use_all_factor_levels
   # Error check and build model
   .h2o.modelJob('coxph', parms, h2oRestApiVersion = 3) 
 }

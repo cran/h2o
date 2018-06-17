@@ -48,7 +48,7 @@ head(prostate.deepfeatures_layer2)
 }
 }
 \seealso{
-\code{link{h2o.deeplearning}} for making H2O Deep Learning models.
+\code{\link{h2o.deeplearning}} for making H2O Deep Learning models.
 
-\code{link{h2o.deepwater}} for making H2O DeepWater models.
+\code{\link{h2o.deepwater}} for making H2O DeepWater models.
 }

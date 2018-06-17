@@ -23,10 +23,11 @@ h2o.xgboost(x, y, training_frame, model_id = NULL, validation_frame = NULL,
   colsample_bylevel = 1, col_sample_rate_per_tree = 1,
   colsample_bytree = 1, max_abs_leafnode_pred = 0, max_delta_step = 0,
   score_tree_interval = 0, min_split_improvement = 0, gamma = 0,
-  max_bins = 256, max_leaves = 0, min_sum_hessian_in_leaf = 100,
-  min_data_in_leaf = 0, sample_type = c("uniform", "weighted"),
-  normalize_type = c("tree", "forest"), rate_drop = 0, one_drop = FALSE,
-  skip_drop = 0, tree_method = c("auto", "exact", "approx", "hist"),
+  nthread = -1, max_bins = 256, max_leaves = 0,
+  min_sum_hessian_in_leaf = 100, min_data_in_leaf = 0,
+  sample_type = c("uniform", "weighted"), normalize_type = c("tree",
+  "forest"), rate_drop = 0, one_drop = FALSE, skip_drop = 0,
+  tree_method = c("auto", "exact", "approx", "hist"),
   grow_policy = c("depthwise", "lossguide"), booster = c("gbtree",
   "gblinear", "dart"), reg_lambda = 0, reg_alpha = 0,
   dmatrix_type = c("auto", "dense", "sparse"), backend = c("auto", "gpu",
@@ -128,6 +129,9 @@ Defaults to -1 (time-based random number).}
 
 \item{gamma}{(same as min_split_improvement) Minimum relative improvement in squared error reduction for a split to happen
 Defaults to 0.0.}
+
+\item{nthread}{Number of parallel threads that can be used to run XGBoost. Cannot exceed H2O cluster limits (-nthreads
+parameter). Defaults to maximum available Defaults to -1.}
 
 \item{max_bins}{For tree_method=hist only: maximum number of bins Defaults to 256.}
 

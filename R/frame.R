@@ -3782,7 +3782,14 @@ h2o.arrange <- function(x, ...) {
   .newExpr("sort", x, by-1L, as.numeric(ascend))
 }
 
-generate_col_index <-function(data, by) {
+
+#' CHeck to see if the column names/indices entered is valid for the dataframe given.  This is an internal function
+#'
+#' @param data The H2OFrame whose column names or indices are entered as a list
+#' @param by The column names/indices in a list.
+#'
+#' @export
+generate_col_ind <-function(data, by) {
   ### handle the columns
   # we accept: c('col1', 'col2'), 1:2, c(1,2) as column names.
   if(base::is.character(by)) {
@@ -3901,8 +3908,8 @@ generate_col_index <-function(data, by) {
 #'
 #' @export
 h2o.rank_within_group_by <- function(x, group_by_cols, sort_cols, ascending=NULL, new_col_name="New_Rank_column", sort_cols_sorted=FALSE) {
-  group.cols = generate_col_index(x, group_by_cols)
-  sort.cols = generate_col_index(x, sort_cols)
+  group.cols = generate_col_ind(x, group_by_cols)
+  sort.cols = generate_col_ind(x, sort_cols)
   numSort <- length(sort.cols)
   sortdir <- 1^(runif(numSort,1,1)) # default sort direction is ascending
   if (length(ascending) > 0) {
@@ -3933,7 +3940,22 @@ h2o.rank_within_group_by <- function(x, group_by_cols, sort_cols, ascending=NULL
 #' @param x factor column in h2o frame
 #' @param y reference level (string)
 #' @return new reordered factor column
+#' @examples
+#' \donttest{
+#' library(h2o)
+#' h2o.init()
 #'
+#' # Convert iris dataset to an H2OFrame
+#' hf <- as.h2o(iris)
+#' # Look at current ordering of the Species column levels
+#' h2o.levels(hf["Species"])
+#' # "setosa"     "versicolor" "virginica" 
+#' # Change the reference level to "virginica"
+#' hf["Species"] <- h2o.relevel(x = hf["Species"], y = "virginica")
+#' # Observe new ordering
+#' h2o.levels(hf["Species"])
+#' # "virginica"  "setosa"     "versicolor"
+#' }
 #' @export
 h2o.relevel <- function(x,y) {
   .newExpr("relevel", x, .quote(y))
@@ -4632,7 +4654,9 @@ h2o.stringdist <- function(x, y, method = c("lv", "lcs", "qgram", "jaccard", "jw
 #'
 #' Create Target Encoding Map
 #' 
-#' Creates a target encoding map based on group-by columns (`x`) and a numeric or binary target column (`y`). Computing target encoding for high cardinality categorical columns can improve performance of supervised learning models.
+#' Creates a target encoding map based on group-by columns (`x`) and a numeric or binary target column (`y`). 
+#' Computing target encoding for high cardinality categorical columns can improve performance of supervised 
+#' learning models. A Target Encoding tutorial is available here: \url{https://github.com/h2oai/h2o-tutorials/blob/master/best-practices/categorical-predictors/target_encoding.md}.
 #' 
 #' @param data An H2OFrame object with which to create the target encoding map.
 #' @param x A list containing the names or indices of the variables to encode.  A target encoding map will be created for each element in the list.  Items in the list can be multiple columns.  For example, if `x = list(c("A"), c("B", "C"))`, then there will be one mapping frame for A and one mapping frame for B & C (in this case, we group by two columns). 
@@ -4711,7 +4735,7 @@ h2o.target_encode_create <- function(data, x, y, fold_column = NULL){
     if (is.null(fold_column)) {
       x_mapping <- h2o.group_by(encoding_data, cols, sum(y), nrow(y))
     } else {
-      x_mapping <- h2o.group_by(encoding_data, c(cols, "fold"), sum(y), nrow(y))
+      x_mapping <- h2o.group_by(encoding_data, c(cols, fold_column), sum(y), nrow(y))
     }
     
     colnames(x_mapping)[which(colnames(x_mapping) == paste0("sum_", y))] <- "numerator"
@@ -4727,7 +4751,9 @@ h2o.target_encode_create <- function(data, x, y, fold_column = NULL){
 
 #' Apply Target Encoding Map to Frame
 #' 
-#' Applies a target encoding map to an H2OFrame object.  Computing target encoding for high cardinality categorical columns can improve performance of supervised learning models.
+#' Applies a target encoding map to an H2OFrame object.  Computing target encoding for high cardinality 
+#' categorical columns can improve performance of supervised learning models. A Target Encoding tutorial 
+#' is available here: \url{https://github.com/h2oai/h2o-tutorials/blob/master/best-practices/categorical-predictors/target_encoding.md}.
 #' 
 #' @param data An H2OFrame object with which to apply the target encoding map.
 #' @param x A list containing the names or indices of the variables to encode.  A target encoding column will be created for each element in the list.  Items in the list can be multiple columns.  For example, if `x = list(c("A"), c("B", "C"))`, then the resulting frame will have a target encoding column for A and a target encoding column for B & C (in this case, we group by two columns). 
@@ -4832,11 +4858,12 @@ h2o.target_encode_apply <- function(data, x, y, target_encode_map, holdout_type,
         colnames(out_fold)[which(colnames(out_fold) == "sum_numerator")] <- "numerator"
         colnames(out_fold)[which(colnames(out_fold) == "sum_denominator")] <- "denominator"
         out_fold$fold <- i
+        colnames(out_fold)[ncol(out_fold)] <- fold_column
         
         holdout_encode_map <- h2o.rbind(holdout_encode_map, out_fold)
       }
       
-      te_frame <- h2o.merge(te_frame, holdout_encode_map, by = c(cols, "fold"), all.x = TRUE)
+      te_frame <- h2o.merge(te_frame, holdout_encode_map, by = c(cols, fold_column), all.x = TRUE)
     }
     
     if (holdout_type == "LeaveOneOut") {

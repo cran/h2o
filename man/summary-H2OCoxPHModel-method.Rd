@@ -3,7 +3,7 @@
 \docType{methods}
 \name{summary,H2OCoxPHModel-method}
 \alias{summary,H2OCoxPHModel-method}
-\title{Print the CoxPH Model Summary}
+\title{Summary method for H2OCoxPHModel objects}
 \usage{
 \S4method{summary}{H2OCoxPHModel}(object, conf.int = 0.95, scale = 1)
 }
@@ -15,5 +15,5 @@
 \item{scale}{a scale.}
 }
 \description{
-Print the CoxPH Model Summary
+Summary method for H2OCoxPHModel objects
 }

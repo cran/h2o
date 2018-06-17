@@ -19,7 +19,9 @@ h2o.target_encode_create(data, x, y, fold_column = NULL)
 Returns a list of H2OFrame objects containing the target encoding mapping for each column in `x`.
 }
 \description{
-Creates a target encoding map based on group-by columns (`x`) and a numeric or binary target column (`y`). Computing target encoding for high cardinality categorical columns can improve performance of supervised learning models.
+Creates a target encoding map based on group-by columns (`x`) and a numeric or binary target column (`y`). 
+Computing target encoding for high cardinality categorical columns can improve performance of supervised 
+learning models. A Target Encoding tutorial is available here: \url{https://github.com/h2oai/h2o-tutorials/blob/master/best-practices/categorical-predictors/target_encoding.md}.
 }
 \examples{
 \donttest{

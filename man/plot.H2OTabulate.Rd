@@ -35,5 +35,5 @@ plot(tab)
 }
 }
 \seealso{
-\code{link{h2o.tabulate}}
+\code{\link{h2o.tabulate}}
 }

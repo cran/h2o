@@ -9,7 +9,7 @@ h2o.aggregator(training_frame, x, model_id = NULL, ignore_const_cols = TRUE,
   transform = c("NONE", "STANDARDIZE", "NORMALIZE", "DEMEAN", "DESCALE"),
   categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
   "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
-  save_mapping_frame = FALSE)
+  save_mapping_frame = FALSE, num_iteration_without_new_exemplar = 500)
 }
 \arguments{
 \item{training_frame}{Id of the training data frame.}
@@ -31,6 +31,9 @@ Defaults to NORMALIZE.}
 "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to AUTO.}
 
 \item{save_mapping_frame}{\code{Logical}. Whether to export the mapping of the aggregated frame Defaults to FALSE.}
+
+\item{num_iteration_without_new_exemplar}{The number of iterations to run before aggregator exits if the number of exemplars collected didn't change
+Defaults to 500.}
 }
 \description{
 Builds an Aggregated Frame of an H2OFrame.

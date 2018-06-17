@@ -30,7 +30,9 @@ h2o.target_encode_apply(data, x, y, target_encode_map, holdout_type,
 Returns an H2OFrame object containing the target encoding per record.
 }
 \description{
-Applies a target encoding map to an H2OFrame object.  Computing target encoding for high cardinality categorical columns can improve performance of supervised learning models.
+Applies a target encoding map to an H2OFrame object.  Computing target encoding for high cardinality 
+categorical columns can improve performance of supervised learning models. A Target Encoding tutorial 
+is available here: \url{https://github.com/h2oai/h2o-tutorials/blob/master/best-practices/categorical-predictors/target_encoding.md}.
 }
 \examples{
 \donttest{

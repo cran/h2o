@@ -5,12 +5,40 @@
 \alias{H2OCoxPHModel-class}
 \alias{H2OCoxPHModel}
 \alias{show,H2OCoxPHModel-method}
+\alias{coef.H2OCoxPHModel}
+\alias{extractAIC.H2OCoxPHModel}
+\alias{logLik.H2OCoxPHModel}
+\alias{survfit.H2OCoxPHModel}
+\alias{vcov.H2OCoxPHModel}
 \title{The H2OCoxPHModel object.}
 \usage{
 \S4method{show}{H2OCoxPHModel}(object)
+
+\method{coef}{H2OCoxPHModel}(object, ...)
+
+\method{extractAIC}{H2OCoxPHModel}(fit, scale, k = 2, ...)
+
+\method{logLik}{H2OCoxPHModel}(object, ...)
+
+survfit.H2OCoxPHModel(formula, newdata, ...)
+
+\method{vcov}{H2OCoxPHModel}(object, ...)
 }
 \arguments{
 \item{object}{an \code{H2OCoxPHModel} object.}
+
+\item{...}{additional arguments to pass on.}
+
+\item{fit}{an \code{H2OCoxPHModel} object.}
+
+\item{scale}{optional numeric specifying the scale parameter of the model.}
+
+\item{k}{numeric specifying the weight of the equivalent degrees of freedom.}
+
+\item{formula}{an \code{H2OCoxPHModel} object.}
+
+\item{newdata}{an optional \code{H2OFrame} or \code{data.frame} with the same
+variable names as those that appear in the \code{H2OCoxPHModel} object.}
 }
 \description{
 Virtual object representing H2O's CoxPH Model.
