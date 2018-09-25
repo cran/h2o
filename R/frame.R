@@ -2964,7 +2964,7 @@ h2o.floor <- function(x) {
 #' @param x An H2OFrame object.
 #' @param na.rm \code{logical}. indicating whether missing values should be removed.
 #' @param axis An int that indicates whether to do down a column (0) or across a row (1).
-#' @param return_frame A boolean that indicates whether to return an H2O frame or a list. Default is FALSE.
+#' @param return_frame A boolean that indicates whether to return an H2O frame or one single aggregated value. Default is FALSE.
 #' @seealso \code{\link[base]{sum}} for the base R implementation.
 #' @export
 h2o.sum <- function(x, na.rm = FALSE, axis = 0, return_frame = FALSE) {
@@ -3991,7 +3991,8 @@ h2o.relevel <- function(x,y) {
 #' GroupBy object; and \code{var} calculates the variance of each column specified in \code{col} for 
 #' each group of a GroupBy object. If an aggregate is provided without a value (for example, as 
 #' \code{max} in \code{sum(col="X1", na="all").mean(col="X5", na="all").max()}), then it is assumed 
-#' that the aggregation should apply to all columns except the GroupBy columns. Note again that 
+#' that the aggregation should apply to all columns except the GroupBy columns. However, operations
+#'  will not be performed on String columns.  They will be skipped.  Note again that
 #' \code{nrow} is required and cannot be empty.
 #'
 #' @param data an H2OFrame object.
@@ -4050,6 +4051,11 @@ h2o.group_by <- function(data, by, ..., gb.control=list(na.methods=NULL, col.nam
   # default to "all" na.method
   na.methods.defaults <- rep("all", nAggs)
 
+  for (colIndex in col.idxs) {
+    if (h2o.ischaracter(data[colIndex])) {
+      warning(paste0("Column ", names(data)[colIndex], " is a String column.  Groupby operations are not performend on it."))
+    }
+  }
   # 1 -> 0 based indexing of columns
   col.idxs <- col.idxs - 1
 
