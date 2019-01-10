@@ -54,6 +54,7 @@ setRefClass("H2OConnectionMutableState",
 #' is not found at port 54321.
 #' @slot ip A \code{character} string specifying the IP address of the H2O cloud.
 #' @slot port A \code{numeric} value specifying the port number of the H2O cloud.
+#' @slot name A \code{character} value specifying the cloud name of the H2O cloud.
 #' @slot proxy A \code{character} specifying the proxy path of the H2O cloud.
 #' @slot https Set this to TRUE to use https instead of http.
 #' @slot insecure Set this to TRUE to disable SSL certificate checking.
@@ -65,7 +66,7 @@ setRefClass("H2OConnectionMutableState",
 #' @aliases H2OConnection
 #' @export
 setClass("H2OConnection",
-         representation(ip="character", port="numeric", proxy="character",
+         representation(ip="character", port="numeric", name="character", proxy="character",
                         https="logical", insecure="logical",
                         username="character", password="character",
                         cookies="character",
@@ -73,6 +74,7 @@ setClass("H2OConnection",
                         mutable="H2OConnectionMutableState"),
          prototype(ip           = NA_character_,
                    port         = NA_integer_,
+                   name         = NA_character_,
                    proxy        = NA_character_,
                    https        = FALSE,
                    insecure     = FALSE,
@@ -90,6 +92,7 @@ setClassUnion("H2OConnectionOrNULL", c("H2OConnection", "NULL"))
 setMethod("show", "H2OConnection", function(object) {
   cat("IP Address:", object@ip,                 "\n")
   cat("Port      :", object@port,               "\n")
+  cat("Name      :", object@name,               "\n")
   cat("Session ID:", object@mutable$session_id, "\n")
   cat("Key Count :", object@mutable$key_count,  "\n")
 })
@@ -218,6 +221,7 @@ setMethod("summary", "H2OModel", function(object, ...) {
   if( !is.null(tm$logloss)                                         )  cat("\nLogloss: (Extract with `h2o.logloss`)", tm$logloss)
   if( !is.null(tm$mean_per_class_error)                            )  cat("\nMean Per-Class Error:", tm$mean_per_class_error)
   if( !is.null(tm$AUC)                                             )  cat("\nAUC: (Extract with `h2o.auc`)", tm$AUC)
+    if( !is.null(tm$pr_auc)                                             )  cat("\npr_auc: (Extract with `h2o.pr_auc`)", tm$pr_auc)
   if( !is.null(tm$Gini)                                            )  cat("\nGini: (Extract with `h2o.gini`)", tm$Gini)
   if( !is.null(tm$null_deviance)                                   )  cat("\nNull Deviance: (Extract with `h2o.nulldeviance`)", tm$null_deviance)
   if( !is.null(tm$residual_deviance)                               )  cat("\nResidual Deviance: (Extract with `h2o.residual_deviance`)", tm$residual_deviance)
@@ -287,6 +291,9 @@ setClass("H2ODimReductionModel", contains="H2OModel")
 #' @rdname H2OModel-class
 #' @export
 setClass("H2OWordEmbeddingModel", contains="H2OModel")
+#' @rdname H2OModel-class
+#' @export
+setClass("H2OAnomalyDetectionModel", contains="H2OModel")
 
 #'
 #' The H2OCoxPHModel object.
@@ -553,6 +560,7 @@ setMethod("show", "H2OBinomialMetrics", function(object) {
     cat("LogLoss:  ", object@metrics$logloss, "\n", sep="")
     cat("Mean Per-Class Error:  ", object@metrics$mean_per_class_error, "\n", sep="")
     cat("AUC:  ", object@metrics$AUC, "\n", sep="")
+    cat("pr_auc:  ", object@metrics$pr_auc, "\n", sep="")
     cat("Gini:  ", object@metrics$Gini, "\n", sep="")
     if(exists(object@algorithm) && object@algorithm == "glm") {
 
@@ -698,6 +706,10 @@ setClass("H2OWordEmbeddingMetrics", contains="H2OModelMetrics")
 #' @rdname H2OModelMetrics-class
 #' @export
 setClass("H2OCoxPHMetrics", contains="H2OModelMetrics")
+
+#' @rdname H2OModelMetrics-class
+#' @export
+setClass("H2OAnomalyDetectionMetrics", contains="H2OModelMetrics")
 
 #' H2O Future Model
 #'

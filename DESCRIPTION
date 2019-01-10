@@ -1,8 +1,8 @@
 Package: h2o
-Version: 3.20.0.8
+Version: 3.22.1.1
 Type: Package
 Title: R Interface for 'H2O'
-Date: 2018-09-21
+Date: 2018-12-28
 Authors@R: c(
     person("Erin", "LeDell", role = c("aut", "cre"), email = "erin@h2o.ai"),
     person("Navdeep", "Gill", role = c("aut")),
@@ -29,12 +29,12 @@ Authors@R: c(
     person("Lauren", "DiPerna", role = c("ctb")),    
     person("H2O.ai", role = c("cph", "fnd"))
     )
-Description: R interface for 'H2O', the scalable open source machine learning
-    platform that offers parallelized implementations of many supervised and
-    unsupervised machine learning algorithms such as Generalized Linear
-    Models, Gradient Boosting Machines (including XGBoost), Random Forests,
-    Deep Neural Networks (Deep Learning), Stacked Ensembles, Naive Bayes, Cox
-    Proportional Hazards, K-Means, PCA, Word2Vec, as well as a fully automatic
+Description: R interface for 'H2O', the scalable open source machine learning 
+    platform that offers parallelized implementations of many supervised and 
+    unsupervised machine learning algorithms such as Generalized Linear 
+    Models, Gradient Boosting Machines (including XGBoost), Random Forests, 
+    Deep Neural Networks (Deep Learning), Stacked Ensembles, Naive Bayes, Cox 
+    Proportional Hazards, K-Means, PCA, Word2Vec, as well as a fully automatic 
     machine learning algorithm (AutoML).
 License: Apache License (== 2.0)
 URL: https://github.com/h2oai/h2o-3
@@ -47,13 +47,15 @@ Suggests: ggplot2, mlbench, Matrix, slam, bit64 (>= 0.9.7), data.table
         (>= 1.9.8), survival
 Collate: 'aggregator.R' 'astfun.R' 'automl.R' 'classes.R' 'config.R'
         'connection.R' 'constants.R' 'datasets.R' 'logging.R'
-        'communication.R' 'kvstore.R' 'frame.R' 'import.R' 'parse.R'
-        'export.R' 'edicts.R' 'models.R' 'coxph.R' 'coxphutils.R'
-        'kmeans.R' 'gbm.R' 'glm.R' 'glrm.R' 'pca.R' 'svd.R'
-        'deeplearning.R' 'stackedensemble.R' 'deepwater.R' 'xgboost.R'
-        'randomforest.R' 'naivebayes.R' 'word2vec.R' 'w2vutils.R'
-        'locate.R' 'grid.R' 'predict.R' 'zzz.R'
-Packaged: 2018-09-21 16:57:08 UTC; jenkins
+        'communication.R' 'kvstore.R' 'frame.R' 'import.R'
+        'isolationforest.R' 'parse.R' 'export.R' 'edicts.R' 'models.R'
+        'coxph.R' 'coxphutils.R' 'kmeans.R' 'gbm.R' 'glm.R' 'glrm.R'
+        'pca.R' 'svd.R' 'deeplearning.R' 'stackedensemble.R'
+        'deepwater.R' 'xgboost.R' 'randomforest.R' 'naivebayes.R'
+        'word2vec.R' 'w2vutils.R' 'locate.R' 'grid.R' 'predict.R'
+        'zzz.R'
+RoxygenNote: 6.1.1
+Packaged: 2018-12-28 14:07:47 UTC; jenkins
 Author: Erin LeDell [aut, cre],
   Navdeep Gill [aut],
   Spencer Aiello [aut],
@@ -80,4 +82,4 @@ Author: Erin LeDell [aut, cre],
   H2O.ai [cph, fnd]
 Maintainer: Erin LeDell <erin@h2o.ai>
 Repository: CRAN
-Date/Publication: 2018-09-25 10:30:03 UTC
+Date/Publication: 2019-01-10 22:20:03 UTC
