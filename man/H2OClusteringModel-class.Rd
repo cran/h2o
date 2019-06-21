@@ -8,13 +8,13 @@
 This virtual class represents a clustering model built by H2O.
 }
 \details{
-This object has slots for the key, which is a character string that points to the model key existing in the H2O cloud,
+This object has slots for the key, which is a character string that points to the model key existing in the H2O cluster,
 the data used to build the model (an object of class H2OFrame).
 }
 \section{Slots}{
 
 \describe{
-\item{\code{model_id}}{A \code{character} string specifying the key for the model fit in the H2O cloud's key-value store.}
+\item{\code{model_id}}{A \code{character} string specifying the key for the model fit in the H2O cluster's key-value store.}
 
 \item{\code{algorithm}}{A \code{character} string specifying the algorithm that was used to fit the model.}
 

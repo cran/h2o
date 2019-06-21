@@ -37,7 +37,7 @@ the hash method.  The hash method cannot perform merge if you have string column
 Hence, we consider the radix method superior to the hash method and is the default method to use.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 left <- data.frame(fruit = c('apple', 'orange', 'banana', 'lemon', 'strawberry', 'blueberry'),
 color <- c('red', 'orange', 'yellow', 'yellow', 'red', 'blue'))

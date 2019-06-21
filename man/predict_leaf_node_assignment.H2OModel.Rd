@@ -36,7 +36,7 @@ The order of the rows in the results is the same as the order in which the
 data was loaded
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")

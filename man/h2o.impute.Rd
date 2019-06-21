@@ -40,7 +40,7 @@ is numeric then "mean" is selected; if it is categorical, then "mode" is selecte
 column types (e.g. String, Time, UUID) are not supported.
 }
 \examples{
-\donttest{
+\dontrun{
  h2o.init()
  iris_hf <- as.h2o(iris)
  iris_hf[sample(nrow(iris_hf), 40), 5] <- NA  # randomly replace 50 values with NA

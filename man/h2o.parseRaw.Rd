@@ -7,7 +7,8 @@
 h2o.parseRaw(data, pattern = "", destination_frame = "", header = NA,
   sep = "", col.names = NULL, col.types = NULL, na.strings = NULL,
   blocking = FALSE, parse_type = NULL, chunk_size = NULL,
-  decrypt_tool = NULL, skipped_columns = NULL)
+  decrypt_tool = NULL, skipped_columns = NULL,
+  custom_non_data_line_markers = NULL)
 }
 \arguments{
 \item{data}{An H2OFrame object to be parsed.}
@@ -47,6 +48,8 @@ Valid types are "ARFF", "XLS", "CSV", "SVMLight"}
 acquired by calling \link{h2o.decryptionSetup}.}
 
 \item{skipped_columns}{a list of column indices to be excluded from parsing}
+
+\item{custom_non_data_line_markers}{(Optional) If a line in imported file starts with any character in given string it will NOT be imported. Empty string means all lines are imported, NULL means that default behaviour for given format will be used}
 }
 \description{
 The second phase in the data ingestion step.

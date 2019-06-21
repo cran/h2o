@@ -11,7 +11,7 @@ Clear all H2O R command and error response logs from the local disk. Used
 primarily for debugging purposes.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 h2o.startLogging()

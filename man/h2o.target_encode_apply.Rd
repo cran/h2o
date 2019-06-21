@@ -36,7 +36,7 @@ categorical columns can improve performance of supervised learning models. A Tar
 is available here: \url{https://github.com/h2oai/h2o-tutorials/blob/master/best-practices/categorical-predictors/target_encoding.md}.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 

@@ -23,7 +23,7 @@ Returns a list containing the skewness for each column (NaN for non-numeric colu
 Obtain the skewness of a column of a parsed H2O data object.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
 prostate <- h2o.uploadFile(path = prostate_path)

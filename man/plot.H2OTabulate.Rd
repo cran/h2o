@@ -25,7 +25,7 @@ Returns a ggplot2-based heatmap of co-occurance.
 Plots the simple co-occurrence based tabulation of X vs Y as a heatmap, where X and Y are two Vecs in a given dataset. This function requires suggested ggplot2 package.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 df <- as.h2o(iris)

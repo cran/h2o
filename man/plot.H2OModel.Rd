@@ -27,7 +27,7 @@ scoring history.  The \code{timestep} and \code{metric} arguments are restricted
 available in the scoring history for a particular type of model.
 }
 \examples{
-\donttest{
+\dontrun{
 if (requireNamespace("mlbench", quietly=TRUE)) {
     library(h2o)
     h2o.init()

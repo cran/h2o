@@ -28,7 +28,7 @@ Both numeric and categorical values can be tested. However when returning a yes 
 both conditions must be either both categorical or numeric.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 australia_path <- system.file("extdata", "australia.csv", package = "h2o")
 australia <- h2o.importFile(path = australia_path)

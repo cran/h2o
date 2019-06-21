@@ -24,7 +24,7 @@ in the original string, or is greater than stop, an empty string is returned. Ne
 is coerced to 0.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 string_to_substring <- as.h2o("1234567890")

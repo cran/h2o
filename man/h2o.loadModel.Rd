@@ -7,12 +7,11 @@
 h2o.loadModel(path)
 }
 \arguments{
-\item{path}{The path of the H2O Model to be imported.
-and port of the server running H2O.}
+\item{path}{The path of the H2O Model to be imported.}
 }
 \value{
 Returns a \linkS4class{H2OModel} object of the class corresponding to the type of model
-        built.
+        loaded.
 }
 \description{
 Load a saved H2O model from disk. (Note that ensemble binary models 

@@ -45,7 +45,7 @@ of a variable is measured in change in the mean response. Note: Unlike randomFor
 partial dependence the mean response (probabilities) is returned rather than the mean of the log class probability.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")

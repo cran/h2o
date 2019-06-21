@@ -21,7 +21,7 @@ Download an H2O data set to a CSV file on the local disk
 }
 
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 iris_hf <- as.h2o(iris)

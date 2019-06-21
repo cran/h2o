@@ -18,7 +18,7 @@ Downloads the H2O data and then scans it in to an R data frame.
 Method \code{as.data.frame.H2OFrame} will use \code{\link[data.table]{fread}} if data.table package is installed in required version.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
 prostate <- h2o.uploadFile(path = prostate_path)

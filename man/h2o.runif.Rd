@@ -19,7 +19,7 @@ Creates a vector of random uniform numbers equal in length to the length of the 
 dataset.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")

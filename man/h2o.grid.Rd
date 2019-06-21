@@ -48,7 +48,7 @@ its results.
 Launch grid search with given algorithm and parameters.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 library(jsonlite)
 h2o.init()

@@ -32,7 +32,7 @@ Returns a vector of the positions of (first) matches of its first argument in it
 functions.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 iris_hf <- as.h2o(iris)
 h2o.match(iris_hf[, 5], c("setosa", "versicolor"))

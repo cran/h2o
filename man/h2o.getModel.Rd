@@ -16,7 +16,7 @@ Returns an object that is a subclass of \linkS4class{H2OModel}.
 Returns a reference to an existing model in the H2O instance.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 

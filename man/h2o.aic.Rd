@@ -22,7 +22,7 @@ than one parameter is set to TRUE, then a named vector of AICs are returned, whe
 or "xval".
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
 prostate <- h2o.uploadFile(path = prostate_path)

@@ -24,7 +24,7 @@ Returns an H2OFrame object.
 Compute the Discrete Cosine Transform of every row in the H2OFrame
 }
 \examples{
-\donttest{
+\dontrun{
   library(h2o)
   h2o.init()
   df <- h2o.createFrame(rows = 1000, cols = 8 * 16 * 24,

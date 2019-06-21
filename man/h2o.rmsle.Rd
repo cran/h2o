@@ -22,7 +22,7 @@ than one parameter is set to TRUE, then a named vector of rmsles are returned, w
 or "xval".
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 
 h <- h2o.init()

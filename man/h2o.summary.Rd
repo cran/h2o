@@ -31,7 +31,7 @@ By default it uses approximated version of quantiles computation, however, user 
 this behavior by setting up exact_quantiles argument to true.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")

@@ -25,7 +25,7 @@ Name of the MOJO file written to the path.
 Download the model in MOJO format.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h <- h2o.init()
 fr <- as.h2o(iris)

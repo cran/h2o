@@ -2,13 +2,15 @@
 % Please edit documentation in R/logging.R
 \name{zzz}
 \alias{zzz}
-\title{Shutdown H2O cloud after examples run}
+\title{Shutdown H2O cluster after examples run}
 \description{
-Shutdown H2O cloud after examples run
+Shutdown H2O cluster after examples run
 }
 \examples{
+\dontrun{
 library(h2o)
 h2o.init()
 h2o.shutdown(prompt = FALSE)
 Sys.sleep(3)
+}
 }

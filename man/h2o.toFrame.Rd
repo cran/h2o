@@ -13,7 +13,7 @@ h2o.toFrame(word2vec)
 Converts a given word2vec model into an H2OFrame. The frame represents learned word embeddings
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 
 # Build a dummy word2vec model

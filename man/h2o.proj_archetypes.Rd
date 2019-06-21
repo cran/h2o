@@ -25,7 +25,7 @@ Project each archetype in an H2O GLRM model into the corresponding feature
 space from the H2O training frame.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 iris_hf <- as.h2o(iris)

@@ -15,7 +15,7 @@ h2o.std_coef_plot(model, num_of_features = NULL)
 Plot a GLM model's standardized coefficient magnitudes.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 

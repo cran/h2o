@@ -25,7 +25,7 @@ Produces a new H2OFrame of the output of the applied
 Method for apply on H2OFrame objects.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 iris_hf <- as.h2o(iris)
 summary(apply(iris_hf, 2, sum))

@@ -17,7 +17,7 @@ for a trained GLM}
 Plot Variable Importances
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")

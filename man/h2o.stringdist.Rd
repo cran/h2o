@@ -27,7 +27,7 @@ Compute element-wise string distances between two H2OFrames. Both frames need to
 shape (N x M) and only contain string/factor columns. Return a matrix (H2OFrame) of shape N x M.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 x <- as.h2o(c("Martha", "Dwayne", "Dixon"))
 y <- as.character(as.h2o(c("Marhta", "Duane", "Dicksonx")))

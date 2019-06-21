@@ -23,7 +23,7 @@ than one parameter is set to TRUE, then a named vector of R2s are returned, wher
 or "xval".
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 
 h <- h2o.init()

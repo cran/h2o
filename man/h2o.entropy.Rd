@@ -13,7 +13,7 @@ h2o.entropy(x)
 Return the Shannon entropy of a string column. If the string is empty, the entropy is 0.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 buys <- as.h2o(c("no", "no", "yes", "yes", "yes", "no", "yes", "no", "yes", "yes","no"))

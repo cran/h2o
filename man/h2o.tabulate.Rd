@@ -31,7 +31,7 @@ Uses histogram of given resolution in X and Y.
 Handles numerical/categorical data and missing values. Supports observation weights.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 df <- as.h2o(iris)

@@ -16,7 +16,7 @@ Returns a list containing the count of NAs per column
 Gives the count of NAs per column.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 iris_hf <- as.h2o(iris)
 h2o.nacnt(iris_hf)  # should return all 0s

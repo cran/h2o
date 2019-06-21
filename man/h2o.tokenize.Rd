@@ -19,7 +19,7 @@ h2o.tokenize is similar to h2o.strsplit, the difference between them is that h2o
 text into a single column making it easier for additional processing (filtering stop words, word2vec algo, ...).
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 string_to_tokenize <- as.h2o("Split at every character and tokenize.")

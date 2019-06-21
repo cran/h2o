@@ -2,21 +2,25 @@
 #'
 #' @name aaa
 #' @examples
-#'if(Sys.info()['sysname'] == "Darwin" && Sys.info()['release'] == '13.4.0'){
-#'  quit(save="no")
-#'}else{
-#'  h2o.init(nthreads = 2)
-#'}
+#' \dontrun{
+#' if (Sys.info()['sysname'] == "Darwin" && Sys.info()['release'] == '13.4.0') {
+#'   quit(save="no")
+#' } else{
+#'   h2o.init(nthreads = 2)
+#' }
+#' }
 NULL
 
-#' Shutdown H2O cloud after examples run
+#' Shutdown H2O cluster after examples run
 #'
 #' @name zzz
 #' @examples
+#' \dontrun{ 
 #' library(h2o)
 #' h2o.init()
 #' h2o.shutdown(prompt = FALSE)
 #' Sys.sleep(3)
+#' }
 NULL
 
 # Initialize functions for R logging
@@ -53,7 +57,7 @@ h2o.logIt <- function(m, tmp, commandOrErr, isPost = TRUE) {
 #' @seealso \code{\link{h2o.stopLogging}, \link{h2o.clearLog},
 #'          \link{h2o.openLog}}
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' library(h2o)
 #' h2o.init()
 #' h2o.startLogging()
@@ -82,7 +86,7 @@ h2o.startLogging <- function(file) {
 #' @seealso \code{\link{h2o.startLogging}, \link{h2o.clearLog},
 #'          \link{h2o.openLog}}
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' library(h2o)
 #' h2o.init()
 #' h2o.startLogging()
@@ -104,7 +108,7 @@ h2o.stopLogging <- function() {
 #' @seealso \code{\link{h2o.startLogging}, \link{h2o.stopLogging},
 #'          \link{h2o.openLog}}
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' library(h2o)
 #' h2o.init()
 #' h2o.startLogging()
@@ -176,7 +180,7 @@ h2o.logAndEcho <- function(message) {
 #' @param dirname (Optional) A character string indicating the directory that the log file should be saved in.
 #' @param filename (Optional) A character string indicating the name that the log file should be saved to. Note that the saved format is .zip, so the file name must include the .zip extension.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' h2o.downloadAllLogs(dirname='./your_directory_name/', filename = 'autoh2o_log.zip')
 #' }
 #' @export
@@ -188,7 +192,7 @@ h2o.downloadAllLogs <- function(dirname = ".", filename = NULL) {
     stop("`filename` must be a non-empty character string")
 
   conn <- h2o.getConnection()
-  url <- paste0("http://", conn@ip, ":", conn@port, "/", .h2o.__DOWNLOAD_LOGS)
+  url <- .h2o.calcBaseURL(conn, urlSuffix = .h2o.__DOWNLOAD_LOGS)
   if(!file.exists(dirname))
     dir.create(dirname)
 

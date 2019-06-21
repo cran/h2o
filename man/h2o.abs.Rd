@@ -13,7 +13,7 @@ h2o.abs(x)
 Compute the absolute value of x
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 url <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/gbm_test/smtrees.csv"
 smtrees_hf <- h2o.importFile(url)

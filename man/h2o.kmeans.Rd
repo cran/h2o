@@ -78,7 +78,7 @@ Returns an object of class \linkS4class{H2OClusteringModel}.
 Performs k-means clustering on an H2O dataset
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")

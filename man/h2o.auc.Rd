@@ -22,7 +22,7 @@ than one parameter is set to TRUE, then a named vector of AUCs are returned, whe
 or "xval".
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 

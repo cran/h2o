@@ -13,7 +13,7 @@ h2o.trim(x)
 Trim Space
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 string_to_trim <- as.h2o("r tutorial")

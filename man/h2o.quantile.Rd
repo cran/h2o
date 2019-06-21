@@ -36,7 +36,7 @@ Obtain and display quantiles for H2O parsed data.
 an \code{H2OFrame} object.
 }
 \examples{
-\donttest{
+\dontrun{
 # Request quantiles for an H2O parsed data set:
 library(h2o)
 h2o.init()

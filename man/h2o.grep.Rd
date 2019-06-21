@@ -34,7 +34,7 @@ to return indices of the elements matching the pattern. Parameter
 if the element matches the pattern (1) or not (0).
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 addresses <- as.h2o(c("2307", "Leghorn St", "Mountain View", "CA", "94043"))

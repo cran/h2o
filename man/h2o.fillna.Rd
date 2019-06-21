@@ -22,7 +22,7 @@ An H2OFrame after filling missing values
 Fill NA's in a sequential manner up to a specified limit
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 fr_with_nas = h2o.createFrame(categorical_fraction = 0.0, missing_fraction = 0.7, rows = 6,

@@ -15,8 +15,10 @@
 #' @param model_id Destination id for this model; auto-generated if not specified.
 #' @param training_frame Id of the training data frame.
 #' @param validation_frame Id of the validation data frame.
-#' @param base_models List of models (or model ids) to ensemble/stack together. Models must have been cross-validated using nfolds >
-#'        1, and folds must be identical across models. Defaults to [].
+#' @param blending_frame Frame used to compute the predictions that serve as the training frame for the metalearner (triggers blending
+#'        mode if provided)
+#' @param base_models List of models (or model ids) to ensemble/stack together. If not using blending frame, then models must have
+#'        been cross-validated using nfolds > 1, and folds must be identical across models. Defaults to [].
 #' @param metalearner_algorithm Type of algorithm to use as the metalearner. Options include 'AUTO' (GLM with non negative weights; if
 #'        validation_frame is present, a lambda search is performed), 'glm' (GLM with default parameters), 'gbm' (GBM
 #'        with default parameters), 'drf' (Random Forest with default parameters), or 'deeplearning' (Deep Learning with
@@ -27,10 +29,10 @@
 #'        currently set to Random). The 'Stratified' option will stratify the folds based on the response variable, for
 #'        classification problems. Must be one of: "AUTO", "Random", "Modulo", "Stratified".
 #' @param metalearner_fold_column Column with cross-validation fold index assignment per observation for cross-validation of the metalearner.
-#' @param keep_levelone_frame \code{Logical}. Keep level one frame used for metalearner training. Defaults to FALSE.
 #' @param metalearner_params Parameters for metalearner algorithm Defaults to NULL.
 #' @param seed Seed for random numbers; passed through to the metalearner algorithm. Defaults to -1 (time-based random number)
 #'        Defaults to -1 (time-based random number).
+#' @param keep_levelone_frame \code{Logical}. Keep level one frame used for metalearner training. Defaults to FALSE.
 #' @param export_checkpoints_dir Automatically export generated models to this directory.
 #' @examples
 #' 
@@ -41,17 +43,23 @@
 h2o.stackedEnsemble <- function(x, y, training_frame,
                                 model_id = NULL,
                                 validation_frame = NULL,
+                                blending_frame = NULL,
                                 base_models = list(),
                                 metalearner_algorithm = c("AUTO", "glm", "gbm", "drf", "deeplearning"),
                                 metalearner_nfolds = 0,
                                 metalearner_fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
                                 metalearner_fold_column = NULL,
-                                keep_levelone_frame = FALSE,
+                                metalearner_params = NULL,
                                 seed = -1,
-                                export_checkpoints_dir = NULL,
-                                metalearner_params = NULL 
+                                keep_levelone_frame = FALSE,
+                                export_checkpoints_dir = NULL
                                 ) 
 {
+  # Validate required training_frame first and other frame args: should be a valid key or an H2OFrame object
+  training_frame <- .validate.H2OFrame(training_frame, required=TRUE)
+  validation_frame <- .validate.H2OFrame(validation_frame)
+  blending_frame <- .validate.H2OFrame(blending_frame)
+  # Validate other required args
   # If x is missing, then assume user wants to use all columns as features.
   if (missing(x)) {
      if (is.numeric(y)) {
@@ -61,22 +69,7 @@ h2o.stackedEnsemble <- function(x, y, training_frame,
      }
   }
 
-  # Required args: training_frame
-  if (missing(training_frame)) stop("argument 'training_frame' is missing, with no default")
-  # Training_frame must be a key or an H2OFrame object
-  if (!is.H2OFrame(training_frame))
-     tryCatch(training_frame <- h2o.getFrame(training_frame),
-           error = function(err) {
-             stop("argument 'training_frame' must be a valid H2OFrame or key")
-           })
-  # Validation_frame must be a key or an H2OFrame object
-  if (!is.null(validation_frame)) {
-     if (!is.H2OFrame(validation_frame))
-         tryCatch(validation_frame <- h2o.getFrame(validation_frame),
-             error = function(err) {
-                 stop("argument 'validation_frame' must be a valid H2OFrame or key")
-             })
-  }
+  # Handle other args
   # Parameter list to send to model builder
   parms <- list()
   parms$training_frame <- training_frame
@@ -107,6 +100,8 @@ h2o.stackedEnsemble <- function(x, y, training_frame,
     parms$model_id <- model_id
   if (!missing(validation_frame))
     parms$validation_frame <- validation_frame
+  if (!missing(blending_frame))
+    parms$blending_frame <- blending_frame
   if (!missing(base_models))
     parms$base_models <- base_models
   if (!missing(metalearner_algorithm))
@@ -117,10 +112,10 @@ h2o.stackedEnsemble <- function(x, y, training_frame,
     parms$metalearner_fold_assignment <- metalearner_fold_assignment
   if (!missing(metalearner_fold_column))
     parms$metalearner_fold_column <- metalearner_fold_column
-  if (!missing(keep_levelone_frame))
-    parms$keep_levelone_frame <- keep_levelone_frame
   if (!missing(seed))
     parms$seed <- seed
+  if (!missing(keep_levelone_frame))
+    parms$keep_levelone_frame <- keep_levelone_frame
   if (!missing(export_checkpoints_dir))
     parms$export_checkpoints_dir <- export_checkpoints_dir
   # Error check and build model

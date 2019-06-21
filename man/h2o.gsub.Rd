@@ -20,7 +20,7 @@ Creates a copy of the target column in which each string has all occurence of
 the regex pattern replaced with the replacement substring.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 string_to_gsub <- as.h2o("r tutorial")

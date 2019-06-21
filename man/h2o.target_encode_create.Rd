@@ -24,7 +24,7 @@ Computing target encoding for high cardinality categorical columns can improve p
 learning models. A Target Encoding tutorial is available here: \url{https://github.com/h2oai/h2o-tutorials/blob/master/best-practices/categorical-predictors/target_encoding.md}.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 

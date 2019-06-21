@@ -2,10 +2,10 @@
 % Please edit documentation in R/frame.R
 \name{h2o.listTimezones}
 \alias{h2o.listTimezones}
-\title{List all of the Time Zones Acceptable by the H2O Cloud.}
+\title{List all of the Time Zones Acceptable by the H2O cluster.}
 \usage{
 h2o.listTimezones()
 }
 \description{
-List all of the Time Zones Acceptable by the H2O Cloud.
+List all of the Time Zones Acceptable by the H2O cluster.
 }

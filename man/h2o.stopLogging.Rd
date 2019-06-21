@@ -11,7 +11,7 @@ Halt logging of H2O R POST commands and error responses to local disk. Used
 primarily for debugging purposes.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 h2o.startLogging()

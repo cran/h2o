@@ -20,7 +20,7 @@ h2o.scale(x, center = TRUE, scale = TRUE)
 Centers and/or scales the columns of an H2O dataset.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 iris_hf <- as.h2o(iris)

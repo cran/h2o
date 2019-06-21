@@ -15,7 +15,7 @@
 Convert an H2OFrame to a matrix
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 iris_hf <- as.h2o(iris)
 describe <- h2o.describe(iris_hf)

@@ -16,7 +16,7 @@ An H2OFrame with all entries in uppercase format
 Convert strings to uppercase
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 string_to_upper <- as.h2o("abcde")

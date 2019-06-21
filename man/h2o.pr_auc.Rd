@@ -22,7 +22,7 @@ than one parameter is set to TRUE, then a named vector of pr_aucs are returned, 
 or "xval".
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 

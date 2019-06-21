@@ -31,7 +31,7 @@ will deviate from the expected value more than on big data, where they will be v
 close to exact.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 iris_hf <- as.h2o(iris)

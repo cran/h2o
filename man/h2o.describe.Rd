@@ -17,7 +17,7 @@ Reports the "Flow" style summary rollups on an instance of H2OFrame. Includes
 information about column types, mins/maxs/missing/zero counts/stds/number of levels
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")

@@ -27,7 +27,7 @@ by computing the matrix product of X and Y, and transforming back to the origina
 feature space by minimizing each column's loss function.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 iris_hf <- as.h2o(iris)

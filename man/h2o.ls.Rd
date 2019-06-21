@@ -13,7 +13,7 @@ Returns a list of hex keys in the current H2O instance.
 Accesses a list of object keys in the running instance of H2O.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")

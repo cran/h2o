@@ -18,7 +18,7 @@ An H2OFrame where each column is the outcome of the string split.
 String Split
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 string_to_split <- as.h2o("Split at every character.")

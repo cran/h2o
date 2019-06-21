@@ -27,12 +27,12 @@ from the database
 Can be used for databases that do not support OFFSET-like clauses in SQL statements.}
 }
 \description{
-Imports SQL table into an H2O cloud. Assumes that the SQL table is not being updated and is stable.
+Imports SQL table into an H2O cluster. Assumes that the SQL table is not being updated and is stable.
 Runs multiple SELECT SQL queries concurrently for parallel ingestion.
 Be sure to start the h2o.jar in the terminal with your downloaded JDBC driver in the classpath:
    `java -cp <path_to_h2o_jar>:<path_to_jdbc_driver_jar> water.H2OApp`
 Also see h2o.import_sql_select.
-Currently supported SQL databases are MySQL, PostgreSQL, and MariaDB. Support for Oracle 12g and Microsoft SQL Server
+Currently supported SQL databases are MySQL, PostgreSQL, MariaDB, Hive, Oracle and Microsoft SQL Server.
 }
 \details{
 For example, 

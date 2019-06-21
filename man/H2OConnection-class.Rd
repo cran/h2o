@@ -13,7 +13,7 @@
 \item{object}{an \code{H2OConnection} object.}
 }
 \description{
-This class represents a connection to an H2O cloud.
+This class represents a connection to an H2O cluster.
 }
 \details{
 Because H2O is not a master-slave architecture, there is no restriction on which H2O node
@@ -27,13 +27,13 @@ is not found at port 54321.
 \section{Slots}{
 
 \describe{
-\item{\code{ip}}{A \code{character} string specifying the IP address of the H2O cloud.}
+\item{\code{ip}}{A \code{character} string specifying the IP address of the H2O cluster.}
 
-\item{\code{port}}{A \code{numeric} value specifying the port number of the H2O cloud.}
+\item{\code{port}}{A \code{numeric} value specifying the port number of the H2O cluster.}
 
-\item{\code{name}}{A \code{character} value specifying the cloud name of the H2O cloud.}
+\item{\code{name}}{A \code{character} value specifying the name of the H2O cluster.}
 
-\item{\code{proxy}}{A \code{character} specifying the proxy path of the H2O cloud.}
+\item{\code{proxy}}{A \code{character} specifying the proxy path of the H2O cluster.}
 
 \item{\code{https}}{Set this to TRUE to use https instead of http.}
 

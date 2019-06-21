@@ -28,7 +28,7 @@ predicted probability of this class by combining the raw contributions of trees 
 the trees just for the first class and values in columns Tx.C1 thus correspond to the the probability p0.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")

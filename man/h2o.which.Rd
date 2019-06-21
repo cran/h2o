@@ -16,7 +16,7 @@ Returns an H2OFrame object.
 Give the TRUE indices of a logical object, allowing for array indices.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 iris_hf <- as.h2o(iris)
 h2o.which(iris_hf[, 1] == 4.4)

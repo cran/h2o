@@ -9,12 +9,13 @@
 \usage{
 h2o.importFile(path, destination_frame = "", parse = TRUE,
   header = NA, sep = "", col.names = NULL, col.types = NULL,
-  na.strings = NULL, decrypt_tool = NULL, skipped_columns = NULL)
+  na.strings = NULL, decrypt_tool = NULL, skipped_columns = NULL,
+  custom_non_data_line_markers = NULL)
 
 h2o.importFolder(path, pattern = "", destination_frame = "",
   parse = TRUE, header = NA, sep = "", col.names = NULL,
   col.types = NULL, na.strings = NULL, decrypt_tool = NULL,
-  skipped_columns = NULL)
+  skipped_columns = NULL, custom_non_data_line_markers = NULL)
 
 h2o.importHDFS(path, pattern = "", destination_frame = "",
   parse = TRUE, header = NA, sep = "", col.names = NULL,
@@ -57,6 +58,8 @@ acquired by calling \link{h2o.decryptionSetup}.}
 
 \item{skipped_columns}{a list of column indices to be skipped during parsing.}
 
+\item{custom_non_data_line_markers}{(Optional) If a line in imported file starts with any character in given string it will NOT be imported. Empty string means all lines are imported, NULL means that default behaviour for given format will be used}
+
 \item{pattern}{(Optional) Character string containing a regular expression to match file(s) in
 the folder.}
 
@@ -68,7 +71,7 @@ datasets but loses the progress bar.}
 Valid types are "ARFF", "XLS", "CSV", "SVMLight"}
 }
 \description{
-Imports files into an H2O cloud. The default behavior is to pass-through to the parse phase
+Imports files into an H2O cluster. The default behavior is to pass-through to the parse phase
 automatically.
 }
 \details{
@@ -89,7 +92,7 @@ behavior is to pass-through to the parse phase automatically.
 \code{h2o.importHDFS} is deprecated. Instead, use \code{h2o.importFile}.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init(ip = "localhost", port = 54321, startH2O = TRUE)
 prostate_path = system.file("extdata", "prostate.csv", package = "h2o")
 prostate = h2o.importFile(path = prostate_path)

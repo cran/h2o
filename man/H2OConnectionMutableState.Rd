@@ -4,7 +4,7 @@
 \alias{H2OConnectionMutableState}
 \title{The H2OConnectionMutableState class}
 \description{
-This class represents the mutable aspects of a connection to an H2O cloud.
+This class represents the mutable aspects of a connection to an H2O cluster.
 }
 \section{Slots}{
 

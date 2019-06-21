@@ -34,7 +34,8 @@ h2o.gbm(x, y, training_frame, model_id = NULL, validation_frame = NULL,
   "OneHotExplicit", "Binary", "Eigen", "LabelEncoder", "SortByResponse",
   "EnumLimited"), calibrate_model = FALSE, calibration_frame = NULL,
   custom_metric_func = NULL, export_checkpoints_dir = NULL,
-  monotone_constraints = NULL, verbose = FALSE)
+  monotone_constraints = NULL, check_constant_response = TRUE,
+  verbose = FALSE)
 }
 \arguments{
 \item{x}{(Optional) A vector containing the names or indices of the predictor variables to use in building the model.
@@ -111,8 +112,9 @@ exceeds this Defaults to 1.797693135e+308.}
 \item{stopping_rounds}{Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the
 stopping_metric does not improve for k:=stopping_rounds scoring events (0 to disable) Defaults to 0.}
 
-\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression) Must be one of:
-"AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "lift_top_group", "misclassification",
+\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression). Note that custom
+and custom_increasing can only be used in GBM and DRF with the Python client. Must be one of: "AUTO",
+"deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "lift_top_group", "misclassification",
 "mean_per_class_error", "custom", "custom_increasing". Defaults to AUTO.}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
@@ -176,6 +178,10 @@ accurate estimates of class probabilities. Defaults to FALSE.}
 \item{monotone_constraints}{A mapping representing monotonic constraints. Use +1 to enforce an increasing constraint and -1 to specify a
 decreasing constraint.}
 
+\item{check_constant_response}{\code{Logical}. Check if response column is constant. If enabled, then an exception is thrown if the response
+column is a constant value.If disabled, then model will train regardless of the response column being a
+constant value or not. Defaults to TRUE.}
+
 \item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree for GBM, DRF, & XGBoost. Metrics per epoch for Deep Learning). Defaults to FALSE.}
 }
 \description{
@@ -185,7 +191,7 @@ In order to run properly, the response column must be an numeric for "gaussian" 
 enum for "bernoulli" or "multinomial".
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 

@@ -17,7 +17,7 @@ is a string specifying the set of characters to be removed. If omitted, the set
 argument defaults to removing whitespace.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 string_to_rstrip <- as.h2o("1234567890")

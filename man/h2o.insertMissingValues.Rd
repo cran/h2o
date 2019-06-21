@@ -28,7 +28,7 @@ this function should only be called on a subset of the original.
 }
 
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 

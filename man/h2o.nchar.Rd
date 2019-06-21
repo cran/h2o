@@ -13,7 +13,7 @@ h2o.nchar(x)
 String length
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 string_to_nchar <- as.h2o("r tutorial")

@@ -21,7 +21,7 @@ the same sentence are averaged and returned in the result.}
 Transform words (or sequences of words) to vectors using a word2vec model.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 
 # Build a dummy word2vec model

@@ -17,7 +17,7 @@ An H2OFrame object containing the combined \dots arguments row-wise.
 Takes a sequence of H2O data sets and combines them by rows
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")

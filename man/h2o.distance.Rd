@@ -21,7 +21,7 @@ h2o.distance(x, y, measure)
 Compute a pairwise distance measure between all rows of two numeric H2OFrames.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
 prostate <- h2o.uploadFile(path = prostate_path)

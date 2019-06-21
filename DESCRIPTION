@@ -1,8 +1,8 @@
 Package: h2o
-Version: 3.22.1.1
+Version: 3.24.0.5
 Type: Package
 Title: R Interface for 'H2O'
-Date: 2018-12-28
+Date: 2019-06-18
 Authors@R: c(
     person("Erin", "LeDell", role = c("aut", "cre"), email = "erin@h2o.ai"),
     person("Navdeep", "Gill", role = c("aut")),
@@ -47,15 +47,15 @@ Suggests: ggplot2, mlbench, Matrix, slam, bit64 (>= 0.9.7), data.table
         (>= 1.9.8), survival
 Collate: 'aggregator.R' 'astfun.R' 'automl.R' 'classes.R' 'config.R'
         'connection.R' 'constants.R' 'datasets.R' 'logging.R'
-        'communication.R' 'kvstore.R' 'frame.R' 'import.R'
-        'isolationforest.R' 'parse.R' 'export.R' 'edicts.R' 'models.R'
-        'coxph.R' 'coxphutils.R' 'kmeans.R' 'gbm.R' 'glm.R' 'glrm.R'
-        'pca.R' 'svd.R' 'deeplearning.R' 'stackedensemble.R'
-        'deepwater.R' 'xgboost.R' 'randomforest.R' 'naivebayes.R'
-        'word2vec.R' 'w2vutils.R' 'locate.R' 'grid.R' 'predict.R'
-        'zzz.R'
+        'communication.R' 'kvstore.R' 'frame.R' 'targetencoder.R'
+        'import.R' 'isolationforest.R' 'parse.R' 'export.R' 'edicts.R'
+        'models.R' 'coxph.R' 'coxphutils.R' 'kmeans.R' 'gbm.R'
+        'generic.R' 'glm.R' 'glrm.R' 'pca.R' 'svd.R' 'deeplearning.R'
+        'stackedensemble.R' 'deepwater.R' 'xgboost.R' 'randomforest.R'
+        'naivebayes.R' 'word2vec.R' 'w2vutils.R' 'locate.R' 'grid.R'
+        'predict.R' 'zzz.R'
 RoxygenNote: 6.1.1
-Packaged: 2018-12-28 14:07:47 UTC; jenkins
+Packaged: 2019-06-21 00:07:12 UTC; me
 Author: Erin LeDell [aut, cre],
   Navdeep Gill [aut],
   Spencer Aiello [aut],
@@ -82,4 +82,4 @@ Author: Erin LeDell [aut, cre],
   H2O.ai [cph, fnd]
 Maintainer: Erin LeDell <erin@h2o.ai>
 Repository: CRAN
-Date/Publication: 2019-01-10 22:20:03 UTC
+Date/Publication: 2019-06-21 08:20:18 UTC

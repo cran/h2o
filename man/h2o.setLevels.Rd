@@ -20,7 +20,7 @@ This call has SIDE EFFECTS and mutates the column in place (change of the levels
 that are referencing this column). If you want to make a copy of the column instead, use parameter in.place = FALSE.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 iris_hf <- as.h2o(iris)
 new.levels <- c("setosa", "versicolor", "caroliniana")

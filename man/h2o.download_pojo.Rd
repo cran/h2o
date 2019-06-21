@@ -27,7 +27,7 @@ If path is NULL, then pretty print the POJO to the console.
 Download the Scoring POJO (Plain Old Java Object) of an H2O Model
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h <- h2o.init()
 fr <- as.h2o(iris)

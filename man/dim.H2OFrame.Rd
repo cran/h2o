@@ -13,7 +13,7 @@
 Returns the number of rows and columns for an H2OFrame object.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 iris_hf <- as.h2o(iris)
 dim(iris_hf)

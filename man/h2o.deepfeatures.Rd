@@ -23,7 +23,7 @@ Extract the non-linear feature from an H2O data set using an H2O deep learning
 model.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 prostate_path = system.file("extdata", "prostate.csv", package = "h2o")

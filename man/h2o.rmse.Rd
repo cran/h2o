@@ -27,7 +27,7 @@ This function only supports \linkS4class{H2OBinomialMetrics},
 \linkS4class{H2OMultinomialMetrics}, and \linkS4class{H2ORegressionMetrics} objects.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 

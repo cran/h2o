@@ -43,7 +43,7 @@ Defaults to 500.}
 Builds an Aggregated Frame of an H2OFrame.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 df <- h2o.createFrame(rows=100, cols=5, categorical_fraction=0.6, integer_fraction=0,

@@ -16,7 +16,7 @@ An H2OFrame with all entries in lowercase format
 Convert strings to lowercase
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 string_to_lower <- as.h2o("ABCDE")

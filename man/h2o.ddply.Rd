@@ -24,7 +24,7 @@ Returns an H2OFrame object containing the results from the split/apply operation
 For each subset of an H2O data set, apply a user-specified function, then combine the results.  This is an experimental feature.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 

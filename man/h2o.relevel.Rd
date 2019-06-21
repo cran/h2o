@@ -18,7 +18,7 @@ new reordered factor column
 The levels of a factor are reordered os that the reference level is at level 0, remaining levels are moved down as needed.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 

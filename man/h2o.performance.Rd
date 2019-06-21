@@ -35,7 +35,7 @@ dataset.  However, if the dataset does not contain the response/target column, n
 Instead, a warning message will be printed.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")

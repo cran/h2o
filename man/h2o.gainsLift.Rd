@@ -39,7 +39,7 @@ The \linkS4class{H2OModelMetrics} version of this function will only take
 \linkS4class{H2OBinomialMetrics} objects.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")

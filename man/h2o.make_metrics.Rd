@@ -24,7 +24,7 @@ Given predicted values (target for regression, class-1 probabilities or binomial
 or per-class probabilities for multinomial), compute a model metrics object
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")

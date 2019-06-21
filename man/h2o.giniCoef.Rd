@@ -22,7 +22,7 @@ than one parameter is set to TRUE, then a named vector of GINIs are returned, wh
 or "xval".
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 
@@ -37,7 +37,7 @@ h2o.giniCoef(perf)
 }
 \seealso{
 \code{\link{h2o.auc}} for AUC,  \code{\link{h2o.giniCoef}} for the
-         GINI coefficient, and \code{\link{h2o.metric}} for the various. See
-         \code{\link{h2o.performance}} for creating H2OModelMetrics objects.
-         threshold metrics.
+         GINI coefficient, and \code{\link{h2o.metric}} for the various
+         threshold metrics. See \code{\link{h2o.performance}} for creating 
+         H2OModelMetrics objects.
 }

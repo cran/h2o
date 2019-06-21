@@ -4,7 +4,8 @@
 \alias{h2o.exportFile}
 \title{Export an H2O Data Frame (H2OFrame) to a File or to a collection of Files.}
 \usage{
-h2o.exportFile(data, path, force = FALSE, parts = 1)
+h2o.exportFile(data, path, force = FALSE, sep = ",",
+  compression = NULL, parts = 1)
 }
 \arguments{
 \item{data}{An H2OFrame object.}
@@ -14,6 +15,11 @@ also filename if exporting to a single file. May be prefaced with
 hdfs:// or s3n://. Each row of data appears as line of the file.}
 
 \item{force}{logical, indicates how to deal with files that already exist.}
+
+\item{sep}{The field separator character. Values on each line of
+the file will be separated by this character (default ",").}
+
+\item{compression}{How to compress the exported dataset}
 
 \item{parts}{integer, number of part files to export to. Default is to
 write to a single file. Large data can be exported to multiple

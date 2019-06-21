@@ -27,7 +27,7 @@ Returns an H2OFrame object.
 Creates a data frame in H2O with n-th order interaction features between categorical columns, as specified by the user.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 

@@ -56,7 +56,7 @@ Returns an H2OFrame object.
 Creates a data frame in H2O with real-valued, categorical, integer, and binary columns specified by the user.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 hf <- h2o.createFrame(rows = 1000, cols = 100, categorical_fraction = 0.1,

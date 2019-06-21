@@ -11,7 +11,7 @@ h2o.sum(x, na.rm = FALSE, axis = 0, return_frame = FALSE)
 
 \item{na.rm}{\code{logical}. indicating whether missing values should be removed.}
 
-\item{axis}{An int that indicates whether to do down a column (0) or across a row (1).}
+\item{axis}{An int that indicates whether to do down a column (0) or across a row (1). For row or column sums, the \code{return_frame} parameter must be TRUE.}
 
 \item{return_frame}{A boolean that indicates whether to return an H2O frame or one single aggregated value. Default is FALSE.}
 }

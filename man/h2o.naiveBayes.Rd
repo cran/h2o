@@ -106,7 +106,7 @@ The naive Bayes classifier assumes independence between predictor variables cond
          missing values, then those predictors are omitted in the probability         calculation during prediction.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 votes_path <- system.file("extdata", "housevotes.csv", package = "h2o")
 votes <- h2o.uploadFile(path = votes_path, header = TRUE)

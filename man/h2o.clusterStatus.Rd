@@ -10,7 +10,7 @@ h2o.clusterStatus()
 Retrieve information on the status of the cluster running H2O.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 h2o.clusterStatus()
 }

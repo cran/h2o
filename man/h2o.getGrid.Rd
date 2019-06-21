@@ -21,7 +21,7 @@ validation metrics will display. However, if nfolds > 1, then cross-validation m
 display even if a validation frame is provided.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 library(jsonlite)
 h2o.init()

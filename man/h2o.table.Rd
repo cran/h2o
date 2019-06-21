@@ -24,7 +24,7 @@ Returns a tabulated H2OFrame object.
 Uses the cross-classifying factors to build a table of counts at each combination of factor levels.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")

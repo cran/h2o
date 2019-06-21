@@ -20,7 +20,7 @@ h2o.init(ip = "localhost", port = 54321, name = NA_character_,
 
 \item{port}{Object of class \code{numeric} representing the port number of the H2O server.}
 
-\item{name}{(Optional) A \code{character} string representing the H2O cloud name.}
+\item{name}{(Optional) A \code{character} string representing the H2O cluster name.}
 
 \item{startH2O}{(Optional) A \code{logical} value indicating whether to try to start H2O from R if no connection with H2O is detected. This is only possible if \code{ip = "localhost"} or \code{ip = "127.0.0.1"}.  If an existing connection is detected, R does not start H2O.}
 
@@ -105,5 +105,5 @@ h2o.init(max_mem_size = "5g")
 }
 }
 \seealso{
-\href{http://h2o-release.s3.amazonaws.com/h2o-dev/rel-shannon/2/docs-website/h2o-r/h2o_package.pdf}{H2O R package documentation} for more details. \code{\link{h2o.shutdown}} for shutting down from R.
+\href{http://docs.h2o.ai/h2o/latest-stable/h2o-r/h2o_package.pdf}{H2O R package documentation} for more details. \code{\link{h2o.shutdown}} for shutting down from R.
 }

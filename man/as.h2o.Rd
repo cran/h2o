@@ -26,7 +26,7 @@ as.h2o(x, destination_frame = "", ...)
 \item{\dots}{arguments passed to method arguments.}
 }
 \description{
-Import R object to the H2O cloud.
+Import R object to the H2O cluster.
 }
 \details{
 Method \code{as.h2o.data.frame} will use \code{\link[data.table]{fwrite}} if data.table package is installed in required version.
@@ -35,7 +35,7 @@ To speedup execution time for large sparse matrices, use h2o datatable.  Make su
 Turn on h2o datatable by options("h2o.use.data.table"=TRUE)
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 iris_hf <- as.h2o(iris)
 euro_hf <- as.h2o(euro)

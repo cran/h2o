@@ -12,12 +12,13 @@ h2o.glm(x, y, training_frame, model_id = NULL, validation_frame = NULL,
   fold_column = NULL, ignore_const_cols = TRUE,
   score_each_iteration = FALSE, offset_column = NULL,
   weights_column = NULL, family = c("gaussian", "binomial",
-  "quasibinomial", "ordinal", "multinomial", "poisson", "gamma",
-  "tweedie"), tweedie_variance_power = 0, tweedie_link_power = 1,
-  solver = c("AUTO", "IRLSM", "L_BFGS", "COORDINATE_DESCENT_NAIVE",
-  "COORDINATE_DESCENT", "GRADIENT_DESCENT_LH", "GRADIENT_DESCENT_SQERR"),
-  alpha = NULL, lambda = NULL, lambda_search = FALSE,
-  early_stopping = TRUE, nlambdas = -1, standardize = TRUE,
+  "quasibinomial", "ordinal", "multinomial", "poisson", "gamma", "tweedie",
+  "negativebinomial"), tweedie_variance_power = 0,
+  tweedie_link_power = 1, theta = 1e-10, solver = c("AUTO", "IRLSM",
+  "L_BFGS", "COORDINATE_DESCENT_NAIVE", "COORDINATE_DESCENT",
+  "GRADIENT_DESCENT_LH", "GRADIENT_DESCENT_SQERR"), alpha = NULL,
+  lambda = NULL, lambda_search = FALSE, early_stopping = TRUE,
+  nlambdas = -1, standardize = TRUE,
   missing_values_handling = c("MeanImputation", "Skip"),
   compute_p_values = FALSE, remove_collinear_columns = FALSE,
   intercept = TRUE, non_negative = FALSE, max_iterations = -1,
@@ -75,12 +76,14 @@ data frame. This is typically the number of times a row is repeated, but non-int
 well. During training, rows with higher weights matter more, due to the larger loss function pre-factor.}
 
 \item{family}{Family. Use binomial for classification with logistic regression, others are for regression problems. Must be
-one of: "gaussian", "binomial", "quasibinomial", "ordinal", "multinomial", "poisson", "gamma", "tweedie".
-Defaults to gaussian.}
+one of: "gaussian", "binomial", "quasibinomial", "ordinal", "multinomial", "poisson", "gamma", "tweedie",
+"negativebinomial". Defaults to gaussian.}
 
 \item{tweedie_variance_power}{Tweedie variance power Defaults to 0.}
 
 \item{tweedie_link_power}{Tweedie link power Defaults to 1.}
+
+\item{theta}{Theta Defaults to 1e-10.}
 
 \item{solver}{AUTO will set the solver based on given data and the other parameters. IRLSM is fast on on problems with small
 number of predictors and for lambda-search with L1 penalty, L_BFGS scales better for datasets with many
@@ -189,7 +192,7 @@ Fits a generalized linear model, specified by a response variable, a set of pred
 description of the error distribution.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 
 # Run GLM of CAPSULE ~ AGE + RACE + PSA + DCAPS

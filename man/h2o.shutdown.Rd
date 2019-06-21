@@ -23,7 +23,7 @@ Users must call h2o.shutdown explicitly in order to shut down the local H2O inst
 }
 
 \examples{
-# Don't run automatically to prevent accidentally shutting down a cloud
+# Don't run automatically to prevent accidentally shutting down a cluster
 \dontrun{
 library(h2o)
 h2o.init()

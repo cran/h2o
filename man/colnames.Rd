@@ -17,7 +17,7 @@ colnames(x, do.NULL = TRUE, prefix = "col")
 Returns the column names of an H2OFrame
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 iris_hf <- as.h2o(iris)
 colnames(iris_hf)  # Returns "Sepal.Length" "Sepal.Width"  "Petal.Length" "Petal.Width"  "Species"

@@ -14,7 +14,7 @@ Begin logging H2o R POST commands and error responses to local disk. Used
 primarily for debuggin purposes.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 h2o.startLogging()

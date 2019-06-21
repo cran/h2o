@@ -23,7 +23,7 @@ Detect anomalies in an H2O dataset using an H2O deep learning model with
 auto-encoding.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 prostate_path = system.file("extdata", "prostate.csv", package = "h2o")

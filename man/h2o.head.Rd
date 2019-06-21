@@ -29,7 +29,7 @@ An H2OFrame containing the first or last n rows of an H2OFrame object.
 Returns the first or last rows of an H2OFrame object.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init(ip <- "localhost", port = 54321, startH2O = TRUE)
 australia_path <- system.file("extdata", "australia.csv", package = "h2o")

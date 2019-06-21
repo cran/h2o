@@ -15,7 +15,7 @@ h2o.downloadAllLogs(dirname = ".", filename = NULL)
 \code{h2o.downloadAllLogs} downloads all H2O log files to local disk in .zip format. Generally used for debugging purposes.
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.downloadAllLogs(dirname='./your_directory_name/', filename = 'autoh2o_log.zip')
 }
 }

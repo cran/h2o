@@ -2,7 +2,7 @@
 % Please edit documentation in R/frame.R
 \name{h2o.setTimezone}
 \alias{h2o.setTimezone}
-\title{Set the Time Zone on the H2O Cloud}
+\title{Set the Time Zone on the H2O cluster}
 \usage{
 h2o.setTimezone(tz)
 }
@@ -10,5 +10,5 @@ h2o.setTimezone(tz)
 \item{tz}{The desired timezone.}
 }
 \description{
-Set the Time Zone on the H2O Cloud
+Set the Time Zone on the H2O cluster
 }

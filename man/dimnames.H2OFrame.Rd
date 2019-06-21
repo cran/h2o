@@ -13,7 +13,7 @@
 Set column names of an H2O Frame
 }
 \examples{
-\donttest{
+\dontrun{
 h2o.init()
 n <- 2000
 #  Generate variables V1, ... V10

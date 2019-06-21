@@ -5,15 +5,16 @@
 \title{Automatic Machine Learning}
 \usage{
 h2o.automl(x, y, training_frame, validation_frame = NULL,
-  leaderboard_frame = NULL, nfolds = 5, fold_column = NULL,
-  weights_column = NULL, balance_classes = FALSE,
+  leaderboard_frame = NULL, blending_frame = NULL, nfolds = 5,
+  fold_column = NULL, weights_column = NULL, balance_classes = FALSE,
   class_sampling_factors = NULL, max_after_balance_size = 5,
-  max_runtime_secs = 3600, max_models = NULL,
-  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE",
-  "MAE", "RMSLE", "AUC", "lift_top_group", "misclassification",
-  "mean_per_class_error"), stopping_tolerance = NULL,
-  stopping_rounds = 3, seed = NULL, project_name = NULL,
-  exclude_algos = NULL, keep_cross_validation_predictions = FALSE,
+  max_runtime_secs = 3600, max_runtime_secs_per_model = NULL,
+  max_models = NULL, stopping_metric = c("AUTO", "deviance", "logloss",
+  "MSE", "RMSE", "MAE", "RMSLE", "AUC", "lift_top_group",
+  "misclassification", "mean_per_class_error"),
+  stopping_tolerance = NULL, stopping_rounds = 3, seed = NULL,
+  project_name = NULL, exclude_algos = NULL, include_algos = NULL,
+  keep_cross_validation_predictions = FALSE,
   keep_cross_validation_models = FALSE,
   keep_cross_validation_fold_assignment = FALSE,
   sort_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE",
@@ -23,24 +24,26 @@ h2o.automl(x, y, training_frame, validation_frame = NULL,
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the model.
 If x is missing, then all columns except y are used.}
 
-\item{y}{The name or index of the response variable in the model. For classification, the y column must be a 
+\item{y}{The name or index of the response variable in the model. For classification, the y column must be a
 factor, otherwise regression will be performed. Indexes are 1-based in R.}
 
 \item{training_frame}{Training frame (H2OFrame or ID).}
 
-\item{validation_frame}{Validation frame (H2OFrame or ID); Optional.  This argument is ignored unless the user sets nfolds = 0. 
-If cross-validation is turned off, then a validation frame can be specified and used for early stopping of individual models and early 
-stopping of the grid searches.  By default and when nfolds > 1, cross-validation metrics will be used for early stopping and thus 
+\item{validation_frame}{Validation frame (H2OFrame or ID); Optional.  This argument is ignored unless the user sets nfolds = 0.
+If cross-validation is turned off, then a validation frame can be specified and used for early stopping of individual models and early
+stopping of the grid searches.  By default and when nfolds > 1, cross-validation metrics will be used for early stopping and thus
 validation_frame will be ignored.}
 
-\item{leaderboard_frame}{Leaderboard frame (H2OFrame or ID); Optional.  If provided, the Leaderboard will be scored using 
+\item{leaderboard_frame}{Leaderboard frame (H2OFrame or ID); Optional.  If provided, the Leaderboard will be scored using
 this data frame intead of using cross-validation metrics, which is the default.}
+
+\item{blending_frame}{Blending frame (H2OFrame or ID) used to train the the metalearning algorithm in Stacked Ensembles (instead of relying on cross-validated predicted values); Optional.}
 
 \item{nfolds}{Number of folds for k-fold cross-validation. Defaults to 5. Use 0 to disable cross-validation; this will also disable Stacked Ensemble (thus decreasing the overall model performance).}
 
 \item{fold_column}{Column with cross-validation fold index assignment per observation; used to override the default, randomized, 5-fold cross-validation scheme for individual models in the AutoML run.}
 
-\item{weights_column}{Column with observation weights. Giving some observation a weight of zero is equivalent to excluding it from 
+\item{weights_column}{Column with observation weights. Giving some observation a weight of zero is equivalent to excluding it from
 the dataset; giving an observation a relative weight of 2 is equivalent to repeating that row twice. Negative weights are not allowed.}
 
 \item{balance_classes}{\code{Logical}. Balance training data class counts via over/under-sampling (for imbalanced data). Defaults to
@@ -54,26 +57,29 @@ balance_classes. Defaults to 5.0.}
 
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for the entire model training process. Use 0 to disable. Defaults to 3600 secs (1 hour).}
 
+\item{max_runtime_secs_per_model}{Maximum runtime in seconds dedicated to each individual model training process. Use 0 to disable. Defaults to 0.}
+
 \item{max_models}{Maximum number of models to build in the AutoML process (does not include Stacked Ensembles). Defaults to NULL.}
 
 \item{stopping_metric}{Metric to use for early stopping ("AUTO" is logloss for classification, deviance for regression).
 Must be one of "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "lift_top_group", "misclassification", "mean_per_class_error". Defaults to AUTO.}
 
-\item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this much). This value defaults to 0.001 if the 
-dataset is at least 1 million rows; otherwise it defaults to a bigger value determined by the size of the dataset and the non-NA-rate.  In that case, the value is computed 
+\item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this much). This value defaults to 0.001 if the
+dataset is at least 1 million rows; otherwise it defaults to a bigger value determined by the size of the dataset and the non-NA-rate.  In that case, the value is computed
 as 1/sqrt(nrows * non-NA-rate).}
 
-\item{stopping_rounds}{Integer. Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the stopping_metric 
+\item{stopping_rounds}{Integer. Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the stopping_metric
 does not improve for k (stopping_rounds) scoring events. Defaults to 3 and must be an non-zero integer.  Use 0 to disable early stopping.}
 
-\item{seed}{Integer. Set a seed for reproducibility. AutoML can only guarantee reproducibility if max_models or early stopping is used 
+\item{seed}{Integer. Set a seed for reproducibility. AutoML can only guarantee reproducibility if max_models or early stopping is used
 because max_runtime_secs is resource limited, meaning that if the resources are not the same between runs, AutoML may be able to train more models on one run vs another.}
 
 \item{project_name}{Character string to identify an AutoML project.  Defaults to NULL, which means a project name will be auto-generated based on the training frame ID.}
 
-\item{exclude_algos}{Vector of character strings naming the algorithms to skip during the model-building phase.  An example use is exclude_algos = c("GLM", "DeepLearning", "DRF"), 
-and the full list of options is: "DRF" (Random Forest and Extremely-Randomized Trees), "GLM", "XGBoost", "GBM", "DeepLearning" and "StackedEnsemble". Defaults to NULL, which means that 
-all appropriate H2O algorithms will be used, if the search stopping criteria allow. Optional.}
+\item{exclude_algos}{Vector of character strings naming the algorithms to skip during the model-building phase.  An example use is exclude_algos = c("GLM", "DeepLearning", "DRF"),
+and the full list of options is: "DRF" (Random Forest and Extremely-Randomized Trees), "GLM", "XGBoost", "GBM", "DeepLearning" and "StackedEnsemble".}
+
+\item{include_algos}{Vector of character strings naming the algorithms to restrict to during the model-building phase. This can't be used in combination with exclude_algos param.}
 
 \item{keep_cross_validation_predictions}{\code{Logical}. Whether to keep the predictions of the cross-validation predictions. This needs to be set to TRUE if running the same AutoML object for repeated runs because CV predictions are required to build additional Stacked Ensemble models in AutoML. This option defaults to FALSE.}
 
@@ -102,7 +108,7 @@ AutoML finds the best model, given a training frame and response, and returns an
          which contains a leaderboard of all the models that were trained in the process, ranked by a default model performance metric.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 votes_path <- system.file("extdata", "housevotes.csv", package = "h2o")

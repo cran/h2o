@@ -16,7 +16,7 @@ Returns a logical value indicating whether any of the columns in \code{x} are fa
 Determines if any column of an H2OFrame object contains categorical data.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 iris_hf <- as.h2o(iris)

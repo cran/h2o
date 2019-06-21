@@ -68,7 +68,7 @@ Principal components analysis of an H2O data frame using the power method
 to calculate the singular value decomposition of the Gram matrix.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 australia_path <- system.file("extdata", "australia.csv", package = "h2o")

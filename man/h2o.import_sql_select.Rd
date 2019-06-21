@@ -5,7 +5,8 @@
 \title{Import SQL table that is result of SELECT SQL query into H2O}
 \usage{
 h2o.import_sql_select(connection_url, select_query, username, password,
-  optimize = NULL, fetch_mode = NULL)
+  use_temp_table = NULL, temp_table_name = NULL, optimize = NULL,
+  fetch_mode = NULL)
 }
 \arguments{
 \item{connection_url}{URL of the SQL database connection as specified by the Java Database Connectivity (JDBC) Driver.
@@ -16,6 +17,10 @@ For example, "jdbc:mysql://localhost:3306/menagerie?&useSSL=false"}
 \item{username}{Username for SQL server}
 
 \item{password}{Password for SQL server}
+
+\item{use_temp_table}{Whether a temporary table should be created from select_query}
+
+\item{temp_table_name}{Name of temporary table to be created from select_query}
 
 \item{optimize}{(Optional) Optimize import of SQL table for faster imports. Experimental. Default is true.}
 
@@ -29,7 +34,7 @@ Runs multiple SELECT SQL queries on the temporary table concurrently for paralle
 Be sure to start the h2o.jar in the terminal with your downloaded JDBC driver in the classpath:
    `java -cp <path_to_h2o_jar>:<path_to_jdbc_driver_jar> water.H2OApp`
 Also see h2o.import_sql_table.
-Currently supported SQL databases are MySQL, PostgreSQL, and MariaDB. Support for Oracle 12g and Microsoft SQL Server
+Currently supported SQL databases are MySQL, PostgreSQL, MariaDB, Hive, Oracle and Microsoft SQL Server.
 }
 \details{
 For example, 

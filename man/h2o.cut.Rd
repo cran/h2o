@@ -38,7 +38,7 @@ Divides the range of the H2O data into intervals and codes the values according 
 leftmost interval corresponds to the level one, the next is level two, etc.
 }
 \examples{
-\donttest{
+\dontrun{
 library(h2o)
 h2o.init()
 iris_hf <- as.h2o(iris)
