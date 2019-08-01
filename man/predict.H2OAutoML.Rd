@@ -2,9 +2,12 @@
 % Please edit documentation in R/automl.R
 \name{predict.H2OAutoML}
 \alias{predict.H2OAutoML}
+\alias{h2o.predict.H2OAutoML}
 \title{Predict on an AutoML object}
 \usage{
 \method{predict}{H2OAutoML}(object, newdata, ...)
+
+\method{h2o.predict}{H2OAutoML}(object, newdata, ...)
 }
 \arguments{
 \item{object}{a fitted \linkS4class{H2OAutoML} object for which prediction is

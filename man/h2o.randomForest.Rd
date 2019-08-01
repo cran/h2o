@@ -18,8 +18,8 @@ h2o.randomForest(x, y, training_frame, model_id = NULL,
   nbins = 20, nbins_top_level = 1024, nbins_cats = 1024,
   r2_stopping = Inf, stopping_rounds = 0, stopping_metric = c("AUTO",
   "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
-  "lift_top_group", "misclassification", "mean_per_class_error", "custom",
-  "custom_increasing"), stopping_tolerance = 0.001,
+  "lift_top_group", "misclassification", "AUCPR", "mean_per_class_error",
+  "custom", "custom_increasing"), stopping_tolerance = 0.001,
   max_runtime_secs = 0, seed = -1, build_tree_one_node = FALSE,
   mtries = -1, sample_rate = 0.6320000291,
   sample_rate_per_class = NULL, binomial_double_trees = FALSE,
@@ -110,10 +110,11 @@ exceeds this Defaults to 1.797693135e+308.}
 \item{stopping_rounds}{Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the
 stopping_metric does not improve for k:=stopping_rounds scoring events (0 to disable) Defaults to 0.}
 
-\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression). Note that custom
-and custom_increasing can only be used in GBM and DRF with the Python client. Must be one of: "AUTO",
-"deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "lift_top_group", "misclassification",
-"mean_per_class_error", "custom", "custom_increasing". Defaults to AUTO.}
+\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and
+anonomaly_score for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF
+with the Python client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
+"lift_top_group", "misclassification", "AUCPR", "mean_per_class_error", "custom", "custom_increasing".
+Defaults to AUTO.}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
 much) Defaults to 0.001.}

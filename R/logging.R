@@ -5,17 +5,17 @@
 #' \dontrun{
 #' if (Sys.info()['sysname'] == "Darwin" && Sys.info()['release'] == '13.4.0') {
 #'   quit(save="no")
-#' } else{
-#'   h2o.init(nthreads = 2)
+#' } else {
+#'  h2o.init(nthreads = 2)
 #' }
-#' }
+#'}
 NULL
 
 #' Shutdown H2O cluster after examples run
 #'
 #' @name zzz
 #' @examples
-#' \dontrun{ 
+#' \dontrun{
 #' library(h2o)
 #' h2o.init()
 #' h2o.shutdown(prompt = FALSE)

@@ -6,7 +6,7 @@
 \usage{
 h2o.mojo_predict_csv(input_csv_path, mojo_zip_path,
   output_csv_path = NULL, genmodel_jar_path = NULL, classpath = NULL,
-  java_options = NULL, verbose = F)
+  java_options = NULL, verbose = F, setInvNumNA = F)
 }
 \arguments{
 \item{input_csv_path}{Path to input CSV file.}
@@ -22,6 +22,8 @@ h2o.mojo_predict_csv(input_csv_path, mojo_zip_path,
 \item{java_options}{Optional, custom user defined options for Java. By default '-Xmx4g -XX:ReservedCodeCacheSize=256m' is used.}
 
 \item{verbose}{Optional, if TRUE, then additional debug information will be printed. FALSE by default.}
+
+\item{setInvNumNA}{Optional, if TRUE, then then for an string that cannot be parsed into a number an N/A value will be produced, if false the command will fail. FALSE by default.}
 }
 \value{
 Returns a data.frame containing computed predictions

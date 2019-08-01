@@ -18,7 +18,8 @@ h2o.automl(x, y, training_frame, validation_frame = NULL,
   keep_cross_validation_models = FALSE,
   keep_cross_validation_fold_assignment = FALSE,
   sort_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE",
-  "RMSLE", "AUC", "mean_per_class_error"), export_checkpoints_dir = NULL)
+  "RMSLE", "AUC", "mean_per_class_error"), export_checkpoints_dir = NULL,
+  verbosity = NULL)
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the model.
@@ -93,6 +94,9 @@ For regression choose between "mean_residual_deviance", "RMSE", "MSE", "MAE", an
 "mean_per_class_error" for multinomial classification, and "mean_residual_deviance" for regression.}
 
 \item{export_checkpoints_dir}{(Optional) Path to a directory where every model will be stored in binary form.}
+
+\item{verbosity}{Verbosity of the backend messages printed during training; Optional.
+Must be one of "debug", "info", "warn". Defaults to NULL (disable live log).}
 }
 \value{
 An \linkS4class{H2OAutoML} object.

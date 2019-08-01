@@ -24,8 +24,8 @@ h2o.glm(x, y, training_frame, model_id = NULL, validation_frame = NULL,
   intercept = TRUE, non_negative = FALSE, max_iterations = -1,
   objective_epsilon = -1, beta_epsilon = 1e-04,
   gradient_epsilon = -1, link = c("family_default", "identity",
-  "logit", "log", "inverse", "tweedie", "ologit", "oprobit", "ologlog"),
-  prior = -1, lambda_min_ratio = -1, beta_constraints = NULL,
+  "logit", "log", "inverse", "tweedie", "ologit"), prior = -1,
+  lambda_min_ratio = -1, beta_constraints = NULL,
   max_active_predictors = -1, interactions = NULL,
   interaction_pairs = NULL, obj_reg = -1,
   export_checkpoints_dir = NULL, balance_classes = FALSE,
@@ -135,8 +135,8 @@ indicates: If lambda_search is set to False and lambda is equal to zero, the def
 is equal to .000001, otherwise the default value is .0001. If lambda_search is set to True, the conditional
 values above are 1E-8 and 1E-6 respectively. Defaults to -1.}
 
-\item{link}{Must be one of: "family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit", "oprobit",
-"ologlog". Defaults to family_default.}
+\item{link}{Must be one of: "family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit". Defaults to
+family_default.}
 
 \item{prior}{Prior probability for y==1. To be used only for logistic regression iff the data has been sampled and the mean
 of response does not reflect reality. Defaults to -1.}

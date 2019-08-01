@@ -17,13 +17,13 @@ h2o.gbm(x, y, training_frame, model_id = NULL, validation_frame = NULL,
   nbins = 20, nbins_top_level = 1024, nbins_cats = 1024,
   r2_stopping = Inf, stopping_rounds = 0, stopping_metric = c("AUTO",
   "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
-  "lift_top_group", "misclassification", "mean_per_class_error", "custom",
-  "custom_increasing"), stopping_tolerance = 0.001,
+  "lift_top_group", "misclassification", "AUCPR", "mean_per_class_error",
+  "custom", "custom_increasing"), stopping_tolerance = 0.001,
   max_runtime_secs = 0, seed = -1, build_tree_one_node = FALSE,
   learn_rate = 0.1, learn_rate_annealing = 1,
   distribution = c("AUTO", "bernoulli", "quasibinomial", "multinomial",
   "gaussian", "poisson", "gamma", "tweedie", "laplace", "quantile",
-  "huber"), quantile_alpha = 0.5, tweedie_power = 1.5,
+  "huber", "custom"), quantile_alpha = 0.5, tweedie_power = 1.5,
   huber_alpha = 0.9, checkpoint = NULL, sample_rate = 1,
   sample_rate_per_class = NULL, col_sample_rate = 1,
   col_sample_rate_change_per_level = 1, col_sample_rate_per_tree = 1,
@@ -33,9 +33,9 @@ h2o.gbm(x, y, training_frame, model_id = NULL, validation_frame = NULL,
   categorical_encoding = c("AUTO", "Enum", "OneHotInternal",
   "OneHotExplicit", "Binary", "Eigen", "LabelEncoder", "SortByResponse",
   "EnumLimited"), calibrate_model = FALSE, calibration_frame = NULL,
-  custom_metric_func = NULL, export_checkpoints_dir = NULL,
-  monotone_constraints = NULL, check_constant_response = TRUE,
-  verbose = FALSE)
+  custom_metric_func = NULL, custom_distribution_func = NULL,
+  export_checkpoints_dir = NULL, monotone_constraints = NULL,
+  check_constant_response = TRUE, verbose = FALSE)
 }
 \arguments{
 \item{x}{(Optional) A vector containing the names or indices of the predictor variables to use in building the model.
@@ -112,10 +112,11 @@ exceeds this Defaults to 1.797693135e+308.}
 \item{stopping_rounds}{Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the
 stopping_metric does not improve for k:=stopping_rounds scoring events (0 to disable) Defaults to 0.}
 
-\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression). Note that custom
-and custom_increasing can only be used in GBM and DRF with the Python client. Must be one of: "AUTO",
-"deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "lift_top_group", "misclassification",
-"mean_per_class_error", "custom", "custom_increasing". Defaults to AUTO.}
+\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and
+anonomaly_score for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF
+with the Python client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
+"lift_top_group", "misclassification", "AUCPR", "mean_per_class_error", "custom", "custom_increasing".
+Defaults to AUTO.}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
 much) Defaults to 0.001.}
@@ -133,7 +134,7 @@ Defaults to FALSE.}
 \item{learn_rate_annealing}{Scale the learning rate by this factor after each tree (e.g., 0.99 or 0.999)  Defaults to 1.}
 
 \item{distribution}{Distribution function Must be one of: "AUTO", "bernoulli", "quasibinomial", "multinomial", "gaussian",
-"poisson", "gamma", "tweedie", "laplace", "quantile", "huber". Defaults to AUTO.}
+"poisson", "gamma", "tweedie", "laplace", "quantile", "huber", "custom". Defaults to AUTO.}
 
 \item{quantile_alpha}{Desired quantile for Quantile regression, must be between 0 and 1. Defaults to 0.5.}
 
@@ -172,6 +173,8 @@ accurate estimates of class probabilities. Defaults to FALSE.}
 \item{calibration_frame}{Calibration frame for Platt Scaling}
 
 \item{custom_metric_func}{Reference to custom evaluation function, format: `language:keyName=funcName`}
+
+\item{custom_distribution_func}{Reference to custom distribution, format: `language:keyName=funcName`}
 
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
 

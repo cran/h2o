@@ -5,12 +5,14 @@
 \title{Imports a generic model into H2O. Such model can be used then used for scoring and obtaining
 additional information about the model. The imported model has to be supported by H2O.}
 \usage{
-h2o.generic(model_id = NULL, model_key = NULL)
+h2o.generic(model_id = NULL, model_key = NULL, path = NULL)
 }
 \arguments{
 \item{model_id}{Destination id for this model; auto-generated if not specified.}
 
 \item{model_key}{Key to the self-contained model archive already uploaded to H2O.}
+
+\item{path}{Path to file with self-contained model archive.}
 }
 \description{
 Imports a generic model into H2O. Such model can be used then used for scoring and obtaining

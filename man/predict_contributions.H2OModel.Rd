@@ -25,7 +25,7 @@ Returns an H2OFrame contain feature contributions for each input row.
 Returned H2OFrame has shape (#rows, #features + 1) - there is a feature contribution column for each input
 feature, the last column is the model bias (same value for each row). The sum of the feature contributions
 and the bias term is equal to the raw prediction of the model. Raw prediction of tree-based model is the sum
-of the predictions of the individual trees before before the inverse link function is applied to get the actual
+of the predictions of the individual trees before the inverse link function is applied to get the actual
 prediction. For Gaussian distribution the sum of the contributions is equal to the model prediction.
 }
 \details{

@@ -6,7 +6,8 @@
 \usage{
 h2o.partialPlot(object, data, cols, destination_key, nbins = 20,
   plot = TRUE, plot_stddev = TRUE, weight_column = -1,
-  include_na = FALSE, user_splits = NULL, save_to = NULL)
+  include_na = FALSE, user_splits = NULL, col_pairs_2dpdp = NULL,
+  save_to = NULL, row_index = -1)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} object.}
@@ -32,9 +33,15 @@ If you enable add_missing_NA, the returned length will be nbin+1.}
 If there are two columns using user defined split points, there should be two lists in the nested list.
 Inside each list, the first element is the column name followed by values defined by the user.}
 
+\item{col_pairs_2dpdp}{A two-level nested list like this: col_pairs_2dpdp = list(c("col1_name", "col2_name"),
+c("col1_name","col3_name"), ...,) where a 2D partial plots will be generated for col1_name, col2_name pair, for
+col1_name, col3_name pair and whatever other pairs that are specified in the nested list.}
+
 \item{save_to}{Fully qualified prefix of the image files the resulting plots should be saved to, e.g. '/home/user/pdp'.
 Plots for each feature are saved separately in PNG format, each file receives a suffix equal to the corresponding feature name, e.g. `/home/user/pdp_AGE.png`.
 If the files already exists, they will be overridden. Files are only saves if plot = TRUE (default).}
+
+\item{row_index}{Row for which partial dependence will be calculated instead of the whole input frame.}
 }
 \value{
 Plot and list of calculated mean response tables for each feature requested.

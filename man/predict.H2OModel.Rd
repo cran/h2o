@@ -2,12 +2,12 @@
 % Please edit documentation in R/models.R
 \name{predict.H2OModel}
 \alias{predict.H2OModel}
-\alias{h2o.predict}
+\alias{h2o.predict.H2OModel}
 \title{Predict on an H2O Model}
 \usage{
 \method{predict}{H2OModel}(object, newdata, ...)
 
-h2o.predict(object, newdata, ...)
+\method{h2o.predict}{H2OModel}(object, newdata, ...)
 }
 \arguments{
 \item{object}{a fitted \linkS4class{H2OModel} object for which prediction is

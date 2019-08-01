@@ -56,10 +56,11 @@
 #'        exceeds this Defaults to 1.797693135e+308.
 #' @param stopping_rounds Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the
 #'        stopping_metric does not improve for k:=stopping_rounds scoring events (0 to disable) Defaults to 0.
-#' @param stopping_metric Metric to use for early stopping (AUTO: logloss for classification, deviance for regression). Note that custom
-#'        and custom_increasing can only be used in GBM and DRF with the Python client. Must be one of: "AUTO",
-#'        "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "lift_top_group", "misclassification",
-#'        "mean_per_class_error", "custom", "custom_increasing". Defaults to AUTO.
+#' @param stopping_metric Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and
+#'        anonomaly_score for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF
+#'        with the Python client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
+#'        "lift_top_group", "misclassification", "AUCPR", "mean_per_class_error", "custom", "custom_increasing".
+#'        Defaults to AUTO.
 #' @param stopping_tolerance Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
 #'        much) Defaults to 0.001.
 #' @param max_runtime_secs Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.
@@ -70,7 +71,7 @@
 #' @param learn_rate Learning rate (from 0.0 to 1.0) Defaults to 0.1.
 #' @param learn_rate_annealing Scale the learning rate by this factor after each tree (e.g., 0.99 or 0.999)  Defaults to 1.
 #' @param distribution Distribution function Must be one of: "AUTO", "bernoulli", "quasibinomial", "multinomial", "gaussian",
-#'        "poisson", "gamma", "tweedie", "laplace", "quantile", "huber". Defaults to AUTO.
+#'        "poisson", "gamma", "tweedie", "laplace", "quantile", "huber", "custom". Defaults to AUTO.
 #' @param quantile_alpha Desired quantile for Quantile regression, must be between 0 and 1. Defaults to 0.5.
 #' @param tweedie_power Tweedie power for Tweedie regression, must be between 1 and 2. Defaults to 1.5.
 #' @param huber_alpha Desired quantile for Huber/M-regression (threshold between quadratic and linear loss, must be between 0 and
@@ -92,6 +93,7 @@
 #'        accurate estimates of class probabilities. Defaults to FALSE.
 #' @param calibration_frame Calibration frame for Platt Scaling
 #' @param custom_metric_func Reference to custom evaluation function, format: `language:keyName=funcName`
+#' @param custom_distribution_func Reference to custom distribution, format: `language:keyName=funcName`
 #' @param export_checkpoints_dir Automatically export generated models to this directory.
 #' @param monotone_constraints A mapping representing monotonic constraints. Use +1 to enforce an increasing constraint and -1 to specify a
 #'        decreasing constraint.
@@ -141,14 +143,14 @@ h2o.gbm <- function(x, y, training_frame,
                     nbins_cats = 1024,
                     r2_stopping = 1.797693135e+308,
                     stopping_rounds = 0,
-                    stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing"),
+                    stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "lift_top_group", "misclassification", "AUCPR", "mean_per_class_error", "custom", "custom_increasing"),
                     stopping_tolerance = 0.001,
                     max_runtime_secs = 0,
                     seed = -1,
                     build_tree_one_node = FALSE,
                     learn_rate = 0.1,
                     learn_rate_annealing = 1,
-                    distribution = c("AUTO", "bernoulli", "quasibinomial", "multinomial", "gaussian", "poisson", "gamma", "tweedie", "laplace", "quantile", "huber"),
+                    distribution = c("AUTO", "bernoulli", "quasibinomial", "multinomial", "gaussian", "poisson", "gamma", "tweedie", "laplace", "quantile", "huber", "custom"),
                     quantile_alpha = 0.5,
                     tweedie_power = 1.5,
                     huber_alpha = 0.9,
@@ -166,6 +168,7 @@ h2o.gbm <- function(x, y, training_frame,
                     calibrate_model = FALSE,
                     calibration_frame = NULL,
                     custom_metric_func = NULL,
+                    custom_distribution_func = NULL,
                     export_checkpoints_dir = NULL,
                     monotone_constraints = NULL,
                     check_constant_response = TRUE,
@@ -298,6 +301,8 @@ h2o.gbm <- function(x, y, training_frame,
     parms$calibration_frame <- calibration_frame
   if (!missing(custom_metric_func))
     parms$custom_metric_func <- custom_metric_func
+  if (!missing(custom_distribution_func))
+    parms$custom_distribution_func <- custom_distribution_func
   if (!missing(export_checkpoints_dir))
     parms$export_checkpoints_dir <- export_checkpoints_dir
   if (!missing(monotone_constraints))

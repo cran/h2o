@@ -4,10 +4,12 @@
 \alias{h2o.rm}
 \title{Delete Objects In H2O}
 \usage{
-h2o.rm(ids)
+h2o.rm(ids, cascade = TRUE)
 }
 \arguments{
 \item{ids}{The object or hex key associated with the object to be removed or a vector/list of those things.}
+
+\item{cascade}{Boolean, if set to TRUE (default), the object dependencies (e.g. submodels) are also removed.}
 }
 \description{
 Remove the h2o Big Data object(s) having the key name(s) from ids.

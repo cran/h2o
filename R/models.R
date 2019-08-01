@@ -168,14 +168,24 @@ NULL
   h2o.getFutureModel(.h2o.startModelJob(algo, params, h2oRestApiVersion))
 }
 
+.h2o.pollModelUpdates <- function(job) {
+  cat(paste0("\nScoring History for Model ",job$dest$name, " at ", Sys.time(),"\n"))
+  print(paste0("Model Build is ", job$progress*100, "% done..."))
+  if(!is.null(job$progress_msg)){
+  #   print(tail(h2o.getModel(job$dest$name)@model$scoring_history))
+  }else{
+    print("Scoring history is not available yet...") #Catch 404 with scoring history. Can occur when nfolds >=2
+  }
+}
+
 #' Get future model
 #'
 #' @rdname h2o.getFutureModel
 #' @param object H2OModel
 #' @param verbose Print model progress to console. Default is FALSE
 #' @export
-h2o.getFutureModel <- function(object,verbose=FALSE) {
-  .h2o.__waitOnJob(object@job_key,verboseModelScoringHistory=verbose)
+h2o.getFutureModel <- function(object, verbose=FALSE) {
+  .h2o.__waitOnJob(object@job_key, pollUpdates=ifelse(verbose, .h2o.pollModelUpdates, as.null))
   h2o.getModel(object@model_id)
 }
 
@@ -455,6 +465,26 @@ h2o.getFutureModel <- function(object,verbose=FALSE) {
 #'          generation in h2o.
 #' @export
 predict.H2OModel <- function(object, newdata, ...) {
+  h2o.predict.H2OModel(object, newdata, ...)
+}
+
+#' Predict on an H2O Model
+#'
+#' @param object a fitted model object for which prediction is desired.
+#' @param newdata An H2OFrame object in which to look for
+#'        variables with which to predict.
+#' @param ... additional arguments to pass on.
+#' @return Returns an H2OFrame object with probabilites and
+#'         default predictions.
+#' @export
+h2o.predict <- function(object, newdata, ...){
+  UseMethod("h2o.predict", object)
+}
+
+#'
+#' @rdname predict.H2OModel
+#' @export
+h2o.predict.H2OModel <- function(object, newdata, ...) {
   if (missing(newdata)) {
     stop("predictions with a missing `newdata` argument is not implemented yet")
   }
@@ -468,15 +498,6 @@ predict.H2OModel <- function(object, newdata, ...) {
   h2o.getFrame(dest_key)
 }
 
-#' @rdname predict.H2OModel
-#' @export
-h2o.predict <- function(object, newdata, ...){
-  if(class(object) == "H2OAutoML"){
-    return(predict.H2OAutoML(object, newdata, ...))
-  }else{
-    return(predict.H2OModel(object, newdata, ...))
-  }
-}
 #' Predict the Leaf Node Assignment on an H2O Model
 #'
 #' Obtains leaf node assignment from fitted H2O model objects.
@@ -618,7 +639,7 @@ h2o.staged_predict_proba <- staged_predict_proba.H2OModel
 #' Returned H2OFrame has shape (#rows, #features + 1) - there is a feature contribution column for each input
 #' feature, the last column is the model bias (same value for each row). The sum of the feature contributions
 #' and the bias term is equal to the raw prediction of the model. Raw prediction of tree-based model is the sum
-#' of the predictions of the individual trees before before the inverse link function is applied to get the actual
+#' of the predictions of the individual trees before the inverse link function is applied to get the actual
 #' prediction. For Gaussian distribution the sum of the contributions is equal to the model prediction.
 #'
 #' Note: Multinomial classification models are currently not supported.
@@ -656,6 +677,34 @@ predict_contributions.H2OModel <- function(object, newdata, ...) {
 #' @rdname predict_contributions.H2OModel
 #' @export
 h2o.predict_contributions <- predict_contributions.H2OModel
+
+#' Retrieve the number of occurrences of each feature for given observations 
+#  on their respective paths in a tree ensemble model.
+#' Available for GBM, Random Forest and Isolation Forest models.
+#'
+#' @param object a fitted \linkS4class{H2OModel} object for which prediction is
+#'        desired
+#' @param newdata An H2OFrame object in which to look for
+#'        variables with which to predict.
+#' @param ... additional arguments to pass on.
+#' @return Returns an H2OFrame contain per-feature frequencies on the predict path for each input row.
+#' @seealso \code{\link{h2o.gbm}} and  \code{\link{h2o.randomForest}} for model
+#'          generation in h2o.
+feature_frequencies.H2OModel <- function(object, newdata, ...) {
+    if (missing(newdata)) {
+        stop("predictions with a missing `newdata` argument is not implemented yet")
+    }
+
+    url <- paste0('Predictions/models/', object@model_id, '/frames/',  h2o.getId(newdata))
+    res <- .h2o.__remoteSend(url, method = "POST", feature_frequencies=TRUE)
+    res <- res$predictions_frame
+    h2o.getFrame(res$name)
+}
+
+#' @rdname feature_frequencies.H2OModel
+#' @export
+h2o.feature_frequencies <- feature_frequencies.H2OModel
+
 
 #' Model Performance Metrics in H2O
 #'
@@ -1635,6 +1684,25 @@ h2o.varimp <- function(object) {
     vi
   } else {
     warning( paste0("No variable importances for ", class(o)) )
+    return(NULL)
+  }
+}
+
+#'
+#' Retrieve per-variable split information for a given Isolation Forest model.
+#' 
+#' @param object An Isolation Forest model represented by \linkS4class{H2OModel} object.
+#' @export
+h2o.varsplits <- function(object) {
+  if( is(object, "H2OModel") ) {
+    vi <- object@model$variable_splits
+    if( is.null(vi) ) {
+      warning("This model doesn't have variable splits information, only Isolation Forest can be used with h2o.varsplits().", call. = FALSE)
+      return(invisible(NULL))
+    }
+    vi
+  } else {
+    warning( paste0("No variable importances for ", class(object)) )
     return(NULL)
   }
 }
@@ -3181,10 +3249,14 @@ h2o.cross_validation_predictions <- function(object) {
 #' @param user_splits A two-level nested list containing user defined split points for pdp plots for each column.
 #' If there are two columns using user defined split points, there should be two lists in the nested list.
 #' Inside each list, the first element is the column name followed by values defined by the user.
+#' @param col_pairs_2dpdp A two-level nested list like this: col_pairs_2dpdp = list(c("col1_name", "col2_name"),
+#'   c("col1_name","col3_name"), ...,) where a 2D partial plots will be generated for col1_name, col2_name pair, for
+#'   col1_name, col3_name pair and whatever other pairs that are specified in the nested list.    
 #' @param save_to Fully qualified prefix of the image files the resulting plots should be saved to, e.g. '/home/user/pdp'.
 #'  Plots for each feature are saved separately in PNG format, each file receives a suffix equal to the corresponding feature name, e.g. `/home/user/pdp_AGE.png`.
 #'  If the files already exists, they will be overridden. Files are only saves if plot = TRUE (default).
 #' @return Plot and list of calculated mean response tables for each feature requested.
+#' @param row_index Row for which partial dependence will be calculated instead of the whole input frame.
 #' @examples
 #' \dontrun{
 #' library(h2o)
@@ -3204,7 +3276,8 @@ h2o.cross_validation_predictions <- function(object) {
 #' @export
 
 h2o.partialPlot <- function(object, data, cols, destination_key, nbins=20, plot = TRUE, plot_stddev = TRUE,
-                            weight_column=-1, include_na=FALSE, user_splits=NULL, save_to=NULL) {
+                            weight_column=-1, include_na=FALSE, user_splits=NULL, col_pairs_2dpdp=NULL, save_to=NULL,
+row_index=-1) {
   if(!is(object, "H2OModel")) stop("object must be an H2Omodel")
   if( is(object, "H2OMultinomialModel")) stop("object must be a regression model or binary classfier")
   if( is(object, "H2OOrdinalModel")) stop("object must be a regression model or binary classfier")
@@ -3213,11 +3286,26 @@ h2o.partialPlot <- function(object, data, cols, destination_key, nbins=20, plot 
   if(!is.logical(plot)) stop("plot must be a logical value")
   if(!is.logical(plot_stddev)) stop("plot must be a logical value")
   if(!is.logical(include_na)) stop("add_missing_NA must be a logical value")
-  if(missing(cols)) cols =  object@parameters$x
+  noPairs = missing(col_pairs_2dpdp)
+  noCols = missing(cols)
+  if(noCols && noPairs) cols =  object@parameters$x # set to default only if both are missing
 
   y = object@parameters$y
-  x = cols
-  args <- .verify_dataxy(data, x, y)
+  numCols = 0
+  numColPairs = 0    
+  if (!missing(cols)) { # check valid cols in cols for 1d pdp
+    x <- cols
+    args <- .verify_dataxy(data, x, y)
+  }
+  cpairs <- NULL
+  if (!missing(col_pairs_2dpdp))   { # verify valid cols for 2d pdp
+    for (onePair in col_pairs_2dpdp) {
+      pargs <- .verify_dataxy(data, onePair, y)
+      cpairs <-
+        c(cpairs, paste0("[", paste (pargs$x, collapse = ','), "]"))
+    }
+    numColPairs = length(cpairs)
+  }
 
   if (is.numeric(weight_column) && (weight_column != -1)) {
       stop("weight_column should be a column name of your data frame.")
@@ -3227,14 +3315,26 @@ h2o.partialPlot <- function(object, data, cols, destination_key, nbins=20, plot 
     else
       weight_column <- match(weight_column, h2o.names(data))-1
   }
-
+  
+  if (!is.numeric(row_index)) {
+    stop("row_index should be numeric.")
+  }
+  
   parms = list()
-  parms$cols <- paste0("[", paste (args$x, collapse = ','), "]")
+  if (!missing(col_pairs_2dpdp)) {
+    parms$col_pairs_2dpdp <- paste0("[", paste (cpairs, collapse = ','), "]")
+  }
+  if (!missing(cols)) {
+    parms$cols <- paste0("[", paste (args$x, collapse = ','), "]")
+    numCols = length(cols)
+  }
+  noCols = missing(cols)
   parms$model_id  <- attr(object, "model_id")
   parms$frame_id <- attr(data, "id")
   parms$nbins <- nbins
   parms$weight_column_index <- weight_column
   parms$add_missing_na <- include_na
+  parms$row_index = row_index
 
   if (length(user_splits) == 0) {
     parms$user_cols <- NULL
@@ -3294,10 +3394,27 @@ h2o.partialPlot <- function(object, data, cols, destination_key, nbins=20, plot 
 
   ## Change feature names to the original supplied, the following is okay because order is preserved
   pps <- res$partial_dependence_data
-  for(i in 1:length(pps)) if(!all(is.na( pps[[i]])) ) names(pps[[i]]) <- c(cols[i], "mean_response", "stddev_response", "std_error_mean_response")
-
+  for (i in 1:length(pps)) {
+    if (!all(is.na(pps[[i]]))) {
+      if (i <=  numCols) {
+      names(pps[[i]]) <-
+        c(cols[i],
+          "mean_response",
+          "stddev_response",
+          "std_error_mean_response")
+      } else {
+        names(pps[[i]]) <-
+          c(col_pairs_2dpdp[[i-numCols]][1],
+            col_pairs_2dpdp[[i-numCols]][2],
+            "mean_response",
+            "stddev_response",
+            "std_error_mean_response")
+      }
+    }
+  }
   col_types = unlist(h2o.getTypes(data))
   col_names = names(data)
+    
   pp.plot <- function(pp) {
     if(!all(is.na(pp))) {
       type = col_types[which(col_names == names(pp)[1])]
@@ -3321,7 +3438,61 @@ h2o.partialPlot <- function(object, data, cols, destination_key, nbins=20, plot 
       print("Partial Dependence not calculated--make sure nbins is as high as the level count")
     }
   }
-
+  pp.plot2 <- function(pp, nBins=nbins, user_cols=NULL, user_num_splits=NULL) {
+    xtickMarks <- NULL
+    ytickMarks <- NULL
+    if (!all(is.na(pp))) {
+      if (col_types[which(col_names == names(pp)[1])] == "enum") {
+        x <- replaceEnumLevel(pp[,1], unique(pp[,1]))
+        xtickMarks <- unique(pp[,1])
+      } else {
+        x <- pp[,1]
+      }
+      if (col_types[which(col_names == names(pp)[2])] == "enum") {
+        y <- replaceEnumLevel(pp[,2], unique(pp[,2]))
+        ytickMarks <- unique(pp[,2])
+      } else {
+        y <- pp[,2]
+      }
+      allMetric <- reShape(x, y, pp[, 3], names(pp)[1], names(pp)[2], nBins, user_cols, user_num_splits)
+      XX <- allMetric[[1]]
+      YY <- allMetric[[2]]
+      ZZ <- allMetric[[3]]
+      tTitle <- ""
+      if (!is.null(xtickMarks)) {
+        xc <- c(1:length(xtickMarks))
+        tTitle <- paste0("X axis tick marks: ", paste(xc, xtickMarks, sep=":", collapse=", "))
+      }
+      if (!is.null(ytickMarks)) {
+        yc <- c(1:length(ytickMarks))
+        temp <- paste0("Y axis tick marks: ", paste(yc, ytickMarks, sep=":", collapse=", "))
+        tTitle <- paste0(tTitle, temp)
+      }
+      ## Plot one standard deviation above and below the mean
+      if (plot_stddev) {
+        ## Added upper and lower std dev confidence bound
+        upper = pp[, 3] + pp[, 4]
+        lower = pp[, 3] - pp[, 4]
+        Zupper = matrix(upper, ncol=dim(XX)[2], byrow=F)
+        Zlower = matrix(lower, ncol=dim(XX)[2], byrow=F)
+        rgl::open3d()
+        plot3Drgl::persp3Drgl(XX, YY, ZZ, theta=30, phi=15, axes=TRUE,scale=2, box=TRUE, nticks=5,
+                ticktype="detailed", xlab=names(pp)[1], ylab=names(pp)[2], zlab="2D partial plots",
+                main=tTitle, border='black', alpha=0.5)
+        plot3Drgl::persp3Drgl(XX, YY, Zupper, alpha=0.2, lwd=2, add=TRUE, border='yellow')
+        plot3Drgl::persp3Drgl(XX, YY, Zlower, alpha=0.2, lwd=2, add=TRUE, border='green')
+        rgl::grid3d(c("x", "y", "z"))
+      } else {
+        rgl::persp3d(XX, YY, ZZ, theta=30, phi=50, axes=TRUE,scale=2, box=TRUE, nticks=5,
+                ticktype="detailed", xlab=names(pp)[1], ylab=names(pp)[2], zlab="2D partial plots",
+                main=tTitle, border='black', alpha=0.5)
+        rgl::grid3d(c("x", "y", "z"))
+      }
+    } else {
+      print("2D Partial Dependence not calculated--make sure nbins is as high as the level count")
+    }
+  }
+  
   pp.plot.save <- function(pp) {
     # If user accidentally provides one of the most common suffixes in R, it is removed.
     save_to <- gsub(replacement = "",pattern = "(\\.png)|(\\.jpg)|(\\.pdf)", x = save_to)
@@ -3331,17 +3502,93 @@ h2o.partialPlot <- function(object, data, cols, destination_key, nbins=20, plot 
     dev.off()
   }
 
-  if(plot) lapply(pps, pp.plot)
-
-  if(plot && !is.null(save_to)){
-    lapply(pps, pp.plot.save)
+  pp.plot.save2 <- function(pp, nBins=nbins, user_cols=NULL, user_num_splits=NULL) {
+    # If user accidentally provides one of the most common suffixes in R, it is removed.
+    save_to <- gsub(replacement = "", pattern = "(\\.png)|(\\.jpg)|(\\.pdf)", x = save_to)
+    colnames = paste0(names(pp)[1], "_", names(pp)[2])
+    destination_file <- paste0(save_to,"_",colnames,'.png')
+    pp.plot2(pp, nbins, user_cols, user_num_splits)
+    rgl::snapshot3d(destination_file)
+    dev.off()
   }
 
-  if(length( pps) == 1) {
+  if(plot && !noCols) lapply(pps[1:numCols], pp.plot) # plot 1d pdp here
+  if(plot && !noCols && !is.null(save_to)){  # save 1d pdp here
+    lapply(pps[1:numCols], pp.plot.save)
+  }
+
+  if (!noPairs && requireNamespace("plot3Drgl", quietly = TRUE) && requireNamespace("rgl", quietly = TRUE)) {
+    if (plot && !is.null(save_to)) {
+      # plot and save to file
+      if (is.null(user_splits)) {
+        sapply(
+          pps[(numCols + 1):(numCols + numColPairs)],
+          pp.plot.save2,
+          nBins = nbins,
+          user_cols = NULL,
+          user_num_splits = NULL
+        )
+      } else {
+        sapply(
+          pps[(numCols + 1):(numCols + numColPairs)],
+          pp.plot.save2,
+          nBins = nbins,
+          user_cols = user_cols,
+          user_num_splits = user_num_splits
+        )
+      }
+    } else {
+      # only plot
+      if (is.null(user_splits)) {
+        sapply(
+          pps[(numCols + 1):(numCols + numColPairs)],
+          pp.plot2,
+          nBins = nbins,
+          user_cols = NULL,
+          user_num_splits = NULL
+        )
+      } else {
+        sapply(
+          pps[(numCols + 1):(numCols + numColPairs)],
+          pp.plot2,
+          nBins = nbins,
+          user_cols = user_cols,
+          user_num_splits = user_num_splits
+        )
+      }
+    }
+  } else if (plot && !noPairs) {
+    warning("Install packages plot3Drgl and rgl in order to generate 2D partial plots.")     
+  }
+
+  if(length(pps) == 1) {
     return(pps[[1]])
   } else {
     return(pps)
   }
+}
+
+replaceEnumLevel <- function(originalV, vlevels) {
+  x <- rep(1, length(originalV))
+  for (ind in c(1:length(originalV))) {
+    x[ind] <- which(originalV[ind] == vlevels)
+  }
+  x
+}
+
+reShape<- function(x, y, z, xname, yname, nbin, user_cols, user_num_splits) {
+  ybin <- nbin
+  if(!is.null(user_cols)) {
+    if (yname %in% user_cols) {
+      ybin <- user_num_splits[which(yname==user_cols)]
+    }
+  }
+
+  xbin <- floor(length(x)/ybin)
+  X<-matrix(x, nrow=ybin, ncol=xbin,byrow=F)
+  Y <- matrix(y, nrow=ybin, ncol=xbin, byrow=F)
+  Z <- matrix(z, nrow=ybin, ncol=xbin, byrow=F)
+  list(X,Y,Z)
 }
 
 #' Feature Generation via H2O Deep Learning or DeepWater Model
@@ -3772,7 +4019,7 @@ h2o.get_seed <- get_seed.H2OModel
 #' generic_model <- h2o.genericModel(model_file_path = "/path/to/mojo.zip")
 #' predictions <- h2o.predict(generic_model, dataset)
 #'
-#' @param model_file_path Filesystem path to the model imported
+#' @param mojo_file_path Filesystem path to the model imported
 #' @return Returns H2O Generic Model based on given embedded model
 #'
 #' @examples
@@ -3796,9 +4043,8 @@ h2o.get_seed <- get_seed.H2OModel
 #' generic_model_predictions  <- h2o.predict(generic_model, data)
 #' }
 #' @export
-h2o.genericModel <- function(model_file_path){
-  model_file_key <- h2o.importFile(model_file_path, parse = FALSE)
-  h2o.generic(model_key = model_file_key)
+h2o.genericModel <- function(mojo_file_path){
+  h2o.generic(path = mojo_file_path)
 }
 
 #' Imports a MOJO under given path, creating a Generic model with it.
@@ -3832,9 +4078,7 @@ h2o.genericModel <- function(model_file_path){
 #' }
 #' @export
 h2o.import_mojo <- function(mojo_file_path){
-  model_file_key <- h2o.importFile(mojo_file_path, parse = FALSE)
-  model <- h2o.generic(model_key = model_file_key)
-  print(model)
+  model <- h2o.generic(path = mojo_file_path)
   return(model)
 }
 
@@ -3872,6 +4116,5 @@ h2o.import_mojo <- function(mojo_file_path){
 h2o.upload_mojo <- function(mojo_local_file_path){
   model_file_key <- h2o.uploadFile(mojo_local_file_path, parse = FALSE)
   model <- h2o.generic(model_key = model_file_key)
-  print(model)
   return(model)
 }

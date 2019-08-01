@@ -4,10 +4,10 @@
 \alias{h2o.genericModel}
 \title{Imports a model under given path, creating a Generic model with it.}
 \usage{
-h2o.genericModel(model_file_path)
+h2o.genericModel(mojo_file_path)
 }
 \arguments{
-\item{model_file_path}{Filesystem path to the model imported}
+\item{mojo_file_path}{Filesystem path to the model imported}
 }
 \value{
 Returns H2O Generic Model based on given embedded model
