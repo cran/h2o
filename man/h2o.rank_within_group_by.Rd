@@ -12,8 +12,14 @@
    the sort directions in ascending.  If sort_cols_sorted is FALSE (by default), the frame from step 3 will be
    returned as is with no extra sort.  This may provide a small speedup if desired.}
 \usage{
-h2o.rank_within_group_by(x, group_by_cols, sort_cols, ascending = NULL,
-  new_col_name = "New_Rank_column", sort_cols_sorted = FALSE)
+h2o.rank_within_group_by(
+  x,
+  group_by_cols,
+  sort_cols,
+  ascending = NULL,
+  new_col_name = "New_Rank_column",
+  sort_cols_sorted = FALSE
+)
 }
 \arguments{
 \item{x}{The H2OFrame input to be sorted.}

@@ -4,9 +4,16 @@
 \alias{h2o.import_sql_select}
 \title{Import SQL table that is result of SELECT SQL query into H2O}
 \usage{
-h2o.import_sql_select(connection_url, select_query, username, password,
-  use_temp_table = NULL, temp_table_name = NULL, optimize = NULL,
-  fetch_mode = NULL)
+h2o.import_sql_select(
+  connection_url,
+  select_query,
+  username,
+  password,
+  use_temp_table = NULL,
+  temp_table_name = NULL,
+  optimize = NULL,
+  fetch_mode = NULL
+)
 }
 \arguments{
 \item{connection_url}{URL of the SQL database connection as specified by the Java Database Connectivity (JDBC) Driver.

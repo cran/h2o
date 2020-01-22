@@ -4,8 +4,11 @@
 \alias{use.package}
 \title{Use optional package}
 \usage{
-use.package(package, version = "1.9.8"[package == "data.table"],
-  use = getOption("h2o.use.data.table", FALSE)[package == "data.table"])
+use.package(
+  package,
+  version = "1.9.8"[package == "data.table"],
+  use = getOption("h2o.use.data.table", FALSE)[package == "data.table"]
+)
 }
 \arguments{
 \item{package}{character scalar name of a package that we Suggests or Enhances on.}
@@ -28,9 +31,9 @@ It is possible to control just \code{\link[data.table]{fread}} or \code{\link[da
 \examples{
 op <- options("h2o.use.data.table" = TRUE)
 if (use.package("data.table")) {
-  cat("optional package data.table 1.9.8+ is available\\n")
+  cat("optional package data.table 1.9.8+ is available\n")
 } else {
-  cat("optional package data.table 1.9.8+ is not available\\n")
+  cat("optional package data.table 1.9.8+ is not available\n")
 }
 options(op)
 }

@@ -4,21 +4,35 @@
 \alias{h2o.psvm}
 \title{Trains a Support Vector Machine model on an H2O dataset}
 \usage{
-h2o.psvm(x, y, training_frame, model_id = NULL,
-  validation_frame = NULL, ignore_const_cols = TRUE, hyper_param = 1,
-  kernel_type = c("gaussian"), gamma = -1, rank_ratio = -1,
-  positive_weight = 1, negative_weight = 1,
-  disable_training_metrics = TRUE, sv_threshold = 1e-04,
-  fact_threshold = 1e-05, feasible_threshold = 0.001,
-  surrogate_gap_threshold = 0.001, mu_factor = 10,
-  max_iterations = 200, seed = -1)
+h2o.psvm(
+  x,
+  y,
+  training_frame,
+  model_id = NULL,
+  validation_frame = NULL,
+  ignore_const_cols = TRUE,
+  hyper_param = 1,
+  kernel_type = c("gaussian"),
+  gamma = -1,
+  rank_ratio = -1,
+  positive_weight = 1,
+  negative_weight = 1,
+  disable_training_metrics = TRUE,
+  sv_threshold = 1e-04,
+  fact_threshold = 1e-05,
+  feasible_threshold = 0.001,
+  surrogate_gap_threshold = 0.001,
+  mu_factor = 10,
+  max_iterations = 200,
+  seed = -1
+)
 }
 \arguments{
 \item{x}{(Optional) A vector containing the names or indices of the predictor variables to use in building the model.
 If x is missing, then all columns except y are used.}
 
-\item{y}{The name or column index of the response variable in the data. The response must be either a numeric or a
-categorical/factor variable. If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
+\item{y}{The name or column index of the response variable in the data. The response must be either a binary
+categorical/factor variable or a numeric variable with values -1/1 (for compatibility with SVMlight format).}
 
 \item{training_frame}{Id of the training data frame.}
 
@@ -55,7 +69,7 @@ Defaults to -1.}
 
 \item{max_iterations}{Maximum number of iteration of the algorithm Defaults to 200.}
 
-\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default)
+\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}
 }
 \description{

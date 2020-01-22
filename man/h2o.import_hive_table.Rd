@@ -4,11 +4,15 @@
 \alias{h2o.import_hive_table}
 \title{Import Hive Table into H2O}
 \usage{
-h2o.import_hive_table(database, table, partitions = NULL,
-  allow_multi_format = FALSE)
+h2o.import_hive_table(
+  database,
+  table,
+  partitions = NULL,
+  allow_multi_format = FALSE
+)
 }
 \arguments{
-\item{database}{Name of Hive database (default database will be used by default)}
+\item{database}{Name of Hive database (default database will be used by default), can be also a JDBC URL}
 
 \item{table}{name of Hive table to import}
 
@@ -20,8 +24,11 @@ this may fail on out-of-memory for tables with a large number of small partition
 \description{
 Import Hive table to H2OFrame in memory.
 Make sure to start H2O with Hive on classpath. Uses hive-site.xml on classpath to connect to Hive.
+When database is specified as jdbc URL uses Hive JDBC driver to obtain table metadata. then 
+uses direct HDFS access to import data.
 }
 \details{
 For example, 
     my_citibike_data = h2o.import_hive_table("default", "citibike20k", partitions = list(c("2017", "01"), c("2017", "02")))
+    my_citibike_data = h2o.import_hive_table("jdbc:hive2://hive-server:10000/default", "citibike20k", allow_multi_format = TRUE)
 }

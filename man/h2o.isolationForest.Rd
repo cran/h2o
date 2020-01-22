@@ -4,17 +4,31 @@
 \alias{h2o.isolationForest}
 \title{Trains an Isolation Forest model}
 \usage{
-h2o.isolationForest(training_frame, x, model_id = NULL,
-  score_each_iteration = FALSE, score_tree_interval = 0,
-  ignore_const_cols = TRUE, ntrees = 50, max_depth = 8,
-  min_rows = 1, max_runtime_secs = 0, seed = -1,
-  build_tree_one_node = FALSE, mtries = -1, sample_size = 256,
-  sample_rate = -1, col_sample_rate_change_per_level = 1,
-  col_sample_rate_per_tree = 1, categorical_encoding = c("AUTO",
-  "Enum", "OneHotInternal", "OneHotExplicit", "Binary", "Eigen",
-  "LabelEncoder", "SortByResponse", "EnumLimited"), stopping_rounds = 0,
+h2o.isolationForest(
+  training_frame,
+  x,
+  model_id = NULL,
+  score_each_iteration = FALSE,
+  score_tree_interval = 0,
+  ignore_const_cols = TRUE,
+  ntrees = 50,
+  max_depth = 8,
+  min_rows = 1,
+  max_runtime_secs = 0,
+  seed = -1,
+  build_tree_one_node = FALSE,
+  mtries = -1,
+  sample_size = 256,
+  sample_rate = -1,
+  col_sample_rate_change_per_level = 1,
+  col_sample_rate_per_tree = 1,
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
+    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  stopping_rounds = 0,
   stopping_metric = c("AUTO", "anomaly_score"),
-  stopping_tolerance = 0.01, export_checkpoints_dir = NULL)
+  stopping_tolerance = 0.01,
+  export_checkpoints_dir = NULL
+)
 }
 \arguments{
 \item{training_frame}{Id of the training data frame.}
@@ -37,7 +51,7 @@ h2o.isolationForest(training_frame, x, model_id = NULL,
 
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.}
 
-\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default)
+\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}
 
 \item{build_tree_one_node}{\code{Logical}. Run on one node only; no network overhead but fewer cpus used.  Suitable for small datasets.

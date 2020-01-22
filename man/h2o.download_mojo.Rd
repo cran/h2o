@@ -4,8 +4,13 @@
 \alias{h2o.download_mojo}
 \title{Download the model in MOJO format.}
 \usage{
-h2o.download_mojo(model, path = getwd(), get_genmodel_jar = FALSE,
-  genmodel_name = "", genmodel_path = "")
+h2o.download_mojo(
+  model,
+  path = getwd(),
+  get_genmodel_jar = FALSE,
+  genmodel_name = "",
+  genmodel_path = ""
+)
 }
 \arguments{
 \item{model}{An H2OModel}

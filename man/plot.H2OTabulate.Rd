@@ -4,8 +4,7 @@
 \alias{plot.H2OTabulate}
 \title{Plot an H2O Tabulate Heatmap}
 \usage{
-\method{plot}{H2OTabulate}(x, xlab = x$cols[1], ylab = x$cols[2],
-  base_size = 12, ...)
+\method{plot}{H2OTabulate}(x, xlab = x$cols[1], ylab = x$cols[2], base_size = 12, ...)
 }
 \arguments{
 \item{x}{An H2OTabulate object for which the heatmap plot is desired.}

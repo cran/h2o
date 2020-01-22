@@ -22,7 +22,7 @@
 \alias{h2o.specificity}
 \title{H2O Model Metric Accessor Functions}
 \usage{
-h2o.metric(object, thresholds, metric)
+h2o.metric(object, thresholds, metric, transform = NULL)
 
 h2o.F0point5(object, thresholds)
 
@@ -63,9 +63,16 @@ h2o.specificity(object, thresholds)
 \arguments{
 \item{object}{An \linkS4class{H2OModelMetrics} object of the correct type.}
 
-\item{thresholds}{(Optional) A value or a list of values between 0.0 and 1.0.}
+\item{thresholds}{(Optional) A value or a list of values between 0.0 and 1.0.
+If not set, then all thresholds will be returned.
+If "max", then the threshold maximizing the metric will be used.}
 
-\item{metric}{(Optional) A specified paramter to retrieve.}
+\item{metric}{(Optional) the metric to retrieve.
+If not set, then all metrics will be returned.}
+
+\item{transform}{(Optional) a list describing a transformer for the given metric, if any.
+e.g. transform=list(op=foo_fn, name="foo") will rename the given metric to "foo"
+     and apply function foo_fn to the metric values.}
 }
 \value{
 Returns either a single value, or a list of values.

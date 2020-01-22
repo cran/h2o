@@ -4,13 +4,26 @@
 \alias{h2o.createFrame}
 \title{Data H2OFrame Creation in H2O}
 \usage{
-h2o.createFrame(rows = 10000, cols = 10, randomize = TRUE,
-  value = 0, real_range = 100, categorical_fraction = 0.2,
-  factors = 100, integer_fraction = 0.2, integer_range = 100,
-  binary_fraction = 0.1, binary_ones_fraction = 0.02,
-  time_fraction = 0, string_fraction = 0, missing_fraction = 0.01,
-  response_factors = 2, has_response = FALSE, seed,
-  seed_for_column_types)
+h2o.createFrame(
+  rows = 10000,
+  cols = 10,
+  randomize = TRUE,
+  value = 0,
+  real_range = 100,
+  categorical_fraction = 0.2,
+  factors = 100,
+  integer_fraction = 0.2,
+  integer_range = 100,
+  binary_fraction = 0.1,
+  binary_ones_fraction = 0.02,
+  time_fraction = 0,
+  string_fraction = 0,
+  missing_fraction = 0.01,
+  response_factors = 2,
+  has_response = FALSE,
+  seed,
+  seed_for_column_types
+)
 }
 \arguments{
 \item{rows}{The number of rows of data to generate.}

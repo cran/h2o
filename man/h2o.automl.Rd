@@ -4,22 +4,41 @@
 \alias{h2o.automl}
 \title{Automatic Machine Learning}
 \usage{
-h2o.automl(x, y, training_frame, validation_frame = NULL,
-  leaderboard_frame = NULL, blending_frame = NULL, nfolds = 5,
-  fold_column = NULL, weights_column = NULL, balance_classes = FALSE,
-  class_sampling_factors = NULL, max_after_balance_size = 5,
-  max_runtime_secs = 3600, max_runtime_secs_per_model = NULL,
-  max_models = NULL, stopping_metric = c("AUTO", "deviance", "logloss",
-  "MSE", "RMSE", "MAE", "RMSLE", "AUC", "lift_top_group",
-  "misclassification", "mean_per_class_error"),
-  stopping_tolerance = NULL, stopping_rounds = 3, seed = NULL,
-  project_name = NULL, exclude_algos = NULL, include_algos = NULL,
+h2o.automl(
+  x,
+  y,
+  training_frame,
+  validation_frame = NULL,
+  leaderboard_frame = NULL,
+  blending_frame = NULL,
+  nfolds = 5,
+  fold_column = NULL,
+  weights_column = NULL,
+  balance_classes = FALSE,
+  class_sampling_factors = NULL,
+  max_after_balance_size = 5,
+  max_runtime_secs = NULL,
+  max_runtime_secs_per_model = NULL,
+  max_models = NULL,
+  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE",
+    "AUC", "AUCPR", "lift_top_group", "misclassification", "mean_per_class_error"),
+  stopping_tolerance = NULL,
+  stopping_rounds = 3,
+  seed = NULL,
+  project_name = NULL,
+  exclude_algos = NULL,
+  include_algos = NULL,
+  modeling_plan = NULL,
+  monotone_constraints = NULL,
+  algo_parameters = NULL,
   keep_cross_validation_predictions = FALSE,
   keep_cross_validation_models = FALSE,
   keep_cross_validation_fold_assignment = FALSE,
-  sort_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE",
-  "RMSLE", "AUC", "mean_per_class_error"), export_checkpoints_dir = NULL,
-  verbosity = NULL)
+  sort_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
+    "AUCPR", "mean_per_class_error"),
+  export_checkpoints_dir = NULL,
+  verbosity = "warn"
+)
 }
 \arguments{
 \item{x}{A vector containing the names or indices of the predictor variables to use in building the model.
@@ -56,14 +75,14 @@ be automatically computed to obtain class balance during training. Requires bala
 \item{max_after_balance_size}{Maximum relative size of the training data after balancing class counts (can be less than 1.0). Requires
 balance_classes. Defaults to 5.0.}
 
-\item{max_runtime_secs}{Maximum allowed runtime in seconds for the entire model training process. Use 0 to disable. Defaults to 3600 secs (1 hour).}
+\item{max_runtime_secs}{This argument specifies the maximum time that the AutoML process will run for, prior to training the final Stacked Ensemble models. If neither `max_runtime_secs` nor `max_models` are specified by the user, then `max_runtime_secs` defaults to 3600 seconds (1 hour).}
 
 \item{max_runtime_secs_per_model}{Maximum runtime in seconds dedicated to each individual model training process. Use 0 to disable. Defaults to 0.}
 
-\item{max_models}{Maximum number of models to build in the AutoML process (does not include Stacked Ensembles). Defaults to NULL.}
+\item{max_models}{Maximum number of models to build in the AutoML process (does not include Stacked Ensembles). Defaults to NULL (no strict limit).}
 
 \item{stopping_metric}{Metric to use for early stopping ("AUTO" is logloss for classification, deviance for regression).
-Must be one of "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "lift_top_group", "misclassification", "mean_per_class_error". Defaults to AUTO.}
+Must be one of "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "AUCPR", "lift_top_group", "misclassification", "mean_per_class_error". Defaults to "AUTO".}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this much). This value defaults to 0.001 if the
 dataset is at least 1 million rows; otherwise it defaults to a bigger value determined by the size of the dataset and the non-NA-rate.  In that case, the value is computed
@@ -75,12 +94,20 @@ does not improve for k (stopping_rounds) scoring events. Defaults to 3 and must 
 \item{seed}{Integer. Set a seed for reproducibility. AutoML can only guarantee reproducibility if max_models or early stopping is used
 because max_runtime_secs is resource limited, meaning that if the resources are not the same between runs, AutoML may be able to train more models on one run vs another.}
 
-\item{project_name}{Character string to identify an AutoML project.  Defaults to NULL, which means a project name will be auto-generated based on the training frame ID.}
+\item{project_name}{Character string to identify an AutoML project.  Defaults to NULL, which means a project name will be auto-generated.}
 
 \item{exclude_algos}{Vector of character strings naming the algorithms to skip during the model-building phase.  An example use is exclude_algos = c("GLM", "DeepLearning", "DRF"),
 and the full list of options is: "DRF" (Random Forest and Extremely-Randomized Trees), "GLM", "XGBoost", "GBM", "DeepLearning" and "StackedEnsemble".}
 
 \item{include_algos}{Vector of character strings naming the algorithms to restrict to during the model-building phase. This can't be used in combination with exclude_algos param.}
+
+\item{modeling_plan}{List. The list of modeling steps to be used by the AutoML engine (they may not all get executed, depending on other constraints). Optional (Expert usage only).}
+
+\item{monotone_constraints}{List. A mapping representing monotonic constraints.}
+
+\item{algo_parameters}{List. A list of param_name=param_value to be passed to internal models. Defaults to none (Expert usage only).
+By default, params are set only to algorithms accepting them, and ignored by others.
+Only following parameters are currently allowed: "monotone_constraints".}
 
 \item{keep_cross_validation_predictions}{\code{Logical}. Whether to keep the predictions of the cross-validation predictions. This needs to be set to TRUE if running the same AutoML object for repeated runs because CV predictions are required to build additional Stacked Ensemble models in AutoML. This option defaults to FALSE.}
 
@@ -88,7 +115,7 @@ and the full list of options is: "DRF" (Random Forest and Extremely-Randomized T
 
 \item{keep_cross_validation_fold_assignment}{\code{Logical}. Whether to keep fold assignments in the models. Deleting them will save memory in the H2O cluster. Defaults to FALSE.}
 
-\item{sort_metric}{Metric to sort the leaderboard by. For binomial classification choose between "AUC", "logloss", "mean_per_class_error", "RMSE", "MSE".
+\item{sort_metric}{Metric to sort the leaderboard by. For binomial classification choose between "AUC", "AUCPR", "logloss", "mean_per_class_error", "RMSE", "MSE".
 For regression choose between "mean_residual_deviance", "RMSE", "MSE", "MAE", and "RMSLE". For multinomial classification choose between
 "mean_per_class_error", "logloss", "RMSE", "MSE". Default is "AUTO". If set to "AUTO", then "AUC" will be used for binomial classification,
 "mean_per_class_error" for multinomial classification, and "mean_residual_deviance" for regression.}
@@ -96,7 +123,7 @@ For regression choose between "mean_residual_deviance", "RMSE", "MSE", "MAE", an
 \item{export_checkpoints_dir}{(Optional) Path to a directory where every model will be stored in binary form.}
 
 \item{verbosity}{Verbosity of the backend messages printed during training; Optional.
-Must be one of "debug", "info", "warn". Defaults to NULL (disable live log).}
+Must be one of NULL (live log disabled), "debug", "info", "warn". Defaults to "warn".}
 }
 \value{
 An \linkS4class{H2OAutoML} object.

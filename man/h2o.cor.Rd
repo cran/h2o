@@ -5,7 +5,7 @@
 \alias{cor}
 \title{Correlation of columns.}
 \usage{
-h2o.cor(x, y = NULL, na.rm = FALSE, use)
+h2o.cor(x, y = NULL, na.rm = FALSE, use, method = "Pearson")
 
 cor(x, ...)
 }
@@ -20,6 +20,11 @@ cor(x, ...)
 "everything"            - outputs NaNs whenever one of its contributing observations is missing
 "all.obs"               - presence of missing observations will throw an error
 "complete.obs"          - discards missing values along with all observations in their rows so that only complete observations are used}
+
+\item{method}{\code{str} Method of correlation computation. Allowed values are:
+"Pearson" - Pearson's correlation coefficient
+"Spearman" - Spearman's correlation coefficient (Spearman's Rho)
+Defaults to "Pearson"}
 
 \item{...}{Further arguments to be passed down from other methods.}
 }

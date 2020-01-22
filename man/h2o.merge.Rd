@@ -4,9 +4,17 @@
 \alias{h2o.merge}
 \title{Merge Two H2O Data Frames}
 \usage{
-h2o.merge(x, y, by = intersect(names(x), names(y)), by.x = by,
-  by.y = by, all = FALSE, all.x = all, all.y = all,
-  method = "auto")
+h2o.merge(
+  x,
+  y,
+  by = intersect(names(x), names(y)),
+  by.x = by,
+  by.y = by,
+  all = FALSE,
+  all.x = all,
+  all.y = all,
+  method = "auto"
+)
 }
 \arguments{
 \item{x, y}{H2OFrame objects}

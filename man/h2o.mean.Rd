@@ -7,8 +7,7 @@
 \usage{
 h2o.mean(x, na.rm = FALSE, axis = 0, return_frame = FALSE, ...)
 
-\method{mean}{H2OFrame}(x, na.rm = FALSE, axis = 0,
-  return_frame = FALSE, ...)
+\method{mean}{H2OFrame}(x, na.rm = FALSE, axis = 0, return_frame = FALSE, ...)
 }
 \arguments{
 \item{x}{An H2OFrame object.}

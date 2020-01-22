@@ -114,6 +114,8 @@ NULL
     if (params$stopping_metric=="r2")
       stop("r2 cannot be used as an early stopping_metric yet.  Check this JIRA https://0xdata.atlassian.net/browse/PUBDEV-5381 for progress.")
   }
+  if (algo=="pca" && is.null(params$k)) # make sure to set k=1 for default for pca
+    params$k=1
   job <- .h2o.startModelJob(algo, params, h2oRestApiVersion)
   h2o.getFutureModel(job, verbose = verbose)
 }
@@ -231,8 +233,8 @@ h2o.getFutureModel <- function(object, verbose=FALSE) {
     name <- i$name
     # R treats integer as not numeric
     if(is.integer(params[[name]])){
-	  params[[name]] <- as.numeric(params[[name]])
-	}
+      params[[name]] <- as.numeric(params[[name]])
+    }
     if (i$required && !((name %in% names(params)) || (name %in% names(hyper_params)))) {
       e <- paste0("argument \"", name, "\" is missing, with no default\n")
     } else if (name %in% names(params)) {
@@ -300,7 +302,7 @@ h2o.getFutureModel <- function(object, verbose=FALSE) {
       } else {
         if (!inherits(paramValue, type)) {
           e <- paste0(e, "\"", name , "\" must be of type ", type, ", but got ", class(paramValue), ".\n")
-        } else if ((length(paramDef$values) > 1L) && !(paramValue %in% paramDef$values)) {
+        } else if ((length(paramDef$values) > 1L) && (is.null(paramValue) || !(tolower(paramValue) %in% tolower(paramDef$values)))) {
           e <- paste0(e, "\"", name,"\" must be in")
           for (fact in paramDef$values)
             e <- paste0(e, " \"", fact, "\",")
@@ -480,6 +482,115 @@ predict.H2OModel <- function(object, newdata, ...) {
 h2o.predict <- function(object, newdata, ...){
   UseMethod("h2o.predict", object)
 }
+
+#' Use H2O Transformation model and apply the underlying transformation
+#'
+#' @param model A trained model representing the transformation strategy
+#' @param ... Transformation model-specific parameters
+#' @return Returns an H2OFrame object with data transformed.
+#' @export
+setGeneric("h2o.transform", function(model, ...) {
+  if(!is(model, "H2OModel")) {
+    stop(paste("Argument 'model' must be an H2O Model. Received:", class(model)))
+  }
+  standardGeneric("h2o.transform")
+})
+
+
+#' Applies target encoding to a given dataset
+#'
+#' @param model A trained model representing the transformation strategy
+#' @param data An H2OFrame with data to be transformed
+#' @param data_leakage_handling Handling of data leakage.
+#'  Available options are : ["None", "LeaveOneOut", "KFold"]. Defaults to "None".
+#' @param use_blending Use blending during the transformation. Respects model settings when not set.
+#' @param inflection_point Blending parameter. Only effective when blending is enabled.
+#'  By default, model settings are respected, if not overridden by this setting.
+#' @param smoothing Blending parameter. Only effective when blending is enabled.
+#'  By default, model settings are respected, if not overridden by this setting.
+#' @param noise An amount of random noise added to the encoding. This helps prevent overfitting. Defaults to 0.01 * range of response.
+#' @param seed A random seed used to generate draws from the uniform distribution for random noise. Defaults to -1.
+#' @return Returns an H2OFrame object with data transformed.
+#' @export
+setMethod("h2o.transform", signature("H2OTargetEncoderModel"), function(model, data,
+                                                                        data_leakage_handling = NULL,
+                                                                        use_blending = NULL,
+                                                                        inflection_point = -1,
+                                                                        smoothing = -1, 
+                                                                        noise = -1, 
+                                                                        seed = -1) {
+  
+  params <- list()
+  params[["model"]] <- model@model_id
+  params[["frame"]] <- h2o.getId(data)
+  if(!is.null(data_leakage_handling)){
+    params[["data_leakage_handling"]] <- data_leakage_handling
+  }
+  if(!is.null(use_blending)){
+    params[["use_blending"]] <- use_blending
+  }
+  if(!is.null(noise)){
+    params[["noise"]] <- noise
+  }
+  if(!is.null(seed)){
+    params[["seed"]] <- seed
+  }
+  
+  
+  res <- .h2o.__remoteSend(
+    "TargetEncoderTransform",
+    method = "GET",
+    h2oRestApiVersion = 3,.params = params
+  )
+  
+  h2o.getFrame(res$name)
+  
+})
+
+#'
+#' Transform words (or sequences of words) to vectors using a word2vec model.
+#'
+#' @param model A word2vec model.
+#' @param words An H2OFrame made of a single column containing source words.
+#' @param aggregate_method Specifies how to aggregate sequences of words. If method is `NONE`
+#'    then no aggregation is performed and each input word is mapped to a single word-vector.
+#'    If method is 'AVERAGE' then input is treated as sequences of words delimited by NA.
+#'    Each word of a sequences is internally mapped to a vector and vectors belonging to
+#'    the same sentence are averaged and returned in the result.
+#' @examples
+#' \dontrun{
+#' h2o.init()
+#'
+#' # Build a simple word2vec model
+#' data <- as.character(as.h2o(c("a", "b", "a")))
+#' w2v_model <- h2o.word2vec(data, sent_sample_rate = 0, min_word_freq = 0, epochs = 1, vec_size = 2)
+#'
+#' # Transform words to vectors without aggregation
+#' sentences <- as.character(as.h2o(c("b", "c", "a", NA, "b")))
+#' h2o.transform(w2v_model, sentences) # -> 5 rows total, 2 rows NA ("c" is not in the vocabulary)
+#'
+#' # Transform words to vectors and return average vector for each sentence
+#' h2o.transform(w2v_model, sentences, aggregate_method = "AVERAGE") # -> 2 rows
+#' }
+#' @export
+setMethod("h2o.transform", signature("H2OWordEmbeddingModel"), function(model, words, aggregate_method = c("NONE", "AVERAGE")) {
+  
+  if (!is(model, "H2OModel")) stop(paste("The argument 'model' must be a word2vec model. Received:", class(model)))
+  if (missing(words)) stop("`words` must be specified")
+  if (!is.H2OFrame(words)) stop("`words` must be an H2OFrame")
+  if (ncol(words) != 1) stop("`words` frame must contain a single string column")
+  
+  if (length(aggregate_method) > 1)
+    aggregate_method <- aggregate_method[1]
+  
+  res <- .h2o.__remoteSend(method="GET", "Word2VecTransform", model = model@model_id,
+                           words_frame = h2o.getId(words), aggregate_method = aggregate_method)
+  key <- res$vectors_frame$name
+  h2o.getFrame(key)
+  
+})
+
+
 
 #'
 #' @rdname predict.H2OModel
@@ -918,17 +1029,17 @@ h2o.auc <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
   invisible(NULL)
 }
 
-#' Retrieve the pr_auc
+#' Retrieve the AUCPR (Area Under Precision Recall Curve)
 #'
-#' Retrieves the pr_auc value from an \linkS4class{H2OBinomialMetrics}.
-#' If "train", "valid", and "xval" parameters are FALSE (default), then the training pr_auc value is returned. If more
-#' than one parameter is set to TRUE, then a named vector of pr_aucs are returned, where the names are "train", "valid"
+#' Retrieves the AUCPR value from an \linkS4class{H2OBinomialMetrics}.
+#' If "train", "valid", and "xval" parameters are FALSE (default), then the training AUCPR value is returned. If more
+#' than one parameter is set to TRUE, then a named vector of AUCPRs are returned, where the names are "train", "valid"
 #' or "xval".
 #'
 #' @param object An \linkS4class{H2OBinomialMetrics} object.
-#' @param train Retrieve the training pr_auc
-#' @param valid Retrieve the validation pr_auc
-#' @param xval Retrieve the cross-validation pr_auc
+#' @param train Retrieve the training aucpr
+#' @param valid Retrieve the validation aucpr
+#' @param xval Retrieve the cross-validation aucpr
 #' @seealso \code{\link{h2o.giniCoef}} for the Gini coefficient,
 #'          \code{\link{h2o.mse}} for MSE, and \code{\link{h2o.metric}} for the
 #'          various threshold metrics. See \code{\link{h2o.performance}} for
@@ -944,10 +1055,10 @@ h2o.auc <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 #' prostate[,2] <- as.factor(prostate[,2])
 #' model <- h2o.gbm(x = 3:9, y = 2, training_frame = prostate, distribution = "bernoulli")
 #' perf <- h2o.performance(model, prostate)
-#' h2o.pr_auc(perf)
+#' h2o.aucpr(perf)
 #' }
 #' @export
-h2o.pr_auc <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
+h2o.aucpr <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
   if( is(object, "H2OModelMetrics") ) return( object@metrics$pr_auc )
   if( is(object, "H2OModel") ) {
     model.parts <- .model.parts(object)
@@ -980,8 +1091,15 @@ h2o.pr_auc <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
       if ( length(v)==1 ) { return( v[[1]] ) } else { return( v ) }
     }
   }
-  warning(paste0("No pr_auc for ", class(object)))
+  warning(paste0("No aucpr for ", class(object)))
   invisible(NULL)
+}
+
+#' @rdname h2o.aucpr
+#' @export
+h2o.pr_auc <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
+  .Deprecated("h2o.aucpr")
+  h2o.aucpr(object, train, valid, xval)
 }
 
 #' Retrieve the mean per class error
@@ -1232,6 +1350,19 @@ h2o.mean_residual_deviance <- function(object, train=FALSE, valid=FALSE, xval=FA
   }
   warning(paste0("No mean residual deviance for ", class(object)))
   invisible(NULL)
+}
+
+#' Retrieve HGLM ModelMetrics
+#'
+#' @param object an H2OModel object or H2OModelMetrics.
+#' @export
+h2o.HGLMMetrics <- function(object) {
+    if( is(object, "H2OModel") ) {
+        model.parts <- .model.parts(object)
+        return(model.parts$tm@metrics)
+    }
+    warning(paste0("No HGLM Metric for ",class(object)))
+    invisible(NULL)
 }
 
 #' Retrieve the GINI Coefficcient
@@ -1690,7 +1821,14 @@ h2o.varimp <- function(object) {
 
 #'
 #' Retrieve per-variable split information for a given Isolation Forest model.
-#' 
+#' Output will include:
+#' - count - The number of times a variable was used to make a split.
+#' - aggregated_split_ratios - The split ratio is defined as "abs(#left_observations - #right_observations) / #before_split".
+#'                             Even splits (#left_observations approx the same as #right_observations) contribute
+#'                             less to the total aggregated split ratio value for the given feature;
+#'                             highly imbalanced splits (eg. #left_observations >> #right_observations) contribute more.
+#' - aggregated_split_depths - The sum of all depths of a variable used to make a split. (If a variable is used
+#'                             on level N of a tree, then it contributes with N to the total aggregate.)
 #' @param object An Isolation Forest model represented by \linkS4class{H2OModel} object.
 #' @export
 h2o.varsplits <- function(object) {
@@ -1722,6 +1860,28 @@ h2o.scoreHistory <- function(object) {
     warning( paste0("No score history for ", class(o)) )
     return(NULL)
   }
+}
+
+#'
+#' Retrieve actual number of trees for tree algorithms
+#'
+#' @param object An \linkS4class{H2OModel} object.
+#' @export
+h2o.get_ntrees_actual <- function(object) {
+    o <- object
+    if( is(o, "H2OModel") ) {
+        if(o@algorithm == "gbm" | o@algorithm == "drf"| o@algorithm == "isolationforest"| o@algorithm == "xgboost"){
+            sh <- o@model$model_summary['number_of_trees'][,1]
+            if( is.null(sh) ) return(NULL)
+            sh
+        } else {
+            warning( paste0("No actual number of trees for this model") )
+            return(NULL)
+        }
+    } else {
+        warning( paste0("No actual number of trees for ", class(o)) )
+        return(NULL)
+    }
 }
 
 #'
@@ -1829,7 +1989,13 @@ h2o.hit_ratio_table <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 #'
 #' @param object An \linkS4class{H2OModelMetrics} object of the correct type.
 #' @param thresholds (Optional) A value or a list of values between 0.0 and 1.0.
-#' @param metric (Optional) A specified paramter to retrieve.
+#'        If not set, then all thresholds will be returned.
+#'        If "max", then the threshold maximizing the metric will be used.
+#' @param metric (Optional) the metric to retrieve.
+#'        If not set, then all metrics will be returned.
+#' @param transform (Optional) a list describing a transformer for the given metric, if any.
+#'        e.g. transform=list(op=foo_fn, name="foo") will rename the given metric to "foo"
+#'             and apply function foo_fn to the metric values.
 #' @return Returns either a single value, or a list of values.
 #' @seealso \code{\link{h2o.auc}} for AUC, \code{\link{h2o.giniCoef}} for the
 #'          GINI coefficient, and \code{\link{h2o.mse}} for MSE. See
@@ -1848,15 +2014,43 @@ h2o.hit_ratio_table <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 #' h2o.F1(perf)
 #' }
 #' @export
-h2o.metric <- function(object, thresholds, metric) {
-  if(!is(object, "H2OModelMetrics")) stop(paste0("No ", metric, " for ",class(object)," .Should be a H2OModelMetrics object!"))
-  if(is(object, "H2OBinomialMetrics")){
-    if(!missing(thresholds)) lapply(thresholds, function(t,object,metric) h2o.find_row_by_threshold(object, t)[, metric], object, metric)
-    else {
-     if(missing(metric)) object@metrics$thresholds_and_metric_scores else object@metrics$thresholds_and_metric_scores[, c("threshold", metric)]
+h2o.metric <- function(object, thresholds, metric, transform=NULL) {
+  if (!is(object, "H2OModelMetrics")) stop(paste0("No ", metric, " for ",class(object)," .Should be a H2OModelMetrics object!"))
+  if (is(object, "H2OBinomialMetrics")){
+    avail_metrics <- names(object@metrics$thresholds_and_metric_scores)
+    avail_metrics <- avail_metrics[!(avail_metrics %in% c('threshold', 'idx'))]
+    if (missing(thresholds)) {
+      if (missing(metric)) {
+        metrics <- object@metrics$thresholds_and_metric_scores
+      } else {
+        h2o_metric <- sapply(metric, function(m) ifelse(m %in% avail_metrics, m, ifelse(m %in% names(.h2o.metrics_aliases), .h2o.metrics_aliases[m], m)))
+        metrics <- object@metrics$thresholds_and_metric_scores[, c("threshold", h2o_metric)]
+        if (!missing(transform)) {
+          if ('op' %in% names(transform)) {
+            metrics[h2o_metric] <- transform$op(metrics[h2o_metric])
+          }
+          if ('name' %in% names(transform)) {
+            names(metrics) <- c("threshold", transform$name)
+          }
+        }
+      }
+    } else if (thresholds == 'max' && missing(metric)) {
+      metrics <- object@metrics$max_criteria_and_metric_scores
+    } else {
+      if (missing(metric)) {
+        h2o_metric <- avail_metrics
+      } else {
+        h2o_metric <- unlist(lapply(metric, function(m) ifelse(m %in% avail_metrics, m, ifelse(m %in% names(.h2o.metrics_aliases), .h2o.metrics_aliases[m], m))))
+      }
+      if (thresholds == 'max') thresholds <- h2o.find_threshold_by_max_metric(object, h2o_metric)
+      metrics <- lapply(thresholds, function(t,o,m) h2o.find_row_by_threshold(o, t)[, m], object, h2o_metric)
+      if (!missing(transform) && 'op' %in% names(transform)) {
+        metrics <- lapply(metrics, transform$op)
+      }
     }
+    return(metrics)
   }
-  else{
+  else {
     stop(paste0("No ", metric, " for ",class(object)))
   }
 }
@@ -1888,13 +2082,13 @@ h2o.accuracy <- function(object, thresholds){
 #' @rdname h2o.metric
 #' @export
 h2o.error <- function(object, thresholds){
-  h2o.metric(object, thresholds, "error")
+  h2o.metric(object, thresholds, "accuracy", transform=list(name="error", op=function(acc) 1 - acc))
 }
 
 #' @rdname h2o.metric
 #' @export
 h2o.maxPerClassError <- function(object, thresholds){
-  1.0-h2o.metric(object, thresholds, "min_per_class_accuracy")
+  h2o.metric(object, thresholds, "min_per_class_accuracy", transform=list(name="max_per_class_error", op=function(mpc_acc) 1 - mpc_acc))
 }
 
 #' @rdname h2o.metric
@@ -1978,7 +2172,8 @@ h2o.specificity <- function(object, thresholds){
 h2o.find_threshold_by_max_metric <- function(object, metric) {
   if(!is(object, "H2OBinomialMetrics")) stop(paste0("No ", metric, " for ",class(object)))
   max_metrics <- object@metrics$max_criteria_and_metric_scores
-  max_metrics[match(paste0("max ",metric),max_metrics$metric),"threshold"]
+  h2o_metric <- sapply(metric, function(m) ifelse(m %in% names(.h2o.metrics_aliases), .h2o.metrics_aliases[m], m))
+  max_metrics[match(paste0("max ", h2o_metric), max_metrics$metric), "threshold"]
 }
 
 #' Find the threshold, give the max metric. No duplicate thresholds allowed
@@ -2568,16 +2763,17 @@ setMethod("h2o.confusionMatrix", "H2OModel", function(object, newdata, valid=FAL
   h2o.confusionMatrix(metrics, ...)
 })
 
-
-.h2o.max_metrics <- c('absolute_mcc', 'accuracy',
-                      'f0point5', 'f1', 'f2',
-                      'mean_per_class_accuracy', 'min_per_class_accuracy',
-                      'precision', 'recall', 'specificity'
-                      # 'fpr', 'fallout',                    # could be enabled maybe once PUBDEV-6366 is fixed
-                      # 'fnr', 'missrate', 'sensitivity',
-                      # 'tpr', 'recall',
-                      # 'tnr', 'specificity'
-                      )
+.h2o.metrics_aliases <- list(
+    fallout='fpr',
+    missrate='fnr',
+    recall='tpr',
+    sensitivity='fnr',
+    specificity='tnr'
+)
+.h2o.maximizing_metrics <- c('absolute_mcc', 'accuracy', 'precision',
+                             'f0point5', 'f1', 'f2',
+                             'mean_per_class_accuracy', 'min_per_class_accuracy',
+                             'fpr', 'fnr', 'tpr', 'tnr', names(.h2o.metrics_aliases))
 
 #' @rdname h2o.confusionMatrix
 #' @export
@@ -2606,8 +2802,8 @@ setMethod("h2o.confusionMatrix", "H2OModelMetrics", function(object, thresholds=
   # error check the metrics_list and thresholds_list
   if( !all(sapply(thresholds_list, f <- function(x) is.numeric(x) && x >= 0 && x <= 1)) )
     stop("All thresholds must be numbers between 0 and 1 (inclusive).")
-  if( !all(sapply(metrics_list, f <- function(x) x %in% .h2o.max_metrics)) )
-      stop(paste("The only allowable metrics are ", paste(.h2o.max_metrics, collapse=', ')))
+  if( !all(sapply(metrics_list, f <- function(x) x %in% .h2o.maximizing_metrics)) )
+      stop(paste("The only allowable metrics are ", paste(.h2o.maximizing_metrics, collapse=', ')))
 
   # make one big list that combines the thresholds and metric-thresholds
   metrics_thresholds = lapply(metrics_list, f <- function(x) h2o.find_threshold_by_max_metric(object, x))
@@ -3336,7 +3532,7 @@ row_index=-1) {
   parms$add_missing_na <- include_na
   parms$row_index = row_index
 
-  if (length(user_splits) == 0) {
+  if (is.null(user_splits) || length(user_splits) == 0) {
     parms$user_cols <- NULL
     parms$user_splits <- NULL
     parms$num_user_splits <- NULL

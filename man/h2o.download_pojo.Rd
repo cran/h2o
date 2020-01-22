@@ -4,8 +4,13 @@
 \alias{h2o.download_pojo}
 \title{Download the Scoring POJO (Plain Old Java Object) of an H2O Model}
 \usage{
-h2o.download_pojo(model, path = NULL, getjar = NULL, get_jar = TRUE,
-  jar_name = "")
+h2o.download_pojo(
+  model,
+  path = NULL,
+  getjar = NULL,
+  get_jar = TRUE,
+  jar_name = ""
+)
 }
 \arguments{
 \item{model}{An H2OModel}

@@ -4,16 +4,35 @@
 \alias{h2o.init}
 \title{Initialize and Connect to H2O}
 \usage{
-h2o.init(ip = "localhost", port = 54321, name = NA_character_,
-  startH2O = TRUE, forceDL = FALSE, enable_assertions = TRUE,
-  license = NULL, nthreads = -1, max_mem_size = NULL,
-  min_mem_size = NULL, ice_root = tempdir(), log_dir = NA_character_,
-  log_level = NA_character_, strict_version_check = TRUE,
-  proxy = NA_character_, https = FALSE, insecure = FALSE,
-  username = NA_character_, password = NA_character_,
-  cookies = NA_character_, context_path = NA_character_,
-  ignore_config = FALSE, extra_classpath = NULL,
-  jvm_custom_args = NULL, bind_to_localhost = TRUE)
+h2o.init(
+  ip = "localhost",
+  port = 54321,
+  name = NA_character_,
+  startH2O = TRUE,
+  forceDL = FALSE,
+  enable_assertions = TRUE,
+  license = NULL,
+  nthreads = -1,
+  max_mem_size = NULL,
+  min_mem_size = NULL,
+  ice_root = tempdir(),
+  log_dir = NA_character_,
+  log_level = NA_character_,
+  strict_version_check = TRUE,
+  proxy = NA_character_,
+  https = FALSE,
+  cacert = NA_character_,
+  insecure = FALSE,
+  username = NA_character_,
+  password = NA_character_,
+  use_spnego = FALSE,
+  cookies = NA_character_,
+  context_path = NA_character_,
+  ignore_config = FALSE,
+  extra_classpath = NULL,
+  jvm_custom_args = NULL,
+  bind_to_localhost = TRUE
+)
 }
 \arguments{
 \item{ip}{Object of class \code{character} representing the IP address of the server where H2O is running.}
@@ -48,11 +67,15 @@ h2o.init(ip = "localhost", port = 54321, name = NA_character_,
 
 \item{https}{(Optional) Set this to TRUE to use https instead of http.}
 
+\item{cacert}{(Optional) Path to a CA bundle file with root and intermediate certificates of trusted CAs.}
+
 \item{insecure}{(Optional) Set this to TRUE to disable SSL certificate checking.}
 
 \item{username}{(Optional) Username to login with.}
 
 \item{password}{(Optional) Password to login with.}
+
+\item{use_spnego}{(Optional) Set this to TRUE to enable SPNEGO authentication.}
 
 \item{cookies}{(Optional) Vector(or list) of cookies to add to request.}
 

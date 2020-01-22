@@ -4,13 +4,25 @@
 \alias{h2o.svd}
 \title{Singular value decomposition of an H2O data frame using the power method}
 \usage{
-h2o.svd(training_frame, x, destination_key, model_id = NULL,
-  validation_frame = NULL, ignore_const_cols = TRUE,
-  score_each_iteration = FALSE, transform = c("NONE", "STANDARDIZE",
-  "NORMALIZE", "DEMEAN", "DESCALE"), svd_method = c("GramSVD", "Power",
-  "Randomized"), nv = 1, max_iterations = 1000, seed = -1,
-  keep_u = TRUE, u_name = NULL, use_all_factor_levels = TRUE,
-  max_runtime_secs = 0, export_checkpoints_dir = NULL)
+h2o.svd(
+  training_frame,
+  x,
+  destination_key,
+  model_id = NULL,
+  validation_frame = NULL,
+  ignore_const_cols = TRUE,
+  score_each_iteration = FALSE,
+  transform = c("NONE", "STANDARDIZE", "NORMALIZE", "DEMEAN", "DESCALE"),
+  svd_method = c("GramSVD", "Power", "Randomized"),
+  nv = 1,
+  max_iterations = 1000,
+  seed = -1,
+  keep_u = TRUE,
+  u_name = NULL,
+  use_all_factor_levels = TRUE,
+  max_runtime_secs = 0,
+  export_checkpoints_dir = NULL
+)
 }
 \arguments{
 \item{training_frame}{Id of the training data frame.}
@@ -38,7 +50,7 @@ Defaults to NONE.}
 
 \item{max_iterations}{Maximum iterations Defaults to 1000.}
 
-\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default)
+\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}
 
 \item{keep_u}{\code{Logical}. Save left singular vectors? Defaults to TRUE.}
@@ -52,7 +64,7 @@ Defaults to -1 (time-based random number).}
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
 }
 \value{
-Returns an object of class \linkS4class{H2ODimReductionModel}.
+an object of class \linkS4class{H2ODimReductionModel}.
 }
 \description{
 Singular value decomposition of an H2O data frame using the power method

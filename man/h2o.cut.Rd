@@ -5,11 +5,25 @@
 \alias{cut.H2OFrame}
 \title{Cut H2O Numeric Data to Factor}
 \usage{
-h2o.cut(x, breaks, labels = NULL, include.lowest = FALSE,
-  right = TRUE, dig.lab = 3, ...)
+h2o.cut(
+  x,
+  breaks,
+  labels = NULL,
+  include.lowest = FALSE,
+  right = TRUE,
+  dig.lab = 3,
+  ...
+)
 
-\method{cut}{H2OFrame}(x, breaks, labels = NULL,
-  include.lowest = FALSE, right = TRUE, dig.lab = 3, ...)
+\method{cut}{H2OFrame}(
+  x,
+  breaks,
+  labels = NULL,
+  include.lowest = FALSE,
+  right = TRUE,
+  dig.lab = 3,
+  ...
+)
 }
 \arguments{
 \item{x}{An H2OFrame object with a single numeric column.}

@@ -4,8 +4,14 @@
 \alias{h2o.exportFile}
 \title{Export an H2O Data Frame (H2OFrame) to a File or to a collection of Files.}
 \usage{
-h2o.exportFile(data, path, force = FALSE, sep = ",",
-  compression = NULL, parts = 1)
+h2o.exportFile(
+  data,
+  path,
+  force = FALSE,
+  sep = ",",
+  compression = NULL,
+  parts = 1
+)
 }
 \arguments{
 \item{data}{An H2OFrame object.}

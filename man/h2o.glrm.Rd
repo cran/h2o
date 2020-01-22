@@ -4,24 +4,43 @@
 \alias{h2o.glrm}
 \title{Generalized low rank decomposition of an H2O data frame}
 \usage{
-h2o.glrm(training_frame, cols = NULL, model_id = NULL,
-  validation_frame = NULL, ignore_const_cols = TRUE,
-  score_each_iteration = FALSE, loading_name = NULL,
+h2o.glrm(
+  training_frame,
+  cols = NULL,
+  model_id = NULL,
+  validation_frame = NULL,
+  ignore_const_cols = TRUE,
+  score_each_iteration = FALSE,
+  loading_name = NULL,
   transform = c("NONE", "STANDARDIZE", "NORMALIZE", "DEMEAN", "DESCALE"),
-  k = 1, loss = c("Quadratic", "Absolute", "Huber", "Poisson", "Hinge",
-  "Logistic", "Periodic"), loss_by_col = c("Quadratic", "Absolute",
-  "Huber", "Poisson", "Hinge", "Logistic", "Periodic", "Categorical",
-  "Ordinal"), loss_by_col_idx = NULL, multi_loss = c("Categorical",
-  "Ordinal"), period = 1, regularization_x = c("None", "Quadratic",
-  "L2", "L1", "NonNegative", "OneSparse", "UnitOneSparse", "Simplex"),
-  regularization_y = c("None", "Quadratic", "L2", "L1", "NonNegative",
-  "OneSparse", "UnitOneSparse", "Simplex"), gamma_x = 0, gamma_y = 0,
-  max_iterations = 1000, max_updates = 2000, init_step_size = 1,
-  min_step_size = 1e-04, seed = -1, init = c("Random", "SVD",
-  "PlusPlus", "User"), svd_method = c("GramSVD", "Power", "Randomized"),
-  user_y = NULL, user_x = NULL, expand_user_y = TRUE,
-  impute_original = FALSE, recover_svd = FALSE, max_runtime_secs = 0,
-  export_checkpoints_dir = NULL)
+  k = 1,
+  loss = c("Quadratic", "Absolute", "Huber", "Poisson", "Hinge", "Logistic", "Periodic"),
+  loss_by_col = c("Quadratic", "Absolute", "Huber", "Poisson", "Hinge", "Logistic",
+    "Periodic", "Categorical", "Ordinal"),
+  loss_by_col_idx = NULL,
+  multi_loss = c("Categorical", "Ordinal"),
+  period = 1,
+  regularization_x = c("None", "Quadratic", "L2", "L1", "NonNegative", "OneSparse",
+    "UnitOneSparse", "Simplex"),
+  regularization_y = c("None", "Quadratic", "L2", "L1", "NonNegative", "OneSparse",
+    "UnitOneSparse", "Simplex"),
+  gamma_x = 0,
+  gamma_y = 0,
+  max_iterations = 1000,
+  max_updates = 2000,
+  init_step_size = 1,
+  min_step_size = 1e-04,
+  seed = -1,
+  init = c("Random", "SVD", "PlusPlus", "User"),
+  svd_method = c("GramSVD", "Power", "Randomized"),
+  user_y = NULL,
+  user_x = NULL,
+  expand_user_y = TRUE,
+  impute_original = FALSE,
+  recover_svd = FALSE,
+  max_runtime_secs = 0,
+  export_checkpoints_dir = NULL
+)
 }
 \arguments{
 \item{training_frame}{Id of the training data frame.}
@@ -73,7 +92,7 @@ Defaults to NONE.}
 
 \item{min_step_size}{Minimum step size Defaults to 0.0001.}
 
-\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default)
+\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}
 
 \item{init}{Initialization mode Must be one of: "Random", "SVD", "PlusPlus", "User". Defaults to PlusPlus.}
@@ -96,7 +115,7 @@ Must be one of: "GramSVD", "Power", "Randomized". Defaults to Randomized.}
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
 }
 \value{
-Returns an object of class \linkS4class{H2ODimReductionModel}.
+an object of class \linkS4class{H2ODimReductionModel}.
 }
 \description{
 Builds a generalized low rank decomposition of an H2O data frame
@@ -108,11 +127,11 @@ h2o.init()
 australia_path <- system.file("extdata", "australia.csv", package = "h2o")
 australia <- h2o.uploadFile(path = australia_path)
 h2o.glrm(training_frame = australia, k = 5, loss = "Quadratic", regularization_x = "L1",
-gamma_x = 0.5, gamma_y = 0, max_iterations = 1000)
+         gamma_x = 0.5, gamma_y = 0, max_iterations = 1000)
 }
 }
 \references{
-M. Udell, C. Horn, R. Zadeh, S. Boyd (2014). {Generalized Low Rank Models}[http://arxiv.org/abs/1410.0342]. Unpublished manuscript, Stanford Electrical Engineering Department
+M. Udell, C. Horn, R. Zadeh, S. Boyd (2014). {Generalized Low Rank Models}[http://arxiv.org/abs/1410.0342]. Unpublished manuscript, Stanford Electrical Engineering Department.
             N. Halko, P.G. Martinsson, J.A. Tropp. {Finding structure with randomness: Probabilistic algorithms for constructing approximate matrix decompositions}[http://arxiv.org/abs/0909.4061]. SIAM Rev., Survey and Review section, Vol. 53, num. 2, pp. 217-288, June 2011.
 }
 \seealso{

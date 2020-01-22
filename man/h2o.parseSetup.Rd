@@ -4,11 +4,21 @@
 \alias{h2o.parseSetup}
 \title{Get a parse setup back for the staged data.}
 \usage{
-h2o.parseSetup(data, pattern = "", destination_frame = "",
-  header = NA, sep = "", col.names = NULL, col.types = NULL,
-  na.strings = NULL, parse_type = NULL, chunk_size = NULL,
-  decrypt_tool = NULL, skipped_columns = NULL,
-  custom_non_data_line_markers = NULL)
+h2o.parseSetup(
+  data,
+  pattern = "",
+  destination_frame = "",
+  header = NA,
+  sep = "",
+  col.names = NULL,
+  col.types = NULL,
+  na.strings = NULL,
+  parse_type = NULL,
+  chunk_size = NULL,
+  decrypt_tool = NULL,
+  skipped_columns = NULL,
+  custom_non_data_line_markers = NULL
+)
 }
 \arguments{
 \item{data}{An H2OFrame object to be parsed.}

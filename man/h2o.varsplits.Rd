@@ -2,7 +2,15 @@
 % Please edit documentation in R/models.R
 \name{h2o.varsplits}
 \alias{h2o.varsplits}
-\title{Retrieve per-variable split information for a given Isolation Forest model.}
+\title{Retrieve per-variable split information for a given Isolation Forest model.
+Output will include:
+- count - The number of times a variable was used to make a split.
+- aggregated_split_ratios - The split ratio is defined as "abs(#left_observations - #right_observations) / #before_split".
+                            Even splits (#left_observations approx the same as #right_observations) contribute
+                            less to the total aggregated split ratio value for the given feature;
+                            highly imbalanced splits (eg. #left_observations >> #right_observations) contribute more.
+- aggregated_split_depths - The sum of all depths of a variable used to make a split. (If a variable is used
+                            on level N of a tree, then it contributes with N to the total aggregate.)}
 \usage{
 h2o.varsplits(object)
 }
@@ -11,4 +19,12 @@ h2o.varsplits(object)
 }
 \description{
 Retrieve per-variable split information for a given Isolation Forest model.
+Output will include:
+- count - The number of times a variable was used to make a split.
+- aggregated_split_ratios - The split ratio is defined as "abs(#left_observations - #right_observations) / #before_split".
+                            Even splits (#left_observations approx the same as #right_observations) contribute
+                            less to the total aggregated split ratio value for the given feature;
+                            highly imbalanced splits (eg. #left_observations >> #right_observations) contribute more.
+- aggregated_split_depths - The sum of all depths of a variable used to make a split. (If a variable is used
+                            on level N of a tree, then it contributes with N to the total aggregate.)
 }

@@ -4,11 +4,21 @@
 \alias{h2o.connect}
 \title{Connect to a running H2O instance.}
 \usage{
-h2o.connect(ip = "localhost", port = 54321,
-  strict_version_check = TRUE, proxy = NA_character_, https = FALSE,
-  insecure = FALSE, username = NA_character_,
-  password = NA_character_, cookies = NA_character_,
-  context_path = NA_character_, config = NULL)
+h2o.connect(
+  ip = "localhost",
+  port = 54321,
+  strict_version_check = TRUE,
+  proxy = NA_character_,
+  https = FALSE,
+  cacert = NA_character_,
+  insecure = FALSE,
+  username = NA_character_,
+  password = NA_character_,
+  use_spnego = FALSE,
+  cookies = NA_character_,
+  context_path = NA_character_,
+  config = NULL
+)
 }
 \arguments{
 \item{ip}{Object of class \code{character} representing the IP address of the server where H2O is running.}
@@ -21,11 +31,15 @@ h2o.connect(ip = "localhost", port = 54321,
 
 \item{https}{(Optional) Set this to TRUE to use https instead of http.}
 
+\item{cacert}{Path to a CA bundle file with root and intermediate certificates of trusted CAs.}
+
 \item{insecure}{(Optional) Set this to TRUE to disable SSL certificate checking.}
 
 \item{username}{(Optional) Username to login with.}
 
 \item{password}{(Optional) Password to login with.}
+
+\item{use_spnego}{(Optional) Set this to TRUE to enable SPNEGO authentication.}
 
 \item{cookies}{(Optional) Vector(or list) of cookies to add to request.}
 

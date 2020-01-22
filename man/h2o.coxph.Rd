@@ -4,13 +4,26 @@
 \alias{h2o.coxph}
 \title{Trains a Cox Proportional Hazards Model (CoxPH) on an H2O dataset}
 \usage{
-h2o.coxph(x, event_column, training_frame, model_id = NULL,
-  start_column = NULL, stop_column = NULL, weights_column = NULL,
-  offset_column = NULL, stratify_by = NULL, ties = c("efron",
-  "breslow"), init = 0, lre_min = 9, max_iterations = 20,
-  interactions = NULL, interaction_pairs = NULL,
-  interactions_only = NULL, use_all_factor_levels = FALSE,
-  export_checkpoints_dir = NULL)
+h2o.coxph(
+  x,
+  event_column,
+  training_frame,
+  model_id = NULL,
+  start_column = NULL,
+  stop_column = NULL,
+  weights_column = NULL,
+  offset_column = NULL,
+  stratify_by = NULL,
+  ties = c("efron", "breslow"),
+  init = 0,
+  lre_min = 9,
+  max_iterations = 20,
+  interactions = NULL,
+  interaction_pairs = NULL,
+  interactions_only = NULL,
+  use_all_factor_levels = FALSE,
+  export_checkpoints_dir = NULL
+)
 }
 \arguments{
 \item{x}{(Optional) A vector containing the names or indices of the predictor variables to use in building the model.

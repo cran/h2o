@@ -4,9 +4,17 @@
 \alias{h2o.target_encode_apply}
 \title{Apply Target Encoding Map to Frame}
 \usage{
-h2o.target_encode_apply(data, x, y, target_encode_map, holdout_type,
-  fold_column = NULL, blended_avg = TRUE, noise_level = NULL,
-  seed = -1)
+h2o.target_encode_apply(
+  data,
+  x,
+  y,
+  target_encode_map,
+  holdout_type,
+  fold_column = NULL,
+  blended_avg = TRUE,
+  noise_level = NULL,
+  seed = -1
+)
 }
 \arguments{
 \item{data}{An H2OFrame object with which to apply the target encoding map.}

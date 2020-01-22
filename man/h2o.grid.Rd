@@ -4,9 +4,20 @@
 \alias{h2o.grid}
 \title{H2O Grid Support}
 \usage{
-h2o.grid(algorithm, grid_id, x, y, training_frame, ...,
-  hyper_params = list(), is_supervised = NULL,
-  do_hyper_params_check = FALSE, search_criteria = NULL)
+h2o.grid(
+  algorithm,
+  grid_id,
+  x,
+  y,
+  training_frame,
+  ...,
+  hyper_params = list(),
+  is_supervised = NULL,
+  do_hyper_params_check = FALSE,
+  search_criteria = NULL,
+  export_checkpoints_dir = NULL,
+  parallelism = 1
+)
 }
 \arguments{
 \item{algorithm}{Name of algorithm to use in grid search (gbm, randomForest, kmeans, glm, deeplearning, naivebayes, pca).}
@@ -32,13 +43,23 @@ name and parameters specify a supervised or unsupervised algorithm.}
 \item{do_hyper_params_check}{Perform client check for specified hyper parameters. It can be time expensive for
 large hyper space.}
 
-\item{search_criteria}{(Optional)  List of control parameters for smarter hyperparameter search.  The default
-strategy 'Cartesian' covers the entire space of hyperparameter combinations.  Specify the
-'RandomDiscrete' strategy to get random search of all the combinations of your hyperparameters.  RandomDiscrete
-should be usually combined with at least one early stopping criterion,
-max_models and/or max_runtime_secs, e.g. \code{list(strategy = "RandomDiscrete", max_models = 42, max_runtime_secs = 28800)}
-or  \code{list(strategy = "RandomDiscrete", stopping_metric = "AUTO", stopping_tolerance = 0.001, stopping_rounds = 10)}
-or  \code{list(strategy = "RandomDiscrete", stopping_metric = "misclassification", stopping_tolerance = 0.00001, stopping_rounds = 5)}.}
+\item{search_criteria}{(Optional)  List of control parameters for smarter hyperparameter search.  The list can 
+include values for: strategy, max_models, max_runtime_secs, stopping_metric, stopping_tolerance, stopping_rounds and
+seed.  The default strategy 'Cartesian' covers the entire space of hyperparameter combinations.  If you want to use
+cartesian grid search, you can leave the search_criteria argument unspecified. Specify the "RandomDiscrete" strategy
+to get random search of all the combinations of your hyperparameters with three ways of specifying when to stop the
+search: max number of models, max time, and metric-based early stopping (e.g., stop if MSE has not improved by 0.0001
+over the 5 best models). Examples below:
+\code{list(strategy = "RandomDiscrete", max_runtime_secs = 600, max_models = 100, stopping_metric = "AUTO",
+stopping_tolerance = 0.00001, stopping_rounds = 5, seed = 123456)} or \code{list(strategy = "RandomDiscrete", 
+max_models = 42, max_runtime_secs = 28800)} or \code{list(strategy = "RandomDiscrete", stopping_metric = "AUTO", 
+stopping_tolerance = 0.001, stopping_rounds = 10)} or \code{list(strategy = "RandomDiscrete", stopping_metric = 
+"misclassification", stopping_tolerance = 0.00001, stopping_rounds = 5)}.}
+
+\item{export_checkpoints_dir}{Directory to automatically export grid in binary form to.}
+
+\item{parallelism}{Level of Parallelism during grid model building. 1 = sequential building (default).
+Use the value of 0 for adaptive parallelism - decided by H2O. Any number > 1 sets the exact number of models built in parallel.}
 }
 \description{
 Provides a set of functions to launch a grid search and get

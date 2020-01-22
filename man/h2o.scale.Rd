@@ -2,12 +2,9 @@
 % Please edit documentation in R/frame.R
 \name{h2o.scale}
 \alias{h2o.scale}
-\alias{scale.H2OFrame}
 \title{Scaling and Centering of an H2OFrame}
 \usage{
-h2o.scale(x, center = TRUE, scale = TRUE)
-
-\method{scale}{H2OFrame}(x, center = TRUE, scale = TRUE)
+h2o.scale(x, center = TRUE, scale = TRUE, inplace = FALSE)
 }
 \arguments{
 \item{x}{An H2OFrame object.}
@@ -15,6 +12,9 @@ h2o.scale(x, center = TRUE, scale = TRUE)
 \item{center}{either a \code{logical} value or numeric vector of length equal to the number of columns of x.}
 
 \item{scale}{either a \code{logical} value or numeric vector of length equal to the number of columns of x.}
+
+\item{inplace}{a \code{logical} values indicating whether directly overwrite original data (disabled by default).
+Exposed for backwards compatibility (prior versions of this functions were always doing an inplace update).}
 }
 \description{
 Centers and/or scales the columns of an H2O dataset.
@@ -27,6 +27,6 @@ iris_hf <- as.h2o(iris)
 summary(iris_hf)
 
 # Scale and center all the numeric columns in iris data set
-scale(iris_hf[, 1:4])
+iris_scaled <- h2o.scale(iris_hf[, 1:4])
 }
 }

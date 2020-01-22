@@ -5,13 +5,21 @@
 \alias{quantile.H2OFrame}
 \title{Quantiles of H2O Frames.}
 \usage{
-h2o.quantile(x, probs = c(0.001, 0.01, 0.1, 0.25, 0.333, 0.5, 0.667,
-  0.75, 0.9, 0.99, 0.999), combine_method = c("interpolate", "average",
-  "avg", "low", "high"), weights_column = NULL, ...)
+h2o.quantile(
+  x,
+  probs = c(0.001, 0.01, 0.1, 0.25, 0.333, 0.5, 0.667, 0.75, 0.9, 0.99, 0.999),
+  combine_method = c("interpolate", "average", "avg", "low", "high"),
+  weights_column = NULL,
+  ...
+)
 
-\method{quantile}{H2OFrame}(x, probs = c(0.001, 0.01, 0.1, 0.25, 0.333,
-  0.5, 0.667, 0.75, 0.9, 0.99, 0.999), combine_method = c("interpolate",
-  "average", "avg", "low", "high"), weights_column = NULL, ...)
+\method{quantile}{H2OFrame}(
+  x,
+  probs = c(0.001, 0.01, 0.1, 0.25, 0.333, 0.5, 0.667, 0.75, 0.9, 0.99, 0.999),
+  combine_method = c("interpolate", "average", "avg", "low", "high"),
+  weights_column = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{An \code{H2OFrame} object with a single numeric column.}

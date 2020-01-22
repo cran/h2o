@@ -4,8 +4,7 @@
 \alias{h2o.centroid_stats}
 \title{Retrieve centroid statistics}
 \usage{
-h2o.centroid_stats(object, train = FALSE, valid = FALSE,
-  xval = FALSE)
+h2o.centroid_stats(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OClusteringModel} object.}

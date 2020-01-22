@@ -4,8 +4,13 @@
 \alias{.h2o.doRawGET}
 \title{Perform a low-level HTTP GET operation on an H2O instance}
 \usage{
-.h2o.doRawGET(conn = h2o.getConnection(), h2oRestApiVersion, urlSuffix,
-  parms, ...)
+.h2o.doRawGET(
+  conn = h2o.getConnection(),
+  h2oRestApiVersion,
+  urlSuffix,
+  parms,
+  ...
+)
 }
 \arguments{
 \item{conn}{H2OConnection}

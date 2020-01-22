@@ -1176,6 +1176,25 @@ h2o.pivot <- function(x, index, column, value){
   .newExpr("pivot", x, .quote(index), .quote(column), .quote(value))
 }
 
+#' Converts a frame to key-value representation while optionally skipping NA values.
+#' Inverse operation to h2o.pivot.
+#'
+#' Pivot the frame designated by the three columns: index, column, and value. Index and column should be
+#' of type enum, int, or time.
+#' For cases of multiple indexes for a column label, the aggregation method is to pick the first occurrence in the data frame
+#'
+#' @param x an H2OFrame
+#' @param id_vars the columns used as identifiers
+#' @param value_vars what columns will be converted to key-value pairs (optional, if not specified complement to id_vars will be used)
+#' @param var_name name of the key-column (default: "variable")
+#' @param value_name name of the value-column (default: "value")
+#' @param skipna if enabled, do not include NAs in the result (default: FALSE)
+#' @return an unpivoted H2OFrame
+#' @export
+h2o.melt <- function(x, id_vars, value_vars=NULL, var_name="variable", value_name="value", skipna=FALSE) {
+    .newExpr("melt", chk.H2OFrame(x), .str.list(id_vars), .str.list(value_vars), .quote(var_name), .quote(value_name), skipna)
+}
+
 # H2O topBottomN
 #
 # topBottomN function will will grab the top N percent or botom N percent of values of a column and return it in a
@@ -1413,7 +1432,12 @@ h2o.listTimezones <- function() .fetch.data(.newExpr("listTimeZones"),1000L)
 
 # Convert to Currents string-list syntax
 .quote <- function(x) paste0('"',x,'"')
-.str.list <- function(sl) paste0('[',paste0('"',sl,'"',collapse=" "),']')
+.str.list <- function(sl) {
+  if (is.null(sl))
+    "[]"
+  else
+    paste0('[',paste0('"',sl,'"',collapse=" "),']')
+}
 
 # Convert a row or column selector to zero-based numbering and return a string
 .row.col.selector <- function( sel, raw_sel=NULL, envir=NULL ) {
@@ -2506,6 +2530,10 @@ var <- function(x, y = NULL, na.rm = FALSE, use)  {
 #'   "everything"            - outputs NaNs whenever one of its contributing observations is missing
 #'   "all.obs"               - presence of missing observations will throw an error
 #'   "complete.obs"          - discards missing values along with all observations in their rows so that only complete observations are used
+#' @param method \code{str} Method of correlation computation. Allowed values are:
+#' "Pearson" - Pearson's correlation coefficient
+#' "Spearman" - Spearman's correlation coefficient (Spearman's Rho)
+#' Defaults to "Pearson"
 #' @examples
 #' \dontrun{
 #' h2o.init()
@@ -2514,7 +2542,7 @@ var <- function(x, y = NULL, na.rm = FALSE, use)  {
 #' cor(prostate$AGE)
 #' }
 #' @export
-h2o.cor <- function(x, y=NULL,na.rm = FALSE, use){
+h2o.cor <- function(x, y=NULL,na.rm = FALSE, use, method="Pearson"){
   # Eager, mostly to match prior semantics but no real reason it need to be
   if( is.null(y) ){
     y <- x
@@ -2522,8 +2550,13 @@ h2o.cor <- function(x, y=NULL,na.rm = FALSE, use){
   if(missing(use)) {
     if (na.rm) use <- "complete.obs" else use <- "everything"
   }
+  
+  if (is.null(method) || is.na(method)) {
+    stop("Correlation method must be specified.")
+  }
+  
   # Eager, mostly to match prior semantics but no real reason it need to be
-  expr <- .newExpr("cor",x,y,.quote(use))
+  expr <- .newExpr("cor",x,y,.quote(use), .quote(method))
   if( (nrow(x)==1L || (ncol(x)==1L && ncol(y)==1L)) ) .eval.scalar(expr)
   else .fetch.data(expr,ncol(x))
 }
@@ -2638,6 +2671,8 @@ round <- function(x, digits=0) {
 #' @param x An H2OFrame object.
 #' @param center either a \code{logical} value or numeric vector of length equal to the number of columns of x.
 #' @param scale either a \code{logical} value or numeric vector of length equal to the number of columns of x.
+#' @param inplace a \code{logical} values indicating whether directly overwrite original data (disabled by default).
+#'        Exposed for backwards compatibility (prior versions of this functions were always doing an inplace update). 
 #' @examples
 #' \dontrun{
 #' library(h2o)
@@ -2646,14 +2681,41 @@ round <- function(x, digits=0) {
 #' summary(iris_hf)
 #'
 #' # Scale and center all the numeric columns in iris data set
-#' scale(iris_hf[, 1:4])
+#' iris_scaled <- h2o.scale(iris_hf[, 1:4])
 #' }
 #' @export
-h2o.scale <- function(x, center = TRUE, scale = TRUE) .newExpr("scale", chk.H2OFrame(x), center, scale)
+h2o.scale <- function(x, center = TRUE, scale = TRUE, inplace = FALSE) {
+  scale_fun <- if (inplace) "scale_inplace" else "scale"
+  result <- .newExpr(scale_fun, chk.H2OFrame(x), center, scale)
+  if (inplace) {
+    result <- .eval.frame(result)
+  }
+  return(result)
+}
 
-#' @rdname h2o.scale
+#'
+#' Scaling and Centering of an H2OFrame
+#'
+#' Centers and/or scales the columns of an H2O dataset.
+#'
+#' @name scale
+#' @param x An H2OFrame object.
+#' @param center either a \code{logical} value or numeric vector of length equal to the number of columns of x.
+#' @param scale either a \code{logical} value or numeric vector of length equal to the number of columns of x.
+#' @examples
+#' \dontrun{
+#' library(h2o)
+#' h2o.init()
+#' iris_hf <- as.h2o(iris)
+#' summary(iris_hf)
+#'
+#' # Scale and center all the numeric columns in iris data set
+#' iris_scaled <- scale(iris_hf[, 1:4])
+#' }
 #' @export
-scale.H2OFrame <- h2o.scale
+scale.H2OFrame <- function(x, center = TRUE, scale = TRUE) {
+  h2o.scale(x, center = center, scale = scale, inplace = FALSE)
+}
 
 #-----------------------------------------------------------------------------------------------------------------------
 # Below takes H2O primitives that do not start with "h2o.*" and appends "h2o.*" to ensure all H2O primitives exist

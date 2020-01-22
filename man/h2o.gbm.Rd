@@ -4,45 +4,79 @@
 \alias{h2o.gbm}
 \title{Build gradient boosted classification or regression trees}
 \usage{
-h2o.gbm(x, y, training_frame, model_id = NULL, validation_frame = NULL,
-  nfolds = 0, keep_cross_validation_models = TRUE,
+h2o.gbm(
+  x,
+  y,
+  training_frame,
+  model_id = NULL,
+  validation_frame = NULL,
+  nfolds = 0,
+  keep_cross_validation_models = TRUE,
   keep_cross_validation_predictions = FALSE,
   keep_cross_validation_fold_assignment = FALSE,
-  score_each_iteration = FALSE, score_tree_interval = 0,
+  score_each_iteration = FALSE,
+  score_tree_interval = 0,
   fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
-  fold_column = NULL, ignore_const_cols = TRUE, offset_column = NULL,
-  weights_column = NULL, balance_classes = FALSE,
-  class_sampling_factors = NULL, max_after_balance_size = 5,
-  max_hit_ratio_k = 0, ntrees = 50, max_depth = 5, min_rows = 10,
-  nbins = 20, nbins_top_level = 1024, nbins_cats = 1024,
-  r2_stopping = Inf, stopping_rounds = 0, stopping_metric = c("AUTO",
-  "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
-  "lift_top_group", "misclassification", "AUCPR", "mean_per_class_error",
-  "custom", "custom_increasing"), stopping_tolerance = 0.001,
-  max_runtime_secs = 0, seed = -1, build_tree_one_node = FALSE,
-  learn_rate = 0.1, learn_rate_annealing = 1,
-  distribution = c("AUTO", "bernoulli", "quasibinomial", "multinomial",
-  "gaussian", "poisson", "gamma", "tweedie", "laplace", "quantile",
-  "huber", "custom"), quantile_alpha = 0.5, tweedie_power = 1.5,
-  huber_alpha = 0.9, checkpoint = NULL, sample_rate = 1,
-  sample_rate_per_class = NULL, col_sample_rate = 1,
-  col_sample_rate_change_per_level = 1, col_sample_rate_per_tree = 1,
-  min_split_improvement = 1e-05, histogram_type = c("AUTO",
-  "UniformAdaptive", "Random", "QuantilesGlobal", "RoundRobin"),
-  max_abs_leafnode_pred = Inf, pred_noise_bandwidth = 0,
-  categorical_encoding = c("AUTO", "Enum", "OneHotInternal",
-  "OneHotExplicit", "Binary", "Eigen", "LabelEncoder", "SortByResponse",
-  "EnumLimited"), calibrate_model = FALSE, calibration_frame = NULL,
-  custom_metric_func = NULL, custom_distribution_func = NULL,
-  export_checkpoints_dir = NULL, monotone_constraints = NULL,
-  check_constant_response = TRUE, verbose = FALSE)
+  fold_column = NULL,
+  ignore_const_cols = TRUE,
+  offset_column = NULL,
+  weights_column = NULL,
+  balance_classes = FALSE,
+  class_sampling_factors = NULL,
+  max_after_balance_size = 5,
+  max_hit_ratio_k = 0,
+  ntrees = 50,
+  max_depth = 5,
+  min_rows = 10,
+  nbins = 20,
+  nbins_top_level = 1024,
+  nbins_cats = 1024,
+  r2_stopping = Inf,
+  stopping_rounds = 0,
+  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE",
+    "AUC", "AUCPR", "lift_top_group", "misclassification", "mean_per_class_error",
+    "custom", "custom_increasing"),
+  stopping_tolerance = 0.001,
+  max_runtime_secs = 0,
+  seed = -1,
+  build_tree_one_node = FALSE,
+  learn_rate = 0.1,
+  learn_rate_annealing = 1,
+  distribution = c("AUTO", "bernoulli", "quasibinomial", "multinomial", "gaussian",
+    "poisson", "gamma", "tweedie", "laplace", "quantile", "huber", "custom"),
+  quantile_alpha = 0.5,
+  tweedie_power = 1.5,
+  huber_alpha = 0.9,
+  checkpoint = NULL,
+  sample_rate = 1,
+  sample_rate_per_class = NULL,
+  col_sample_rate = 1,
+  col_sample_rate_change_per_level = 1,
+  col_sample_rate_per_tree = 1,
+  min_split_improvement = 1e-05,
+  histogram_type = c("AUTO", "UniformAdaptive", "Random", "QuantilesGlobal",
+    "RoundRobin"),
+  max_abs_leafnode_pred = Inf,
+  pred_noise_bandwidth = 0,
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
+    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  calibrate_model = FALSE,
+  calibration_frame = NULL,
+  custom_metric_func = NULL,
+  custom_distribution_func = NULL,
+  export_checkpoints_dir = NULL,
+  monotone_constraints = NULL,
+  check_constant_response = TRUE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{x}{(Optional) A vector containing the names or indices of the predictor variables to use in building the model.
 If x is missing, then all columns except y are used.}
 
-\item{y}{The name or column index of the response variable in the data. The response must be either a numeric or a
-categorical/factor variable. If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
+\item{y}{The name or column index of the response variable in the data. 
+The response must be either a numeric or a categorical/factor variable. 
+If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
 
 \item{training_frame}{Id of the training data frame.}
 
@@ -115,7 +149,7 @@ stopping_metric does not improve for k:=stopping_rounds scoring events (0 to dis
 \item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and
 anonomaly_score for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF
 with the Python client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
-"lift_top_group", "misclassification", "AUCPR", "mean_per_class_error", "custom", "custom_increasing".
+"AUCPR", "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing".
 Defaults to AUTO.}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
@@ -123,7 +157,7 @@ much) Defaults to 0.001.}
 
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.}
 
-\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default)
+\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}
 
 \item{build_tree_one_node}{\code{Logical}. Run on one node only; no network overhead but fewer cpus used.  Suitable for small datasets.
@@ -185,7 +219,7 @@ decreasing constraint.}
 column is a constant value.If disabled, then model will train regardless of the response column being a
 constant value or not. Defaults to TRUE.}
 
-\item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree for GBM, DRF, & XGBoost. Metrics per epoch for Deep Learning). Defaults to FALSE.}
+\item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree). Defaults to FALSE.}
 }
 \description{
 Builds gradient boosted classification trees and gradient boosted regression trees on a parsed data set.
@@ -202,10 +236,10 @@ h2o.init()
 australia_path <- system.file("extdata", "australia.csv", package = "h2o")
 australia <- h2o.uploadFile(path = australia_path)
 independent <- c("premax", "salmax","minairtemp", "maxairtemp", "maxsst",
-"maxsoilmoist", "Max_czcs")
+                 "maxsoilmoist", "Max_czcs")
 dependent <- "runoffnew"
 h2o.gbm(y = dependent, x = independent, training_frame = australia,
-ntrees = 3, max_depth = 3, min_rows = 2)
+        ntrees = 3, max_depth = 3, min_rows = 2)
 }
 }
 \seealso{

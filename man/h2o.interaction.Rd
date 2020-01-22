@@ -4,8 +4,14 @@
 \alias{h2o.interaction}
 \title{Categorical Interaction Feature Creation in H2O}
 \usage{
-h2o.interaction(data, destination_frame, factors, pairwise, max_factors,
-  min_occurrence)
+h2o.interaction(
+  data,
+  destination_frame,
+  factors,
+  pairwise,
+  max_factors,
+  min_occurrence
+)
 }
 \arguments{
 \item{data}{An H2OFrame object containing the categorical columns.}

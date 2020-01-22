@@ -4,12 +4,21 @@
 \alias{h2o.word2vec}
 \title{Trains a word2vec model on a String column of an H2O data frame}
 \usage{
-h2o.word2vec(training_frame = NULL, model_id = NULL,
-  min_word_freq = 5, word_model = c("SkipGram"),
-  norm_model = c("HSM"), vec_size = 100, window_size = 5,
-  sent_sample_rate = 0.001, init_learning_rate = 0.025, epochs = 5,
-  pre_trained = NULL, max_runtime_secs = 0,
-  export_checkpoints_dir = NULL)
+h2o.word2vec(
+  training_frame = NULL,
+  model_id = NULL,
+  min_word_freq = 5,
+  word_model = c("SkipGram"),
+  norm_model = c("HSM"),
+  vec_size = 100,
+  window_size = 5,
+  sent_sample_rate = 0.001,
+  init_learning_rate = 0.025,
+  epochs = 5,
+  pre_trained = NULL,
+  max_runtime_secs = 0,
+  export_checkpoints_dir = NULL
+)
 }
 \arguments{
 \item{training_frame}{Id of the training data frame.}

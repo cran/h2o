@@ -14,6 +14,7 @@
 \alias{H2ODimReductionModel-class}
 \alias{H2OWordEmbeddingModel-class}
 \alias{H2OAnomalyDetectionModel-class}
+\alias{H2OTargetEncoderModel-class}
 \title{The H2OModel object.}
 \usage{
 \S4method{show}{H2OModel}(object)

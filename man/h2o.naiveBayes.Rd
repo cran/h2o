@@ -4,26 +4,44 @@
 \alias{h2o.naiveBayes}
 \title{Compute naive Bayes probabilities on an H2O dataset.}
 \usage{
-h2o.naiveBayes(x, y, training_frame, model_id = NULL, nfolds = 0,
-  seed = -1, fold_assignment = c("AUTO", "Random", "Modulo",
-  "Stratified"), fold_column = NULL,
+h2o.naiveBayes(
+  x,
+  y,
+  training_frame,
+  model_id = NULL,
+  nfolds = 0,
+  seed = -1,
+  fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
+  fold_column = NULL,
   keep_cross_validation_models = TRUE,
   keep_cross_validation_predictions = FALSE,
   keep_cross_validation_fold_assignment = FALSE,
-  validation_frame = NULL, ignore_const_cols = TRUE,
-  score_each_iteration = FALSE, balance_classes = FALSE,
-  class_sampling_factors = NULL, max_after_balance_size = 5,
-  max_hit_ratio_k = 0, laplace = 0, threshold = 0.001,
-  min_sdev = 0.001, eps = 0, eps_sdev = 0, min_prob = 0.001,
-  eps_prob = 0, compute_metrics = TRUE, max_runtime_secs = 0,
-  export_checkpoints_dir = NULL)
+  validation_frame = NULL,
+  ignore_const_cols = TRUE,
+  score_each_iteration = FALSE,
+  balance_classes = FALSE,
+  class_sampling_factors = NULL,
+  max_after_balance_size = 5,
+  max_hit_ratio_k = 0,
+  laplace = 0,
+  threshold = 0.001,
+  min_sdev = 0.001,
+  eps = 0,
+  eps_sdev = 0,
+  min_prob = 0.001,
+  eps_prob = 0,
+  compute_metrics = TRUE,
+  max_runtime_secs = 0,
+  export_checkpoints_dir = NULL
+)
 }
 \arguments{
 \item{x}{(Optional) A vector containing the names or indices of the predictor variables to use in building the model.
 If x is missing, then all columns except y are used.}
 
-\item{y}{The name or column index of the response variable in the data. The response must be either a numeric or a
-categorical/factor variable. If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
+\item{y}{The name or column index of the response variable in the data. 
+The response must be either a numeric or a categorical/factor variable. 
+If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
 
 \item{training_frame}{Id of the training data frame.}
 
@@ -31,7 +49,7 @@ categorical/factor variable. If the response is numeric, then a regression model
 
 \item{nfolds}{Number of folds for K-fold cross-validation (0 to disable or >= 2). Defaults to 0.}
 
-\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default)
+\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}
 
 \item{fold_assignment}{Cross-validation fold assignment scheme, if fold_column is not specified. The 'Stratified' option will
@@ -66,10 +84,10 @@ Defaults to 0.}
 
 \item{laplace}{Laplace smoothing parameter Defaults to 0.}
 
-\item{threshold}{This argument is deprecated, use `min_sdev` instead. The minimum standard deviation to use for observations without enough data. 
+\item{threshold}{This argument is deprecated, use `min_sdev` instead. The minimum standard deviation to use for observations without enough data.
 Must be at least 1e-10.}
 
-\item{min_sdev}{The minimum standard deviation to use for observations without enough data. 
+\item{min_sdev}{The minimum standard deviation to use for observations without enough data.
 Must be at least 1e-10.}
 
 \item{eps}{This argument is deprecated, use `eps_sdev` instead. A threshold cutoff to deal with numeric instability, must be positive.}
@@ -87,7 +105,7 @@ Must be at least 1e-10.}
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
 }
 \value{
-Returns an object of class \linkS4class{H2OBinomialModel} if the response has two categorical levels,
+an object of class \linkS4class{H2OBinomialModel} if the response has two categorical levels,
         and \linkS4class{H2OMultinomialModel} otherwise.
 }
 \description{
@@ -97,13 +115,6 @@ deviation computed from the training dataset. When building a naive Bayes classi
 every row in the training dataset that contains at least one NA will be skipped completely.
 If the test dataset has missing values, then those predictors are omitted in the probability
 calculation during prediction.
-}
-\details{
-The naive Bayes classifier assumes independence between predictor variables conditional         on the
-         response, and a Gaussian distribution of numeric predictors with mean and standard         deviation
-         computed from the training dataset. When building a naive Bayes classifier,         every row in the
-         training dataset that contains at least one NA will be skipped completely.         If the test dataset has
-         missing values, then those predictors are omitted in the probability         calculation during prediction.
 }
 \examples{
 \dontrun{

@@ -4,10 +4,21 @@
 \alias{h2o.partialPlot}
 \title{Partial Dependence Plots}
 \usage{
-h2o.partialPlot(object, data, cols, destination_key, nbins = 20,
-  plot = TRUE, plot_stddev = TRUE, weight_column = -1,
-  include_na = FALSE, user_splits = NULL, col_pairs_2dpdp = NULL,
-  save_to = NULL, row_index = -1)
+h2o.partialPlot(
+  object,
+  data,
+  cols,
+  destination_key,
+  nbins = 20,
+  plot = TRUE,
+  plot_stddev = TRUE,
+  weight_column = -1,
+  include_na = FALSE,
+  user_splits = NULL,
+  col_pairs_2dpdp = NULL,
+  save_to = NULL,
+  row_index = -1
+)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} object.}

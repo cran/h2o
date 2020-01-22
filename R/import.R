@@ -287,11 +287,14 @@ h2o.import_sql_select<- function(connection_url, select_query, username, passwor
 #'
 #' Import Hive table to H2OFrame in memory.
 #' Make sure to start H2O with Hive on classpath. Uses hive-site.xml on classpath to connect to Hive.
-#'
+#' When database is specified as jdbc URL uses Hive JDBC driver to obtain table metadata. then 
+#' uses direct HDFS access to import data.
+#' 
 #' For example, 
 #'     my_citibike_data = h2o.import_hive_table("default", "citibike20k", partitions = list(c("2017", "01"), c("2017", "02")))
+#'     my_citibike_data = h2o.import_hive_table("jdbc:hive2://hive-server:10000/default", "citibike20k", allow_multi_format = TRUE)
 #'
-#' @param database Name of Hive database (default database will be used by default)
+#' @param database Name of Hive database (default database will be used by default), can be also a JDBC URL
 #' @param table name of Hive table to import
 #' @param partitions a list of lists of strings - partition key column values of partitions you want to import.
 #' @param allow_multi_format enable import of partitioned tables with different storage formats used. WARNING:
@@ -368,4 +371,44 @@ h2o.set_s3_credentials <- function(secretKeyId, secretAccessKey){
   
   res <- .h2o.__remoteSend("PersistS3", method = "POST", .params = parms, h2oRestApiVersion = 3)
   print("Credentials successfully set.")
+}
+
+
+#' Loads previously saved grid with all it's models from the same folder
+#'
+#' Returns a reference to the loaded Grid.
+#'
+#' @param grid_path A character string containing the path to the file with the grid saved.
+#' @examples
+#' \dontrun{
+#' library(h2o)
+#' h2o.init()
+#'
+#'iris.hex <- as.h2o(iris)
+#'
+#'ntrees_opts = c(1, 5)
+#'learn_rate_opts = c(0.1, 0.01)
+#'size_of_hyper_space = length(ntrees_opts) * length(learn_rate_opts)
+#'
+#'hyper_parameters = list(ntrees = ntrees_opts, learn_rate = learn_rate_opts)
+#'# Tempdir is chosen arbitrarily. May be any valid folder on an H2O-supported filesystem.
+#'baseline_grid <- h2o.grid("gbm", grid_id="gbm_grid_test", x=1:4, y=5, training_frame=iris.hex,
+#' hyper_params = hyper_parameters, export_checkpoints_dir = tempdir())
+#'# Remove everything from the cluster or restart it
+#'h2o.removeAll()
+#'grid <- h2o.loadGrid(paste0(tempdir(),"/",baseline_grid@grid_id))
+#' }
+#' @export
+h2o.loadGrid <- function(grid_path){
+  params <- list()
+  params[["grid_path"]] <- grid_path
+  
+  
+  res <- .h2o.__remoteSend(
+    "Grid.bin/import",
+    method = "POST",
+    h2oRestApiVersion = 3,.params = params
+  )
+  
+  h2o.getGrid(grid_id = res$name)
 }

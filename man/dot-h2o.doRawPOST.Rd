@@ -4,8 +4,14 @@
 \alias{.h2o.doRawPOST}
 \title{Perform a low-level HTTP POST operation on an H2O instance}
 \usage{
-.h2o.doRawPOST(conn = h2o.getConnection(), h2oRestApiVersion, urlSuffix,
-  parms, fileUploadInfo, ...)
+.h2o.doRawPOST(
+  conn = h2o.getConnection(),
+  h2oRestApiVersion,
+  urlSuffix,
+  parms,
+  fileUploadInfo,
+  ...
+)
 }
 \arguments{
 \item{conn}{H2OConnection}

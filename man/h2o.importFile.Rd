@@ -7,24 +7,60 @@
 \alias{h2o.uploadFile}
 \title{Import Files into H2O}
 \usage{
-h2o.importFile(path, destination_frame = "", parse = TRUE,
-  header = NA, sep = "", col.names = NULL, col.types = NULL,
-  na.strings = NULL, decrypt_tool = NULL, skipped_columns = NULL,
-  custom_non_data_line_markers = NULL)
+h2o.importFile(
+  path,
+  destination_frame = "",
+  parse = TRUE,
+  header = NA,
+  sep = "",
+  col.names = NULL,
+  col.types = NULL,
+  na.strings = NULL,
+  decrypt_tool = NULL,
+  skipped_columns = NULL,
+  custom_non_data_line_markers = NULL
+)
 
-h2o.importFolder(path, pattern = "", destination_frame = "",
-  parse = TRUE, header = NA, sep = "", col.names = NULL,
-  col.types = NULL, na.strings = NULL, decrypt_tool = NULL,
-  skipped_columns = NULL, custom_non_data_line_markers = NULL)
+h2o.importFolder(
+  path,
+  pattern = "",
+  destination_frame = "",
+  parse = TRUE,
+  header = NA,
+  sep = "",
+  col.names = NULL,
+  col.types = NULL,
+  na.strings = NULL,
+  decrypt_tool = NULL,
+  skipped_columns = NULL,
+  custom_non_data_line_markers = NULL
+)
 
-h2o.importHDFS(path, pattern = "", destination_frame = "",
-  parse = TRUE, header = NA, sep = "", col.names = NULL,
-  na.strings = NULL)
+h2o.importHDFS(
+  path,
+  pattern = "",
+  destination_frame = "",
+  parse = TRUE,
+  header = NA,
+  sep = "",
+  col.names = NULL,
+  na.strings = NULL
+)
 
-h2o.uploadFile(path, destination_frame = "", parse = TRUE,
-  header = NA, sep = "", col.names = NULL, col.types = NULL,
-  na.strings = NULL, progressBar = FALSE, parse_type = NULL,
-  decrypt_tool = NULL, skipped_columns = NULL)
+h2o.uploadFile(
+  path,
+  destination_frame = "",
+  parse = TRUE,
+  header = NA,
+  sep = "",
+  col.names = NULL,
+  col.types = NULL,
+  na.strings = NULL,
+  progressBar = FALSE,
+  parse_type = NULL,
+  decrypt_tool = NULL,
+  skipped_columns = NULL
+)
 }
 \arguments{
 \item{path}{The complete URL or normalized file path of the file to be

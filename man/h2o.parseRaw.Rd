@@ -4,11 +4,22 @@
 \alias{h2o.parseRaw}
 \title{H2O Data Parsing}
 \usage{
-h2o.parseRaw(data, pattern = "", destination_frame = "", header = NA,
-  sep = "", col.names = NULL, col.types = NULL, na.strings = NULL,
-  blocking = FALSE, parse_type = NULL, chunk_size = NULL,
-  decrypt_tool = NULL, skipped_columns = NULL,
-  custom_non_data_line_markers = NULL)
+h2o.parseRaw(
+  data,
+  pattern = "",
+  destination_frame = "",
+  header = NA,
+  sep = "",
+  col.names = NULL,
+  col.types = NULL,
+  na.strings = NULL,
+  blocking = FALSE,
+  parse_type = NULL,
+  chunk_size = NULL,
+  decrypt_tool = NULL,
+  skipped_columns = NULL,
+  custom_non_data_line_markers = NULL
+)
 }
 \arguments{
 \item{data}{An H2OFrame object to be parsed.}

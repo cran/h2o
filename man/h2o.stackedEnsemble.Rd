@@ -4,21 +4,31 @@
 \alias{h2o.stackedEnsemble}
 \title{Builds a Stacked Ensemble}
 \usage{
-h2o.stackedEnsemble(x, y, training_frame, model_id = NULL,
-  validation_frame = NULL, blending_frame = NULL,
-  base_models = list(), metalearner_algorithm = c("AUTO", "glm", "gbm",
-  "drf", "deeplearning"), metalearner_nfolds = 0,
-  metalearner_fold_assignment = c("AUTO", "Random", "Modulo",
-  "Stratified"), metalearner_fold_column = NULL,
-  metalearner_params = NULL, seed = -1, keep_levelone_frame = FALSE,
-  export_checkpoints_dir = NULL)
+h2o.stackedEnsemble(
+  x,
+  y,
+  training_frame,
+  model_id = NULL,
+  validation_frame = NULL,
+  blending_frame = NULL,
+  base_models = list(),
+  metalearner_algorithm = c("AUTO", "glm", "gbm", "drf", "deeplearning"),
+  metalearner_nfolds = 0,
+  metalearner_fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
+  metalearner_fold_column = NULL,
+  metalearner_params = NULL,
+  seed = -1,
+  keep_levelone_frame = FALSE,
+  export_checkpoints_dir = NULL
+)
 }
 \arguments{
 \item{x}{(Optional). A vector containing the names or indices of the predictor variables to use in building the model.
 If x is missing, then all columns except y are used.  Training frame is used only to compute ensemble training metrics.}
 
-\item{y}{The name or column index of the response variable in the data. The response must be either a numeric or a
-categorical/factor variable. If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
+\item{y}{The name or column index of the response variable in the data. 
+The response must be either a numeric or a categorical/factor variable. 
+If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
 
 \item{training_frame}{Id of the training data frame.}
 
@@ -30,7 +40,7 @@ categorical/factor variable. If the response is numeric, then a regression model
 mode if provided)}
 
 \item{base_models}{List of models (or model ids) to ensemble/stack together. If not using blending frame, then models must have
-been cross-validated using nfolds > 1, and folds must be identical across models. Defaults to [].}
+been cross-validated using nfolds > 1, and folds must be identical across models.}
 
 \item{metalearner_algorithm}{Type of algorithm to use as the metalearner. Options include 'AUTO' (GLM with non negative weights; if
 validation_frame is present, a lambda search is performed), 'glm' (GLM with default parameters), 'gbm' (GBM
@@ -46,10 +56,9 @@ classification problems. Must be one of: "AUTO", "Random", "Modulo", "Stratified
 
 \item{metalearner_fold_column}{Column with cross-validation fold index assignment per observation for cross-validation of the metalearner.}
 
-\item{metalearner_params}{Parameters for metalearner algorithm Defaults to NULL.}
+\item{metalearner_params}{Parameters for metalearner algorithm}
 
-\item{seed}{Seed for random numbers; passed through to the metalearner algorithm. Defaults to -1 (time-based random number)
-Defaults to -1 (time-based random number).}
+\item{seed}{Seed for random numbers; passed through to the metalearner algorithm. Defaults to -1 (time-based random number).}
 
 \item{keep_levelone_frame}{\code{Logical}. Keep level one frame used for metalearner training. Defaults to FALSE.}
 
@@ -60,8 +69,8 @@ Build a stacked ensemble (aka. Super Learner) using the H2O base
 learning algorithms specified by the user.
 }
 \examples{
-
+\dontrun{
 # See example R code here:
 # http://docs.h2o.ai/h2o/latest-stable/h2o-docs/data-science/stacked-ensembles.html
-
+}
 }

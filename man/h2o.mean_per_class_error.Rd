@@ -4,8 +4,7 @@
 \alias{h2o.mean_per_class_error}
 \title{Retrieve the mean per class error}
 \usage{
-h2o.mean_per_class_error(object, train = FALSE, valid = FALSE,
-  xval = FALSE)
+h2o.mean_per_class_error(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OBinomialMetrics} object.}

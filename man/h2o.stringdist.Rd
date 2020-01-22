@@ -4,8 +4,12 @@
 \alias{h2o.stringdist}
 \title{Compute element-wise string distances between two H2OFrames}
 \usage{
-h2o.stringdist(x, y, method = c("lv", "lcs", "qgram", "jaccard", "jw",
-  "soundex"), compare_empty = TRUE)
+h2o.stringdist(
+  x,
+  y,
+  method = c("lv", "lcs", "qgram", "jaccard", "jw", "soundex"),
+  compare_empty = TRUE
+)
 }
 \arguments{
 \item{x}{An H2OFrame}

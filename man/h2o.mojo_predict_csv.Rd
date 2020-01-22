@@ -4,9 +4,16 @@
 \alias{h2o.mojo_predict_csv}
 \title{H2O Prediction from R without having H2O running}
 \usage{
-h2o.mojo_predict_csv(input_csv_path, mojo_zip_path,
-  output_csv_path = NULL, genmodel_jar_path = NULL, classpath = NULL,
-  java_options = NULL, verbose = F, setInvNumNA = F)
+h2o.mojo_predict_csv(
+  input_csv_path,
+  mojo_zip_path,
+  output_csv_path = NULL,
+  genmodel_jar_path = NULL,
+  classpath = NULL,
+  java_options = NULL,
+  verbose = F,
+  setInvNumNA = F
+)
 }
 \arguments{
 \item{input_csv_path}{Path to input CSV file.}

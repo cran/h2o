@@ -4,8 +4,15 @@
 \alias{h2o.mktime}
 \title{Compute msec since the Unix Epoch}
 \usage{
-h2o.mktime(year = 1970, month = 0, day = 0, hour = 0, minute = 0,
-  second = 0, msec = 0)
+h2o.mktime(
+  year = 1970,
+  month = 0,
+  day = 0,
+  hour = 0,
+  minute = 0,
+  second = 0,
+  msec = 0
+)
 }
 \arguments{
 \item{year}{Defaults to 1970}

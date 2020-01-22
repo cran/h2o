@@ -37,11 +37,15 @@ is not found at port 54321.
 
 \item{\code{https}}{Set this to TRUE to use https instead of http.}
 
+\item{\code{cacert}}{Path to a CA bundle file with root and intermediate certificates of trusted CAs.}
+
 \item{\code{insecure}}{Set this to TRUE to disable SSL certificate checking.}
 
 \item{\code{username}}{Username to login with.}
 
 \item{\code{password}}{Password to login with.}
+
+\item{\code{use_spnego}}{Set this to TRUE to use SPNEGO authentication.}
 
 \item{\code{cookies}}{Cookies to add to request}
 

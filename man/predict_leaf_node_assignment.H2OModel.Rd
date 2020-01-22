@@ -5,11 +5,19 @@
 \alias{h2o.predict_leaf_node_assignment}
 \title{Predict the Leaf Node Assignment on an H2O Model}
 \usage{
-predict_leaf_node_assignment.H2OModel(object, newdata, type = c("Path",
-  "Node_ID"), ...)
+predict_leaf_node_assignment.H2OModel(
+  object,
+  newdata,
+  type = c("Path", "Node_ID"),
+  ...
+)
 
-h2o.predict_leaf_node_assignment(object, newdata, type = c("Path",
-  "Node_ID"), ...)
+h2o.predict_leaf_node_assignment(
+  object,
+  newdata,
+  type = c("Path", "Node_ID"),
+  ...
+)
 }
 \arguments{
 \item{object}{a fitted \linkS4class{H2OModel} object for which prediction is

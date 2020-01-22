@@ -4,18 +4,31 @@
 \alias{h2o.kmeans}
 \title{Performs k-means clustering on an H2O dataset}
 \usage{
-h2o.kmeans(training_frame, x, model_id = NULL, validation_frame = NULL,
-  nfolds = 0, keep_cross_validation_models = TRUE,
+h2o.kmeans(
+  training_frame,
+  x,
+  model_id = NULL,
+  validation_frame = NULL,
+  nfolds = 0,
+  keep_cross_validation_models = TRUE,
   keep_cross_validation_predictions = FALSE,
   keep_cross_validation_fold_assignment = FALSE,
   fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
-  fold_column = NULL, ignore_const_cols = TRUE,
-  score_each_iteration = FALSE, k = 1, estimate_k = FALSE,
-  user_points = NULL, max_iterations = 10, standardize = TRUE,
-  seed = -1, init = c("Random", "PlusPlus", "Furthest", "User"),
-  max_runtime_secs = 0, categorical_encoding = c("AUTO", "Enum",
-  "OneHotInternal", "OneHotExplicit", "Binary", "Eigen", "LabelEncoder",
-  "SortByResponse", "EnumLimited"), export_checkpoints_dir = NULL)
+  fold_column = NULL,
+  ignore_const_cols = TRUE,
+  score_each_iteration = FALSE,
+  k = 1,
+  estimate_k = FALSE,
+  user_points = NULL,
+  max_iterations = 10,
+  standardize = TRUE,
+  seed = -1,
+  init = c("Random", "PlusPlus", "Furthest", "User"),
+  max_runtime_secs = 0,
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
+    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  export_checkpoints_dir = NULL
+)
 }
 \arguments{
 \item{training_frame}{Id of the training data frame.}
@@ -59,7 +72,7 @@ to 10.}
 
 \item{standardize}{\code{Logical}. Standardize columns before computing distances Defaults to TRUE.}
 
-\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default)
+\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}
 
 \item{init}{Initialization mode Must be one of: "Random", "PlusPlus", "Furthest", "User". Defaults to Furthest.}
@@ -72,7 +85,7 @@ Defaults to -1 (time-based random number).}
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
 }
 \value{
-Returns an object of class \linkS4class{H2OClusteringModel}.
+an object of class \linkS4class{H2OClusteringModel}.
 }
 \description{
 Performs k-means clustering on an H2O dataset
@@ -87,7 +100,5 @@ h2o.kmeans(training_frame = prostate, k = 10, x = c("AGE", "RACE", "VOL", "GLEAS
 }
 }
 \seealso{
-\code{\link{h2o.cluster_sizes}}, \code{\link{h2o.totss}}, \code{\link{h2o.num_iterations}},
-         \code{\link{h2o.betweenss}}, \code{\link{h2o.tot_withinss}}, \code{\link{h2o.withinss}},
-         \code{\link{h2o.centersSTD}}, \code{\link{h2o.centers}}
+\code{\link{h2o.cluster_sizes}}, \code{\link{h2o.totss}}, \code{\link{h2o.num_iterations}}, \code{\link{h2o.betweenss}}, \code{\link{h2o.tot_withinss}}, \code{\link{h2o.withinss}}, \code{\link{h2o.centersSTD}}, \code{\link{h2o.centers}}
 }

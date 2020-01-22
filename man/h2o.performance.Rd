@@ -4,8 +4,14 @@
 \alias{h2o.performance}
 \title{Model Performance Metrics in H2O}
 \usage{
-h2o.performance(model, newdata = NULL, train = FALSE, valid = FALSE,
-  xval = FALSE, data = NULL)
+h2o.performance(
+  model,
+  newdata = NULL,
+  train = FALSE,
+  valid = FALSE,
+  xval = FALSE,
+  data = NULL
+)
 }
 \arguments{
 \item{model}{An \linkS4class{H2OModel} object}

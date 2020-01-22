@@ -5,7 +5,7 @@
 \alias{||}
 \title{Logical or for H2OFrames}
 \usage{
-"||"(x, y)
+`||`(x, y)
 }
 \arguments{
 \item{x}{An H2OFrame object}

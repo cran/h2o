@@ -4,8 +4,7 @@
 \alias{h2o.residual_deviance}
 \title{Retrieve the residual deviance}
 \usage{
-h2o.residual_deviance(object, train = FALSE, valid = FALSE,
-  xval = FALSE)
+h2o.residual_deviance(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} or \linkS4class{H2OModelMetrics}}

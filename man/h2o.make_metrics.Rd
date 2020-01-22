@@ -4,8 +4,7 @@
 \alias{h2o.make_metrics}
 \title{Create Model Metrics from predicted and actual values in H2O}
 \usage{
-h2o.make_metrics(predicted, actuals, domain = NULL,
-  distribution = NULL)
+h2o.make_metrics(predicted, actuals, domain = NULL, distribution = NULL)
 }
 \arguments{
 \item{predicted}{An H2OFrame containing predictions}

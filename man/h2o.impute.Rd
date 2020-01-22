@@ -4,9 +4,15 @@
 \alias{h2o.impute}
 \title{Basic Imputation of H2O Vectors}
 \usage{
-h2o.impute(data, column = 0, method = c("mean", "median", "mode"),
-  combine_method = c("interpolate", "average", "lo", "hi"), by = NULL,
-  groupByFrame = NULL, values = NULL)
+h2o.impute(
+  data,
+  column = 0,
+  method = c("mean", "median", "mode"),
+  combine_method = c("interpolate", "average", "lo", "hi"),
+  by = NULL,
+  groupByFrame = NULL,
+  values = NULL
+)
 }
 \arguments{
 \item{data}{The dataset containing the column to impute.}

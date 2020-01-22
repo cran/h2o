@@ -4,8 +4,12 @@
 \alias{h2o.group_by}
 \title{Group and Apply by Column}
 \usage{
-h2o.group_by(data, by, ..., gb.control = list(na.methods = NULL,
-  col.names = NULL))
+h2o.group_by(
+  data,
+  by,
+  ...,
+  gb.control = list(na.methods = NULL, col.names = NULL)
+)
 }
 \arguments{
 \item{data}{an H2OFrame object.}
@@ -30,11 +34,11 @@ In the case of \code{na.methods} within \code{gb.control}, there are three possi
 \code{"all"} will include \code{NAs} in computation of functions. \code{"rm"} will completely
 remove all \code{NA} fields. \code{"ignore"} will remove \code{NAs} from the numerator but keep
 the rows for computational purposes. If a list smaller than the number of columns groups is
-supplied, the list will be padded by \code{"ignore"}.
+supplied, the list will be padded by \code{"ignore"}. 
 
 Note that to specify a list of column names in the \code{gb.control} list, you must add the 
 \code{col.names} argument. Similar to \code{na.methods}, \code{col.names} will pad the list with 
-the default column names if the length is less than the number of colums groups supplied.
+the default column names if the length is less than the number of colums groups supplied. 
 
 Supported functions include \code{nrow}. This function is required and accepts a string for the 
 name of the generated column. Other supported aggregate functions accept \code{col} and \code{na} 

@@ -4,41 +4,76 @@
 \alias{h2o.glm}
 \title{Fit a generalized linear model}
 \usage{
-h2o.glm(x, y, training_frame, model_id = NULL, validation_frame = NULL,
-  nfolds = 0, seed = -1, keep_cross_validation_models = TRUE,
+h2o.glm(
+  x,
+  y,
+  training_frame,
+  model_id = NULL,
+  validation_frame = NULL,
+  nfolds = 0,
+  seed = -1,
+  keep_cross_validation_models = TRUE,
   keep_cross_validation_predictions = FALSE,
   keep_cross_validation_fold_assignment = FALSE,
   fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
-  fold_column = NULL, ignore_const_cols = TRUE,
-  score_each_iteration = FALSE, offset_column = NULL,
-  weights_column = NULL, family = c("gaussian", "binomial",
-  "quasibinomial", "ordinal", "multinomial", "poisson", "gamma", "tweedie",
-  "negativebinomial"), tweedie_variance_power = 0,
-  tweedie_link_power = 1, theta = 1e-10, solver = c("AUTO", "IRLSM",
-  "L_BFGS", "COORDINATE_DESCENT_NAIVE", "COORDINATE_DESCENT",
-  "GRADIENT_DESCENT_LH", "GRADIENT_DESCENT_SQERR"), alpha = NULL,
-  lambda = NULL, lambda_search = FALSE, early_stopping = TRUE,
-  nlambdas = -1, standardize = TRUE,
-  missing_values_handling = c("MeanImputation", "Skip"),
-  compute_p_values = FALSE, remove_collinear_columns = FALSE,
-  intercept = TRUE, non_negative = FALSE, max_iterations = -1,
-  objective_epsilon = -1, beta_epsilon = 1e-04,
-  gradient_epsilon = -1, link = c("family_default", "identity",
-  "logit", "log", "inverse", "tweedie", "ologit"), prior = -1,
-  lambda_min_ratio = -1, beta_constraints = NULL,
-  max_active_predictors = -1, interactions = NULL,
-  interaction_pairs = NULL, obj_reg = -1,
-  export_checkpoints_dir = NULL, balance_classes = FALSE,
-  class_sampling_factors = NULL, max_after_balance_size = 5,
-  max_hit_ratio_k = 0, max_runtime_secs = 0,
-  custom_metric_func = NULL)
+  fold_column = NULL,
+  random_columns = NULL,
+  ignore_const_cols = TRUE,
+  score_each_iteration = FALSE,
+  offset_column = NULL,
+  weights_column = NULL,
+  family = c("gaussian", "binomial", "quasibinomial", "ordinal", "multinomial",
+    "poisson", "gamma", "tweedie", "negativebinomial"),
+  rand_family = c("[gaussian]"),
+  tweedie_variance_power = 0,
+  tweedie_link_power = 1,
+  theta = 1e-10,
+  solver = c("AUTO", "IRLSM", "L_BFGS", "COORDINATE_DESCENT_NAIVE",
+    "COORDINATE_DESCENT", "GRADIENT_DESCENT_LH", "GRADIENT_DESCENT_SQERR"),
+  alpha = NULL,
+  lambda = NULL,
+  lambda_search = FALSE,
+  early_stopping = TRUE,
+  nlambdas = -1,
+  standardize = TRUE,
+  missing_values_handling = c("MeanImputation", "Skip", "PlugValues"),
+  plug_values = NULL,
+  compute_p_values = FALSE,
+  remove_collinear_columns = FALSE,
+  intercept = TRUE,
+  non_negative = FALSE,
+  max_iterations = -1,
+  objective_epsilon = -1,
+  beta_epsilon = 1e-04,
+  gradient_epsilon = -1,
+  link = c("family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit"),
+  rand_link = c("[identity]", "[family_default]"),
+  startval = NULL,
+  calc_like = FALSE,
+  HGLM = FALSE,
+  prior = -1,
+  lambda_min_ratio = -1,
+  beta_constraints = NULL,
+  max_active_predictors = -1,
+  interactions = NULL,
+  interaction_pairs = NULL,
+  obj_reg = -1,
+  export_checkpoints_dir = NULL,
+  balance_classes = FALSE,
+  class_sampling_factors = NULL,
+  max_after_balance_size = 5,
+  max_hit_ratio_k = 0,
+  max_runtime_secs = 0,
+  custom_metric_func = NULL
+)
 }
 \arguments{
 \item{x}{(Optional) A vector containing the names or indices of the predictor variables to use in building the model.
 If x is missing, then all columns except y are used.}
 
-\item{y}{The name or column index of the response variable in the data. The response must be either a numeric or a
-categorical/factor variable. If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
+\item{y}{The name or column index of the response variable in the data. 
+The response must be either a numeric or a categorical/factor variable. 
+If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
 
 \item{training_frame}{Id of the training data frame.}
 
@@ -48,7 +83,7 @@ categorical/factor variable. If the response is numeric, then a regression model
 
 \item{nfolds}{Number of folds for K-fold cross-validation (0 to disable or >= 2). Defaults to 0.}
 
-\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default)
+\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}
 
 \item{keep_cross_validation_models}{\code{Logical}. Whether to keep the cross-validation models. Defaults to TRUE.}
@@ -62,6 +97,8 @@ stratify the folds based on the response variable, for classification problems. 
 "Random", "Modulo", "Stratified". Defaults to AUTO.}
 
 \item{fold_column}{Column with cross-validation fold index assignment per observation.}
+
+\item{random_columns}{random columns indices for HGLM.}
 
 \item{ignore_const_cols}{\code{Logical}. Ignore constant columns. Defaults to TRUE.}
 
@@ -78,6 +115,9 @@ well. During training, rows with higher weights matter more, due to the larger l
 \item{family}{Family. Use binomial for classification with logistic regression, others are for regression problems. Must be
 one of: "gaussian", "binomial", "quasibinomial", "ordinal", "multinomial", "poisson", "gamma", "tweedie",
 "negativebinomial". Defaults to gaussian.}
+
+\item{rand_family}{Random Component Family array.  One for each random component. Only support gaussian for now. Must be one of:
+"[gaussian]".}
 
 \item{tweedie_variance_power}{Tweedie variance power Defaults to 0.}
 
@@ -108,8 +148,11 @@ Defaults to -1.}
 
 \item{standardize}{\code{Logical}. Standardize numeric columns to have zero mean and unit variance Defaults to TRUE.}
 
-\item{missing_values_handling}{Handling of missing values. Either MeanImputation or Skip. Must be one of: "MeanImputation", "Skip". Defaults
-to MeanImputation.}
+\item{missing_values_handling}{Handling of missing values. Either MeanImputation, Skip or PlugValues. Must be one of: "MeanImputation",
+"Skip", "PlugValues". Defaults to MeanImputation.}
+
+\item{plug_values}{Plug Values (a single row frame containing values that will be used to impute missing values of the
+training/validation frame, use with conjunction missing_values_handling = PlugValues)}
 
 \item{compute_p_values}{\code{Logical}. Request p-values computation, p-values work only with IRLSM solver and no regularization
 Defaults to FALSE.}
@@ -135,8 +178,17 @@ indicates: If lambda_search is set to False and lambda is equal to zero, the def
 is equal to .000001, otherwise the default value is .0001. If lambda_search is set to True, the conditional
 values above are 1E-8 and 1E-6 respectively. Defaults to -1.}
 
-\item{link}{Must be one of: "family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit". Defaults to
-family_default.}
+\item{link}{Link function. Must be one of: "family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit".
+Defaults to family_default.}
+
+\item{rand_link}{Link function array for random component in HGLM. Must be one of: "[identity]", "[family_default]".}
+
+\item{startval}{double array to initialize fixed and random coefficients for HGLM.}
+
+\item{calc_like}{\code{Logical}. if true, will return likelihood function value for HGLM. Defaults to FALSE.}
+
+\item{HGLM}{\code{Logical}. If set to true, will return HGLM model.  Otherwise, normal GLM model will be returned Defaults
+to FALSE.}
 
 \item{prior}{Prior probability for y==1. To be used only for logistic regression iff the data has been sampled and the mean
 of response does not reflect reality. Defaults to -1.}
@@ -199,23 +251,24 @@ h2o.init()
 prostate_path = system.file("extdata", "prostate.csv", package = "h2o")
 prostate = h2o.importFile(path = prostate_path)
 h2o.glm(y = "CAPSULE", x = c("AGE","RACE","PSA","DCAPS"), training_frame = prostate,
-family = "binomial", nfolds = 0, alpha = 0.5, lambda_search = FALSE)
+        family = "binomial", nfolds = 0, alpha = 0.5, lambda_search = FALSE)
 
 # Run GLM of VOL ~ CAPSULE + AGE + RACE + PSA + GLEASON
 predictors = setdiff(colnames(prostate), c("ID", "DPROS", "DCAPS", "VOL"))
 h2o.glm(y = "VOL", x = predictors, training_frame = prostate, family = "gaussian",
-nfolds = 0, alpha = 0.1, lambda_search = FALSE)
+        nfolds = 0, alpha = 0.1, lambda_search = FALSE)
 
 
 # GLM variable importance
 # Also see:
 #   https://github.com/h2oai/h2o/blob/master/R/tests/testdir_demos/runit_demo_VI_all_algos.R
 bank = h2o.importFile(
-path = "https://s3.amazonaws.com/h2o-public-test-data/smalldata/demos/bank-additional-full.csv")
+  path="https://s3.amazonaws.com/h2o-public-test-data/smalldata/demos/bank-additional-full.csv"
+)
 predictors = 1:20
 target="y"
 glm = h2o.glm(x=predictors, y=target, training_frame=bank, family="binomial", standardize=TRUE,
-lambda_search=TRUE)
+              lambda_search=TRUE)
 h2o.std_coef_plot(glm, num_of_features = 20)
 }
 }

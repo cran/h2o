@@ -4,9 +4,15 @@
 \alias{h2o.mojo_predict_df}
 \title{H2O Prediction from R without having H2O running}
 \usage{
-h2o.mojo_predict_df(frame, mojo_zip_path, genmodel_jar_path = NULL,
-  classpath = NULL, java_options = NULL, verbose = F,
-  setInvNumNA = F)
+h2o.mojo_predict_df(
+  frame,
+  mojo_zip_path,
+  genmodel_jar_path = NULL,
+  classpath = NULL,
+  java_options = NULL,
+  verbose = F,
+  setInvNumNA = F
+)
 }
 \arguments{
 \item{frame}{data.frame to score.}

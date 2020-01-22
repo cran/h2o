@@ -4,15 +4,26 @@
 \alias{h2o.prcomp}
 \title{Principal component analysis of an H2O data frame}
 \usage{
-h2o.prcomp(training_frame, x, model_id = NULL, validation_frame = NULL,
-  ignore_const_cols = TRUE, score_each_iteration = FALSE,
+h2o.prcomp(
+  training_frame,
+  x,
+  model_id = NULL,
+  validation_frame = NULL,
+  ignore_const_cols = TRUE,
+  score_each_iteration = FALSE,
   transform = c("NONE", "STANDARDIZE", "NORMALIZE", "DEMEAN", "DESCALE"),
   pca_method = c("GramSVD", "Power", "Randomized", "GLRM"),
-  pca_impl = c("MTJ_EVD_DENSEMATRIX", "MTJ_EVD_SYMMMATRIX",
-  "MTJ_SVD_DENSEMATRIX", "JAMA"), k = 1, max_iterations = 1000,
-  use_all_factor_levels = FALSE, compute_metrics = TRUE,
-  impute_missing = FALSE, seed = -1, max_runtime_secs = 0,
-  export_checkpoints_dir = NULL)
+  pca_impl = c("MTJ_EVD_DENSEMATRIX", "MTJ_EVD_SYMMMATRIX", "MTJ_SVD_DENSEMATRIX",
+    "JAMA"),
+  k = 1,
+  max_iterations = 1000,
+  use_all_factor_levels = FALSE,
+  compute_metrics = TRUE,
+  impute_missing = FALSE,
+  seed = -1,
+  max_runtime_secs = 0,
+  export_checkpoints_dir = NULL
+)
 }
 \arguments{
 \item{training_frame}{Id of the training data frame.}
@@ -53,7 +64,7 @@ https://github.com/fommil/matrix-toolkits-java/ Must be one of: "MTJ_EVD_DENSEMA
 
 \item{impute_missing}{\code{Logical}. Whether to impute missing entries with the column mean Defaults to FALSE.}
 
-\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default)
+\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}
 
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.}
@@ -61,7 +72,7 @@ Defaults to -1 (time-based random number).}
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
 }
 \value{
-Returns an object of class \linkS4class{H2ODimReductionModel}.
+an object of class \linkS4class{H2ODimReductionModel}.
 }
 \description{
 Principal components analysis of an H2O data frame using the power method

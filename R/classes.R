@@ -57,9 +57,11 @@ setRefClass("H2OConnectionMutableState",
 #' @slot name A \code{character} value specifying the name of the H2O cluster.
 #' @slot proxy A \code{character} specifying the proxy path of the H2O cluster.
 #' @slot https Set this to TRUE to use https instead of http.
+#' @slot cacert Path to a CA bundle file with root and intermediate certificates of trusted CAs.
 #' @slot insecure Set this to TRUE to disable SSL certificate checking.
 #' @slot username Username to login with.
 #' @slot password Password to login with.
+#' @slot use_spnego Set this to TRUE to use SPNEGO authentication.
 #' @slot cookies Cookies to add to request
 #' @slot context_path Context path which is appended to H2O server location.
 #' @slot mutable An \code{H2OConnectionMutableState} object to hold the mutable state for the H2O connection.
@@ -67,8 +69,8 @@ setRefClass("H2OConnectionMutableState",
 #' @export
 setClass("H2OConnection",
          representation(ip="character", port="numeric", name="character", proxy="character",
-                        https="logical", insecure="logical",
-                        username="character", password="character",
+                        https="logical", cacert="character", insecure="logical",
+                        username="character", password="character", use_spnego="logical",
                         cookies="character",
                         context_path="character",
                         mutable="H2OConnectionMutableState"),
@@ -77,9 +79,11 @@ setClass("H2OConnection",
                    name         = NA_character_,
                    proxy        = NA_character_,
                    https        = FALSE,
+                   cacert       = NA_character_,
                    insecure     = FALSE,
                    username     = NA_character_,
                    password     = NA_character_,
+                   use_spnego   = FALSE,
                    cookies      = NA_character_,
                    context_path = NA_character_,
                    mutable      = new("H2OConnectionMutableState")))
@@ -248,11 +252,11 @@ setMethod("summary", "H2OModel", function(object, ...) {
   if( !is.null(tm$logloss)                                         )  cat("\nLogloss: (Extract with `h2o.logloss`)", tm$logloss)
   if( !is.null(tm$mean_per_class_error)                            )  cat("\nMean Per-Class Error:", tm$mean_per_class_error)
   if( !is.null(tm$AUC)                                             )  cat("\nAUC: (Extract with `h2o.auc`)", tm$AUC)
-    if( !is.null(tm$pr_auc)                                             )  cat("\npr_auc: (Extract with `h2o.pr_auc`)", tm$pr_auc)
+    if( !is.null(tm$pr_auc)                                             )  cat("\nAUCPR: (Extract with `h2o.aucpr`)", tm$pr_auc)
   if( !is.null(tm$Gini)                                            )  cat("\nGini: (Extract with `h2o.gini`)", tm$Gini)
   if( !is.null(tm$null_deviance)                                   )  cat("\nNull Deviance: (Extract with `h2o.nulldeviance`)", tm$null_deviance)
   if( !is.null(tm$residual_deviance)                               )  cat("\nResidual Deviance: (Extract with `h2o.residual_deviance`)", tm$residual_deviance)
-  if(!is.null(o@algorithm) && o@algorithm %in% c("glm","gbm","drf","generic")) {
+  if(!is.null(o@algorithm) && o@algorithm %in% c("glm","gbm","drf","xgboost","generic")) {
     if( !is.null(tm$r2) && !is.na(tm$r2)                           )  cat("\nR^2: (Extract with `h2o.r2`)", tm$r2)
   }
   if( !is.null(tm$AIC)                                             )  cat("\nAIC: (Extract with `h2o.aic`)", tm$AIC)
@@ -321,6 +325,9 @@ setClass("H2OWordEmbeddingModel", contains="H2OModel")
 #' @rdname H2OModel-class
 #' @export
 setClass("H2OAnomalyDetectionModel", contains="H2OModel")
+#' @rdname H2OModel-class
+#' @export
+setClass("H2OTargetEncoderModel", contains="H2OModel")
 
 #'
 #' The H2OCoxPHModel object.
@@ -587,9 +594,9 @@ setMethod("show", "H2OBinomialMetrics", function(object) {
     cat("LogLoss:  ", object@metrics$logloss, "\n", sep="")
     cat("Mean Per-Class Error:  ", object@metrics$mean_per_class_error, "\n", sep="")
     cat("AUC:  ", object@metrics$AUC, "\n", sep="")
-    cat("pr_auc:  ", object@metrics$pr_auc, "\n", sep="")
+    cat("AUCPR:  ", object@metrics$pr_auc, "\n", sep="")
     cat("Gini:  ", object@metrics$Gini, "\n", sep="")
-    if(!is.null(object@algorithm) && object@algorithm %in% c("glm","gbm","drf","generic")) {
+    if(!is.null(object@algorithm) && object@algorithm %in% c("glm","gbm","drf","xgboost","generic")) {
 
       if (!is.null(object@metrics$r2) && !is.na(object@metrics$r2)) cat("R^2:  ", object@metrics$r2, "\n", sep="")
       if (!is.null(object@metrics$null_deviance0)) cat("Null Deviance:  ", object@metrics$null_deviance,"\n", sep="")
@@ -659,8 +666,29 @@ setMethod("show", "H2ORegressionMetrics", function(object) {
   cat("RMSE:  ", object@metrics$RMSE, "\n", sep="")
   cat("MAE:  ", object@metrics$mae, "\n", sep="")
   cat("RMSLE:  ", object@metrics$rmsle, "\n", sep="")
-  cat("Mean Residual Deviance :  ", h2o.mean_residual_deviance(object), "\n", sep="")
-  if(!is.null(object@algorithm) && object@algorithm %in% c("glm","gbm","drf","generic")) {
+  if(!is.null(object@algorithm) && object@algorithm %in% c("glm") && exists("sefe", where=object@metrics)) {
+      cat("sefe:  ", object@metrics$sefe, "\n", sep="")
+      cat("sere:  ", object@metrics$sere, "\n", sep="")
+      cat("fixedf:  ", object@metrics$fixedf, "\n", sep="")
+      cat("ranef:  ", object@metrics$ranef, "\n", sep="")
+      cat("randc:  ", object@metrics$randc, "\n", sep="")
+      cat("varfix:  ", object@metrics$varfix, "\n", sep="")
+      cat("varranef:  ", object@metrics$varranef, "\n", sep="")
+      cat("converge:  ", object@metrics$converge, "\n", sep="")
+      cat("dfrefe:  ", object@metrics$dfrefe, "\n", sep="")
+      cat("summvc1:  ", object@metrics$summvc1, "\n", sep="")
+      cat("summvc2:  ", object@metrics$summvc2, "\n", sep="")
+      cat("bad:  ", object@metrics$bad, "\n", sep="")
+      if (exists("hlik", where=object@metrics) && !is.null(object@metrics$hlik)) {
+      cat("hlik:  ", object@metrics$hlik, "\n", sep="")
+      cat("pvh:  ", object@metrics$pvh, "\n", sep="")
+      cat("pbvh:  ", object@metrics$pbvh, "\n", sep="")
+      cat("caic:  ", object@metrics$caic, "\n", sep="")
+      }
+  } else {
+      cat("Mean Residual Deviance :  ", h2o.mean_residual_deviance(object), "\n", sep="")
+  }
+  if(!is.null(object@algorithm) && object@algorithm %in% c("glm","gbm","drf","xgboost","generic") && exists("r2", where=object@metrics)) {
     if (!is.na(h2o.r2(object))) cat("R^2 :  ", h2o.r2(object), "\n", sep="")
     null_dev <- h2o.null_deviance(object)
     res_dev  <- h2o.residual_deviance(object)
@@ -675,6 +703,7 @@ setMethod("show", "H2ORegressionMetrics", function(object) {
   }
   cat("\n")
 })
+
 #' @rdname H2OModelMetrics-class
 #' @export
 setClass("H2OClusteringMetrics",  contains="H2OModelMetrics")
@@ -737,6 +766,10 @@ setClass("H2OCoxPHMetrics", contains="H2OModelMetrics")
 #' @rdname H2OModelMetrics-class
 #' @export
 setClass("H2OAnomalyDetectionMetrics", contains="H2OModelMetrics")
+
+#' @rdname H2OModelMetrics-class
+#' @export
+setClass("H2OTargetEncoderMetrics", contains="H2OModelMetrics")
 
 #' H2O Future Model
 #'
@@ -856,7 +889,8 @@ setClass("H2OAutoML", slots = c(project_name = "character",
                                 leader = "H2OModel",
                                 leaderboard = "H2OFrame",
                                 event_log = "H2OFrame",
+                                modeling_steps = "list",
                                 training_info = "list"),
                       contains = "Keyed")
 #' @rdname h2o.keyof
-setMethod("h2o.keyof", signature("H2OAutoML"), function(object) object@project_name)
+setMethod("h2o.keyof", signature("H2OAutoML"), function(object) attr(object, "id"))

@@ -4,65 +4,110 @@
 \alias{h2o.deeplearning}
 \title{Build a Deep Neural Network model using CPUs}
 \usage{
-h2o.deeplearning(x, y, training_frame, model_id = NULL,
-  validation_frame = NULL, nfolds = 0,
+h2o.deeplearning(
+  x,
+  y,
+  training_frame,
+  model_id = NULL,
+  validation_frame = NULL,
+  nfolds = 0,
   keep_cross_validation_models = TRUE,
   keep_cross_validation_predictions = FALSE,
   keep_cross_validation_fold_assignment = FALSE,
   fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
-  fold_column = NULL, ignore_const_cols = TRUE,
-  score_each_iteration = FALSE, weights_column = NULL,
-  offset_column = NULL, balance_classes = FALSE,
-  class_sampling_factors = NULL, max_after_balance_size = 5,
-  max_hit_ratio_k = 0, checkpoint = NULL,
-  pretrained_autoencoder = NULL, overwrite_with_best_model = TRUE,
-  use_all_factor_levels = TRUE, standardize = TRUE,
-  activation = c("Tanh", "TanhWithDropout", "Rectifier",
-  "RectifierWithDropout", "Maxout", "MaxoutWithDropout"), hidden = c(200,
-  200), epochs = 10, train_samples_per_iteration = -2,
-  target_ratio_comm_to_comp = 0.05, seed = -1, adaptive_rate = TRUE,
-  rho = 0.99, epsilon = 1e-08, rate = 0.005,
-  rate_annealing = 1e-06, rate_decay = 1, momentum_start = 0,
-  momentum_ramp = 1e+06, momentum_stable = 0,
-  nesterov_accelerated_gradient = TRUE, input_dropout_ratio = 0,
-  hidden_dropout_ratios = NULL, l1 = 0, l2 = 0,
+  fold_column = NULL,
+  ignore_const_cols = TRUE,
+  score_each_iteration = FALSE,
+  weights_column = NULL,
+  offset_column = NULL,
+  balance_classes = FALSE,
+  class_sampling_factors = NULL,
+  max_after_balance_size = 5,
+  max_hit_ratio_k = 0,
+  checkpoint = NULL,
+  pretrained_autoencoder = NULL,
+  overwrite_with_best_model = TRUE,
+  use_all_factor_levels = TRUE,
+  standardize = TRUE,
+  activation = c("Tanh", "TanhWithDropout", "Rectifier", "RectifierWithDropout",
+    "Maxout", "MaxoutWithDropout"),
+  hidden = c(200, 200),
+  epochs = 10,
+  train_samples_per_iteration = -2,
+  target_ratio_comm_to_comp = 0.05,
+  seed = -1,
+  adaptive_rate = TRUE,
+  rho = 0.99,
+  epsilon = 1e-08,
+  rate = 0.005,
+  rate_annealing = 1e-06,
+  rate_decay = 1,
+  momentum_start = 0,
+  momentum_ramp = 1e+06,
+  momentum_stable = 0,
+  nesterov_accelerated_gradient = TRUE,
+  input_dropout_ratio = 0,
+  hidden_dropout_ratios = NULL,
+  l1 = 0,
+  l2 = 0,
   max_w2 = 3.4028235e+38,
-  initial_weight_distribution = c("UniformAdaptive", "Uniform",
-  "Normal"), initial_weight_scale = 1, initial_weights = NULL,
-  initial_biases = NULL, loss = c("Automatic", "CrossEntropy",
-  "Quadratic", "Huber", "Absolute", "Quantile"), distribution = c("AUTO",
-  "bernoulli", "multinomial", "gaussian", "poisson", "gamma", "tweedie",
-  "laplace", "quantile", "huber"), quantile_alpha = 0.5,
-  tweedie_power = 1.5, huber_alpha = 0.9, score_interval = 5,
-  score_training_samples = 10000, score_validation_samples = 0,
-  score_duty_cycle = 0.1, classification_stop = 0,
-  regression_stop = 1e-06, stopping_rounds = 5,
-  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE",
-  "MAE", "RMSLE", "AUC", "lift_top_group", "misclassification", "AUCPR",
-  "mean_per_class_error", "custom", "custom_increasing"),
-  stopping_tolerance = 0, max_runtime_secs = 0,
+  initial_weight_distribution = c("UniformAdaptive", "Uniform", "Normal"),
+  initial_weight_scale = 1,
+  initial_weights = NULL,
+  initial_biases = NULL,
+  loss = c("Automatic", "CrossEntropy", "Quadratic", "Huber", "Absolute", "Quantile"),
+  distribution = c("AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
+    "tweedie", "laplace", "quantile", "huber"),
+  quantile_alpha = 0.5,
+  tweedie_power = 1.5,
+  huber_alpha = 0.9,
+  score_interval = 5,
+  score_training_samples = 10000,
+  score_validation_samples = 0,
+  score_duty_cycle = 0.1,
+  classification_stop = 0,
+  regression_stop = 1e-06,
+  stopping_rounds = 5,
+  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE",
+    "AUC", "AUCPR", "lift_top_group", "misclassification", "mean_per_class_error",
+    "custom", "custom_increasing"),
+  stopping_tolerance = 0,
+  max_runtime_secs = 0,
   score_validation_sampling = c("Uniform", "Stratified"),
-  diagnostics = TRUE, fast_mode = TRUE, force_load_balance = TRUE,
-  variable_importances = TRUE, replicate_training_data = TRUE,
-  single_node_mode = FALSE, shuffle_training_data = FALSE,
+  diagnostics = TRUE,
+  fast_mode = TRUE,
+  force_load_balance = TRUE,
+  variable_importances = TRUE,
+  replicate_training_data = TRUE,
+  single_node_mode = FALSE,
+  shuffle_training_data = FALSE,
   missing_values_handling = c("MeanImputation", "Skip"),
-  quiet_mode = FALSE, autoencoder = FALSE, sparse = FALSE,
-  col_major = FALSE, average_activation = 0, sparsity_beta = 0,
-  max_categorical_features = 2147483647, reproducible = FALSE,
-  export_weights_and_biases = FALSE, mini_batch_size = 1,
-  categorical_encoding = c("AUTO", "Enum", "OneHotInternal",
-  "OneHotExplicit", "Binary", "Eigen", "LabelEncoder", "SortByResponse",
-  "EnumLimited"), elastic_averaging = FALSE,
+  quiet_mode = FALSE,
+  autoencoder = FALSE,
+  sparse = FALSE,
+  col_major = FALSE,
+  average_activation = 0,
+  sparsity_beta = 0,
+  max_categorical_features = 2147483647,
+  reproducible = FALSE,
+  export_weights_and_biases = FALSE,
+  mini_batch_size = 1,
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
+    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  elastic_averaging = FALSE,
   elastic_averaging_moving_rate = 0.9,
   elastic_averaging_regularization = 0.001,
-  export_checkpoints_dir = NULL, verbose = FALSE)
+  export_checkpoints_dir = NULL,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{x}{(Optional) A vector containing the names or indices of the predictor variables to use in building the model.
 If x is missing, then all columns except y are used.}
 
-\item{y}{The name or column index of the response variable in the data. The response must be either a numeric or a
-categorical/factor variable. If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
+\item{y}{The name or column index of the response variable in the data. 
+The response must be either a numeric or a categorical/factor variable. 
+If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
 
 \item{training_frame}{Id of the training data frame.}
 
@@ -125,7 +170,7 @@ scaled input data. Defaults to TRUE.}
 \item{activation}{Activation function. Must be one of: "Tanh", "TanhWithDropout", "Rectifier", "RectifierWithDropout", "Maxout",
 "MaxoutWithDropout". Defaults to Rectifier.}
 
-\item{hidden}{Hidden layer sizes (e.g. [100, 100]). Defaults to [200, 200].}
+\item{hidden}{Hidden layer sizes (e.g. [100, 100]). Defaults to c(200, 200).}
 
 \item{epochs}{How many times the dataset should be iterated (streamed), can be fractional. Defaults to 10.}
 
@@ -135,7 +180,7 @@ available data (e.g., replicated training data), -2: automatic. Defaults to -2.}
 \item{target_ratio_comm_to_comp}{Target ratio of communication overhead to computation. Only for multi-node operation and
 train_samples_per_iteration = -2 (auto-tuning). Defaults to 0.05.}
 
-\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default)
+\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Note: only reproducible when running single threaded.
 Defaults to -1 (time-based random number).}
 
@@ -211,7 +256,7 @@ stopping_metric does not improve for k:=stopping_rounds scoring events (0 to dis
 \item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and
 anonomaly_score for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF
 with the Python client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
-"lift_top_group", "misclassification", "AUCPR", "mean_per_class_error", "custom", "custom_increasing".
+"AUCPR", "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing".
 Defaults to AUTO.}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
@@ -276,7 +321,7 @@ propagation, but might slow down backpropagation. Defaults to FALSE.}
 
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
 
-\item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree for GBM, DRF, & XGBoost. Metrics per epoch for Deep Learning). Defaults to FALSE.}
+\item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per epoch). Defaults to FALSE.}
 }
 \description{
 Builds a feed-forward multilayer artificial neural network on an H2OFrame.

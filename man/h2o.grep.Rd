@@ -4,8 +4,13 @@
 \alias{h2o.grep}
 \title{Search for matches to an argument pattern}
 \usage{
-h2o.grep(pattern, x, ignore.case = FALSE, invert = FALSE,
-  output.logical = FALSE)
+h2o.grep(
+  pattern,
+  x,
+  ignore.case = FALSE,
+  invert = FALSE,
+  output.logical = FALSE
+)
 }
 \arguments{
 \item{pattern}{A character string containing a regular expression.}

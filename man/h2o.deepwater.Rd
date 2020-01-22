@@ -4,50 +4,85 @@
 \alias{h2o.deepwater}
 \title{Build a Deep Learning model using multiple native GPU backends}
 \usage{
-h2o.deepwater(x, y, training_frame, model_id = NULL, checkpoint = NULL,
-  autoencoder = FALSE, validation_frame = NULL, nfolds = 0,
-  balance_classes = FALSE, max_after_balance_size = 5,
-  class_sampling_factors = NULL, keep_cross_validation_models = TRUE,
+h2o.deepwater(
+  x,
+  y,
+  training_frame,
+  model_id = NULL,
+  checkpoint = NULL,
+  autoencoder = FALSE,
+  validation_frame = NULL,
+  nfolds = 0,
+  balance_classes = FALSE,
+  max_after_balance_size = 5,
+  class_sampling_factors = NULL,
+  keep_cross_validation_models = TRUE,
   keep_cross_validation_predictions = FALSE,
   keep_cross_validation_fold_assignment = FALSE,
   fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
-  fold_column = NULL, offset_column = NULL, weights_column = NULL,
-  score_each_iteration = FALSE, categorical_encoding = c("AUTO",
-  "Enum", "OneHotInternal", "OneHotExplicit", "Binary", "Eigen",
-  "LabelEncoder", "SortByResponse", "EnumLimited"),
-  overwrite_with_best_model = TRUE, epochs = 10,
-  train_samples_per_iteration = -2, target_ratio_comm_to_comp = 0.05,
-  seed = -1, standardize = TRUE, learning_rate = 0.001,
-  learning_rate_annealing = 1e-06, momentum_start = 0.9,
-  momentum_ramp = 10000, momentum_stable = 0.9,
-  distribution = c("AUTO", "bernoulli", "multinomial", "gaussian",
-  "poisson", "gamma", "tweedie", "laplace", "quantile", "huber"),
-  score_interval = 5, score_training_samples = 10000,
-  score_validation_samples = 0, score_duty_cycle = 0.1,
-  classification_stop = 0, regression_stop = 0, stopping_rounds = 5,
-  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE",
-  "MAE", "RMSLE", "AUC", "lift_top_group", "misclassification", "AUCPR",
-  "mean_per_class_error", "custom", "custom_increasing"),
-  stopping_tolerance = 0, max_runtime_secs = 0,
-  ignore_const_cols = TRUE, shuffle_training_data = TRUE,
-  mini_batch_size = 32, clip_gradient = 10, network = c("auto",
-  "user", "lenet", "alexnet", "vgg", "googlenet", "inception_bn",
-  "resnet"), backend = c("mxnet", "caffe", "tensorflow"),
-  image_shape = c(0, 0), channels = 3, sparse = FALSE, gpu = TRUE,
-  device_id = c(0), cache_data = TRUE,
-  network_definition_file = NULL, network_parameters_file = NULL,
-  mean_image_file = NULL, export_native_parameters_prefix = NULL,
-  activation = c("Rectifier", "Tanh"), hidden = NULL,
-  input_dropout_ratio = 0, hidden_dropout_ratios = NULL,
+  fold_column = NULL,
+  offset_column = NULL,
+  weights_column = NULL,
+  score_each_iteration = FALSE,
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
+    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  overwrite_with_best_model = TRUE,
+  epochs = 10,
+  train_samples_per_iteration = -2,
+  target_ratio_comm_to_comp = 0.05,
+  seed = -1,
+  standardize = TRUE,
+  learning_rate = 0.001,
+  learning_rate_annealing = 1e-06,
+  momentum_start = 0.9,
+  momentum_ramp = 10000,
+  momentum_stable = 0.9,
+  distribution = c("AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
+    "tweedie", "laplace", "quantile", "huber"),
+  score_interval = 5,
+  score_training_samples = 10000,
+  score_validation_samples = 0,
+  score_duty_cycle = 0.1,
+  classification_stop = 0,
+  regression_stop = 0,
+  stopping_rounds = 5,
+  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE",
+    "AUC", "AUCPR", "lift_top_group", "misclassification", "mean_per_class_error",
+    "custom", "custom_increasing"),
+  stopping_tolerance = 0,
+  max_runtime_secs = 0,
+  ignore_const_cols = TRUE,
+  shuffle_training_data = TRUE,
+  mini_batch_size = 32,
+  clip_gradient = 10,
+  network = c("auto", "user", "lenet", "alexnet", "vgg", "googlenet", "inception_bn",
+    "resnet"),
+  backend = c("mxnet", "caffe", "tensorflow"),
+  image_shape = c(0, 0),
+  channels = 3,
+  sparse = FALSE,
+  gpu = TRUE,
+  device_id = c(0),
+  cache_data = TRUE,
+  network_definition_file = NULL,
+  network_parameters_file = NULL,
+  mean_image_file = NULL,
+  export_native_parameters_prefix = NULL,
+  activation = c("Rectifier", "Tanh"),
+  hidden = NULL,
+  input_dropout_ratio = 0,
+  hidden_dropout_ratios = NULL,
   problem_type = c("auto", "image", "dataset"),
-  export_checkpoints_dir = NULL)
+  export_checkpoints_dir = NULL
+)
 }
 \arguments{
 \item{x}{(Optional) A vector containing the names or indices of the predictor variables to use in building the model.
 If x is missing, then all columns except y are used.}
 
-\item{y}{The name or column index of the response variable in the data. The response must be either a numeric or a
-categorical/factor variable. If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
+\item{y}{The name or column index of the response variable in the data. 
+The response must be either a numeric or a categorical/factor variable. 
+If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
 
 \item{training_frame}{Id of the training data frame.}
 
@@ -106,7 +141,7 @@ available data (e.g., replicated training data), -2: automatic. Defaults to -2.}
 \item{target_ratio_comm_to_comp}{Target ratio of communication overhead to computation. Only for multi-node operation and
 train_samples_per_iteration = -2 (auto-tuning). Defaults to 0.05.}
 
-\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default)
+\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Note: only reproducible when running single threaded.
 Defaults to -1 (time-based random number).}
 
@@ -144,7 +179,7 @@ stopping_metric does not improve for k:=stopping_rounds scoring events (0 to dis
 \item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and
 anonomaly_score for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF
 with the Python client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
-"lift_top_group", "misclassification", "AUCPR", "mean_per_class_error", "custom", "custom_increasing".
+"AUCPR", "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing".
 Defaults to AUTO.}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
@@ -165,7 +200,7 @@ much) Defaults to 0.}
 
 \item{backend}{Deep Learning Backend. Must be one of: "mxnet", "caffe", "tensorflow". Defaults to mxnet.}
 
-\item{image_shape}{Width and height of image. Defaults to [0, 0].}
+\item{image_shape}{Width and height of image. Defaults to c(0, 0).}
 
 \item{channels}{Number of (color) channels. Defaults to 3.}
 
@@ -173,7 +208,7 @@ much) Defaults to 0.}
 
 \item{gpu}{\code{Logical}. Whether to use a GPU (if available). Defaults to TRUE.}
 
-\item{device_id}{Device IDs (which GPUs to use). Defaults to [0].}
+\item{device_id}{Device IDs (which GPUs to use). Defaults to c(0).}
 
 \item{cache_data}{\code{Logical}. Whether to cache the data in memory (automatically disabled if data size is too large).
 Defaults to TRUE.}

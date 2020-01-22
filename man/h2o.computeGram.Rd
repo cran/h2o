@@ -4,8 +4,13 @@
 \alias{h2o.computeGram}
 \title{Compute weighted gram matrix.}
 \usage{
-h2o.computeGram(X, weights = "", use_all_factor_levels = FALSE,
-  standardize = TRUE, skip_missing = FALSE)
+h2o.computeGram(
+  X,
+  weights = "",
+  use_all_factor_levels = FALSE,
+  standardize = TRUE,
+  skip_missing = FALSE
+)
 }
 \arguments{
 \item{X}{an \linkS4class{H2OModel} corresponding to H2O framel.}

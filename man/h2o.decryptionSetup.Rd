@@ -4,11 +4,15 @@
 \alias{h2o.decryptionSetup}
 \title{Setup a Decryption Tool}
 \usage{
-h2o.decryptionSetup(keystore, keystore_type = "JCEKS",
-  key_alias = NA_character_, password = NA_character_,
+h2o.decryptionSetup(
+  keystore,
+  keystore_type = "JCEKS",
+  key_alias = NA_character_,
+  password = NA_character_,
   decrypt_tool = "",
   decrypt_impl = "water.parser.GenericDecryptionTool",
-  cipher_spec = NA_character_)
+  cipher_spec = NA_character_
+)
 }
 \arguments{
 \item{keystore}{An H2OFrame object referencing a loaded Java Keystore (see example).}

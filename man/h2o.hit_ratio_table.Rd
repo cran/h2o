@@ -4,8 +4,7 @@
 \alias{h2o.hit_ratio_table}
 \title{Retrieve the Hit Ratios}
 \usage{
-h2o.hit_ratio_table(object, train = FALSE, valid = FALSE,
-  xval = FALSE)
+h2o.hit_ratio_table(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} object.}

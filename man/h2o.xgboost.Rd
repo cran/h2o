@@ -4,47 +4,86 @@
 \alias{h2o.xgboost}
 \title{Build an eXtreme Gradient Boosting model}
 \usage{
-h2o.xgboost(x, y, training_frame, model_id = NULL,
-  validation_frame = NULL, nfolds = 0,
+h2o.xgboost(
+  x,
+  y,
+  training_frame,
+  model_id = NULL,
+  validation_frame = NULL,
+  nfolds = 0,
   keep_cross_validation_models = TRUE,
   keep_cross_validation_predictions = FALSE,
   keep_cross_validation_fold_assignment = FALSE,
-  score_each_iteration = FALSE, fold_assignment = c("AUTO", "Random",
-  "Modulo", "Stratified"), fold_column = NULL,
-  ignore_const_cols = TRUE, offset_column = NULL,
-  weights_column = NULL, stopping_rounds = 0,
-  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE",
-  "MAE", "RMSLE", "AUC", "lift_top_group", "misclassification", "AUCPR",
-  "mean_per_class_error", "custom", "custom_increasing"),
-  stopping_tolerance = 0.001, max_runtime_secs = 0, seed = -1,
-  distribution = c("AUTO", "bernoulli", "multinomial", "gaussian",
-  "poisson", "gamma", "tweedie", "laplace", "quantile", "huber"),
-  tweedie_power = 1.5, categorical_encoding = c("AUTO", "Enum",
-  "OneHotInternal", "OneHotExplicit", "Binary", "Eigen", "LabelEncoder",
-  "SortByResponse", "EnumLimited"), quiet_mode = TRUE,
-  export_checkpoints_dir = NULL, ntrees = 50, max_depth = 6,
-  min_rows = 1, min_child_weight = 1, learn_rate = 0.3, eta = 0.3,
-  sample_rate = 1, subsample = 1, col_sample_rate = 1,
-  colsample_bylevel = 1, col_sample_rate_per_tree = 1,
-  colsample_bytree = 1, max_abs_leafnode_pred = 0,
-  max_delta_step = 0, monotone_constraints = NULL,
-  score_tree_interval = 0, min_split_improvement = 0, gamma = 0,
-  nthread = -1, max_bins = 256, max_leaves = 0,
-  min_sum_hessian_in_leaf = 100, min_data_in_leaf = 0,
-  sample_type = c("uniform", "weighted"), normalize_type = c("tree",
-  "forest"), rate_drop = 0, one_drop = FALSE, skip_drop = 0,
+  score_each_iteration = FALSE,
+  fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
+  fold_column = NULL,
+  ignore_const_cols = TRUE,
+  offset_column = NULL,
+  weights_column = NULL,
+  stopping_rounds = 0,
+  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE",
+    "AUC", "AUCPR", "lift_top_group", "misclassification", "mean_per_class_error",
+    "custom", "custom_increasing"),
+  stopping_tolerance = 0.001,
+  max_runtime_secs = 0,
+  seed = -1,
+  distribution = c("AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
+    "tweedie", "laplace", "quantile", "huber"),
+  tweedie_power = 1.5,
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
+    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  quiet_mode = TRUE,
+  checkpoint = NULL,
+  export_checkpoints_dir = NULL,
+  ntrees = 50,
+  max_depth = 6,
+  min_rows = 1,
+  min_child_weight = 1,
+  learn_rate = 0.3,
+  eta = 0.3,
+  sample_rate = 1,
+  subsample = 1,
+  col_sample_rate = 1,
+  colsample_bylevel = 1,
+  col_sample_rate_per_tree = 1,
+  colsample_bytree = 1,
+  max_abs_leafnode_pred = 0,
+  max_delta_step = 0,
+  monotone_constraints = NULL,
+  score_tree_interval = 0,
+  min_split_improvement = 0,
+  gamma = 0,
+  nthread = -1,
+  save_matrix_directory = NULL,
+  calibrate_model = FALSE,
+  calibration_frame = NULL,
+  max_bins = 256,
+  max_leaves = 0,
+  min_sum_hessian_in_leaf = 100,
+  min_data_in_leaf = 0,
+  sample_type = c("uniform", "weighted"),
+  normalize_type = c("tree", "forest"),
+  rate_drop = 0,
+  one_drop = FALSE,
+  skip_drop = 0,
   tree_method = c("auto", "exact", "approx", "hist"),
-  grow_policy = c("depthwise", "lossguide"), booster = c("gbtree",
-  "gblinear", "dart"), reg_lambda = 1, reg_alpha = 0,
-  dmatrix_type = c("auto", "dense", "sparse"), backend = c("auto",
-  "gpu", "cpu"), gpu_id = 0, verbose = FALSE)
+  grow_policy = c("depthwise", "lossguide"),
+  booster = c("gbtree", "gblinear", "dart"),
+  reg_lambda = 1,
+  reg_alpha = 0,
+  dmatrix_type = c("auto", "dense", "sparse"),
+  backend = c("auto", "gpu", "cpu"),
+  gpu_id = 0,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{x}{(Optional) A vector containing the names or indices of the predictor variables to use in building the model.
 If x is missing, then all columns except y are used.}
 
-\item{y}{The name or column index of the response variable in the data. The response must be either a numeric or a
-categorical/factor variable. If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
+\item{y}{The name or column index of the response variable in the data. 
+The response must be either a numeric or a categorical/factor variable. 
+If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
 
 \item{training_frame}{Id of the training data frame.}
 
@@ -84,7 +123,7 @@ stopping_metric does not improve for k:=stopping_rounds scoring events (0 to dis
 \item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and
 anonomaly_score for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF
 with the Python client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
-"lift_top_group", "misclassification", "AUCPR", "mean_per_class_error", "custom", "custom_increasing".
+"AUCPR", "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing".
 Defaults to AUTO.}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
@@ -92,7 +131,7 @@ much) Defaults to 0.001.}
 
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.}
 
-\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default)
+\item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}
 
 \item{distribution}{Distribution function Must be one of: "AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
@@ -104,6 +143,8 @@ Defaults to -1 (time-based random number).}
 "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to AUTO.}
 
 \item{quiet_mode}{\code{Logical}. Enable quiet mode Defaults to TRUE.}
+
+\item{checkpoint}{Model checkpoint to resume training with.}
 
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
 
@@ -148,6 +189,13 @@ Defaults to 0.0.}
 \item{nthread}{Number of parallel threads that can be used to run XGBoost. Cannot exceed H2O cluster limits (-nthreads
 parameter). Defaults to maximum available Defaults to -1.}
 
+\item{save_matrix_directory}{Directory where to save matrices passed to XGBoost library. Useful for debugging.}
+
+\item{calibrate_model}{\code{Logical}. Use Platt Scaling to calculate calibrated class probabilities. Calibration can provide more
+accurate estimates of class probabilities. Defaults to FALSE.}
+
+\item{calibration_frame}{Calibration frame for Platt Scaling}
+
 \item{max_bins}{For tree_method=hist only: maximum number of bins Defaults to 256.}
 
 \item{max_leaves}{For tree_method=hist only: maximum number of leaves Defaults to 0.}
@@ -185,7 +233,7 @@ auto.}
 
 \item{gpu_id}{Which GPU to use.  Defaults to 0.}
 
-\item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree for GBM, DRF, & XGBoost. Metrics per epoch for Deep Learning). Defaults to FALSE.}
+\item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree). Defaults to FALSE.}
 }
 \description{
 Builds a eXtreme Gradient Boosting model using the native XGBoost backend.

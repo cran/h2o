@@ -4,8 +4,7 @@
 \alias{h2o.mean_residual_deviance}
 \title{Retrieve the Mean Residual Deviance value}
 \usage{
-h2o.mean_residual_deviance(object, train = FALSE, valid = FALSE,
-  xval = FALSE)
+h2o.mean_residual_deviance(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} object.}

@@ -4,8 +4,7 @@
 \alias{h2o.tabulate}
 \title{Tabulation between Two Columns of an H2OFrame}
 \usage{
-h2o.tabulate(data, x, y, weights_column = NULL, nbins_x = 50,
-  nbins_y = 50)
+h2o.tabulate(data, x, y, weights_column = NULL, nbins_x = 50, nbins_y = 50)
 }
 \arguments{
 \item{data}{An H2OFrame object.}
