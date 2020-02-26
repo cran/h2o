@@ -27,7 +27,8 @@ h2o.kmeans(
   max_runtime_secs = 0,
   categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
     "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
-  export_checkpoints_dir = NULL
+  export_checkpoints_dir = NULL,
+  cluster_size_constraints = NULL
 )
 }
 \arguments{
@@ -83,6 +84,9 @@ Defaults to -1 (time-based random number).}
 "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to AUTO.}
 
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
+
+\item{cluster_size_constraints}{An array specifying the minimum number of points that should be in each cluster. The length of the constraints
+array has to be the same as the number of clusters.}
 }
 \value{
 an object of class \linkS4class{H2OClusteringModel}.

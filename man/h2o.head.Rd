@@ -7,23 +7,25 @@
 \alias{tail.H2OFrame}
 \title{Return the Head or Tail of an H2O Dataset.}
 \usage{
-h2o.head(x, n = 6L, ...)
+h2o.head(x, n = 6L, m = 200L, ...)
 
-\method{head}{H2OFrame}(x, n = 6L, ...)
+\method{head}{H2OFrame}(x, n = 6L, m = 200L, ...)
 
-h2o.tail(x, n = 6L, ...)
+h2o.tail(x, n = 6L, m = 200L, ...)
 
-\method{tail}{H2OFrame}(x, n = 6L, ...)
+\method{tail}{H2OFrame}(x, n = 6L, m = 200L, ...)
 }
 \arguments{
 \item{x}{An H2OFrame object.}
 
 \item{n}{(Optional) A single integer. If positive, number of rows in x to return. If negative, all but the n first/last number of rows in x.}
 
+\item{m}{(Optional) A single integer. If positive, number of columns in x to return. If negative, all but the m first/last number of columns in x.}
+
 \item{...}{Ignored.}
 }
 \value{
-An H2OFrame containing the first or last n rows of an H2OFrame object.
+An H2OFrame containing the first or last n rows and m columns of an H2OFrame object.
 }
 \description{
 Returns the first or last rows of an H2OFrame object.

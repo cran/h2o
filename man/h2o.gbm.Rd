@@ -160,7 +160,7 @@ much) Defaults to 0.001.}
 \item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}
 
-\item{build_tree_one_node}{\code{Logical}. Run on one node only; no network overhead but fewer cpus used.  Suitable for small datasets.
+\item{build_tree_one_node}{\code{Logical}. Run on one node only; no network overhead but fewer cpus used. Suitable for small datasets.
 Defaults to FALSE.}
 
 \item{learn_rate}{Learning rate (from 0.0 to 1.0) Defaults to 0.1.}

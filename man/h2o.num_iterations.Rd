@@ -8,8 +8,6 @@ h2o.num_iterations(object)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OClusteringModel} object.}
-
-\item{\dots}{further arguments to be passed on (currently unimplemented)}
 }
 \description{
 Retrieve the number of iterations.

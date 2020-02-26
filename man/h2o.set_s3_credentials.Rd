@@ -4,12 +4,14 @@
 \alias{h2o.set_s3_credentials}
 \title{Creates a new Amazon S3 client internally with specified credentials.}
 \usage{
-h2o.set_s3_credentials(secretKeyId, secretAccessKey)
+h2o.set_s3_credentials(secretKeyId, secretAccessKey, sessionToken = NULL)
 }
 \arguments{
 \item{secretKeyId}{Amazon S3 Secret Key ID (provided by Amazon)}
 
 \item{secretAccessKey}{Amazon S3 Secret Access Key (provided by Amazon)}
+
+\item{sessionToken}{Amazon Session Token (optional, only when using AWS Temporary Credentials)}
 }
 \description{
 There are no validations done to the credentials. Incorrect credentials are thus revealed with first S3 import call.

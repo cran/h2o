@@ -8,8 +8,6 @@ as.numeric(x)
 }
 \arguments{
 \item{x}{a column from an H2OFrame data set.}
-
-\item{...}{Further arguments to be passed from or to other methods.}
 }
 \description{
 Converts an H2O column into a numeric value column.

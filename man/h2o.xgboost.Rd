@@ -55,6 +55,7 @@ h2o.xgboost(
   gamma = 0,
   nthread = -1,
   save_matrix_directory = NULL,
+  build_tree_one_node = FALSE,
   calibrate_model = FALSE,
   calibration_frame = NULL,
   max_bins = 256,
@@ -190,6 +191,9 @@ Defaults to 0.0.}
 parameter). Defaults to maximum available Defaults to -1.}
 
 \item{save_matrix_directory}{Directory where to save matrices passed to XGBoost library. Useful for debugging.}
+
+\item{build_tree_one_node}{\code{Logical}. Run on one node only; no network overhead but fewer cpus used. Suitable for small datasets.
+Defaults to FALSE.}
 
 \item{calibrate_model}{\code{Logical}. Use Platt Scaling to calculate calibrated class probabilities. Calibration can provide more
 accurate estimates of class probabilities. Defaults to FALSE.}

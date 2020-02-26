@@ -12,7 +12,8 @@ h2o.stackedEnsemble(
   validation_frame = NULL,
   blending_frame = NULL,
   base_models = list(),
-  metalearner_algorithm = c("AUTO", "glm", "gbm", "drf", "deeplearning"),
+  metalearner_algorithm = c("AUTO", "deeplearning", "drf", "gbm", "glm", "naivebayes",
+    "xgboost"),
   metalearner_nfolds = 0,
   metalearner_fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
   metalearner_fold_column = NULL,
@@ -43,9 +44,11 @@ mode if provided)}
 been cross-validated using nfolds > 1, and folds must be identical across models.}
 
 \item{metalearner_algorithm}{Type of algorithm to use as the metalearner. Options include 'AUTO' (GLM with non negative weights; if
-validation_frame is present, a lambda search is performed), 'glm' (GLM with default parameters), 'gbm' (GBM
-with default parameters), 'drf' (Random Forest with default parameters), or 'deeplearning' (Deep Learning with
-default parameters). Must be one of: "AUTO", "glm", "gbm", "drf", "deeplearning". Defaults to AUTO.}
+validation_frame is present, a lambda search is performed), 'deeplearning' (Deep Learning with default
+parameters), 'drf' (Random Forest with default parameters), 'gbm' (GBM with default parameters), 'glm' (GLM
+with default parameters), 'naivebayes' (NaiveBayes with default parameters), or 'xgboost' (if available,
+XGBoost with default parameters). Must be one of: "AUTO", "deeplearning", "drf", "gbm", "glm", "naivebayes",
+"xgboost". Defaults to AUTO.}
 
 \item{metalearner_nfolds}{Number of folds for K-fold cross-validation of the metalearner algorithm (0 to disable or >= 2). Defaults to
 0.}

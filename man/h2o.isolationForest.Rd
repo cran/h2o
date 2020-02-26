@@ -54,7 +54,7 @@ h2o.isolationForest(
 \item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}
 
-\item{build_tree_one_node}{\code{Logical}. Run on one node only; no network overhead but fewer cpus used.  Suitable for small datasets.
+\item{build_tree_one_node}{\code{Logical}. Run on one node only; no network overhead but fewer cpus used. Suitable for small datasets.
 Defaults to FALSE.}
 
 \item{mtries}{Number of variables randomly sampled as candidates at each split. If set to -1, defaults (number of

@@ -4,7 +4,7 @@
 \alias{h2o.getGrid}
 \title{Get a grid object from H2O distributed K/V store.}
 \usage{
-h2o.getGrid(grid_id, sort_by, decreasing)
+h2o.getGrid(grid_id, sort_by, decreasing, verbose = FALSE)
 }
 \arguments{
 \item{grid_id}{ID of existing grid object to fetch}
@@ -12,6 +12,8 @@ h2o.getGrid(grid_id, sort_by, decreasing)
 \item{sort_by}{Sort the models in the grid space by a metric. Choices are "logloss", "residual_deviance", "mse", "auc", "accuracy", "precision", "recall", "f1", etc.}
 
 \item{decreasing}{Specify whether sort order should be decreasing}
+
+\item{verbose}{Controls verbosity of the output, if enabled prints out error messages for failed models (default: FALSE)}
 }
 \description{
 Note that if neither cross-validation nor a 

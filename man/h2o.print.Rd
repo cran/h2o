@@ -11,8 +11,6 @@ h2o.print(x, n = 6L)
 
 \item{n}{An (Optional) A single integer. If positive, number of rows in x to return. If negative, all but the n first/last number of rows in x.
 Anything bigger than 20 rows will require asking the server (first 20 rows are cached on the client).}
-
-\item{...}{Further arguments to be passed from or to other methods.}
 }
 \description{
 Print An H2OFrame
