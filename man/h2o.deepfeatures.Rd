@@ -2,7 +2,7 @@
 % Please edit documentation in R/models.R
 \name{h2o.deepfeatures}
 \alias{h2o.deepfeatures}
-\title{Feature Generation via H2O Deep Learning or DeepWater Model}
+\title{Feature Generation via H2O Deep Learning}
 \usage{
 h2o.deepfeatures(object, data, layer)
 }
@@ -12,7 +12,7 @@ learning model to be used for feature extraction.}
 
 \item{data}{An H2OFrame object.}
 
-\item{layer}{Index (for DeepLearning, integer) or Name (for DeepWater, String) of the hidden layer to extract}
+\item{layer}{Index (integer) of the hidden layer to extract}
 }
 \value{
 Returns an H2OFrame object with as many features as the
@@ -35,20 +35,8 @@ prostate_deepfeatures_layer2 = h2o.deepfeatures(prostate_dl, prostate, layer = 2
 head(prostate_deepfeatures_layer1)
 head(prostate_deepfeatures_layer2)
 
-#if (h2o.deepwater.available()) {
-#  prostate_dl = h2o.deepwater(x = 3:9, y = 2, backend="mxnet", training_frame = prostate,
-#                              hidden = c(100, 200), epochs = 5)
-#  prostate_deepfeatures_layer1 =
-#    h2o.deepfeatures(prostate_dl, prostate, layer = "fc1_w")
-#  prostate_deepfeatures_layer2 =
-#    h2o.deepfeatures(prostate_dl, prostate, layer = "fc2_w")
-#  head(prostate_deepfeatures_layer1)
-#  head(prostate_deepfeatures_layer2)
-#}
 }
 }
 \seealso{
 \code{\link{h2o.deeplearning}} for making H2O Deep Learning models.
-
-\code{\link{h2o.deepwater}} for making H2O DeepWater models.
 }

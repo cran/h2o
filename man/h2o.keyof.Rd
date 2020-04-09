@@ -4,6 +4,7 @@
 \alias{h2o.keyof}
 \alias{h2o.keyof,Keyed-method}
 \alias{h2o.keyof,H2OModel-method}
+\alias{h2o.keyof,H2OGrid-method}
 \alias{h2o.keyof,H2OFrame-method}
 \alias{h2o.keyof,H2OAutoML-method}
 \title{Method on \code{Keyed} objects allowing to obtain their key.}
@@ -13,6 +14,8 @@ h2o.keyof(object)
 \S4method{h2o.keyof}{Keyed}(object)
 
 \S4method{h2o.keyof}{H2OModel}(object)
+
+\S4method{h2o.keyof}{H2OGrid}(object)
 
 \S4method{h2o.keyof}{H2OFrame}(object)
 

@@ -25,8 +25,11 @@ Fill NA's in a sequential manner up to a specified limit
 \dontrun{
 library(h2o)
 h2o.init()
-fr_with_nas = h2o.createFrame(categorical_fraction = 0.0, missing_fraction = 0.7, rows = 6,
-                              cols = 2, seed = 123)
-fr <- h2o.fillna(fr_with_nas, "forward", axis = 1, maxlen = 2L)
+
+frame_with_nas <- h2o.createFrame(rows = 6, cols = 2,
+                                  categorical_fraction = 0.0, 
+                                  missing_fraction = 0.7, 
+                                  seed = 123)
+frame <- h2o.fillna(frame_with_nas, "forward", axis = 1, maxlen = 2L)
 }
 }

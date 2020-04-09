@@ -17,6 +17,17 @@ round(x, digits = 0)
 \description{
 Round doubles/floats to the given number of decimal places.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "http://s3.amazonaws.com/h2o-public-test-data/smalldata/coxph_test/heart.csv"
+heart <- h2o.importFile(f)
+
+h2o.round(heart["age"], digits = 3)
+}
+}
 \seealso{
 \code{\link[base]{round}} for the base R implementation.
 }

@@ -8,7 +8,7 @@ h2o.word2vec(
   training_frame = NULL,
   model_id = NULL,
   min_word_freq = 5,
-  word_model = c("SkipGram"),
+  word_model = c("SkipGram", "CBOW"),
   norm_model = c("HSM"),
   vec_size = 100,
   window_size = 5,
@@ -27,7 +27,7 @@ h2o.word2vec(
 
 \item{min_word_freq}{This will discard words that appear less than <int> times Defaults to 5.}
 
-\item{word_model}{Use the Skip-Gram model Must be one of: "SkipGram". Defaults to SkipGram.}
+\item{word_model}{The word model to use (SkipGram or CBOW) Must be one of: "SkipGram", "CBOW". Defaults to SkipGram.}
 
 \item{norm_model}{Use Hierarchical Softmax Must be one of: "HSM". Defaults to HSM.}
 
@@ -50,4 +50,21 @@ will be randomly down-sampled; useful range is (0, 1e-5) Defaults to 0.001.}
 }
 \description{
 Trains a word2vec model on a String column of an H2O data frame
+}
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+# Import the CraigslistJobTitles dataset
+f <- "https://raw.githubusercontent.com/h2oai/sparkling-water/rel-1.6/examples/smalldata/"
+jobtitles <- h2o.importFile(paste0(f, "craigslistJobTitles.csv"), 
+                             col.names = c("category", "jobtitle"),
+                             col.types = c("String", "String"), header = TRUE)
+
+# Build and train the Word2Vec model
+words <- h2o.tokenize(jobtitles, " ")
+vec <- h2o.word2vec(training_frame = words)
+h2o.findSynonyms(vec, "teacher", count = 20)
+}
 }

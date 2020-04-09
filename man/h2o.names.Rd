@@ -12,6 +12,16 @@ h2o.names(x)
 \description{
 Column names of an H2OFrame
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv"
+iris <- h2o.importFile(f)
+h2o.names(iris)
+}
+}
 \seealso{
 \code{\link[base]{names}} for the base R implementation.
 }

@@ -17,3 +17,13 @@ filename.}
 \description{
 Exports an \linkS4class{H2OModel} to HDFS.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/iris/iris_train.csv"
+train <- h2o.importFile(f)
+h2o.exportHDFS(train, path = " ", force = FALSE)
+}
+}

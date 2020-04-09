@@ -20,3 +20,14 @@ A vector of numbers giving the split points, e.g., c(-50,213.2123,9324834)}
 Compute a histogram over a numeric column. If breaks=="FD", the MAD is used over the IQR
 in computing bin width. Note that we do not beautify the breakpoints as R does.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv"
+iris <- h2o.importFile(f)
+h2o.asnumeric(iris["petal_len"])
+h2o.hist(iris["petal_len"], breaks = "Sturges", plot = TRUE)
+}
+}

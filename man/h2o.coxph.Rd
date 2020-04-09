@@ -22,7 +22,8 @@ h2o.coxph(
   interaction_pairs = NULL,
   interactions_only = NULL,
   use_all_factor_levels = FALSE,
-  export_checkpoints_dir = NULL
+  export_checkpoints_dir = NULL,
+  single_node_mode = FALSE
 )
 }
 \arguments{
@@ -68,7 +69,30 @@ training.}
 FALSE.}
 
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
+
+\item{single_node_mode}{\code{Logical}. Run on a single node to reduce the effect of network overhead (for smaller datasets) Defaults
+to FALSE.}
 }
 \description{
 Trains a Cox Proportional Hazards Model (CoxPH) on an H2O dataset
+}
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+# Import the heart dataset
+f <- "http://s3.amazonaws.com/h2o-public-test-data/smalldata/coxph_test/heart.csv"
+heart <- h2o.importFile(f)
+
+# Set the predictor and response
+predictor <- "age"
+response <- "event"
+
+# Train a Cox Proportional Hazards model 
+heart_coxph <- h2o.coxph(x = predictor, training_frame = heart,
+                         event_column = "event",
+                         start_column = "start", 
+                         stop_column = "stop")
+}
 }

@@ -22,7 +22,9 @@ Compute a pairwise distance measure between all rows of two numeric H2OFrames.
 }
 \examples{
 \dontrun{
+library(h2o)
 h2o.init()
+
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
 prostate <- h2o.uploadFile(path = prostate_path)
 h2o.distance(prostate[11:30,], prostate[1:10,], "cosine")

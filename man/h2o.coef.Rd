@@ -12,3 +12,24 @@ h2o.coef(object)
 \description{
 Note: standardize = True by default. If set to False, then coef() returns the coefficients that are fit directly.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+cars <- h2o.importFile(f)
+predictors <- c("displacement","power","weight","acceleration","year")
+response <- "cylinders"
+cars.split <- h2o.splitFrame(data = cars,ratios = 0.8, seed = 1234)
+train <- cars.split[[1]]
+valid <- cars.split[[2]]
+cars_glm <- h2o.glm(balance_classes = TRUE, 
+                    seed = 1234, 
+                    x = predictors, 
+                    y = response, 
+                    training_frame = train, 
+                    validation_frame = valid)
+h2o.coef(cars_glm)
+}
+}

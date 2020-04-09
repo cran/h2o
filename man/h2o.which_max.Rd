@@ -25,6 +25,21 @@ Returns an H2OFrame object.
 \description{
 Get the index of the max value in a column or row
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/chicago/chicagoCensus.csv"
+census <- h2o.importFile(f)
+census[,1] <- as.factor(census[,1])
+dlmodel <- h2o.deeplearning(x = c(1:3), y = 4, hidden = c(17,191), 
+                            epochs = 1, training_frame = census, 
+                            balance_classes = FALSE,
+                            export_weights_and_biases = TRUE)
+h2o.which_max(census["PER CAPITA INCOME "], na.rm = FALSE, axis = 0)
+}
+}
 \seealso{
 \code{\link[base]{which.max}} for the base R method.
 }

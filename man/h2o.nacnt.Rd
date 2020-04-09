@@ -17,7 +17,9 @@ Gives the count of NAs per column.
 }
 \examples{
 \dontrun{
+library(h2o)
 h2o.init()
+
 iris_hf <- as.h2o(iris)
 h2o.nacnt(iris_hf)  # should return all 0s
 h2o.insertMissingValues(iris_hf)

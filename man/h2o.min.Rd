@@ -14,6 +14,16 @@ h2o.min(x, na.rm = FALSE)
 \description{
 Returns the minima of the input values.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv"
+iris <- h2o.importFile(f)
+h2o.min(iris["sepal_len"], na.rm = TRUE)
+}
+}
 \seealso{
 \code{\link[base]{min}} for the base R implementation.
 }

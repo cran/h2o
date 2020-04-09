@@ -16,6 +16,7 @@ Convert an H2OFrame to a vector
 }
 \examples{
 \dontrun{
+library(h2o)
 h2o.init()
 iris_hf <- as.h2o(iris)
 cor_R <- cor(as.matrix(iris[, 1]))

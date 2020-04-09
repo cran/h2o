@@ -20,6 +20,8 @@ can be saved.)
 \details{
 In the case of existing files \code{force = TRUE} will overwrite the file.
 Otherwise, the operation will fail.
+
+The owner of the file saved is the user by which H2O cluster was executed.
 }
 \examples{
 \dontrun{

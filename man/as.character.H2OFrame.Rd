@@ -16,6 +16,7 @@ Convert an H2OFrame to a String
 }
 \examples{
 \dontrun{
+library(h2o)
 h2o.init()
 pretrained <- as.h2o(data.frame(
        C1 = c("a", "b"), C2 = c(0, 1), C3 = c(1, 0), C4 = c(0.2, 0.8),

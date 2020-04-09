@@ -12,6 +12,18 @@ h2o.tanh(x)
 \description{
 Compute the hyperbolic tangent of x
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+frame <- h2o.createFrame(rows = 6, cols = 2,
+                         categorical_fraction = 0.0, 
+                         missing_fraction = 0.7, 
+                         seed = 123)
+h2o.tanh(frame)
+}
+}
 \seealso{
 \code{\link[base]{tanh}} for the base R implementation.
 }

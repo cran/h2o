@@ -32,6 +32,28 @@ The order of the rows in the results is the same as the order in which the
 data was loaded, even if some rows fail (for example, due to missing
 values or unseen factor levels).
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/glm_test/insurance.csv"
+insurance <- h2o.importFile(f)
+predictors <- colnames(insurance)[1:4]
+response <- "Claims"
+insurance['Group'] <- as.factor(insurance['Group'])
+insurance['Age'] <- as.factor(insurance['Age'])
+splits <- h2o.splitFrame(data =  insurance, ratios = 0.8, seed = 1234)
+train <- splits[[1]]
+valid <- splits[[2]]
+insurance_gbm <- h2o.gbm(x = predictors, y = response, 
+                         training_frame = train,
+                         validation_frame = valid, 
+                         distribution = "huber", 
+                         huber_alpha = 0.9, seed = 1234)
+h2o.predict(insurance_gbm, newdata = insurance)
+}
+}
 \seealso{
 \code{\link{h2o.deeplearning}}, \code{\link{h2o.gbm}},
          \code{\link{h2o.glm}}, \code{\link{h2o.randomForest}} for model

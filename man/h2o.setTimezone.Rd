@@ -12,3 +12,12 @@ h2o.setTimezone(tz)
 \description{
 Set the Time Zone on the H2O cluster
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+h2o.setTimezone("America/Juneau")
+h2o.getTimezone()
+}
+}

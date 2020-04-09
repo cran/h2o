@@ -12,3 +12,16 @@ h2o.varimp(object)
 \description{
 Retrieve the variable importance.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "http://s3.amazonaws.com/h2o-public-test-data/smalldata/prostate/prostate_complete.csv.zip"
+pros <- h2o.importFile(f)
+response <- "GLEASON"
+predictors <- c("ID","AGE","CAPSULE","DCAPS","PSA","VOL","DPROS")
+model <- h2o.glm(x = predictors, y = response, training_frame = pros)
+h2o.varimp(model)
+}
+}

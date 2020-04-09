@@ -15,3 +15,21 @@ Returns a H2OFrame
 \description{
 Retrieve the cross-validation holdout predictions
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+cars <- h2o.importFile(f)
+cars["economy_20mpg"] <- as.factor(cars["economy_20mpg"])
+predictors <- c("displacement","power","weight","acceleration","year")
+response <- "economy_20mpg"
+cars.split <- h2o.splitFrame(data = cars,ratios = 0.8, seed = 1234)
+train <- cars.split[[1]]
+valid <- cars.split[[2]]
+cars_gbm <- h2o.gbm(x = predictors, y = response, training_frame = train, 
+                    nfolds = 5,  keep_cross_validation_predictions = TRUE, seed = 1234)
+h2o.cross_validation_holdout_predictions(cars_gbm)
+}
+}

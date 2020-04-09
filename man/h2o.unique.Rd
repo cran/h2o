@@ -15,3 +15,13 @@ Returns an H2OFrame object.
 \description{
 Extract unique values in the column.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_wheader.csv"
+iris <- h2o.importFile(f)
+h2o.unique(iris["class"])
+}
+}

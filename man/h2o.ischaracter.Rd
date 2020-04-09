@@ -12,6 +12,17 @@ h2o.ischaracter(x)
 \description{
 Check if character
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/iris/iris_wheader.csv"
+iris <- h2o.importFile(f)
+iris_char <- h2o.ascharacter(iris["class"])
+h2o.ischaracter(iris_char)
+}
+}
 \seealso{
 \code{\link[base]{is.character}} for the base R implementation.
 }

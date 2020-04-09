@@ -24,7 +24,9 @@ Obtain the skewness of a column of a parsed H2O data object.
 }
 \examples{
 \dontrun{
+library(h2o)
 h2o.init()
+
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
 prostate <- h2o.uploadFile(path = prostate_path)
 h2o.skewness(prostate$AGE)

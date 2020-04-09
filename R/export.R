@@ -75,6 +75,15 @@ h2o.exportFile <- function(data, path, force = FALSE, sep = ",", compression = N
 #' @param path The path to write the model to. Must include the driectory and
 #'        filename.
 #' @param force logical, indicates how to deal with files that already exist.
+#' @examples 
+#' \dontrun{
+#' library(h2o)
+#' h2o.init
+#' 
+#' f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/iris/iris_train.csv"
+#' train <- h2o.importFile(f)
+#' h2o.exportHDFS(train, path = " ", force = FALSE)
+#' }
 #' @export
 h2o.exportHDFS <- function(object, path, force=FALSE) { h2o.exportFile(object,path,force) }
 
@@ -134,6 +143,8 @@ h2o.downloadCSV <- function(data, filename) {
 #'
 #' In the case of existing files \code{force = TRUE} will overwrite the file.
 #' Otherwise, the operation will fail.
+#'
+#' The owner of the file saved is the user by which H2O cluster was executed.
 #'
 #' @param object an \linkS4class{H2OModel} object.
 #' @param path string indicating the directory the model will be written to.

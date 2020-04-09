@@ -12,3 +12,13 @@ h2o.centersSTD(object)
 \description{
 Retrieve the Model Centers STD
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+fr <- h2o.importFile("http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv")
+predictors <- c("sepal_len", "sepal_wid", "petal_len", "petal_wid")
+km <- h2o.kmeans(x = predictors, training_frame = fr, k = 3, nfolds = 3)
+h2o.centersSTD(km)
+}
+}

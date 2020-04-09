@@ -2,7 +2,8 @@
 % Please edit documentation in R/kvstore.R
 \name{h2o.download_model}
 \alias{h2o.download_model}
-\title{Download the model in binary format.}
+\title{Download the model in binary format.
+The owner of the file saved is the user by which python session was executed.}
 \usage{
 h2o.download_model(model, path = NULL)
 }
@@ -13,6 +14,7 @@ h2o.download_model(model, path = NULL)
 }
 \description{
 Download the model in binary format.
+The owner of the file saved is the user by which python session was executed.
 }
 \examples{
 \dontrun{

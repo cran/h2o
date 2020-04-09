@@ -12,3 +12,11 @@ h2o.centers(object)
 \description{
 Retrieve the Model Centers
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+fr <- h2o.importFile("http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv")
+h2o.ceiling(fr[,1])
+}
+}

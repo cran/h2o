@@ -32,3 +32,12 @@ h2o.mktime(
 \description{
 Compute msec since the Unix Epoch
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+x = as.h2o(c(2018, 3, 2, 6, 32, 0, 0))
+h2o.mktime(x)
+}
+}

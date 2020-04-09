@@ -36,7 +36,13 @@ library(h2o)
 h2o.init(ip <- "localhost", port = 54321, startH2O = TRUE)
 australia_path <- system.file("extdata", "australia.csv", package = "h2o")
 australia <- h2o.uploadFile(path = australia_path)
-head(australia, 10)
-tail(australia, 10)
+# Return the first 10 rows and 6 columns
+h2o.head(australia, n = 10L, m = 6L)
+# Return the last 10 rows and 6 columns
+h2o.tail(australia, n = 10L, m = 6L)
+
+# For Jupyter notebook with an R kernel,
+# view all rows of a data frame
+options(repr.matrix.max.rows=600, repr.matrix.max.cols=200)
 }
 }

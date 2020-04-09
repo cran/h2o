@@ -38,6 +38,23 @@
 #' @param stopping_tolerance Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
 #'        much) Defaults to 0.01.
 #' @param export_checkpoints_dir Automatically export generated models to this directory.
+#' @examples
+#' \dontrun{
+#' library(h2o)
+#' h2o.init()
+#' 
+#' # Import the cars dataset
+#' f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+#' cars <- h2o.importFile(f)
+#' 
+#' # Set the predictors
+#' predictors <- c("displacement","power","weight","acceleration","year")
+#' 
+#' # Train the IF model
+#' cars_if <- h2o.isolationForest(x = predictors, training_frame = cars,
+#'                                seed = 1234, stopping_metric = "MSE",
+#'                                stopping_rounds = 3, stopping_tolerance = 0.1)
+#' }
 #' @export
 h2o.isolationForest <- function(training_frame,
                                 x,
@@ -115,4 +132,93 @@ h2o.isolationForest <- function(training_frame,
   # Error check and build model
   model <- .h2o.modelJob('isolationforest', parms, h2oRestApiVersion=3, verbose=FALSE)
   return(model)
+}
+.h2o.train_segments_isolationForest <- function(training_frame,
+                                                x,
+                                                score_each_iteration = FALSE,
+                                                score_tree_interval = 0,
+                                                ignore_const_cols = TRUE,
+                                                ntrees = 50,
+                                                max_depth = 8,
+                                                min_rows = 1,
+                                                max_runtime_secs = 0,
+                                                seed = -1,
+                                                build_tree_one_node = FALSE,
+                                                mtries = -1,
+                                                sample_size = 256,
+                                                sample_rate = -1,
+                                                col_sample_rate_change_per_level = 1,
+                                                col_sample_rate_per_tree = 1,
+                                                categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+                                                stopping_rounds = 0,
+                                                stopping_metric = c("AUTO", "anomaly_score"),
+                                                stopping_tolerance = 0.01,
+                                                export_checkpoints_dir = NULL,
+                                                segment_columns = NULL,
+                                                segment_models_id = NULL,
+                                                parallelism = 1)
+{
+  # formally define variables that were excluded from function parameters
+  model_id <- NULL
+  verbose <- NULL
+  destination_key <- NULL
+  # Validate required training_frame first and other frame args: should be a valid key or an H2OFrame object
+  training_frame <- .validate.H2OFrame(training_frame, required=TRUE)
+
+  # Build parameter list to send to model builder
+  parms <- list()
+  parms$training_frame <- training_frame
+  if(!missing(x))
+    parms$ignored_columns <- .verify_datacols(training_frame, x)$cols_ignore
+
+  if (!missing(score_each_iteration))
+    parms$score_each_iteration <- score_each_iteration
+  if (!missing(score_tree_interval))
+    parms$score_tree_interval <- score_tree_interval
+  if (!missing(ignore_const_cols))
+    parms$ignore_const_cols <- ignore_const_cols
+  if (!missing(ntrees))
+    parms$ntrees <- ntrees
+  if (!missing(max_depth))
+    parms$max_depth <- max_depth
+  if (!missing(min_rows))
+    parms$min_rows <- min_rows
+  if (!missing(max_runtime_secs))
+    parms$max_runtime_secs <- max_runtime_secs
+  if (!missing(seed))
+    parms$seed <- seed
+  if (!missing(build_tree_one_node))
+    parms$build_tree_one_node <- build_tree_one_node
+  if (!missing(mtries))
+    parms$mtries <- mtries
+  if (!missing(sample_size))
+    parms$sample_size <- sample_size
+  if (!missing(sample_rate))
+    parms$sample_rate <- sample_rate
+  if (!missing(col_sample_rate_change_per_level))
+    parms$col_sample_rate_change_per_level <- col_sample_rate_change_per_level
+  if (!missing(col_sample_rate_per_tree))
+    parms$col_sample_rate_per_tree <- col_sample_rate_per_tree
+  if (!missing(categorical_encoding))
+    parms$categorical_encoding <- categorical_encoding
+  if (!missing(stopping_rounds))
+    parms$stopping_rounds <- stopping_rounds
+  if (!missing(stopping_metric))
+    parms$stopping_metric <- stopping_metric
+  if (!missing(stopping_tolerance))
+    parms$stopping_tolerance <- stopping_tolerance
+  if (!missing(export_checkpoints_dir))
+    parms$export_checkpoints_dir <- export_checkpoints_dir
+
+  # Build segment-models specific parameters
+  segment_parms <- list()
+  if (!missing(segment_columns))
+    segment_parms$segment_columns <- segment_columns
+  if (!missing(segment_models_id))
+    segment_parms$segment_models_id <- segment_models_id
+  segment_parms$parallelism <- parallelism
+
+  # Error check and build segment models
+  segment_models <- .h2o.segmentModelsJob('isolationforest', segment_parms, parms, h2oRestApiVersion=3)
+  return(segment_models)
 }

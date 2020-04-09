@@ -16,3 +16,17 @@ h2o.findSynonyms(word2vec, word, count = 20)
 \description{
 Find synonyms using a word2vec model.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://raw.githubusercontent.com/h2oai/sparkling-water/rel-1.6/examples/smalldata/"
+jobtitles <- h2o.importFile(paste0(f, "craigslistJobTitles.csv"), 
+                             col.names = c("category", "jobtitle"), 
+                             col.types = c("String", "String"), header = TRUE)
+words <- h2o.tokenize(jobtitles, " ")
+vec <- h2o.word2vec(training_frame = words)
+h2o.findSynonyms(vec, "teacher", count = 20)
+}
+}

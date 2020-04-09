@@ -26,6 +26,7 @@ Method for apply on H2OFrame objects.
 }
 \examples{
 \dontrun{
+library(h2o)
 h2o.init()
 iris_hf <- as.h2o(iris)
 summary(apply(iris_hf, 2, sum))

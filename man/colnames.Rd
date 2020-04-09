@@ -18,7 +18,9 @@ Returns the column names of an H2OFrame
 }
 \examples{
 \dontrun{
+library(h2o)
 h2o.init()
+
 iris_hf <- as.h2o(iris)
 colnames(iris_hf)  # Returns "Sepal.Length" "Sepal.Width"  "Petal.Length" "Petal.Width"  "Species"
 }

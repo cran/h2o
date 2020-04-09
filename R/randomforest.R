@@ -92,6 +92,25 @@
 #' @param verbose \code{Logical}. Print scoring history to the console (Metrics per tree). Defaults to FALSE.
 #' @return Creates a \linkS4class{H2OModel} object of the right type.
 #' @seealso \code{\link{predict.H2OModel}} for prediction
+#' @examples
+#' \dontrun{
+#' library(h2o)
+#' h2o.init()
+#' 
+#' # Import the cars dataset
+#' f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+#' cars <- h2o.importFile(f)
+#' 
+#' # Set predictors and response; set response as a factor
+#' cars["economy_20mpg"] <- as.factor(cars["economy_20mpg"])
+#' predictors <- c("displacement","power","weight","acceleration","year")
+#' response <- "economy_20mpg"
+#' 
+#' # Train the DRF model
+#' cars_drf <- h2o.randomForest(x = predictors, y = response,
+#'                             training_frame = cars, nfolds = 5,
+#'                             seed = 1234)
+#' }
 #' @export
 h2o.randomForest <- function(x,
                              y,
@@ -269,4 +288,192 @@ h2o.randomForest <- function(x,
   # Error check and build model
   model <- .h2o.modelJob('drf', parms, h2oRestApiVersion=3, verbose=verbose)
   return(model)
+}
+.h2o.train_segments_randomForest <- function(x,
+                                             y,
+                                             training_frame,
+                                             validation_frame = NULL,
+                                             nfolds = 0,
+                                             keep_cross_validation_models = TRUE,
+                                             keep_cross_validation_predictions = FALSE,
+                                             keep_cross_validation_fold_assignment = FALSE,
+                                             score_each_iteration = FALSE,
+                                             score_tree_interval = 0,
+                                             fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
+                                             fold_column = NULL,
+                                             ignore_const_cols = TRUE,
+                                             offset_column = NULL,
+                                             weights_column = NULL,
+                                             balance_classes = FALSE,
+                                             class_sampling_factors = NULL,
+                                             max_after_balance_size = 5.0,
+                                             max_hit_ratio_k = 0,
+                                             ntrees = 50,
+                                             max_depth = 20,
+                                             min_rows = 1,
+                                             nbins = 20,
+                                             nbins_top_level = 1024,
+                                             nbins_cats = 1024,
+                                             r2_stopping = 1.797693135e+308,
+                                             stopping_rounds = 0,
+                                             stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "AUCPR", "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing"),
+                                             stopping_tolerance = 0.001,
+                                             max_runtime_secs = 0,
+                                             seed = -1,
+                                             build_tree_one_node = FALSE,
+                                             mtries = -1,
+                                             sample_rate = 0.632,
+                                             sample_rate_per_class = NULL,
+                                             binomial_double_trees = FALSE,
+                                             checkpoint = NULL,
+                                             col_sample_rate_change_per_level = 1,
+                                             col_sample_rate_per_tree = 1,
+                                             min_split_improvement = 1e-05,
+                                             histogram_type = c("AUTO", "UniformAdaptive", "Random", "QuantilesGlobal", "RoundRobin"),
+                                             categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+                                             calibrate_model = FALSE,
+                                             calibration_frame = NULL,
+                                             distribution = c("AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma", "tweedie", "laplace", "quantile", "huber"),
+                                             custom_metric_func = NULL,
+                                             export_checkpoints_dir = NULL,
+                                             check_constant_response = TRUE,
+                                             segment_columns = NULL,
+                                             segment_models_id = NULL,
+                                             parallelism = 1)
+{
+  # formally define variables that were excluded from function parameters
+  model_id <- NULL
+  verbose <- NULL
+  destination_key <- NULL
+  # Validate required training_frame first and other frame args: should be a valid key or an H2OFrame object
+  training_frame <- .validate.H2OFrame(training_frame, required=TRUE)
+  validation_frame <- .validate.H2OFrame(validation_frame, required=FALSE)
+
+  # Validate other required args
+  # If x is missing, then assume user wants to use all columns as features.
+  if (missing(x)) {
+     if (is.numeric(y)) {
+         x <- setdiff(col(training_frame), y)
+     } else {
+         x <- setdiff(colnames(training_frame), y)
+     }
+  }
+
+  # Build parameter list to send to model builder
+  parms <- list()
+  parms$training_frame <- training_frame
+  args <- .verify_dataxy(training_frame, x, y)
+  if( !missing(offset_column) && !is.null(offset_column))  args$x_ignore <- args$x_ignore[!( offset_column == args$x_ignore )]
+  if( !missing(weights_column) && !is.null(weights_column)) args$x_ignore <- args$x_ignore[!( weights_column == args$x_ignore )]
+  if( !missing(fold_column) && !is.null(fold_column)) args$x_ignore <- args$x_ignore[!( fold_column == args$x_ignore )]
+  parms$ignored_columns <- args$x_ignore
+  parms$response_column <- args$y
+
+  if (!missing(validation_frame))
+    parms$validation_frame <- validation_frame
+  if (!missing(nfolds))
+    parms$nfolds <- nfolds
+  if (!missing(keep_cross_validation_models))
+    parms$keep_cross_validation_models <- keep_cross_validation_models
+  if (!missing(keep_cross_validation_predictions))
+    parms$keep_cross_validation_predictions <- keep_cross_validation_predictions
+  if (!missing(keep_cross_validation_fold_assignment))
+    parms$keep_cross_validation_fold_assignment <- keep_cross_validation_fold_assignment
+  if (!missing(score_each_iteration))
+    parms$score_each_iteration <- score_each_iteration
+  if (!missing(score_tree_interval))
+    parms$score_tree_interval <- score_tree_interval
+  if (!missing(fold_assignment))
+    parms$fold_assignment <- fold_assignment
+  if (!missing(fold_column))
+    parms$fold_column <- fold_column
+  if (!missing(ignore_const_cols))
+    parms$ignore_const_cols <- ignore_const_cols
+  if (!missing(weights_column))
+    parms$weights_column <- weights_column
+  if (!missing(balance_classes))
+    parms$balance_classes <- balance_classes
+  if (!missing(class_sampling_factors))
+    parms$class_sampling_factors <- class_sampling_factors
+  if (!missing(max_after_balance_size))
+    parms$max_after_balance_size <- max_after_balance_size
+  if (!missing(max_hit_ratio_k))
+    parms$max_hit_ratio_k <- max_hit_ratio_k
+  if (!missing(ntrees))
+    parms$ntrees <- ntrees
+  if (!missing(max_depth))
+    parms$max_depth <- max_depth
+  if (!missing(min_rows))
+    parms$min_rows <- min_rows
+  if (!missing(nbins))
+    parms$nbins <- nbins
+  if (!missing(nbins_top_level))
+    parms$nbins_top_level <- nbins_top_level
+  if (!missing(nbins_cats))
+    parms$nbins_cats <- nbins_cats
+  if (!missing(r2_stopping))
+    parms$r2_stopping <- r2_stopping
+  if (!missing(stopping_rounds))
+    parms$stopping_rounds <- stopping_rounds
+  if (!missing(stopping_metric))
+    parms$stopping_metric <- stopping_metric
+  if (!missing(stopping_tolerance))
+    parms$stopping_tolerance <- stopping_tolerance
+  if (!missing(max_runtime_secs))
+    parms$max_runtime_secs <- max_runtime_secs
+  if (!missing(seed))
+    parms$seed <- seed
+  if (!missing(build_tree_one_node))
+    parms$build_tree_one_node <- build_tree_one_node
+  if (!missing(mtries))
+    parms$mtries <- mtries
+  if (!missing(sample_rate))
+    parms$sample_rate <- sample_rate
+  if (!missing(sample_rate_per_class))
+    parms$sample_rate_per_class <- sample_rate_per_class
+  if (!missing(binomial_double_trees))
+    parms$binomial_double_trees <- binomial_double_trees
+  if (!missing(checkpoint))
+    parms$checkpoint <- checkpoint
+  if (!missing(col_sample_rate_change_per_level))
+    parms$col_sample_rate_change_per_level <- col_sample_rate_change_per_level
+  if (!missing(col_sample_rate_per_tree))
+    parms$col_sample_rate_per_tree <- col_sample_rate_per_tree
+  if (!missing(min_split_improvement))
+    parms$min_split_improvement <- min_split_improvement
+  if (!missing(histogram_type))
+    parms$histogram_type <- histogram_type
+  if (!missing(categorical_encoding))
+    parms$categorical_encoding <- categorical_encoding
+  if (!missing(calibrate_model))
+    parms$calibrate_model <- calibrate_model
+  if (!missing(calibration_frame))
+    parms$calibration_frame <- calibration_frame
+  if (!missing(custom_metric_func))
+    parms$custom_metric_func <- custom_metric_func
+  if (!missing(export_checkpoints_dir))
+    parms$export_checkpoints_dir <- export_checkpoints_dir
+  if (!missing(check_constant_response))
+    parms$check_constant_response <- check_constant_response
+
+  if (!missing(distribution)) {
+    warning("Argument distribution is deprecated and has no use for Random Forest.")
+    parms$distribution <- 'AUTO'
+  }
+  if (!missing(offset_column)) {
+    warning("Argument offset_column is deprecated and has no use for Random Forest.")
+    parms$offset_column <- NULL
+  }
+
+  # Build segment-models specific parameters
+  segment_parms <- list()
+  if (!missing(segment_columns))
+    segment_parms$segment_columns <- segment_columns
+  if (!missing(segment_models_id))
+    segment_parms$segment_models_id <- segment_models_id
+  segment_parms$parallelism <- parallelism
+
+  # Error check and build segment models
+  segment_models <- .h2o.segmentModelsJob('drf', segment_parms, parms, h2oRestApiVersion=3)
+  return(segment_models)
 }

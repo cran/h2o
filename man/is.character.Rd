@@ -12,3 +12,15 @@ is.character(x)
 \description{
 Check if character
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "http://s3.amazonaws.com/h2o-public-test-data/smalldata/coxph_test/heart.csv"
+heart <- h2o.importFile(f)
+
+heart["transplant"] <- as.character(heart["transplant"])
+is.character(heart["transplant"])
+}
+}

@@ -12,5 +12,21 @@ h2o.assign(data, key)
 \item{key}{The key to be associated with the H2O parsed data object}
 }
 \description{
-Makes a copy of the data frame and gives it the desired the key.
+Makes a copy of the data frame and gives it the desired key.
+}
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+cars <- h2o.importFile(f)
+dim(cars)
+split <- h2o.splitFrame(data = cars, ratios = .8)
+train <- h2o.assign(split[[1]], key = "train")
+test <- h2o.assign(split[[2]], key = "test")
+dim(train)
+dim(test)
+}
+
 }

@@ -14,6 +14,18 @@ h2o.cumprod(x, axis = 0)
 \description{
 Return the cumulative product over a column or across a row
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+frame <- h2o.createFrame(rows = 6, cols = 2,
+                         categorical_fraction = 0.0, 
+                         missing_fraction = 0.7, 
+                         seed = 123)
+h2o.cumprod(frame, 1)
+}
+}
 \seealso{
 \code{\link[base]{cumprod}} for the base R implementation.
 }

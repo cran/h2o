@@ -1,8 +1,8 @@
 Package: h2o
-Version: 3.28.0.4
+Version: 3.30.0.1
 Type: Package
 Title: R Interface for the 'H2O' Scalable Machine Learning Platform
-Date: 2020-02-23
+Date: 2020-04-03
 Authors@R: c(
     person("Erin", "LeDell", role = c("aut", "cre"), email = "erin@h2o.ai"),
     person("Navdeep", "Gill", role = c("aut")),
@@ -50,13 +50,13 @@ Collate: 'aggregator.R' 'astfun.R' 'automl.R' 'classes.R' 'config.R'
         'communication.R' 'kvstore.R' 'frame.R'
         'targetencoder_deprecated.R' 'targetencoder.R' 'import.R'
         'isolationforest.R' 'parse.R' 'export.R' 'edicts.R' 'models.R'
-        'coxph.R' 'coxphutils.R' 'kmeans.R' 'gbm.R' 'generic.R' 'glm.R'
-        'glrm.R' 'pca.R' 'svd.R' 'psvm.R' 'deeplearning.R'
-        'stackedensemble.R' 'deepwater.R' 'xgboost.R' 'randomforest.R'
-        'naivebayes.R' 'word2vec.R' 'w2vutils.R' 'locate.R' 'grid.R'
+        'coxph.R' 'coxphutils.R' 'kmeans.R' 'gam.R' 'gbm.R' 'generic.R'
+        'glm.R' 'glrm.R' 'pca.R' 'svd.R' 'psvm.R' 'deeplearning.R'
+        'stackedensemble.R' 'xgboost.R' 'randomforest.R' 'naivebayes.R'
+        'word2vec.R' 'w2vutils.R' 'locate.R' 'grid.R' 'segment.R'
         'predict.R' 'zzz.R'
 RoxygenNote: 7.0.2
-Packaged: 2020-02-23 22:39:28 UTC; jenkins
+Packaged: 2020-04-03 20:51:45 UTC; jenkins
 Author: Erin LeDell [aut, cre],
   Navdeep Gill [aut],
   Spencer Aiello [aut],
@@ -83,4 +83,4 @@ Author: Erin LeDell [aut, cre],
   H2O.ai [cph, fnd]
 Maintainer: Erin LeDell <erin@h2o.ai>
 Repository: CRAN
-Date/Publication: 2020-02-26 13:00:03 UTC
+Date/Publication: 2020-04-09 08:50:02 UTC

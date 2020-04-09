@@ -75,3 +75,18 @@ Defaults to -1 (time-based random number).}
 \description{
 Alpha version. Supports only binomial classification problems.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+# Import the splice dataset
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/splice/splice.svm"
+splice <- h2o.importFile(f)
+
+# Train the Support Vector Machine model
+svm_model <- h2o.psvm(gamma = 0.01, rank_ratio = 0.1,
+                      y = "C1", training_frame = splice,
+                      disable_training_metrics = FALSE)
+}
+}

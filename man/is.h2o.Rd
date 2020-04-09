@@ -12,3 +12,15 @@ is.h2o(x)
 \description{
 Test if object is H2O Frame.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+frame <- h2o.createFrame(rows = 6, cols = 2,
+                         categorical_fraction = 0.0, 
+                         missing_fraction = 0.7, 
+                         seed = 123)
+is.h2o(frame)
+}
+}

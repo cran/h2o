@@ -14,3 +14,20 @@ h2o.biases(object, vector_id = 1)
 \description{
 Return the respective bias vector
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "http://h2o-public-test-data.s3.amazonaws.com/smalldata/chicago/chicagoCensus.csv"
+census <- h2o.importFile(f)
+census[,1] <- as.factor(census[,1])
+
+dlmodel <- h2o.deeplearning(x = c(1:3), y = 4, training_frame = census,
+                            hidden = c(17,191),
+                            epochs = 1, 
+                            balance_classes = FALSE, 
+                            export_weights_and_biases = TRUE)
+h2o.biases(dlmodel, vector_id = 1)
+}
+}

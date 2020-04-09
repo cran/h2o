@@ -12,6 +12,16 @@ h2o.nlevels(x)
 \description{
 Get the number of factor levels for this frame.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+cars <- h2o.importFile(f)
+h2o.nlevels(cars)
+}
+}
 \seealso{
 \code{\link[base]{nlevels}} for the base R method.
 }

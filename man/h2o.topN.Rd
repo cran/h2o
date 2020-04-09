@@ -19,3 +19,17 @@ An H2OFrame with 2 columns.  The first column is the original row indices, secon
 \description{
 Extract the top N percent  of values of a column and return it in a H2OFrame.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/bigdata/laptop/jira/TopBottomNRep4.csv.zip"
+dataset <- h2o.importFile(f)
+frameNames <- names(dataset)
+nPercent <- c(1, 2, 3, 4)
+nP <- nPercent[sample(1:length(nPercent), 1, replace = FALSE)]
+colIndex <- sample(1:length(frameNames), 1, replace = FALSE)
+h2o.topN(dataset, frameNames[colIndex], nP)
+}
+}

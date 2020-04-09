@@ -36,6 +36,7 @@ Turn on h2o datatable by options("h2o.use.data.table"=TRUE)
 }
 \examples{
 \dontrun{
+library(h2o)
 h2o.init()
 iris_hf <- as.h2o(iris)
 euro_hf <- as.h2o(euro)

@@ -19,6 +19,7 @@ Method \code{as.data.frame.H2OFrame} will use \code{\link[data.table]{fread}} if
 }
 \examples{
 \dontrun{
+library(h2o)
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
 prostate <- h2o.uploadFile(path = prostate_path)

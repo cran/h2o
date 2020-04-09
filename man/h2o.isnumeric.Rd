@@ -12,6 +12,16 @@ h2o.isnumeric(x)
 \description{
 Check if numeric
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/iris/iris_wheader.csv"
+iris <- h2o.importFile(f)
+h2o.isnumeric(iris["sepal_len"])
+}
+}
 \seealso{
 \code{\link[base]{is.numeric}} for the base R implementation.
 }

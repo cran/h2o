@@ -19,3 +19,13 @@ The original x object
 \description{
 This will print a truncated view of the table if there are more than 20 rows.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+cars <- h2o.importFile(f)
+print(cars, header = TRUE)
+}
+}

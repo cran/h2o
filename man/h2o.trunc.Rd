@@ -13,6 +13,18 @@ h2o.trunc(x)
 trunc takes a single numeric argument x and returns a numeric vector containing the integers
 formed by truncating the values in x toward 0.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+frame <- h2o.createFrame(rows = 6, cols = 2,
+                         categorical_fraction = 0.0, 
+                         missing_fraction = 0.7, 
+                         seed = 123)
+h2o.trunc(frame["C1"])
+}
+}
 \seealso{
 \code{\link[base]{trunc}} for the base R implementation.
 }

@@ -12,6 +12,16 @@ h2o.any(x)
 \description{
 Given a set of logical vectors, is at least one of the values true?
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv"
+iris <- h2o.importFile(f)
+h2o.any(iris[,1] < 1000)
+}
+}
 \seealso{
 \code{\link[base]{all}} for the base R implementation.
 }

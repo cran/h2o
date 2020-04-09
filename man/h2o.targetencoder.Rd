@@ -8,14 +8,14 @@ h2o.targetencoder(
   x,
   y,
   training_frame,
+  model_id = NULL,
+  fold_column = NULL,
   blending = FALSE,
   k = 10,
   f = 20,
   data_leakage_handling = c("None", "KFold", "LeaveOneOut"),
   noise_level = 0.01,
-  seed = -1,
-  model_id = NULL,
-  fold_column = NULL
+  seed = -1
 )
 }
 \arguments{
@@ -27,6 +27,10 @@ The response must be either a numeric or a categorical/factor variable.
 If the response is numeric, then a regression model will be trained, otherwise it will train a classification model.}
 
 \item{training_frame}{Id of the training data frame.}
+
+\item{model_id}{Destination id for this model; auto-generated if not specified.}
+
+\item{fold_column}{Column with cross-validation fold index assignment per observation.}
 
 \item{blending}{\code{Logical}. Blending enabled/disabled Defaults to FALSE.}
 
@@ -42,24 +46,39 @@ parameter. Defaults to 20.}
 
 \item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}
-
-\item{model_id}{Destination id for this model; auto-generated if not specified.}
-
-\item{fold_column}{Column with cross-validation fold index assignment per observation.}
 }
 \description{
 Transformation of a categorical variable with a mean value of the target variable
 }
 \examples{
 \dontrun{
-# library(h2o)
-# h2o.init()
-#
-# Create a target encoder
-# target_encoder <- h2o.targetencoder(training_frame = data, encoded_columns= encoded_columns,
-# target_column = "survived", fold_column = "pclass", data_leakage_handling = "KFold")
-#
-# Apply the Target Encoder transformation
-# encoded_data <- h2o.transform(target_encoder, data)
+library(h2o)
+h2o.init()
+#Import the titanic dataset
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/gbm_test/titanic.csv"
+titanic <- h2o.importFile(f)
+
+# Set response as a factor
+response <- "survived"
+titanic[response] <- as.factor(titanic[response])
+
+# Split the dataset into train and test
+splits <- h2o.splitFrame(data = titanic, ratios = .8, seed = 1234)
+train <- splits[[1]]
+test <- splits[[2]]
+
+# Choose which columns to encode
+encode_columns <- c("home.dest", "cabin", "embarked")
+
+# Train a TE model
+te_model <- h2o.targetencoder(x = encode_columns,
+                              y = response, 
+                              training_frame = train,
+                              fold_column = "pclass", 
+                              data_leakage_handling = "KFold")
+
+# New target encoded train and test sets
+train_te <- h2o.transform(te_model, train)
+test_te <- h2o.transform(te_model, test)
 }
 }

@@ -89,3 +89,21 @@ much) Defaults to 0.01.}
 \description{
 Trains an Isolation Forest model
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+# Import the cars dataset
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+cars <- h2o.importFile(f)
+
+# Set the predictors
+predictors <- c("displacement","power","weight","acceleration","year")
+
+# Train the IF model
+cars_if <- h2o.isolationForest(x = predictors, training_frame = cars,
+                               seed = 1234, stopping_metric = "MSE",
+                               stopping_rounds = 3, stopping_tolerance = 0.1)
+}
+}

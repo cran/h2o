@@ -15,3 +15,20 @@ Returns an H2OFrame object.
 \description{
 Conduct a lag 1 transform on a numeric H2OFrame column
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+cars <- h2o.importFile(f)
+predictors <- c("displacement","power","weight","acceleration","year")
+response <- "cylinders"
+cars.split <- h2o.splitFrame(data = cars,ratios = 0.8, seed = 1234)
+train <- cars.split[[1]]
+valid <- cars.split[[2]]
+cars_gbm <- h2o.gbm(x = predictors, y = response, training_frame = train, 
+                    validation_frame = valid, nfolds = 5, seed = 1234)
+h2o.difflag1(cars["cylinders"])
+}
+}

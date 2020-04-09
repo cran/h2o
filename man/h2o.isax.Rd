@@ -21,6 +21,19 @@ An H2OFrame with the name of time series, string representation of iSAX word, fo
 \description{
 Compute the iSAX index for a DataFrame which is assumed to be numeric time series data
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+df <- h2o.createFrame(rows = 1, cols = 256, randomize = TRUE, value = 0, 
+                      real_range = 100, categorical_fraction = 0, factors = 0, 
+                      integer_fraction = 0, integer_range = 100, binary_fraction = 0, 
+                      binary_ones_fraction = 0, time_fraction = 0, string_fraction = 0, 
+                      missing_fraction = 0,has_response = FALSE, seed = 123)
+df2 <- h2o.cumsum(df, axis = 1)
+h2o.isax(df2, num_words = 10, max_cardinality = 10)
+}
+}
 \references{
 http://www.cs.ucr.edu/~eamonn/iSAX_2.0.pdf
 

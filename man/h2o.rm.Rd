@@ -14,6 +14,15 @@ h2o.rm(ids, cascade = TRUE)
 \description{
 Remove the h2o Big Data object(s) having the key name(s) from ids.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+iris_hex <- as.h2o(iris)
+model <- h2o.glm(1:4,5,training = iris_hex, family = "multinomial")
+h2o.rm(iris_hex)
+}
+}
 \seealso{
 \code{\link{h2o.assign}}, \code{\link{h2o.ls}}
 }

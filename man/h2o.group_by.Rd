@@ -58,3 +58,11 @@ that the aggregation should apply to all columns except the GroupBy columns. How
  will not be performed on String columns.  They will be skipped.  Note again that
 \code{nrow} is required and cannot be empty.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+df <- h2o.importFile("http://s3.amazonaws.com/h2o-public-test-data/smalldata/prostate/prostate.csv")
+h2o.group_by(data = df, by = "RACE", nrow("VOL"))
+}
+}

@@ -16,3 +16,14 @@ Sorts H2OFrame by the columns specified. H2OFrame can contain String columns but
 String columns.  Otherwise, an error will
  be thrown.  To sort column c1 in descending order, do desc(c1).  Returns a new H2OFrame, like dplyr::arrange.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv"
+iris <- h2o.importFile(f)
+h2o.arrange(iris, "species","petal_len","petal_wid")
+}
+
+}

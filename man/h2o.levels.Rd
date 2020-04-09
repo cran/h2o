@@ -16,6 +16,9 @@ Return the levels from the column requested column.
 }
 \examples{
 \dontrun{
+library(h2o)
+h2o.init()
+
 iris_hf <- as.h2o(iris)
 h2o.levels(iris_hf, 5)  # returns "setosa"     "versicolor" "virginica"
 }

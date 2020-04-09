@@ -19,3 +19,13 @@ Returns an H2OFrame object with fold assignments.
 \description{
 Create a k-fold vector useful for H2O algorithms that take a fold_assignments argument.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/iris/iris_wheader.csv"
+iris <- h2o.importFile(f)
+kfolds <- h2o.kfold_column(iris, nfolds = 5, seed = 1234)
+}
+}

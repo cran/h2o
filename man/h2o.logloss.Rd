@@ -22,3 +22,23 @@ If "train", "valid", and "xval" parameters are FALSE (default), then the trainin
 than one parameter is set to TRUE, then a named vector of Log Losses are returned, where the names are "train", "valid"
 or "xval".
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+cars <- h2o.importFile(f)
+cars["economy_20mpg"] <- as.factor(cars["economy_20mpg"])
+predictors <- c("displacement","power","weight","acceleration","year")
+response <- "economy_20mpg"
+cars.splits <- h2o.splitFrame(data =  cars, ratios = .8, seed = 1234)
+train <- cars.splits[[1]]
+valid <- cars.splits[[2]]
+car_drf <- h2o.randomForest(x = predictors, 
+                            y = response, 
+                            training_frame = train, 
+                            validation_frame = valid)
+h2o.logloss(car_drf, train = TRUE, valid = TRUE)
+}
+}

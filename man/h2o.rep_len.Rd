@@ -19,3 +19,13 @@ Creates an H2OFrame of the same type as x
 \code{h2o.rep_len} performs just as \code{rep} does. It replicates the values in
 \code{x} in the H2O backend.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv"
+iris <- h2o.importFile(f)
+h2o.rep_len(iris, length.out = 3)
+}
+}

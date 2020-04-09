@@ -20,3 +20,19 @@ An H2OFrame with 2 columns.  The first column is the original row indices, secon
 bottomN function will will grab the bottom N percent of values of a column and return it in a H2OFrame.
 Extract the top N percent of values of a column and return it in a H2OFrame.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f1 <- "https://s3.amazonaws.com/h2o-public-test-data/bigdata/laptop/jira/TopBottomNRep4.csv.zip"
+f2 <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/jira/Bottom20Per.csv.zip"
+dataFrame <- h2o.importFile(f1)
+bottomAnswer <- h2o.importFile(f2)
+nPercent <- c(1, 2, 3, 4)
+frameNames <- names(dataFrame)
+nP <- nPercent[sample(1:length(nPercent), 1, replace = FALSE)]
+colIndex <- sample(1:length(frameNames), 1, replace = FALSE)
+h2o.bottomN(dataFrame, frameNames[colIndex], nP)
+}
+}

@@ -12,6 +12,16 @@ h2o.dimnames(x)
 \description{
 Column names of an H2OFrame
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+cars <- h2o.importFile(f)
+h2o.dimnames(cars)
+}
+}
 \seealso{
 \code{\link[base]{dimnames}} for the base R implementation.
 }

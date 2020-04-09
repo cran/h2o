@@ -16,6 +16,16 @@ h2o.range(x, na.rm = FALSE, finite = FALSE)
 \description{
 Returns a vector containing the minimum and maximum of all the given arguments.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv"
+iris <- h2o.importFile(f)
+h2o.range(iris["petal_len"], na.rm = TRUE, finite = TRUE)
+}
+}
 \seealso{
 \code{\link[base]{range}} for the base R implementation.
 }

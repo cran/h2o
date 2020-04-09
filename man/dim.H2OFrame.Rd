@@ -14,7 +14,9 @@ Returns the number of rows and columns for an H2OFrame object.
 }
 \examples{
 \dontrun{
+library(h2o)
 h2o.init()
+
 iris_hf <- as.h2o(iris)
 dim(iris_hf)
 }

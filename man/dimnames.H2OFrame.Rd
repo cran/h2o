@@ -14,7 +14,9 @@ Set column names of an H2O Frame
 }
 \examples{
 \dontrun{
+library(h2o)
 h2o.init()
+
 n <- 2000
 #  Generate variables V1, ... V10
 X <- matrix(rnorm(10 * n), n, 10)

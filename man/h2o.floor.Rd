@@ -14,6 +14,18 @@ floor takes a single numeric argument x and returns a numeric
 vector containing the largest integers not greater than the
 corresponding elements of x.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+frame <- h2o.createFrame(rows = 6, cols = 2,
+                         categorical_fraction = 0.0, 
+                         missing_fraction = 0.7, 
+                         seed = 123)
+h2o.floor(frame["C2"])
+}
+}
 \seealso{
 \code{\link[base]{floor}} for the base R implementation.
 }

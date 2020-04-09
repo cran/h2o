@@ -12,6 +12,16 @@ h2o.nrow(x)
 \description{
 Return the number of rows present in x.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+cars <- h2o.importFile(f)
+h2o.nrow(cars)
+}
+}
 \seealso{
 \code{\link[base]{nrow}} for the base R implementation.
 }

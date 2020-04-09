@@ -14,3 +14,23 @@ h2o.find_row_by_threshold(object, threshold)
 \description{
 Find the threshold, give the max metric. No duplicate thresholds allowed
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+cars <- h2o.importFile(f)
+cars["economy_20mpg"] <- as.factor(cars["economy_20mpg"])
+predictors <- c("displacement","power","weight","acceleration","year")
+response <- "economy_20mpg"
+cars.split <- h2o.splitFrame(data = cars,ratios = 0.8, seed = 1234)
+train <- cars.split[[1]]
+valid <- cars.split[[2]]
+cars_gbm <- h2o.gbm(x = predictors, y = response, 
+                    training_frame = train, validation_frame = valid, 
+                    build_tree_one_node = TRUE , seed = 1234)
+perf <- h2o.performance(cars_gbm, cars)
+h2o.find_row_by_threshold(perf, 0.5)
+}
+}

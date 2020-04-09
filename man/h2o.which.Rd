@@ -17,7 +17,9 @@ Give the TRUE indices of a logical object, allowing for array indices.
 }
 \examples{
 \dontrun{
+library(h2o)
 h2o.init()
+
 iris_hf <- as.h2o(iris)
 h2o.which(iris_hf[, 1] == 4.4)
 }

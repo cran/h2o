@@ -29,6 +29,7 @@ h2o.automl(
   exclude_algos = NULL,
   include_algos = NULL,
   modeling_plan = NULL,
+  exploitation_ratio = 0,
   monotone_constraints = NULL,
   algo_parameters = NULL,
   keep_cross_validation_predictions = FALSE,
@@ -57,7 +58,8 @@ validation_frame will be ignored.}
 \item{leaderboard_frame}{Leaderboard frame (H2OFrame or ID); Optional.  If provided, the Leaderboard will be scored using
 this data frame intead of using cross-validation metrics, which is the default.}
 
-\item{blending_frame}{Blending frame (H2OFrame or ID) used to train the the metalearning algorithm in Stacked Ensembles (instead of relying on cross-validated predicted values); Optional.}
+\item{blending_frame}{Blending frame (H2OFrame or ID) used to train the the metalearning algorithm in Stacked Ensembles (instead of relying on cross-validated predicted values); Optional.
+When provided, it also is recommended to disable cross validation by setting `nfolds=0` and to provide a leaderboard frame for scoring purposes.}
 
 \item{nfolds}{Number of folds for k-fold cross-validation. Defaults to 5. Use 0 to disable cross-validation; this will also disable Stacked Ensemble (thus decreasing the overall model performance).}
 
@@ -97,13 +99,18 @@ because max_runtime_secs is resource limited, meaning that if the resources are 
 \item{project_name}{Character string to identify an AutoML project.  Defaults to NULL, which means a project name will be auto-generated.}
 
 \item{exclude_algos}{Vector of character strings naming the algorithms to skip during the model-building phase.  An example use is exclude_algos = c("GLM", "DeepLearning", "DRF"),
-and the full list of options is: "DRF" (Random Forest and Extremely-Randomized Trees), "GLM", "XGBoost", "GBM", "DeepLearning" and "StackedEnsemble".}
+and the full list of options is: "DRF" (Random Forest and Extremely-Randomized Trees), "GLM", "XGBoost", "GBM", "DeepLearning" and "StackedEnsemble".
+Defaults to NULL, which means that all appropriate H2O algorithms will be used, if the search stopping criteria allow. Optional.}
 
-\item{include_algos}{Vector of character strings naming the algorithms to restrict to during the model-building phase. This can't be used in combination with exclude_algos param.}
+\item{include_algos}{Vector of character strings naming the algorithms to restrict to during the model-building phase. This can't be used in combination with exclude_algos param.
+Defaults to NULL, which means that all appropriate H2O algorithms will be used, if the search stopping criteria allow. Optional.}
 
 \item{modeling_plan}{List. The list of modeling steps to be used by the AutoML engine (they may not all get executed, depending on other constraints). Optional (Expert usage only).}
 
-\item{monotone_constraints}{List. A mapping representing monotonic constraints.}
+\item{exploitation_ratio}{The budget ratio (between 0 and 1) dedicated to the exploitation (vs exploration) phase. By default, the exploitation phase is disabled (exploitation_ratio=0) as this is still experimental; to activate it, it is recommended to try a ratio around 0.1. Note that the current exploitation phase only tries to fine-tune the best XGBoost and the best GBM found during exploration.}
+
+\item{monotone_constraints}{List. A mapping representing monotonic constraints.
+Use +1 to enforce an increasing constraint and -1 to specify a decreasing constraint.}
 
 \item{algo_parameters}{List. A list of param_name=param_value to be passed to internal models. Defaults to none (Expert usage only).
 By default, params are set only to algorithms accepting them, and ignored by others.

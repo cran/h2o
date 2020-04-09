@@ -46,6 +46,7 @@ Hence, we consider the radix method superior to the hash method and is the defau
 }
 \examples{
 \dontrun{
+library(h2o)
 h2o.init()
 left <- data.frame(fruit = c('apple', 'orange', 'banana', 'lemon', 'strawberry', 'blueberry'),
 color <- c('red', 'orange', 'yellow', 'yellow', 'red', 'blue'))
