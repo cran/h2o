@@ -25,5 +25,5 @@ h2o.min(iris["sepal_len"], na.rm = TRUE)
 }
 }
 \seealso{
-\code{\link[base]{min}} for the base R implementation.
+\code{\link[base]{Extremes}} for the base R implementation, \code{min()}.
 }

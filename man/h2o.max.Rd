@@ -25,5 +25,5 @@ h2o.max(iris["petal_len"], na.rm = TRUE)
 }
 }
 \seealso{
-\code{\link[base]{max}} for the base R implementation.
+\code{\link[base]{Extremes}} for the base R implementation, \code{max()}.
 }

@@ -4,7 +4,9 @@
 \name{.h2o.__REST_API_VERSION}
 \alias{.h2o.__REST_API_VERSION}
 \title{H2O Package Constants}
-\format{An object of class \code{integer} of length 1.}
+\format{
+An object of class \code{integer} of length 1.
+}
 \usage{
 .h2o.__REST_API_VERSION
 }

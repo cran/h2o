@@ -22,12 +22,15 @@ h2o.isolationForest(
   sample_rate = -1,
   col_sample_rate_change_per_level = 1,
   col_sample_rate_per_tree = 1,
-  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
-    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
+    "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
   stopping_rounds = 0,
   stopping_metric = c("AUTO", "anomaly_score"),
   stopping_tolerance = 0.01,
-  export_checkpoints_dir = NULL
+  export_checkpoints_dir = NULL,
+  contamination = -1,
+  validation_frame = NULL,
+  validation_response_column = NULL
 )
 }
 \arguments{
@@ -45,7 +48,7 @@ h2o.isolationForest(
 
 \item{ntrees}{Number of trees. Defaults to 50.}
 
-\item{max_depth}{Maximum tree depth. Defaults to 8.}
+\item{max_depth}{Maximum tree depth (0 for unlimited). Defaults to 8.}
 
 \item{min_rows}{Fewest allowed (weighted) observations in a leaf. Defaults to 1.}
 
@@ -85,6 +88,15 @@ with the Python client. Must be one of: "AUTO", "anomaly_score". Defaults to AUT
 much) Defaults to 0.01.}
 
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
+
+\item{contamination}{Contamination ratio - the proportion of anomalies in the input dataset. If undefined (-1) the predict function
+will not mark observations as anomalies and only anomaly score will be returned. Defaults to -1 (undefined).
+Defaults to -1.}
+
+\item{validation_frame}{Id of the validation data frame.}
+
+\item{validation_response_column}{(experimental) Name of the response column in the validation frame. Response column should be binary and
+indicate not anomaly/anomaly.}
 }
 \description{
 Trains an Isolation Forest model
@@ -99,11 +111,11 @@ f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.c
 cars <- h2o.importFile(f)
 
 # Set the predictors
-predictors <- c("displacement","power","weight","acceleration","year")
+predictors <- c("displacement", "power", "weight", "acceleration", "year")
 
 # Train the IF model
 cars_if <- h2o.isolationForest(x = predictors, training_frame = cars,
-                               seed = 1234, stopping_metric = "MSE",
+                               seed = 1234, stopping_metric = "anomaly_score",
                                stopping_rounds = 3, stopping_tolerance = 0.1)
 }
 }

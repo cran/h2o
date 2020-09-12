@@ -24,5 +24,5 @@ h2o.ischaracter(iris_char)
 }
 }
 \seealso{
-\code{\link[base]{is.character}} for the base R implementation.
+\code{\link[base]{character}} for the base R implementation, \code{is.character()}.
 }

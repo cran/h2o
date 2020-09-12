@@ -441,6 +441,11 @@ h2o.deeplearning <- function(x,
   if (!missing(export_checkpoints_dir))
     parms$export_checkpoints_dir <- export_checkpoints_dir
 
+  if (!missing(max_hit_ratio_k)) {
+    warning("argument max_hit_ratio_k is deprecated and has no use.")
+    parms$offset_column <- NULL
+  }
+
   # Error check and build model
   model <- .h2o.modelJob('deeplearning', parms, h2oRestApiVersion=3, verbose=verbose)
   return(model)
@@ -738,6 +743,11 @@ h2o.deeplearning <- function(x,
   if (!missing(export_checkpoints_dir))
     parms$export_checkpoints_dir <- export_checkpoints_dir
 
+  if (!missing(max_hit_ratio_k)) {
+    warning("argument max_hit_ratio_k is deprecated and has no use.")
+    parms$offset_column <- NULL
+  }
+
   # Build segment-models specific parameters
   segment_parms <- list()
   if (!missing(segment_columns))
@@ -774,7 +784,7 @@ h2o.deeplearning <- function(x,
 #'                                hidden = c(10, 10), epochs = 5)
 #' prostate_anon = h2o.anomaly(prostate_dl, prostate)
 #' head(prostate_anon)
-#' prostate_anon_per_feature = h2o.anomaly(prostate_dl, prostate, per_feature=TRUE)
+#' prostate_anon_per_feature = h2o.anomaly(prostate_dl, prostate, per_feature = TRUE)
 #' head(prostate_anon_per_feature)
 #' }
 #' @export

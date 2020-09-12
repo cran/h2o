@@ -4,7 +4,9 @@
 \name{.h2o.__W2V_SYNONYMS}
 \alias{.h2o.__W2V_SYNONYMS}
 \title{Word2Vec Endpoints}
-\format{An object of class \code{character} of length 1.}
+\format{
+An object of class \code{character} of length 1.
+}
 \usage{
 .h2o.__W2V_SYNONYMS
 }

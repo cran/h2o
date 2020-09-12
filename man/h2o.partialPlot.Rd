@@ -17,7 +17,8 @@ h2o.partialPlot(
   user_splits = NULL,
   col_pairs_2dpdp = NULL,
   save_to = NULL,
-  row_index = -1
+  row_index = -1,
+  targets = NULL
 )
 }
 \arguments{
@@ -53,6 +54,8 @@ Plots for each feature are saved separately in PNG format, each file receives a 
 If the files already exists, they will be overridden. Files are only saves if plot = TRUE (default).}
 
 \item{row_index}{Row for which partial dependence will be calculated instead of the whole input frame.}
+
+\item{targets}{Target classes for multinomial model.}
 }
 \value{
 Plot and list of calculated mean response tables for each feature requested.
@@ -69,13 +72,22 @@ h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
 prostate <- h2o.uploadFile(path = prostate_path)
 prostate[, "CAPSULE"] <- as.factor(prostate[, "CAPSULE"] )
-prostate[, "RACE"] <- as.factor(prostate[,"RACE"] )
-prostate_gbm <- h2o.gbm(x = c("AGE","RACE"),
+prostate[, "RACE"] <- as.factor(prostate[, "RACE"] )
+prostate_gbm <- h2o.gbm(x = c("AGE", "RACE"),
                         y = "CAPSULE",
                         training_frame = prostate,
                         ntrees = 10,
                         max_depth = 5,
                         learn_rate = 0.1)
 h2o.partialPlot(object = prostate_gbm, data = prostate, cols = c("AGE", "RACE"))
+
+iris_hex <- as.h2o(iris)
+iris_gbm <- h2o.gbm(x = c(1:4), y = 5, training_frame = iris_hex)
+
+# one target class
+h2o.partialPlot(object = iris_gbm, data = iris_hex, cols="Petal.Length", targets=c("setosa"))
+# three target classes
+h2o.partialPlot(object = iris_gbm, data = iris_hex, cols="Petal.Length", 
+                 targets=c("setosa", "virginica", "versicolor"))
 }
 }

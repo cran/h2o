@@ -35,5 +35,5 @@ var(prostate$AGE)
 }
 }
 \seealso{
-\code{\link[stats]{var}} for the base R implementation. \code{\link{h2o.sd}} for standard deviation.
+\code{\link[stats]{cor}} for the base R implementation, \code{var()}. \code{\link{h2o.sd}} for standard deviation.
 }

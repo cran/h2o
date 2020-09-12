@@ -26,7 +26,7 @@ h2o.init()
 
 f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/chicago/chicagoCensus.csv"
 census <- h2o.importFile(f)
-dlmodel <- h2o.deeplearning(x = c(1:3), y = 4, hidden = c(17,191), 
+dl_model <- h2o.deeplearning(x = c(1:3), y = 4, hidden = c(17, 191), 
                             epochs = 1, training_frame = census, 
                             balance_classes = FALSE, 
                             export_weights_and_biases = TRUE)

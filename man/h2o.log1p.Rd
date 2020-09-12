@@ -25,5 +25,5 @@ h2o.log1p(frame)
 }
 }
 \seealso{
-\code{\link[base]{log1p}} for the base R implementation.
+\code{\link[base]{Log}} for the base R implementation, \code{log1p()}.
 }

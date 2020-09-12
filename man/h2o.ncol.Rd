@@ -23,5 +23,5 @@ h2o.ncol(iris)
 }
 }
 \seealso{
-\code{\link[base]{ncol}} for the base R implementation.
+\code{\link[base]{nrow}} for the base R implementation, \code{ncol()}.
 }

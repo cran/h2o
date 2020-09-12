@@ -29,5 +29,5 @@ h2o.round(heart["age"], digits = 3)
 }
 }
 \seealso{
-\code{\link[base]{round}} for the base R implementation.
+\code{\link[base]{Round}} for the base R implementation, \code{round()}.
 }

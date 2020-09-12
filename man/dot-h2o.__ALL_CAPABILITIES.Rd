@@ -4,7 +4,9 @@
 \name{.h2o.__ALL_CAPABILITIES}
 \alias{.h2o.__ALL_CAPABILITIES}
 \title{Capabilities endpoints}
-\format{An object of class \code{character} of length 1.}
+\format{
+An object of class \code{character} of length 1.
+}
 \usage{
 .h2o.__ALL_CAPABILITIES
 }

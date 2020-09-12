@@ -28,9 +28,9 @@ For cases of multiple indexes for a column label, the aggregation method is to p
 library(h2o)
 h2o.init()
 
-df = h2o.createFrame(rows = 1000, cols=3, factors=10, integer_fraction=1.0/3, 
-                     categorical_fraction=1.0/3, missing_fraction=0.0, seed=123)
+df = h2o.createFrame(rows = 1000, cols = 3, factors = 10, integer_fraction = 1.0/3, 
+                     categorical_fraction = 1.0/3, missing_fraction = 0.0, seed = 123)
 df$C3 = h2o.abs(df$C3)
-h2o.pivot(df,index="C3",column="C2",value="C1")
+h2o.pivot(df, index="C3", column="C2", value="C1")
 }
 }

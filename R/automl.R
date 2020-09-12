@@ -70,9 +70,13 @@
 #' \dontrun{
 #' library(h2o)
 #' h2o.init()
-#' votes_path <- system.file("extdata", "housevotes.csv", package = "h2o")
-#' votes_hf <- h2o.uploadFile(path = votes_path, header = TRUE)
-#' aml <- h2o.automl(y = "Class", training_frame = votes_hf, max_runtime_secs = 30)
+#' prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
+#' prostate <- h2o.importFile(path = prostate_path, header = TRUE)
+#' y <- "CAPSULE"
+#' prostate[,y] <- as.factor(prostate[,y])  #convert to factor for classification
+#' aml <- h2o.automl(y = y, training_frame = prostate, max_runtime_secs = 30)
+#' lb <- h2o.get_leaderboard(aml)
+#' head(lb)
 #' }
 #' @export
 h2o.automl <- function(x, y, training_frame,
@@ -408,7 +412,7 @@ h2o.predict.H2OAutoML <- function(object, newdata, ...) {
   is_progress <- isTRUE(as.logical(.h2o.is_progress()))
   if (show_progress) h2o.show_progress() else h2o.no_progress()
   frame <- tryCatch(
-    as.h2o(table, destination_frame=destination_frame),
+    as.h2o(table, destination_frame=destination_frame, use_datatable=FALSE),
     error = identity,
     finally = if (is_progress) h2o.show_progress() else h2o.no_progress()
   )
@@ -419,6 +423,7 @@ h2o.predict.H2OAutoML <- function(object, newdata, ...) {
   # GET AutoML job and leaderboard for project
   automl_job <- .h2o.__remoteSend(h2oRestApiVersion = 99, method = "GET", page = paste0("AutoML/", run_id))
   project_name <- automl_job$project_name
+  automl_id <- automl_job$automl_id$name
 
   leaderboard <- as.data.frame(automl_job$leaderboard_table)
   row.names(leaderboard) <- seq(nrow(leaderboard))
@@ -461,6 +466,7 @@ h2o.predict.H2OAutoML <- function(object, newdata, ...) {
   }
 
   return(list(
+    automl_id=automl_id,
     project_name=project_name,
     leaderboard=leaderboard,
     leader=leader,
@@ -479,11 +485,13 @@ h2o.predict.H2OAutoML <- function(object, newdata, ...) {
 #' \dontrun{
 #' library(h2o)
 #' h2o.init()
-#' votes_path <- system.file("extdata", "housevotes.csv", package = "h2o")
-#' votes_hf <- h2o.uploadFile(path = votes_path, header = TRUE)
-#' aml <- h2o.automl(y = "Class", project_name="aml_housevotes",
-#'                   training_frame = votes_hf, max_runtime_secs = 30)
-#' automl_retrieved <- h2o.get_automl("aml_housevotes")
+#' prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
+#' prostate <- h2o.importFile(path = prostate_path, header = TRUE)
+#' y <- "CAPSULE"
+#' prostate[,y] <- as.factor(prostate[,y])  #convert to factor for classification
+#' aml <- h2o.automl(y = y, training_frame = prostate, 
+#'                   max_runtime_secs = 30, project_name = "prostate")
+#' aml2 <- h2o.get_automl("prostate")
 #' }
 #' @export
 h2o.get_automl <- function(project_name) {
@@ -497,14 +505,16 @@ h2o.get_automl <- function(project_name) {
   }
 
   # Make AutoML object
-  return(new("H2OAutoML",
+  automl <- new("H2OAutoML",
              project_name = state$project,
              leader = state$leader,
              leaderboard = state$leaderboard,
              event_log = state$event_log,
              modeling_steps = state$modeling_steps,
              training_info = training_info
-  ))
+  )
+  attr(automl, "id") <- state$automl_id
+  return(automl)
 }
 
 
@@ -532,12 +542,13 @@ h2o.getAutoML <- function(project_name) {
 #' \dontrun{
 #' library(h2o)
 #' h2o.init()
-#' votes_path <- system.file("extdata", "housevotes.csv", package = "h2o")
-#' votes_hf <- h2o.uploadFile(path = votes_path, header = TRUE)
-#' aml <- h2o.automl(y = "Class", project_name="aml_housevotes",
-#'                   training_frame = votes_hf, max_runtime_secs = 30)
-#' lb_all <- h2o.get_leaderboard(aml, 'ALL')
-#' lb_custom <- h2o.get_leaderboard(aml, c('predict_time_per_row_ms', 'training_time_ms'))
+#' prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
+#' prostate <- h2o.importFile(path = prostate_path, header = TRUE)
+#' y <- "CAPSULE"
+#' prostate[,y] <- as.factor(prostate[,y])  #convert to factor for classification
+#' aml <- h2o.automl(y = y, training_frame = prostate, max_runtime_secs = 30)
+#' lb <- h2o.get_leaderboard(aml)
+#' head(lb)
 #' }
 #' @export
 h2o.get_leaderboard <- function(object, extra_columns=NULL) {

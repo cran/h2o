@@ -27,11 +27,12 @@ Contrary to the default leaderboard attached to the automl instance, this one ca
 \dontrun{
 library(h2o)
 h2o.init()
-votes_path <- system.file("extdata", "housevotes.csv", package = "h2o")
-votes_hf <- h2o.uploadFile(path = votes_path, header = TRUE)
-aml <- h2o.automl(y = "Class", project_name="aml_housevotes",
-                  training_frame = votes_hf, max_runtime_secs = 30)
-lb_all <- h2o.get_leaderboard(aml, 'ALL')
-lb_custom <- h2o.get_leaderboard(aml, c('predict_time_per_row_ms', 'training_time_ms'))
+prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
+prostate <- h2o.importFile(path = prostate_path, header = TRUE)
+y <- "CAPSULE"
+prostate[,y] <- as.factor(prostate[,y])  #convert to factor for classification
+aml <- h2o.automl(y = y, training_frame = prostate, max_runtime_secs = 30)
+lb <- h2o.get_leaderboard(aml)
+head(lb)
 }
 }

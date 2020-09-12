@@ -4,7 +4,9 @@
 \name{housevotes}
 \alias{housevotes}
 \title{United States Congressional Voting Records 1984}
-\format{A data frame with 435 rows and 17 columns}
+\format{
+A data frame with 435 rows and 17 columns
+}
 \source{
 Congressional Quarterly Almanac, 98th Congress, 2nd session 1984, Volume XL: Congressional Quarterly Inc., Washington, D.C., 1985
 }

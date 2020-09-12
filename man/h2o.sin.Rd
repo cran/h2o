@@ -25,5 +25,5 @@ h2o.sin(frame)
 }
 }
 \seealso{
-\code{\link[base]{sin}} for the base R implementation.
+\code{\link[base]{Trig}} for the base R implementation, \code{sin()}.
 }

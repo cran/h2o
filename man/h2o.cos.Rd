@@ -25,5 +25,5 @@ h2o.cos(frame["C1"])
 }
 }
 \seealso{
-\code{\link[base]{cos}} for the base R implementation.
+\code{\link[base]{Trig}} for the base R implementation, \code{cos()}.
 }

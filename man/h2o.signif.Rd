@@ -29,5 +29,5 @@ h2o.signif(heart["age"], digits = 3)
 }
 }
 \seealso{
-\code{\link[base]{signif}} for the base R implementation.
+\code{\link[base]{Round}} for the base R implementation, \code{signif()}.
 }

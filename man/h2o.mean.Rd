@@ -40,9 +40,9 @@ prostate <- h2o.uploadFile(path = prostate_path)
 h2o.mean(prostate$AGE)
 # return_frame set to TRUE. This will return an H2O Frame
 # with mean per row or column (depends on axis argument)
-h2o.mean(prostate, na.rm=TRUE, axis=1, return_frame=TRUE)
+h2o.mean(prostate, na.rm = TRUE, axis = 1, return_frame = TRUE)
 }
 }
 \seealso{
-\code{\link[base]{mean}} , \code{\link[base]{rowMeans}}, or \code{\link[base]{colMeans}} for the base R implementation
+\code{\link[base]{Round}} for base R implementation, \code{mean()} and \code{\link[base]{colSums}} for the base R implementation, \code{colMeans()}.
 }

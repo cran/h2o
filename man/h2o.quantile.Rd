@@ -51,7 +51,7 @@ h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
 prostate <- h2o.uploadFile(path = prostate_path)
 # Request quantiles for a subset of columns in an H2O parsed data set
-quantile(prostate[,3])
+quantile(prostate[, 3])
 for(i in 1:ncol(prostate))
    quantile(prostate[, i])
 }

@@ -50,8 +50,8 @@ h2o.randomForest(
   min_split_improvement = 1e-05,
   histogram_type = c("AUTO", "UniformAdaptive", "Random", "QuantilesGlobal",
     "RoundRobin"),
-  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
-    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
+    "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
   calibrate_model = FALSE,
   calibration_frame = NULL,
   distribution = c("AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
@@ -59,6 +59,7 @@ h2o.randomForest(
   custom_metric_func = NULL,
   export_checkpoints_dir = NULL,
   check_constant_response = TRUE,
+  gainslift_bins = -1,
   verbose = FALSE
 )
 }
@@ -113,12 +114,11 @@ be automatically computed to obtain class balance during training. Requires bala
 \item{max_after_balance_size}{Maximum relative size of the training data after balancing class counts (can be less than 1.0). Requires
 balance_classes. Defaults to 5.0.}
 
-\item{max_hit_ratio_k}{Max. number (top K) of predictions to use for hit ratio computation (for multi-class only, 0 to disable)
-Defaults to 0.}
+\item{max_hit_ratio_k}{This argument is deprecated and has no use. Max. number (top K) of predictions to use for hit ratio computation (for multi-class only, 0 to disable).}
 
 \item{ntrees}{Number of trees. Defaults to 50.}
 
-\item{max_depth}{Maximum tree depth. Defaults to 20.}
+\item{max_depth}{Maximum tree depth (0 for unlimited). Defaults to 20.}
 
 \item{min_rows}{Fewest allowed (weighted) observations in a leaf. Defaults to 1.}
 
@@ -194,6 +194,8 @@ accurate estimates of class probabilities. Defaults to FALSE.}
 column is a constant value.If disabled, then model will train regardless of the response column being a
 constant value or not. Defaults to TRUE.}
 
+\item{gainslift_bins}{Gains/Lift table number of bins. 0 means disabled.. Default value -1 means automatic binning. Defaults to -1.}
+
 \item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree). Defaults to FALSE.}
 }
 \value{
@@ -213,7 +215,7 @@ cars <- h2o.importFile(f)
 
 # Set predictors and response; set response as a factor
 cars["economy_20mpg"] <- as.factor(cars["economy_20mpg"])
-predictors <- c("displacement","power","weight","acceleration","year")
+predictors <- c("displacement", "power", "weight", "acceleration", "year")
 response <- "economy_20mpg"
 
 # Train the DRF model

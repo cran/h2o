@@ -4,7 +4,9 @@
 \name{prostate}
 \alias{prostate}
 \title{Prostate Cancer Study}
-\format{A data frame with 380 rows and 9 columns}
+\format{
+A data frame with 380 rows and 9 columns
+}
 \source{
 Hosmer and Lemeshow (2000) Applied Logistic Regression: Second Edition.
 }

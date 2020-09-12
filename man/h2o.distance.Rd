@@ -27,6 +27,6 @@ h2o.init()
 
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
 prostate <- h2o.uploadFile(path = prostate_path)
-h2o.distance(prostate[11:30,], prostate[1:10,], "cosine")
+h2o.distance(prostate[11:30, ], prostate[1:10, ], "cosine")
 }
 }

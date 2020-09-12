@@ -43,6 +43,6 @@ if the element matches the pattern (1) or not (0).
 library(h2o)
 h2o.init()
 addresses <- as.h2o(c("2307", "Leghorn St", "Mountain View", "CA", "94043"))
-zip.codes <- addresses[h2o.grep("[0-9]{5}", addresses, output.logical = TRUE),]
+zip_codes <- addresses[h2o.grep("[0-9]{5}", addresses, output.logical = TRUE),]
 }
 }

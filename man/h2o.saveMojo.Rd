@@ -2,7 +2,7 @@
 % Please edit documentation in R/export.R
 \name{h2o.saveMojo}
 \alias{h2o.saveMojo}
-\title{Save an H2O Model Object as Mojo to Disk}
+\title{Deprecated - use h2o.save_mojo instead. Save an H2O Model Object as Mojo to Disk}
 \usage{
 h2o.saveMojo(object, path = "", force = FALSE)
 }
@@ -25,7 +25,7 @@ will overwrite the file. Otherwise, the operation will fail.
 # library(h2o)
 # h2o.init()
 # prostate <- h2o.uploadFile(path = system.file("extdata", "prostate.csv", package="h2o"))
-# prostate_glm <- h2o.glm(y = "CAPSULE", x = c("AGE","RACE","PSA","DCAPS"),
+# prostate_glm <- h2o.glm(y = "CAPSULE", x = c("AGE", "RACE", "PSA", "DCAPS"),
 #                         training_frame = prostate, family = "binomial", alpha = 0.5)
 # h2o.saveMojo(object = prostate_glm, path = "/Users/UserName/Desktop", force = TRUE)
 }

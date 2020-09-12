@@ -27,5 +27,5 @@ h2o.cummin(frame, 1)
 }
 }
 \seealso{
-\code{\link[base]{cummin}} for the base R implementation.
+\code{\link[base]{cumsum}} for the base R implementation, \code{cummin()}.
 }

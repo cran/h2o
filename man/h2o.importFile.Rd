@@ -18,7 +18,8 @@ h2o.importFile(
   na.strings = NULL,
   decrypt_tool = NULL,
   skipped_columns = NULL,
-  custom_non_data_line_markers = NULL
+  custom_non_data_line_markers = NULL,
+  partition_by = NULL
 )
 
 h2o.importFolder(
@@ -33,7 +34,8 @@ h2o.importFolder(
   na.strings = NULL,
   decrypt_tool = NULL,
   skipped_columns = NULL,
-  custom_non_data_line_markers = NULL
+  custom_non_data_line_markers = NULL,
+  partition_by = NULL
 )
 
 h2o.importHDFS(
@@ -66,9 +68,8 @@ h2o.uploadFile(
 \item{path}{The complete URL or normalized file path of the file to be
 imported. Each row of data appears as one line of the file.}
 
-\item{destination_frame}{(Optional) The unique hex key assigned to the imported file. If
-none is given, a key will automatically be generated based on the URL
-path.}
+\item{destination_frame}{(Optional) The unique hex key assigned to the imported file. If none
+is given, a key will automatically be generated based on the URL path.}
 
 \item{parse}{(Optional) A logical value indicating whether the file should be
 parsed after import, for details see \link{h2o.parseRaw}.}
@@ -95,6 +96,8 @@ acquired by calling \link{h2o.decryptionSetup}.}
 \item{skipped_columns}{a list of column indices to be skipped during parsing.}
 
 \item{custom_non_data_line_markers}{(Optional) If a line in imported file starts with any character in given string it will NOT be imported. Empty string means all lines are imported, NULL means that default behaviour for given format will be used}
+
+\item{partition_by}{names of the columns the persisted dataset has been partitioned by.}
 
 \item{pattern}{(Optional) Character string containing a regular expression to match file(s) in
 the folder.}

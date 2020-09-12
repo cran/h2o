@@ -27,5 +27,5 @@ h2o.cumprod(frame, 1)
 }
 }
 \seealso{
-\code{\link[base]{cumprod}} for the base R implementation.
+\code{\link[base]{cumsum}} for the base R implementation, \code{cumprod()}.
 }

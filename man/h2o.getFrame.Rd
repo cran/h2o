@@ -21,7 +21,7 @@ f <- "http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv
 train <- h2o.importFile(f)
 y <- "species"
 x <- setdiff(names(train), y)
-train[,y] <- as.factor(train[,y])
+train[, y] <- as.factor(train[, y])
 nfolds <- 5
 num_base_models <- 2
 my_gbm <- h2o.gbm(x = x, y = y, training_frame = train, 

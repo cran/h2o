@@ -17,7 +17,8 @@ h2o.parseSetup(
   chunk_size = NULL,
   decrypt_tool = NULL,
   skipped_columns = NULL,
-  custom_non_data_line_markers = NULL
+  custom_non_data_line_markers = NULL,
+  partition_by = NULL
 )
 }
 \arguments{
@@ -56,6 +57,8 @@ acquired by calling \link{h2o.decryptionSetup}.}
 \item{skipped_columns}{a list of column indices to be excluded from parsing}
 
 \item{custom_non_data_line_markers}{(Optional) If a line in imported file starts with any character in given string it will NOT be imported. Empty string means all lines are imported, NULL means that default behaviour for given format will be used}
+
+\item{partition_by}{(Optional) Names of the columns the persisted dataset has been partitioned by.}
 }
 \description{
 Get a parse setup back for the staged data.

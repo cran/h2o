@@ -17,9 +17,9 @@ Compute the arc cosine of x
 h2o.init()
 prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
 prostate <- h2o.uploadFile(path = prostate_path)
-h2o.acos(prostate[,2])
+h2o.acos(prostate[, 2])
 }
 }
 \seealso{
-\code{\link[base]{acos}} for the base R implementation.
+\code{\link[base]{Trig}} for the base R implementation, \code{acos()}.
 }

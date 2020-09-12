@@ -19,7 +19,7 @@ h2o.init()
 
 f <- "http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv"
 iris <- h2o.importFile(f)
-h2o.any(iris[,1] < 1000)
+h2o.any(iris[, 1] < 1000)
 }
 }
 \seealso{

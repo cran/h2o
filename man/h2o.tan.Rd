@@ -25,5 +25,5 @@ h2o.tan(frame)
 }
 }
 \seealso{
-\code{\link[base]{tan}} for the base R implementation.
+\code{\link[base]{Trig}} for the base R implementation, \code{tan()}.
 }

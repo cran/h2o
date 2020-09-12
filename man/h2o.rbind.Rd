@@ -29,5 +29,5 @@ dim(prostate_rbind)
 }
 }
 \seealso{
-\code{\link[base]{rbind}} for the base \code{R} method.
+\code{\link[base]{cbind}} for the base \code{R} method, \code{rbind()}.
 }

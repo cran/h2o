@@ -11,10 +11,12 @@ h2o.glrm(
   validation_frame = NULL,
   ignore_const_cols = TRUE,
   score_each_iteration = FALSE,
+  representation_name = NULL,
   loading_name = NULL,
   transform = c("NONE", "STANDARDIZE", "NORMALIZE", "DEMEAN", "DESCALE"),
   k = 1,
-  loss = c("Quadratic", "Absolute", "Huber", "Poisson", "Hinge", "Logistic", "Periodic"),
+  loss = c("Quadratic", "Absolute", "Huber", "Poisson", "Hinge", "Logistic",
+    "Periodic"),
   loss_by_col = c("Quadratic", "Absolute", "Huber", "Poisson", "Hinge", "Logistic",
     "Periodic", "Categorical", "Ordinal"),
   loss_by_col_idx = NULL,
@@ -55,7 +57,9 @@ h2o.glrm(
 
 \item{score_each_iteration}{\code{Logical}. Whether to score during each iteration of model training. Defaults to FALSE.}
 
-\item{loading_name}{Frame key to save resulting X}
+\item{representation_name}{Frame key to save resulting X}
+
+\item{loading_name}{[Deprecated] Use representation_name instead.  Frame key to save resulting X.}
 
 \item{transform}{Transformation of training data Must be one of: "NONE", "STANDARDIZE", "NORMALIZE", "DEMEAN", "DESCALE".
 Defaults to NONE.}

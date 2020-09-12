@@ -30,8 +30,8 @@ h2o.xgboost(
   distribution = c("AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
     "tweedie", "laplace", "quantile", "huber"),
   tweedie_power = 1.5,
-  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
-    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
+    "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
   quiet_mode = TRUE,
   checkpoint = NULL,
   export_checkpoints_dir = NULL,
@@ -47,6 +47,7 @@ h2o.xgboost(
   colsample_bylevel = 1,
   col_sample_rate_per_tree = 1,
   colsample_bytree = 1,
+  colsample_bynode = 1,
   max_abs_leafnode_pred = 0,
   max_delta_step = 0,
   monotone_constraints = NULL,
@@ -60,8 +61,6 @@ h2o.xgboost(
   calibration_frame = NULL,
   max_bins = 256,
   max_leaves = 0,
-  min_sum_hessian_in_leaf = 100,
-  min_data_in_leaf = 0,
   sample_type = c("uniform", "weighted"),
   normalize_type = c("tree", "forest"),
   rate_drop = 0,
@@ -75,6 +74,7 @@ h2o.xgboost(
   dmatrix_type = c("auto", "dense", "sparse"),
   backend = c("auto", "gpu", "cpu"),
   gpu_id = 0,
+  gainslift_bins = -1,
   verbose = FALSE
 )
 }
@@ -151,7 +151,7 @@ Defaults to -1 (time-based random number).}
 
 \item{ntrees}{(same as n_estimators) Number of trees. Defaults to 50.}
 
-\item{max_depth}{Maximum tree depth. Defaults to 6.}
+\item{max_depth}{Maximum tree depth (0 for unlimited). Defaults to 6.}
 
 \item{min_rows}{(same as min_child_weight) Fewest allowed (weighted) observations in a leaf. Defaults to 1.}
 
@@ -172,6 +172,8 @@ Defaults to -1 (time-based random number).}
 \item{col_sample_rate_per_tree}{(same as colsample_bytree) Column sample rate per tree (from 0.0 to 1.0) Defaults to 1.}
 
 \item{colsample_bytree}{(same as col_sample_rate_per_tree) Column sample rate per tree (from 0.0 to 1.0) Defaults to 1.}
+
+\item{colsample_bynode}{Column sample rate per tree node (from 0.0 to 1.0) Defaults to 1.}
 
 \item{max_abs_leafnode_pred}{(same as max_delta_step) Maximum absolute value of a leaf node prediction Defaults to 0.0.}
 
@@ -204,10 +206,6 @@ accurate estimates of class probabilities. Defaults to FALSE.}
 
 \item{max_leaves}{For tree_method=hist only: maximum number of leaves Defaults to 0.}
 
-\item{min_sum_hessian_in_leaf}{For tree_method=hist only: the mininum sum of hessian in a leaf to keep splitting Defaults to 100.0.}
-
-\item{min_data_in_leaf}{For tree_method=hist only: the mininum data in a leaf to keep splitting Defaults to 0.0.}
-
 \item{sample_type}{For booster=dart only: sample_type Must be one of: "uniform", "weighted". Defaults to uniform.}
 
 \item{normalize_type}{For booster=dart only: normalize_type Must be one of: "tree", "forest". Defaults to tree.}
@@ -236,6 +234,8 @@ Defaults to auto.}
 auto.}
 
 \item{gpu_id}{Which GPU to use.  Defaults to 0.}
+
+\item{gainslift_bins}{Gains/Lift table number of bins. 0 means disabled.. Default value -1 means automatic binning. Defaults to -1.}
 
 \item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree). Defaults to FALSE.}
 }

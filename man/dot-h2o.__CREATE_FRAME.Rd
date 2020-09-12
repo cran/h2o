@@ -4,7 +4,9 @@
 \name{.h2o.__CREATE_FRAME}
 \alias{.h2o.__CREATE_FRAME}
 \title{H2OFrame Manipulation}
-\format{An object of class \code{character} of length 1.}
+\format{
+An object of class \code{character} of length 1.
+}
 \usage{
 .h2o.__CREATE_FRAME
 }

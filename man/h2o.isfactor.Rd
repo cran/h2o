@@ -24,5 +24,5 @@ h2o.isfactor(cars["economy_20mpg"])
 }
 }
 \seealso{
-\code{\link[base]{is.factor}} for the base R implementation.
+\code{\link[base]{factor}} for the base R implementation, \code{is.factor()}.
 }

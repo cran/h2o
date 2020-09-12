@@ -4,7 +4,9 @@
 \name{.h2o.primitives}
 \alias{.h2o.primitives}
 \title{Map of operations known to H2O}
-\format{An object of class \code{character} of length 39.}
+\format{
+An object of class \code{character} of length 39.
+}
 \usage{
 .h2o.primitives
 }

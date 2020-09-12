@@ -29,11 +29,10 @@
 #'
 #' @param path The complete URL or normalized file path of the file to be
 #'        imported. Each row of data appears as one line of the file.
+#' @param destination_frame (Optional) The unique hex key assigned to the imported file. If none
+#'        is given, a key will automatically be generated based on the URL path.
 #' @param pattern (Optional) Character string containing a regular expression to match file(s) in
 #'        the folder.
-#' @param destination_frame (Optional) The unique hex key assigned to the imported file. If
-#'        none is given, a key will automatically be generated based on the URL
-#'        path.
 #' @param parse (Optional) A logical value indicating whether the file should be
 #'        parsed after import, for details see \link{h2o.parseRaw}.
 #' @param header (Optional) A logical value indicating whether the first line of
@@ -56,6 +55,7 @@
 #'        acquired by calling \link{h2o.decryptionSetup}.
 #' @param skipped_columns a list of column indices to be skipped during parsing.
 #' @param custom_non_data_line_markers (Optional) If a line in imported file starts with any character in given string it will NOT be imported. Empty string means all lines are imported, NULL means that default behaviour for given format will be used
+#' @param partition_by names of the columns the persisted dataset has been partitioned by.
 #' @seealso \link{h2o.import_sql_select}, \link{h2o.import_sql_table}, \link{h2o.parseRaw}
 #' @examples
 #' \dontrun{
@@ -78,10 +78,10 @@
 #' @export
 h2o.importFile <- function(path, destination_frame = "", parse = TRUE, header=NA, sep = "", col.names=NULL,
                            col.types=NULL, na.strings=NULL, decrypt_tool=NULL, skipped_columns=NULL,
-                           custom_non_data_line_markers=NULL) {
+                           custom_non_data_line_markers=NULL, partition_by=NULL) {
   h2o.importFolder(path, pattern = "", destination_frame=destination_frame, parse, header, sep, col.names, col.types,
                    na.strings=na.strings, decrypt_tool=decrypt_tool, skipped_columns=skipped_columns,
-                   custom_non_data_line_markers=custom_non_data_line_markers)
+                   custom_non_data_line_markers=custom_non_data_line_markers, partition_by)
 }
 
 
@@ -89,7 +89,7 @@ h2o.importFile <- function(path, destination_frame = "", parse = TRUE, header=NA
 #' @export
 h2o.importFolder <- function(path, pattern = "", destination_frame = "", parse = TRUE, header = NA, sep = "",
                              col.names = NULL, col.types=NULL, na.strings=NULL, decrypt_tool=NULL, skipped_columns=NULL,
-                             custom_non_data_line_markers=NULL) {
+                             custom_non_data_line_markers=NULL, partition_by=NULL) {
   if(!is.character(path) || is.na(path) || !nzchar(path)) stop("`path` must be a non-empty character string")
   if(!is.character(pattern) || length(pattern) != 1L || is.na(pattern)) stop("`pattern` must be a character string")
   .key.validate(destination_frame)
@@ -126,7 +126,7 @@ if(parse) {
     srcKey <- res$destination_frames
     return( h2o.parseRaw(data=.newH2OFrame(op="ImportFolder",id=srcKey,-1,-1),pattern=pattern, destination_frame=destination_frame,
             header=header, sep=sep, col.names=col.names, col.types=col.types, na.strings=na.strings, decrypt_tool=decrypt_tool,
-             skipped_columns=skipped_columns, custom_non_data_line_markers=custom_non_data_line_markers) )
+             skipped_columns=skipped_columns, custom_non_data_line_markers=custom_non_data_line_markers, partition_by=partition_by) )
 }
   myData <- lapply(res$destination_frames, function(x) .newH2OFrame( op="ImportFolder", id=x,-1,-1))  # do not gc, H2O handles these nfs:// vecs
   if(length(res$destination_frames) == 1L)
@@ -336,7 +336,7 @@ h2o.import_hive_table <- function(database, table, partitions = NULL, allow_mult
 #' # h2o.init()
 #' # prostate_path = system.file("extdata", "prostate.csv", package = "h2o")
 #' # prostate = h2o.importFile(path = prostate_path)
-#' # prostate_glm = h2o.glm(y = "CAPSULE", x = c("AGE","RACE","PSA","DCAPS"),
+#' # prostate_glm = h2o.glm(y = "CAPSULE", x = c("AGE", "RACE", "PSA", "DCAPS"),
 #' #   training_frame = prostate, family = "binomial", alpha = 0.5)
 #' # glmmodel_path = h2o.saveModel(prostate_glm, dir = "/Users/UserName/Desktop")
 #' # glmmodel_load = h2o.loadModel(glmmodel_path)
@@ -423,7 +423,7 @@ h2o.set_s3_credentials <- function(secretKeyId, secretAccessKey, sessionToken = 
 #' library(h2o)
 #' h2o.init()
 #'
-#'iris.hex <- as.h2o(iris)
+#'iris <- as.h2o(iris)
 #'
 #'ntrees_opts = c(1, 5)
 #'learn_rate_opts = c(0.1, 0.01)
@@ -431,7 +431,7 @@ h2o.set_s3_credentials <- function(secretKeyId, secretAccessKey, sessionToken = 
 #'
 #'hyper_parameters = list(ntrees = ntrees_opts, learn_rate = learn_rate_opts)
 #'# Tempdir is chosen arbitrarily. May be any valid folder on an H2O-supported filesystem.
-#'baseline_grid <- h2o.grid("gbm", grid_id="gbm_grid_test", x=1:4, y=5, training_frame=iris.hex,
+#'baseline_grid <- h2o.grid("gbm", grid_id="gbm_grid_test", x=1:4, y=5, training_frame=iris,
 #' hyper_params = hyper_parameters, export_checkpoints_dir = tempdir())
 #'# Remove everything from the cluster or restart it
 #'h2o.removeAll()

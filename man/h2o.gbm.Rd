@@ -58,8 +58,8 @@ h2o.gbm(
     "RoundRobin"),
   max_abs_leafnode_pred = Inf,
   pred_noise_bandwidth = 0,
-  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
-    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
+    "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
   calibrate_model = FALSE,
   calibration_frame = NULL,
   custom_metric_func = NULL,
@@ -67,6 +67,7 @@ h2o.gbm(
   export_checkpoints_dir = NULL,
   monotone_constraints = NULL,
   check_constant_response = TRUE,
+  gainslift_bins = -1,
   verbose = FALSE
 )
 }
@@ -121,12 +122,11 @@ be automatically computed to obtain class balance during training. Requires bala
 \item{max_after_balance_size}{Maximum relative size of the training data after balancing class counts (can be less than 1.0). Requires
 balance_classes. Defaults to 5.0.}
 
-\item{max_hit_ratio_k}{Max. number (top K) of predictions to use for hit ratio computation (for multi-class only, 0 to disable)
-Defaults to 0.}
+\item{max_hit_ratio_k}{This argument is deprecated and has no use. Max. number (top K) of predictions to use for hit ratio computation (for multi-class only, 0 to disable).}
 
 \item{ntrees}{Number of trees. Defaults to 50.}
 
-\item{max_depth}{Maximum tree depth. Defaults to 5.}
+\item{max_depth}{Maximum tree depth (0 for unlimited). Defaults to 5.}
 
 \item{min_rows}{Fewest allowed (weighted) observations in a leaf. Defaults to 10.}
 
@@ -219,6 +219,8 @@ decreasing constraint.}
 column is a constant value.If disabled, then model will train regardless of the response column being a
 constant value or not. Defaults to TRUE.}
 
+\item{gainslift_bins}{Gains/Lift table number of bins. 0 means disabled.. Default value -1 means automatic binning. Defaults to -1.}
+
 \item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree). Defaults to FALSE.}
 }
 \description{
@@ -235,7 +237,7 @@ h2o.init()
 # Run regression GBM on australia data
 australia_path <- system.file("extdata", "australia.csv", package = "h2o")
 australia <- h2o.uploadFile(path = australia_path)
-independent <- c("premax", "salmax","minairtemp", "maxairtemp", "maxsst",
+independent <- c("premax", "salmax", "minairtemp", "maxairtemp", "maxsst",
                  "maxsoilmoist", "Max_czcs")
 dependent <- "runoffnew"
 h2o.gbm(y = dependent, x = independent, training_frame = australia,

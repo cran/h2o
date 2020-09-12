@@ -4,10 +4,12 @@
 \alias{h2o.unique}
 \title{H2O Unique}
 \usage{
-h2o.unique(x)
+h2o.unique(x, include_nas = FALSE)
 }
 \arguments{
 \item{x}{An H2OFrame object.}
+
+\item{include_nas}{If set to TRUE, NAs are included. FALSE (turned off) by default.}
 }
 \value{
 Returns an H2OFrame object.

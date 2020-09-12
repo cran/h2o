@@ -23,5 +23,5 @@ h2o.asfactor(cars["cylinders"])
 }
 }
 \seealso{
-\code{\link[base]{as.numeric}} for the base R implementation.
+\code{\link[base]{factor}} for the base R implementation, \code{as.factor()}.
 }

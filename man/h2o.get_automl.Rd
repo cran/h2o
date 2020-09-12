@@ -22,10 +22,12 @@ Get an R object that is a subclass of \linkS4class{H2OAutoML}
 \dontrun{
 library(h2o)
 h2o.init()
-votes_path <- system.file("extdata", "housevotes.csv", package = "h2o")
-votes_hf <- h2o.uploadFile(path = votes_path, header = TRUE)
-aml <- h2o.automl(y = "Class", project_name="aml_housevotes",
-                  training_frame = votes_hf, max_runtime_secs = 30)
-automl_retrieved <- h2o.get_automl("aml_housevotes")
+prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
+prostate <- h2o.importFile(path = prostate_path, header = TRUE)
+y <- "CAPSULE"
+prostate[,y] <- as.factor(prostate[,y])  #convert to factor for classification
+aml <- h2o.automl(y = y, training_frame = prostate, 
+                  max_runtime_secs = 30, project_name = "prostate")
+aml2 <- h2o.get_automl("prostate")
 }
 }

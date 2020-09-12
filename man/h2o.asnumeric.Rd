@@ -23,5 +23,5 @@ h2o.asnumeric(cars)
 }
 }
 \seealso{
-\code{\link[base]{as.factor}} for the base R implementation.
+\code{\link[base]{numeric}} for the base R implementation, \code{as.numeric()}.
 }

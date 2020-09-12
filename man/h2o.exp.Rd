@@ -25,5 +25,5 @@ h2o.exp(frame["C1"])
 }
 }
 \seealso{
-\code{\link[base]{exp}} for the base R implementation.
+\code{\link[base]{Log}} for the base R implementation, \code{exp()}.
 }

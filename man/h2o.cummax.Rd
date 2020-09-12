@@ -27,5 +27,5 @@ h2o.cummax(frame, 1)
 }
 }
 \seealso{
-\code{\link[base]{cummax}} for the base R implementation.
+\code{\link[base]{cumsum}} for the base R implementation, \code{cummax()}.
 }

@@ -19,7 +19,7 @@ h2o.init()
 
 f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
 cars <- h2o.importFile(f)
-predictors <- c("displacement","power","weight","acceleration","year")
+predictors <- c("displacement", "power", "weight", "acceleration", "year")
 cars_pca <- h2o.prcomp(cars, transform = "STANDARDIZE", 
                        k = 3, x = predictors, seed = 12345)
 h2o.sdev(cars_pca)

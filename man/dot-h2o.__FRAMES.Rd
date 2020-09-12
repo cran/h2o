@@ -4,7 +4,9 @@
 \name{.h2o.__FRAMES}
 \alias{.h2o.__FRAMES}
 \title{Inspect/Summary Endpoints}
-\format{An object of class \code{character} of length 1.}
+\format{
+An object of class \code{character} of length 1.
+}
 \usage{
 .h2o.__FRAMES
 }

@@ -27,9 +27,9 @@ h2o.init()
 
 f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/iris/iris_wheader.csv"
 iris <- h2o.importFile(f)
-iris.split <- h2o.splitFrame(data = iris, ratios = 0.8, seed = 1234)
-train <- iris.split[[1]]
-valid <- iris.split[[2]]
+iris_split <- h2o.splitFrame(data = iris, ratios = 0.8, seed = 1234)
+train <- iris_split[[1]]
+valid <- iris_split[[2]]
 
 iris_xgb <- h2o.xgboost(x = 1:4, y = 5, training_frame = train, validation_frame = valid)
 hrt_iris <- h2o.hit_ratio_table(iris_xgb, valid = TRUE)

@@ -22,7 +22,7 @@ h2o.gam(
   score_each_iteration = FALSE,
   offset_column = NULL,
   weights_column = NULL,
-  family = c("gaussian", "binomial", "quasibinomial", "ordinal", "multinomial",
+  family = c("AUTO", "gaussian", "binomial", "quasibinomial", "ordinal", "multinomial",
     "poisson", "gamma", "tweedie", "negativebinomial", "fractionalbinomial"),
   tweedie_variance_power = 0,
   tweedie_link_power = 0,
@@ -45,8 +45,10 @@ h2o.gam(
   objective_epsilon = -1,
   beta_epsilon = 1e-04,
   gradient_epsilon = -1,
-  link = c("family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit"),
+  link = c("family_default", "identity", "logit", "log", "inverse", "tweedie",
+    "ologit"),
   prior = -1,
+  cold_start = FALSE,
   lambda_min_ratio = -1,
   beta_constraints = NULL,
   max_active_predictors = -1,
@@ -54,6 +56,11 @@ h2o.gam(
   interaction_pairs = NULL,
   obj_reg = -1,
   export_checkpoints_dir = NULL,
+  stopping_rounds = 0,
+  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE",
+    "AUC", "AUCPR", "lift_top_group", "misclassification", "mean_per_class_error",
+    "custom", "custom_increasing"),
+  stopping_tolerance = 0.001,
   balance_classes = FALSE,
   class_sampling_factors = NULL,
   max_after_balance_size = 5,
@@ -113,8 +120,8 @@ data frame. This is typically the number of times a row is repeated, but non-int
 well. During training, rows with higher weights matter more, due to the larger loss function pre-factor.}
 
 \item{family}{Family. Use binomial for classification with logistic regression, others are for regression problems. Must be
-one of: "gaussian", "binomial", "quasibinomial", "ordinal", "multinomial", "poisson", "gamma", "tweedie",
-"negativebinomial", "fractionalbinomial".}
+one of: "AUTO", "gaussian", "binomial", "quasibinomial", "ordinal", "multinomial", "poisson", "gamma",
+"tweedie", "negativebinomial", "fractionalbinomial". Defaults to AUTO.}
 
 \item{tweedie_variance_power}{Tweedie variance power Defaults to 0.}
 
@@ -175,10 +182,15 @@ indicates: If lambda_search is set to False and lambda is equal to zero, the def
 is equal to .000001, otherwise the default value is .0001. If lambda_search is set to True, the conditional
 values above are 1E-8 and 1E-6 respectively. Defaults to -1.}
 
-\item{link}{Link function. Must be one of: "family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit".}
+\item{link}{Link function. Must be one of: "family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit".
+Defaults to family_default.}
 
 \item{prior}{Prior probability for y==1. To be used only for logistic regression iff the data has been sampled and the mean
 of response does not reflect reality. Defaults to -1.}
+
+\item{cold_start}{\code{Logical}. Only applicable to multiple alpha/lambda values when calling GLM from GAM.  If false, build
+the next model for next set of alpha/lambda values starting from the values provided by current model.  If
+true will start GLM model from scratch. Defaults to FALSE.}
 
 \item{lambda_min_ratio}{Minimum lambda used in lambda search, specified as a ratio of lambda_max (the smallest lambda that drives all
 coefficients to zero). Default indicates: if the number of observations is greater than the number of
@@ -199,6 +211,18 @@ max_active_predictors is set to 5000 otherwise it is set to 100000000. Defaults 
 
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
 
+\item{stopping_rounds}{Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the
+stopping_metric does not improve for k:=stopping_rounds scoring events (0 to disable) Defaults to 0.}
+
+\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and
+anonomaly_score for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF
+with the Python client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
+"AUCPR", "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing".
+Defaults to AUTO.}
+
+\item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
+much) Defaults to 0.001.}
+
 \item{balance_classes}{\code{Logical}. Balance training data class counts via over/under-sampling (for imbalanced data). Defaults to
 FALSE.}
 
@@ -208,8 +232,7 @@ be automatically computed to obtain class balance during training. Requires bala
 \item{max_after_balance_size}{Maximum relative size of the training data after balancing class counts (can be less than 1.0). Requires
 balance_classes. Defaults to 5.0.}
 
-\item{max_hit_ratio_k}{Maximum number (top K) of predictions to use for hit ratio computation (for multi-class only, 0 to disable)
-Defaults to 0.}
+\item{max_hit_ratio_k}{This argument is deprecated and has no use. Max. number (top K) of predictions to use for hit ratio computation (for multi-class only, 0 to disable).}
 
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.}
 
@@ -238,7 +261,7 @@ prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
 prostate <- h2o.uploadFile(path = prostate_path)
 prostate$CAPSULE <- as.factor(prostate$CAPSULE)
 h2o.gam(y = "CAPSULE", x = c("RACE"), gam_columns = c("PSA"),
-     training_frame = prostate,family = "binomial")
+     training_frame = prostate, family = "binomial")
 
 }
 }

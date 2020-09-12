@@ -4,7 +4,13 @@
 \alias{h2o.make_metrics}
 \title{Create Model Metrics from predicted and actual values in H2O}
 \usage{
-h2o.make_metrics(predicted, actuals, domain = NULL, distribution = NULL)
+h2o.make_metrics(
+  predicted,
+  actuals,
+  domain = NULL,
+  distribution = NULL,
+  weights = NULL
+)
 }
 \arguments{
 \item{predicted}{An H2OFrame containing predictions}
@@ -14,6 +20,8 @@ h2o.make_metrics(predicted, actuals, domain = NULL, distribution = NULL)
 \item{domain}{Vector with response factors for classification.}
 
 \item{distribution}{Distribution for regression.}
+
+\item{weights}{(optional) An H2OFrame containing observation weights.}
 }
 \value{
 Returns an object of the \linkS4class{H2OModelMetrics} subclass.
@@ -30,7 +38,7 @@ prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
 prostate <- h2o.uploadFile(path = prostate_path)
 prostate$CAPSULE <- as.factor(prostate$CAPSULE)
 prostate_gbm <- h2o.gbm(3:9, "CAPSULE", prostate)
-pred <- h2o.predict(prostate_gbm, prostate)[,3] ## class-1 probability
+pred <- h2o.predict(prostate_gbm, prostate)[, 3] ## class-1 probability
 h2o.make_metrics(pred, prostate$CAPSULE)
 }
 }

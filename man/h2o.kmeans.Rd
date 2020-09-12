@@ -25,8 +25,8 @@ h2o.kmeans(
   seed = -1,
   init = c("Random", "PlusPlus", "Furthest", "User"),
   max_runtime_secs = 0,
-  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
-    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
+    "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
   export_checkpoints_dir = NULL,
   cluster_size_constraints = NULL
 )

@@ -43,6 +43,6 @@ h2o.tail(australia, n = 10L, m = 6L)
 
 # For Jupyter notebook with an R kernel,
 # view all rows of a data frame
-options(repr.matrix.max.rows=600, repr.matrix.max.cols=200)
+options(repr.matrix.max.rows = 600, repr.matrix.max.cols = 200)
 }
 }

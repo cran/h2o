@@ -38,7 +38,7 @@ prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
 prostate <- h2o.importFile(path = prostate_path)
 summary(prostate)
 summary(prostate$GLEASON)
-summary(prostate[,4:6])
-summary(prostate, exact_quantiles=TRUE)
+summary(prostate[, 4:6])
+summary(prostate, exact_quantiles = TRUE)
 }
 }

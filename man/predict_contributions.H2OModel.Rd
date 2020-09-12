@@ -3,7 +3,7 @@
 \name{predict_contributions.H2OModel}
 \alias{predict_contributions.H2OModel}
 \alias{h2o.predict_contributions}
-\title{Predict feature contributions - SHAP values on an H2O Model (only GBM and XGBoost models).}
+\title{Predict feature contributions - SHAP values on an H2O Model (only DRF, GBM and XGBoost models).}
 \usage{
 predict_contributions.H2OModel(object, newdata, ...)
 

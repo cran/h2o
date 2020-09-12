@@ -23,5 +23,5 @@ h2o.isnumeric(iris["sepal_len"])
 }
 }
 \seealso{
-\code{\link[base]{is.numeric}} for the base R implementation.
+\code{\link[base]{numeric}} for the base R implementation, \code{is.numeric()}.
 }

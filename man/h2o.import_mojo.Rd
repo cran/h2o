@@ -25,11 +25,10 @@ data <- as.h2o(iris)
 
 # Train a very simple GBM model
 features <- c("Sepal.Length", "Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width")
-original_model <- h2o.gbm(x=features, y = "Species", training_frame = data)
+original_model <- h2o.gbm(x = features, y = "Species", training_frame = data)
 
 # Download the trained GBM model as MOJO (temporary directory used in this example)
-mojo_original_name <- h2o.download_mojo(model = original_model, path = tempdir())
-mojo_original_path <- paste0(tempdir(),"/",mojo_original_name)
+mojo_original_path <- h2o.save_mojo(original_model, path = tempdir())
 
 # Import the MOJO and obtain a Generic model
 mojo_model <- h2o.import_mojo(mojo_original_path)

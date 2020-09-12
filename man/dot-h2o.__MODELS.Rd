@@ -4,7 +4,9 @@
 \name{.h2o.__MODELS}
 \alias{.h2o.__MODELS}
 \title{Model Endpoint}
-\format{An object of class \code{character} of length 1.}
+\format{
+An object of class \code{character} of length 1.
+}
 \usage{
 .h2o.__MODELS
 }

@@ -26,5 +26,5 @@ h2o.trunc(frame["C1"])
 }
 }
 \seealso{
-\code{\link[base]{trunc}} for the base R implementation.
+\code{\link[base]{Round}} for the base R implementation, \code{trunc()}.
 }

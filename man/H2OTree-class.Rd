@@ -46,5 +46,13 @@ In case of regression and binomial, the name of the categorical level is ignored
 \item{\code{nas}}{A \code{character} representing if NA values go to the left node or right node. May be NA if node is a leaf.}
 
 \item{\code{predictions}}{A \code{numeric} representing predictions for each node in the graph.}
+
+\item{\code{tree_decision_path}}{A \code{character}, plain language rules representation of a trained decision tree}
+
+\item{\code{decision_paths}}{A \code{character} representing plain language rules that were used in a particular prediction.}
+
+\item{\code{left_cat_split}}{A \code{character} list of categorical levels leading to the left child node. Only present when split is categorical, otherwise none.}
+
+\item{\code{right_cat_split}}{A \code{character} list of categorical levels leading to the right child node. Only present when split is categorical, otherwise none.}
 }}
 

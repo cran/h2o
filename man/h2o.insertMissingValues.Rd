@@ -35,8 +35,8 @@ h2o.init()
 iris_hf <- as.h2o(iris)
 summary(iris_hf)
 
-irismiss <- h2o.insertMissingValues(iris_hf, fraction = 0.25)
-head(irismiss)
-summary(irismiss)
+iris_miss <- h2o.insertMissingValues(iris_hf, fraction = 0.25)
+head(iris_miss)
+summary(iris_miss)
 }
 }

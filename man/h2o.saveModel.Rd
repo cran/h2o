@@ -29,7 +29,7 @@ The owner of the file saved is the user by which H2O cluster was executed.
 # h2o.init()
 # prostate <- h2o.importFile(path = paste("https://raw.github.com",
 #    "h2oai/h2o-2/master/smalldata/logreg/prostate.csv", sep = "/"))
-# prostate_glm <- h2o.glm(y = "CAPSULE", x = c("AGE","RACE","PSA","DCAPS"),
+# prostate_glm <- h2o.glm(y = "CAPSULE", x = c("AGE", "RACE", "PSA", "DCAPS"),
 #    training_frame = prostate, family = "binomial", alpha = 0.5)
 # h2o.saveModel(object = prostate_glm, path = "/Users/UserName/Desktop", force = TRUE)
 }

@@ -25,5 +25,5 @@ h2o.log10(frame)
 }
 }
 \seealso{
-\code{\link[base]{log10}} for the base R implementation.
+\code{\link[base]{Log}} for the base R implementation, \code{log10()}.
 }

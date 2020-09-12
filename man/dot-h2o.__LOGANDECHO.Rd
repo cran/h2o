@@ -4,7 +4,9 @@
 \name{.h2o.__LOGANDECHO}
 \alias{.h2o.__LOGANDECHO}
 \title{Log and Echo Endpoint}
-\format{An object of class \code{character} of length 1.}
+\format{
+An object of class \code{character} of length 1.
+}
 \usage{
 .h2o.__LOGANDECHO
 }

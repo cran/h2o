@@ -4,7 +4,9 @@
 \name{iris}
 \alias{iris}
 \title{Edgar Anderson's Iris Data}
-\format{A data frame with 150 rows and 5 columns}
+\format{
+A data frame with 150 rows and 5 columns
+}
 \source{
 Fisher, R. A. (1936) The use of multiple measurements in taxonomic problems. Annals of Eugenics, 7, Part II, 179-188.
 

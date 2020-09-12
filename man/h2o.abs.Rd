@@ -30,5 +30,5 @@ print(diff_abs)
 }
 }
 \seealso{
-\code{\link[base]{abs}} for the base R implementation.
+\code{\link[base]{MathFun}} for the base R implementation, \code{abs()}.
 }

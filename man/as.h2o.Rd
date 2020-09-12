@@ -14,16 +14,18 @@ as.h2o(x, destination_frame = "", ...)
 
 \method{as.h2o}{H2OFrame}(x, destination_frame = "", ...)
 
-\method{as.h2o}{data.frame}(x, destination_frame = "", ...)
+\method{as.h2o}{data.frame}(x, destination_frame = "", use_datatable = TRUE, ...)
 
-\method{as.h2o}{Matrix}(x, destination_frame = "", ...)
+\method{as.h2o}{Matrix}(x, destination_frame = "", use_datatable = TRUE, ...)
 }
 \arguments{
 \item{x}{An \code{R} object.}
 
-\item{destination_frame}{A string with the desired name for the H2OFrame.}
+\item{destination_frame}{A string with the desired name for the H2OFrame}
 
 \item{\dots}{arguments passed to method arguments.}
+
+\item{use_datatable}{allow usage of data.table}
 }
 \description{
 Import R object to the H2O cluster.
@@ -59,7 +61,7 @@ if (requireNamespace("Matrix", quietly=TRUE)) {
 }
 }
 \references{
-\url{http://blog.h2o.ai/2016/04/fast-csv-writing-for-r/}
+\url{https://www.h2o.ai/blog/fast-csv-writing-for-r/}
 }
 \seealso{
 \code{\link{use.package}}

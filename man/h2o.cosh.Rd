@@ -25,5 +25,5 @@ h2o.cosh(frame["C1"])
 }
 }
 \seealso{
-\code{\link[base]{cosh}} for the base R implementation.
+\code{\link[base]{Hyperbolic}} for the base R implementation, \code{cosh()}.
 }

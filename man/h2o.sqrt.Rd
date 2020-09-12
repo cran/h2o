@@ -25,5 +25,5 @@ h2o.sqrt(frame)
 }
 }
 \seealso{
-\code{\link[base]{sqrt}} for the base R implementation.
+\code{\link[base]{MathFun}} for the base R implementation, \code{sqrt()}.
 }

@@ -32,7 +32,8 @@ h2o.naiveBayes(
   eps_prob = 0,
   compute_metrics = TRUE,
   max_runtime_secs = 0,
-  export_checkpoints_dir = NULL
+  export_checkpoints_dir = NULL,
+  gainslift_bins = -1
 )
 }
 \arguments{
@@ -103,6 +104,8 @@ Must be at least 1e-10.}
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.}
 
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
+
+\item{gainslift_bins}{Gains/Lift table number of bins. 0 means disabled.. Default value -1 means automatic binning. Defaults to -1.}
 }
 \value{
 an object of class \linkS4class{H2OBinomialModel} if the response has two categorical levels,

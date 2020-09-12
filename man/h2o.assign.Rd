@@ -22,7 +22,7 @@ h2o.init()
 f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
 cars <- h2o.importFile(f)
 dim(cars)
-split <- h2o.splitFrame(data = cars, ratios = .8)
+split <- h2o.splitFrame(data = cars, ratios = 0.8)
 train <- h2o.assign(split[[1]], key = "train")
 test <- h2o.assign(split[[2]], key = "test")
 dim(train)

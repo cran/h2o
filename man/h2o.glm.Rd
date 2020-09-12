@@ -20,10 +20,11 @@ h2o.glm(
   random_columns = NULL,
   ignore_const_cols = TRUE,
   score_each_iteration = FALSE,
+  score_iteration_interval = -1,
   offset_column = NULL,
   weights_column = NULL,
-  family = c("gaussian", "binomial", "fractionalbinomial", "quasibinomial", "ordinal",
-    "multinomial", "poisson", "gamma", "tweedie", "negativebinomial"),
+  family = c("AUTO", "gaussian", "binomial", "fractionalbinomial", "quasibinomial",
+    "ordinal", "multinomial", "poisson", "gamma", "tweedie", "negativebinomial"),
   rand_family = c("[gaussian]"),
   tweedie_variance_power = 0,
   tweedie_link_power = 1,
@@ -46,12 +47,14 @@ h2o.glm(
   objective_epsilon = -1,
   beta_epsilon = 1e-04,
   gradient_epsilon = -1,
-  link = c("family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit"),
+  link = c("family_default", "identity", "logit", "log", "inverse", "tweedie",
+    "ologit"),
   rand_link = c("[identity]", "[family_default]"),
   startval = NULL,
   calc_like = FALSE,
   HGLM = FALSE,
   prior = -1,
+  cold_start = FALSE,
   lambda_min_ratio = -1,
   beta_constraints = NULL,
   max_active_predictors = -1,
@@ -59,6 +62,11 @@ h2o.glm(
   interaction_pairs = NULL,
   obj_reg = -1,
   export_checkpoints_dir = NULL,
+  stopping_rounds = 0,
+  stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE",
+    "AUC", "AUCPR", "lift_top_group", "misclassification", "mean_per_class_error",
+    "custom", "custom_increasing"),
+  stopping_tolerance = 0.001,
   balance_classes = FALSE,
   class_sampling_factors = NULL,
   max_after_balance_size = 5,
@@ -104,6 +112,8 @@ stratify the folds based on the response variable, for classification problems. 
 
 \item{score_each_iteration}{\code{Logical}. Whether to score during each iteration of model training. Defaults to FALSE.}
 
+\item{score_iteration_interval}{Perform scoring for every score_iteration_interval iterations Defaults to -1.}
+
 \item{offset_column}{Offset column. This will be added to the combination of columns before applying the link function.}
 
 \item{weights_column}{Column with observation weights. Giving some observation a weight of zero is equivalent to excluding it from
@@ -113,8 +123,8 @@ data frame. This is typically the number of times a row is repeated, but non-int
 well. During training, rows with higher weights matter more, due to the larger loss function pre-factor.}
 
 \item{family}{Family. Use binomial for classification with logistic regression, others are for regression problems. Must be
-one of: "gaussian", "binomial", "fractionalbinomial", "quasibinomial", "ordinal", "multinomial", "poisson",
-"gamma", "tweedie", "negativebinomial". Defaults to gaussian.}
+one of: "AUTO", "gaussian", "binomial", "fractionalbinomial", "quasibinomial", "ordinal", "multinomial",
+"poisson", "gamma", "tweedie", "negativebinomial". Defaults to AUTO.}
 
 \item{rand_family}{Random Component Family array.  One for each random component. Only support gaussian for now. Must be one of:
 "[gaussian]".}
@@ -183,7 +193,7 @@ Defaults to family_default.}
 
 \item{rand_link}{Link function array for random component in HGLM. Must be one of: "[identity]", "[family_default]".}
 
-\item{startval}{double array to initialize fixed and random coefficients for HGLM.}
+\item{startval}{double array to initialize fixed and random coefficients for HGLM, coefficients for GLM.}
 
 \item{calc_like}{\code{Logical}. if true, will return likelihood function value for HGLM. Defaults to FALSE.}
 
@@ -192,6 +202,10 @@ to FALSE.}
 
 \item{prior}{Prior probability for y==1. To be used only for logistic regression iff the data has been sampled and the mean
 of response does not reflect reality. Defaults to -1.}
+
+\item{cold_start}{\code{Logical}. Only applicable to multiple alpha/lambda values.  If false, build the next model for next set
+of alpha/lambda values starting from the values provided by current model.  If true will start GLM model from
+scratch. Defaults to FALSE.}
 
 \item{lambda_min_ratio}{Minimum lambda used in lambda search, specified as a ratio of lambda_max (the smallest lambda that drives all
 coefficients to zero). Default indicates: if the number of observations is greater than the number of
@@ -212,6 +226,18 @@ max_active_predictors is set to 5000 otherwise it is set to 100000000. Defaults 
 
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
 
+\item{stopping_rounds}{Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the
+stopping_metric does not improve for k:=stopping_rounds scoring events (0 to disable) Defaults to 0.}
+
+\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and
+anonomaly_score for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF
+with the Python client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
+"AUCPR", "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing".
+Defaults to AUTO.}
+
+\item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
+much) Defaults to 0.001.}
+
 \item{balance_classes}{\code{Logical}. Balance training data class counts via over/under-sampling (for imbalanced data). Defaults to
 FALSE.}
 
@@ -221,8 +247,7 @@ be automatically computed to obtain class balance during training. Requires bala
 \item{max_after_balance_size}{Maximum relative size of the training data after balancing class counts (can be less than 1.0). Requires
 balance_classes. Defaults to 5.0.}
 
-\item{max_hit_ratio_k}{Maximum number (top K) of predictions to use for hit ratio computation (for multi-class only, 0 to disable)
-Defaults to 0.}
+\item{max_hit_ratio_k}{This argument is deprecated and has no use. Max. number (top K) of predictions to use for hit ratio computation (for multi-class only, 0 to disable).}
 
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.}
 
@@ -250,7 +275,7 @@ h2o.init()
 # Run GLM of CAPSULE ~ AGE + RACE + PSA + DCAPS
 prostate_path = system.file("extdata", "prostate.csv", package = "h2o")
 prostate = h2o.importFile(path = prostate_path)
-h2o.glm(y = "CAPSULE", x = c("AGE","RACE","PSA","DCAPS"), training_frame = prostate,
+h2o.glm(y = "CAPSULE", x = c("AGE", "RACE", "PSA", "DCAPS"), training_frame = prostate,
         family = "binomial", nfolds = 0, alpha = 0.5, lambda_search = FALSE)
 
 # Run GLM of VOL ~ CAPSULE + AGE + RACE + PSA + GLEASON
@@ -266,9 +291,13 @@ bank = h2o.importFile(
   path="https://s3.amazonaws.com/h2o-public-test-data/smalldata/demos/bank-additional-full.csv"
 )
 predictors = 1:20
-target="y"
-glm = h2o.glm(x=predictors, y=target, training_frame=bank, family="binomial", standardize=TRUE,
-              lambda_search=TRUE)
+target = "y"
+glm = h2o.glm(x = predictors, 
+              y = target, 
+              training_frame = bank, 
+              family = "binomial", 
+              standardize = TRUE,
+              lambda_search = TRUE)
 h2o.std_coef_plot(glm, num_of_features = 20)
 }
 }

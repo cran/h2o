@@ -4,9 +4,11 @@
 \name{australia}
 \alias{australia}
 \title{Australia Coastal Data}
-\format{A data frame with 251 rows and 8 columns}
+\format{
+A data frame with 251 rows and 8 columns
+}
 \description{
 Temperature, soil moisture, runoff, and other environmental measurements from
-the Australia coast. The data is available from \url{http://cs.colby.edu/courses/S11/cs251/labs/lab07/AustraliaSubset.csv}.
+the Australia coast. The data is available from https://cs.colby.edu/courses/S11/cs251/labs/lab07/AustraliaSubset.csv.
 }
 \keyword{datasets}

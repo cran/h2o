@@ -25,7 +25,7 @@ will overwrite the file. Otherwise, the operation will fail.
 # library(h2o)
 # h2o.init()
 # prostate <- h2o.uploadFile(path = system.file("extdata", "prostate.csv", package = "h2o"))
-# prostate_glm <- h2o.glm(y = "CAPSULE", x = c("AGE","RACE","PSA","DCAPS"),
+# prostate_glm <- h2o.glm(y = "CAPSULE", x = c("AGE", "RACE", "PSA", "DCAPS"),
 #                         training_frame = prostate, family = "binomial", alpha = 0.5)
 # h2o.saveModelDetails(object = prostate_glm, path = "/Users/UserName/Desktop", force = TRUE)
 }

@@ -25,5 +25,5 @@ h2o.tanh(frame)
 }
 }
 \seealso{
-\code{\link[base]{tanh}} for the base R implementation.
+\code{\link[base]{Hyperbolic}} for the base R implementation, \code{tanh()}.
 }

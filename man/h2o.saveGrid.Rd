@@ -22,7 +22,7 @@ Returns a reference to the saved Grid.
 library(h2o)
 h2o.init()
 
-iris.hex <- as.h2o(iris)
+iris <- as.h2o(iris)
 
 ntrees_opts = c(1, 5)
 learn_rate_opts = c(0.1, 0.01)
@@ -30,8 +30,12 @@ size_of_hyper_space = length(ntrees_opts) * length(learn_rate_opts)
 
 hyper_parameters = list(ntrees = ntrees_opts, learn_rate = learn_rate_opts)
 # Tempdir is chosen arbitrarily. May be any valid folder on an H2O-supported filesystem.
-baseline_grid <- h2o.grid("gbm", grid_id="gbm_grid_test", x=1:4, y=5, training_frame=iris.hex,
-hyper_params = hyper_parameters)
+baseline_grid <- h2o.grid(algorithm = "gbm", 
+                         grid_id = "gbm_grid_test", 
+                         x = 1:4, 
+                         y = 5, 
+                         training_frame = iris,
+                         hyper_params = hyper_parameters)
 
 grid_path <- h2o.saveGrid(grid_directory = tempdir(), grid_id = baseline_grid@grid_id)
 # Remove everything from the cluster or restart it

@@ -21,9 +21,9 @@ h2o.init()
 
 f <- "http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv"
 iris <- h2o.importFile(f)
-h2o.ceiling(iris[,1])
+h2o.ceiling(iris[, 1])
 }
 }
 \seealso{
-\code{\link[base]{ceiling}} for the base R implementation.
+\code{\link[base]{Round}} for the base R implementation, \code{ceiling()}.
 }

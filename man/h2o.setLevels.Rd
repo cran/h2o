@@ -25,8 +25,8 @@ library(h2o)
 h2o.init()
 
 iris_hf <- as.h2o(iris)
-new.levels <- c("setosa", "versicolor", "caroliniana")
-iris_hf$Species <- h2o.setLevels(iris_hf$Species, new.levels, in.place = FALSE)
+new_levels <- c("setosa", "versicolor", "caroliniana")
+iris_hf$Species <- h2o.setLevels(iris_hf$Species, new_levels, in.place = FALSE)
 h2o.levels(iris_hf$Species)
 }
 }

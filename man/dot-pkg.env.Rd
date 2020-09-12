@@ -4,7 +4,9 @@
 \name{.pkg.env}
 \alias{.pkg.env}
 \title{The H2O Package Environment}
-\format{An object of class \code{environment} of length 4.}
+\format{
+An object of class \code{environment} of length 4.
+}
 \usage{
 .pkg.env
 }

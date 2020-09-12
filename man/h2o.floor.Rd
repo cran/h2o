@@ -27,5 +27,5 @@ h2o.floor(frame["C2"])
 }
 }
 \seealso{
-\code{\link[base]{floor}} for the base R implementation.
+\code{\link[base]{Round}} for the base R implementation, \code{floor()}.
 }
