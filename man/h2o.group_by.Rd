@@ -62,7 +62,9 @@ that the aggregation should apply to all columns except the GroupBy columns. How
 \dontrun{
 library(h2o)
 h2o.init()
-df <- h2o.importFile("http://s3.amazonaws.com/h2o-public-test-data/smalldata/prostate/prostate.csv")
+df <- h2o.importFile(paste("https://s3.amazonaws.com/h2o-public-test-data",
+                           "/smalldata/prostate/prostate.csv", 
+                           sep=""))
 h2o.group_by(data = df, by = "RACE", nrow("VOL"))
 }
 }

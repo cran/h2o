@@ -17,7 +17,7 @@ Return the number of columns present in x.
 library(h2o)
 h2o.init()
 
-f <- "http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv"
+f <- "https://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv"
 iris <- h2o.importFile(f)
 h2o.ncol(iris)
 }

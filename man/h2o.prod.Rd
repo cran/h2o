@@ -17,7 +17,7 @@ Return the product of all the values present in its arguments.
 library(h2o)
 h2o.init()
 
-f <- "http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv"
+f <- "https://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv"
 iris <- h2o.importFile(f)
 h2o.prod(iris["petal_len"])
 }

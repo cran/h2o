@@ -17,7 +17,7 @@ Retrieve the variable importance.
 library(h2o)
 h2o.init()
 
-f <- "http://s3.amazonaws.com/h2o-public-test-data/smalldata/prostate/prostate_complete.csv.zip"
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/prostate/prostate_complete.csv.zip"
 pros <- h2o.importFile(f)
 response <- "GLEASON"
 predictors <- c("ID", "AGE", "CAPSULE", "DCAPS", "PSA", "VOL", "DPROS")

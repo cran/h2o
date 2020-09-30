@@ -35,7 +35,7 @@ h2o.isax(df2, num_words = 10, max_cardinality = 10)
 }
 }
 \references{
-http://www.cs.ucr.edu/~eamonn/iSAX_2.0.pdf
+https://www.cs.ucr.edu/~eamonn/iSAX_2.0.pdf
 
-http://www.cs.ucr.edu/~eamonn/SAX.pdf
+https://www.cs.ucr.edu/~eamonn/SAX.pdf
 }

@@ -19,7 +19,7 @@ Return the respective bias vector
 library(h2o)
 h2o.init()
 
-f <- "http://h2o-public-test-data.s3.amazonaws.com/smalldata/chicago/chicagoCensus.csv"
+f <- "https://h2o-public-test-data.s3.amazonaws.com/smalldata/chicago/chicagoCensus.csv"
 census <- h2o.importFile(f)
 census[, 1] <- as.factor(census[, 1])
 

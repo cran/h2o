@@ -21,7 +21,8 @@ h2o.ddply(X, .variables, FUN, ..., .progress = "none")
 Returns an H2OFrame object containing the results from the split/apply operation, arranged
 }
 \description{
-For each subset of an H2O data set, apply a user-specified function, then combine the results.  This is an experimental feature.
+For each subset of an H2O data set, apply a user-specified function, then combine the results.  
+This is an experimental feature based on plyr::ddply.
 }
 \examples{
 \dontrun{
@@ -37,7 +38,4 @@ fun <- function(df) { sum(df[, 1], na.rm = TRUE) / nrow(df) }
 res <- h2o.ddply(iris_hf, "Species", fun)
 head(res)
 }
-}
-\seealso{
-\code{\link[plyr]{ddply}} for the plyr library implementation.
 }

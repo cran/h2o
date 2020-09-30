@@ -16,7 +16,7 @@ Retrieve the Model Centers
 \dontrun{
 library(h2o)
 h2o.init()
-fr <- h2o.importFile("http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv")
+fr <- h2o.importFile("https://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv")
 h2o.ceiling(fr[, 1])
 }
 }

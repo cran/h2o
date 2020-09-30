@@ -25,7 +25,7 @@ Fetchces a single tree of a H2O model. This function is intended to be used on G
 library(h2o)
 h2o.init()
 
-f <- "http://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv"
+f <- "https://h2o-public-test-data.s3.amazonaws.com/smalldata/iris/iris_train.csv"
 iris <- h2o.importFile(f)
 gbm_model <- h2o.gbm(y = "species", training_frame = iris)
 tree <- h2o.getModelTree(gbm_model, 1, "Iris-setosa")
