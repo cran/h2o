@@ -22,7 +22,6 @@ h2o.naiveBayes(
   balance_classes = FALSE,
   class_sampling_factors = NULL,
   max_after_balance_size = 5,
-  max_hit_ratio_k = 0,
   laplace = 0,
   threshold = 0.001,
   min_sdev = 0.001,
@@ -79,9 +78,6 @@ be automatically computed to obtain class balance during training. Requires bala
 
 \item{max_after_balance_size}{Maximum relative size of the training data after balancing class counts (can be less than 1.0). Requires
 balance_classes. Defaults to 5.0.}
-
-\item{max_hit_ratio_k}{Max. number (top K) of predictions to use for hit ratio computation (for multi-class only, 0 to disable)
-Defaults to 0.}
 
 \item{laplace}{Laplace smoothing parameter Defaults to 0.}
 

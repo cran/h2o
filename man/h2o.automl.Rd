@@ -29,16 +29,17 @@ h2o.automl(
   exclude_algos = NULL,
   include_algos = NULL,
   modeling_plan = NULL,
+  preprocessing = NULL,
   exploitation_ratio = 0,
   monotone_constraints = NULL,
-  algo_parameters = NULL,
   keep_cross_validation_predictions = FALSE,
   keep_cross_validation_models = FALSE,
   keep_cross_validation_fold_assignment = FALSE,
   sort_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
     "AUCPR", "mean_per_class_error"),
   export_checkpoints_dir = NULL,
-  verbosity = "warn"
+  verbosity = "warn",
+  ...
 )
 }
 \arguments{
@@ -107,14 +108,12 @@ Defaults to NULL, which means that all appropriate H2O algorithms will be used, 
 
 \item{modeling_plan}{List. The list of modeling steps to be used by the AutoML engine (they may not all get executed, depending on other constraints). Optional (Expert usage only).}
 
+\item{preprocessing}{List. The list of preprocessing steps to run. Only 'target_encoding' is currently supported.}
+
 \item{exploitation_ratio}{The budget ratio (between 0 and 1) dedicated to the exploitation (vs exploration) phase. By default, the exploitation phase is disabled (exploitation_ratio=0) as this is still experimental; to activate it, it is recommended to try a ratio around 0.1. Note that the current exploitation phase only tries to fine-tune the best XGBoost and the best GBM found during exploration.}
 
 \item{monotone_constraints}{List. A mapping representing monotonic constraints.
 Use +1 to enforce an increasing constraint and -1 to specify a decreasing constraint.}
-
-\item{algo_parameters}{List. A list of param_name=param_value to be passed to internal models. Defaults to none (Expert usage only).
-By default, params are set only to algorithms accepting them, and ignored by others.
-Only following parameters are currently allowed: "monotone_constraints".}
 
 \item{keep_cross_validation_predictions}{\code{Logical}. Whether to keep the predictions of the cross-validation predictions. This needs to be set to TRUE if running the same AutoML object for repeated runs because CV predictions are required to build additional Stacked Ensemble models in AutoML. This option defaults to FALSE.}
 
@@ -131,15 +130,21 @@ For regression choose between "mean_residual_deviance", "RMSE", "MSE", "MAE", an
 
 \item{verbosity}{Verbosity of the backend messages printed during training; Optional.
 Must be one of NULL (live log disabled), "debug", "info", "warn". Defaults to "warn".}
+
+\item{...}{Additional (experimental) arguments to be passed through; Optional.}
 }
 \value{
 An \linkS4class{H2OAutoML} object.
 }
 \description{
 The Automatic Machine Learning (AutoML) function automates the supervised machine learning model training process.
-The current version of AutoML trains and cross-validates a Random Forest, an Extremely-Randomized Forest,
-a random grid of Gradient Boosting Machines (GBMs), a random grid of Deep Neural Nets, and then trains a
-Stacked Ensemble using all of the models.
+The current version of AutoML trains and cross-validates the following algorithms (in the following order):
+three pre-specified XGBoost GBM (Gradient Boosting Machine) models, a fixed grid of GLMs,
+a default Random Forest (DRF), five pre-specified H2O GBMs, a near-default Deep Neural Net,
+an Extremely Randomized Forest (XRT), a random grid of XGBoost GBMs, a random grid of H2O GBMs,
+and a random grid of Deep Neural Nets. In some cases, there will not be enough time to complete all the algorithms,
+so some may be missing from the leaderboard. AutoML then trains two Stacked Ensemble models, one of all the models,
+and one of only the best models of each kind.
 }
 \details{
 AutoML finds the best model, given a training frame and response, and returns an H2OAutoML object,

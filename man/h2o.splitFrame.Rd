@@ -7,18 +7,18 @@
 h2o.splitFrame(data, ratios = 0.75, destination_frames, seed = -1)
 }
 \arguments{
-\item{data}{An H2OFrame object representing the dataste to split.}
+\item{data}{An H2OFrame object, to be split.}
 
 \item{ratios}{A numeric value or array indicating the ratio of total rows
-contained in each split. Must total up to less than 1.}
+contained in each split. Must total up to less than 1. e.g. c(0.8) for 80/20 split.}
 
-\item{destination_frames}{An array of frame IDs equal to the number of ratios
-specified plus one.}
+\item{destination_frames}{An array of frame IDs equal to the number of values
+specified in the ratios array, plus one.}
 
 \item{seed}{Random seed.}
 }
 \value{
-Returns a list of split H2OFrame's
+Returns a list of split H2OFrames
 }
 \description{
 Split an existing H2O data set according to user-specified ratios. The number of

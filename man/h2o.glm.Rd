@@ -70,7 +70,6 @@ h2o.glm(
   balance_classes = FALSE,
   class_sampling_factors = NULL,
   max_after_balance_size = 5,
-  max_hit_ratio_k = 0,
   max_runtime_secs = 0,
   custom_metric_func = NULL
 )
@@ -246,8 +245,6 @@ be automatically computed to obtain class balance during training. Requires bala
 
 \item{max_after_balance_size}{Maximum relative size of the training data after balancing class counts (can be less than 1.0). Requires
 balance_classes. Defaults to 5.0.}
-
-\item{max_hit_ratio_k}{This argument is deprecated and has no use. Max. number (top K) of predictions to use for hit ratio computation (for multi-class only, 0 to disable).}
 
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.}
 

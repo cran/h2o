@@ -7,12 +7,12 @@
 \S4method{h2o.transform}{H2OTargetEncoderModel}(
   model,
   data,
-  data_leakage_handling = NULL,
-  use_blending = NULL,
+  blending = NULL,
   inflection_point = -1,
   smoothing = -1,
-  noise = -1,
-  seed = -1
+  noise = NULL,
+  as_training = FALSE,
+  ...
 )
 }
 \arguments{
@@ -20,10 +20,7 @@
 
 \item{data}{An H2OFrame with data to be transformed}
 
-\item{data_leakage_handling}{Handling of data leakage.
-Available options are : ["None", "LeaveOneOut", "KFold"]. Defaults to "None".}
-
-\item{use_blending}{Use blending during the transformation. Respects model settings when not set.}
+\item{blending}{Use blending during the transformation. Respects model settings when not set.}
 
 \item{inflection_point}{Blending parameter. Only effective when blending is enabled.
 By default, model settings are respected, if not overridden by this setting.}
@@ -31,9 +28,12 @@ By default, model settings are respected, if not overridden by this setting.}
 \item{smoothing}{Blending parameter. Only effective when blending is enabled.
 By default, model settings are respected, if not overridden by this setting.}
 
-\item{noise}{An amount of random noise added to the encoding. This helps prevent overfitting. Defaults to 0.01 * range of response.}
+\item{noise}{An amount of random noise added to the encoding, this helps prevent overfitting.
+By default, model settings are respected, if not overridden by this setting.}
 
-\item{seed}{A random seed used to generate draws from the uniform distribution for random noise. Defaults to -1.}
+\item{as_training}{Must be set to True when encoding the training frame. Defaults to False.}
+
+\item{...}{Mainly used for backwards compatibility, to allow deprecated parameters.}
 }
 \value{
 Returns an H2OFrame object with data transformed.

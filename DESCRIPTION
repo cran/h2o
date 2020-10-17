@@ -1,8 +1,8 @@
 Package: h2o
-Version: 3.30.1.3
+Version: 3.32.0.1
 Type: Package
 Title: R Interface for the 'H2O' Scalable Machine Learning Platform
-Date: 2020-09-28
+Date: 2020-10-08
 Authors@R: c(
     person("Erin", "LeDell", role = c("aut", "cre"), email = "erin@h2o.ai"),
     person("Navdeep", "Gill", role = c("aut")),
@@ -26,7 +26,7 @@ Authors@R: c(
     person("Jan", "Gorecki", role = c("ctb")),
     person("Matt", "Dowle", role = c("ctb")),
     person("Yuan", "Tang", role = c("ctb")),    
-    person("Lauren", "DiPerna", role = c("ctb")),    
+    person("Lauren", "DiPerna", role = c("ctb")), 
     person("H2O.ai", role = c("cph", "fnd"))
     )
 Description: R interface for 'H2O', the scalable open source machine learning
@@ -43,20 +43,21 @@ NeedsCompilation: no
 SystemRequirements: Java (>= 8)
 Depends: R (>= 2.13.0), methods, stats
 Imports: graphics, tools, utils, RCurl, jsonlite
-Suggests: ggplot2, mlbench, Matrix, slam, bit64 (>= 0.9.7), data.table
-        (>= 1.9.8), rgl (>= 0.100.19), plot3Drgl (>= 1.0.1), survival
+Suggests: ggplot2 (>= 3.3.0), mlbench, Matrix, slam, bit64 (>= 0.9.7),
+        data.table (>= 1.9.8), rgl (>= 0.100.19), plot3Drgl (>= 1.0.1),
+        survival, DT, IRdisplay, htmltools, plotly, repr
 Collate: 'aggregator.R' 'astfun.R' 'automl.R' 'classes.R' 'config.R'
         'connection.R' 'constants.R' 'datasets.R' 'logging.R'
-        'communication.R' 'kvstore.R' 'frame.R'
-        'targetencoder_deprecated.R' 'targetencoder.R' 'import.R'
-        'isolationforest.R' 'parse.R' 'export.R' 'edicts.R' 'models.R'
-        'coxph.R' 'coxphutils.R' 'kmeans.R' 'gam.R' 'gbm.R' 'generic.R'
-        'glm.R' 'glrm.R' 'pca.R' 'svd.R' 'psvm.R' 'deeplearning.R'
-        'stackedensemble.R' 'xgboost.R' 'randomforest.R' 'naivebayes.R'
-        'word2vec.R' 'w2vutils.R' 'locate.R' 'grid.R' 'segment.R'
-        'predict.R' 'zzz.R' 'tf-idf.R'
+        'communication.R' 'kvstore.R' 'frame.R' 'targetencoder.R'
+        'import.R' 'isolationforest.R' 'parse.R' 'export.R' 'edicts.R'
+        'models.R' 'coxph.R' 'coxphutils.R' 'kmeans.R' 'gam.R' 'gbm.R'
+        'generic.R' 'glm.R' 'glrm.R' 'pca.R' 'svd.R' 'psvm.R'
+        'deeplearning.R' 'stackedensemble.R' 'xgboost.R'
+        'randomforest.R' 'naivebayes.R' 'word2vec.R' 'w2vutils.R'
+        'locate.R' 'grid.R' 'segment.R' 'predict.R' 'tf-idf.R'
+        'rulefit.R' 'explain.R' 'zzz.R'
 RoxygenNote: 7.1.1
-Packaged: 2020-09-28 15:32:55 UTC; jenkins
+Packaged: 2020-10-08 18:20:22 UTC; jenkins
 Author: Erin LeDell [aut, cre],
   Navdeep Gill [aut],
   Spencer Aiello [aut],
@@ -83,4 +84,4 @@ Author: Erin LeDell [aut, cre],
   H2O.ai [cph, fnd]
 Maintainer: Erin LeDell <erin@h2o.ai>
 Repository: CRAN
-Date/Publication: 2020-09-30 09:10:02 UTC
+Date/Publication: 2020-10-17 07:00:02 UTC
