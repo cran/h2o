@@ -11,7 +11,7 @@ h2o.drop_duplicates(frame, columns, keep = "first")
 
 \item{columns}{Columns to compare during the duplicate detection process.}
 
-\item{keep}{Which rows to keep. The "first" value (default) keeps the first row and delets the rest. 
+\item{keep}{Which rows to keep. The "first" value (default) keeps the first row and deletes the rest. 
 The "last" keeps the last row.}
 }
 \description{

@@ -5,9 +5,19 @@
 \alias{h2o.predict_contributions}
 \title{Predict feature contributions - SHAP values on an H2O Model (only DRF, GBM and XGBoost models).}
 \usage{
-predict_contributions.H2OModel(object, newdata, ...)
+predict_contributions.H2OModel(
+  object,
+  newdata,
+  output_format = c("original", "compact"),
+  ...
+)
 
-h2o.predict_contributions(object, newdata, ...)
+h2o.predict_contributions(
+  object,
+  newdata,
+  output_format = c("original", "compact"),
+  ...
+)
 }
 \arguments{
 \item{object}{a fitted \linkS4class{H2OModel} object for which prediction is
@@ -15,6 +25,10 @@ desired}
 
 \item{newdata}{An H2OFrame object in which to look for
 variables with which to predict.}
+
+\item{output_format}{Specify how to output feature contributions in XGBoost - XGBoost by default outputs
+contributions for 1-hot encoded features, specifying a compact output format will produce
+a per-feature contribution. Defaults to original.}
 
 \item{...}{additional arguments to pass on.}
 }

@@ -9,6 +9,7 @@ h2o.rulefit(
   y,
   training_frame,
   model_id = NULL,
+  validation_frame = NULL,
   seed = -1,
   algorithm = c("AUTO", "DRF", "GBM"),
   min_rule_length = 3,
@@ -32,6 +33,8 @@ If the response is numeric, then a regression model will be trained, otherwise i
 \item{training_frame}{Id of the training data frame.}
 
 \item{model_id}{Destination id for this model; auto-generated if not specified.}
+
+\item{validation_frame}{Id of the validation data frame.}
 
 \item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}

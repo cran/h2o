@@ -97,6 +97,8 @@ h2o.deeplearning(
   elastic_averaging_moving_rate = 0.9,
   elastic_averaging_regularization = 0.001,
   export_checkpoints_dir = NULL,
+  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+    "WEIGHTED_OVO"),
   verbose = FALSE
 )
 }
@@ -316,6 +318,9 @@ propagation, but might slow down backpropagation. Defaults to FALSE.}
 \item{elastic_averaging_regularization}{Elastic averaging regularization strength (only if elastic averaging is enabled). Defaults to 0.001.}
 
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
+
+\item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+"WEIGHTED_OVO". Defaults to AUTO.}
 
 \item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per epoch). Defaults to FALSE.}
 }

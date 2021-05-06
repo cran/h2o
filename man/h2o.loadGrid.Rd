@@ -4,10 +4,14 @@
 \alias{h2o.loadGrid}
 \title{Loads previously saved grid with all it's models from the same folder}
 \usage{
-h2o.loadGrid(grid_path)
+h2o.loadGrid(grid_path, load_params_references = FALSE)
 }
 \arguments{
 \item{grid_path}{A character string containing the path to the file with the grid saved.}
+
+\item{load_params_references}{A logical which if true will attemt to reload saved objects referenced by 
+grid parameters (e.g. training frame, calibration frame), will fail if grid was saved 
+without referenced objects.}
 }
 \description{
 Returns a reference to the loaded Grid.

@@ -16,6 +16,7 @@ h2o.grid(
   do_hyper_params_check = FALSE,
   search_criteria = NULL,
   export_checkpoints_dir = NULL,
+  recovery_dir = NULL,
   parallelism = 1
 )
 }
@@ -56,7 +57,11 @@ max_models = 42, max_runtime_secs = 28800)} or \code{list(strategy = "RandomDisc
 stopping_tolerance = 0.001, stopping_rounds = 10)} or \code{list(strategy = "RandomDiscrete", stopping_metric = 
 "misclassification", stopping_tolerance = 0.00001, stopping_rounds = 5)}.}
 
-\item{export_checkpoints_dir}{Directory to automatically export grid in binary form to.}
+\item{export_checkpoints_dir}{Directory to automatically export grid and its models to.}
+
+\item{recovery_dir}{When specified the grid and all necessary data (frames, models) will be saved to this
+directory (use HDFS or other distributed file-system). Should the cluster crash during training, the grid
+can be reloaded from this directory via \code{h2o.loadGrid} and training can be resumed}
 
 \item{parallelism}{Level of Parallelism during grid model building. 1 = sequential building (default).
 Use the value of 0 for adaptive parallelism - decided by H2O. Any number > 1 sets the exact number of models built in parallel.}

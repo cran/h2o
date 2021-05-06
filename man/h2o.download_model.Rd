@@ -5,12 +5,19 @@
 \title{Download the model in binary format.
 The owner of the file saved is the user by which python session was executed.}
 \usage{
-h2o.download_model(model, path = NULL)
+h2o.download_model(
+  model,
+  path = NULL,
+  export_cross_validation_predictions = FALSE
+)
 }
 \arguments{
 \item{model}{An H2OModel}
 
 \item{path}{The path where binary file should be downloaded. Downloaded to current directory by default.}
+
+\item{export_cross_validation_predictions}{A boolean flag indicating whether the download model should be
+saved with CV Holdout Frame predictions. Default is not to export the predictions.}
 }
 \description{
 Download the model in binary format.

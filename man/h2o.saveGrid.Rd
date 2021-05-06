@@ -4,12 +4,23 @@
 \alias{h2o.saveGrid}
 \title{Saves an existing Grid of models into a given folder.}
 \usage{
-h2o.saveGrid(grid_directory, grid_id)
+h2o.saveGrid(
+  grid_directory,
+  grid_id,
+  save_params_references = FALSE,
+  export_cross_validation_predictions = FALSE
+)
 }
 \arguments{
 \item{grid_directory}{A character string containing the path to the folder for the grid to be saved to.}
 
 \item{grid_id}{A chracter string with identification of the grid to be saved.}
+
+\item{save_params_references}{A logical indicating if objects referenced by grid parameters
+(e.g. training frame, calibration frame) should also be saved.}
+
+\item{export_cross_validation_predictions}{A logical indicating whether exported model
+artifacts should also include CV holdout Frame predictions.}
 }
 \value{
 Returns an object that is a subclass of \linkS4class{H2OGrid}.

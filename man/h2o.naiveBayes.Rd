@@ -32,7 +32,9 @@ h2o.naiveBayes(
   compute_metrics = TRUE,
   max_runtime_secs = 0,
   export_checkpoints_dir = NULL,
-  gainslift_bins = -1
+  gainslift_bins = -1,
+  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+    "WEIGHTED_OVO")
 )
 }
 \arguments{
@@ -102,6 +104,9 @@ Must be at least 1e-10.}
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
 
 \item{gainslift_bins}{Gains/Lift table number of bins. 0 means disabled.. Default value -1 means automatic binning. Defaults to -1.}
+
+\item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+"WEIGHTED_OVO". Defaults to AUTO.}
 }
 \value{
 an object of class \linkS4class{H2OBinomialModel} if the response has two categorical levels,

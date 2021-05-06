@@ -4,12 +4,10 @@
 \alias{.plot_varimp}
 \title{Plot variable importances with ggplot2}
 \usage{
-.plot_varimp(model, newdata, top_n = 10)
+.plot_varimp(model, top_n = 10)
 }
 \arguments{
 \item{model}{H2OModel}
-
-\item{newdata}{H2OFrame}
 
 \item{top_n}{Plot just top_n features}
 }

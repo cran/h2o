@@ -7,7 +7,7 @@
 h2o.auc(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
 \arguments{
-\item{object}{An \linkS4class{H2OBinomialMetrics} object.}
+\item{object}{An \linkS4class{H2OBinomialMetrics} or \linkS4class{H2OMultinomialMetrics} object.}
 
 \item{train}{Retrieve the training AUC}
 

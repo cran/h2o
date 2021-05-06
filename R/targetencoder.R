@@ -13,6 +13,8 @@
 #' @param training_frame Id of the training data frame.
 #' @param model_id Destination id for this model; auto-generated if not specified.
 #' @param fold_column Column with cross-validation fold index assignment per observation.
+#' @param columns_to_encode List of categorical columns or groups of categorical columns to encode. When groups of columns are specified,
+#'        each group is encoded as a single column (interactions are created internally).
 #' @param keep_original_categorical_columns \code{Logical}. If true, the original non-encoded categorical features will remain in the result frame.
 #'        Defaults to TRUE.
 #' @param blending \code{Logical}. If true, enables blending of posterior probabilities (computed for a given categorical value)
@@ -28,7 +30,8 @@
 #' @param data_leakage_handling Data leakage handling strategy used to generate the encoding. Supported options are: 1) "none" (default) - no
 #'        holdout, using the entire training frame. 2) "leave_one_out" - current row's response value is subtracted from
 #'        the per-level frequencies pre-calculated on the entire training frame. 3) "k_fold" - encodings for a fold are
-#'        generated based on out-of-fold data.  Must be one of: "LeaveOneOut", "KFold", "None". Defaults to None.
+#'        generated based on out-of-fold data.  Must be one of: "leave_one_out", "k_fold", "none", "LeaveOneOut",
+#'        "KFold", "None". Defaults to None.
 #' @param noise The amount of noise to add to the encoded column. Use 0 to disable noise, and -1 (=AUTO) to let the algorithm
 #'        determine a reasonable amount of noise. Defaults to 0.01.
 #' @param seed Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
@@ -71,11 +74,12 @@ h2o.targetencoder <- function(x,
                               training_frame,
                               model_id = NULL,
                               fold_column = NULL,
+                              columns_to_encode = NULL,
                               keep_original_categorical_columns = TRUE,
                               blending = FALSE,
                               inflection_point = 10,
                               smoothing = 20,
-                              data_leakage_handling = c("LeaveOneOut", "KFold", "None"),
+                              data_leakage_handling = c("leave_one_out", "k_fold", "none", "LeaveOneOut", "KFold", "None"),
                               noise = 0.01,
                               seed = -1,
                               ...)
@@ -108,6 +112,10 @@ h2o.targetencoder <- function(x,
      }
   }
 
+  # Validate other args
+  if (!missing(columns_to_encode))
+    columns_to_encode <- lapply(columns_to_encode, function(x) if(is.character(x) & length(x) == 1) list(x) else x)
+
   # Build parameter list to send to model builder
   parms <- list()
   args <- .verify_dataxy(training_frame, x, y)
@@ -120,6 +128,8 @@ h2o.targetencoder <- function(x,
     parms$model_id <- model_id
   if (!missing(fold_column))
     parms$fold_column <- fold_column
+  if (!missing(columns_to_encode))
+    parms$columns_to_encode <- columns_to_encode
   if (!missing(keep_original_categorical_columns))
     parms$keep_original_categorical_columns <- keep_original_categorical_columns
   if (!missing(blending))
@@ -143,11 +153,12 @@ h2o.targetencoder <- function(x,
                                               y,
                                               training_frame,
                                               fold_column = NULL,
+                                              columns_to_encode = NULL,
                                               keep_original_categorical_columns = TRUE,
                                               blending = FALSE,
                                               inflection_point = 10,
                                               smoothing = 20,
-                                              data_leakage_handling = c("LeaveOneOut", "KFold", "None"),
+                                              data_leakage_handling = c("leave_one_out", "k_fold", "none", "LeaveOneOut", "KFold", "None"),
                                               noise = 0.01,
                                               seed = -1,
                                               segment_columns = NULL,
@@ -187,6 +198,10 @@ h2o.targetencoder <- function(x,
      }
   }
 
+  # Validate other args
+  if (!missing(columns_to_encode))
+    columns_to_encode <- lapply(columns_to_encode, function(x) if(is.character(x) & length(x) == 1) list(x) else x)
+
   # Build parameter list to send to model builder
   parms <- list()
   args <- .verify_dataxy(training_frame, x, y)
@@ -197,6 +212,8 @@ h2o.targetencoder <- function(x,
 
   if (!missing(fold_column))
     parms$fold_column <- fold_column
+  if (!missing(columns_to_encode))
+    parms$columns_to_encode <- columns_to_encode
   if (!missing(keep_original_categorical_columns))
     parms$keep_original_categorical_columns <- keep_original_categorical_columns
   if (!missing(blending))

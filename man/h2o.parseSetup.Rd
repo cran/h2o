@@ -18,7 +18,9 @@ h2o.parseSetup(
   decrypt_tool = NULL,
   skipped_columns = NULL,
   custom_non_data_line_markers = NULL,
-  partition_by = NULL
+  partition_by = NULL,
+  single_quotes = FALSE,
+  escapechar = ""
 )
 }
 \arguments{
@@ -59,6 +61,10 @@ acquired by calling \link{h2o.decryptionSetup}.}
 \item{custom_non_data_line_markers}{(Optional) If a line in imported file starts with any character in given string it will NOT be imported. Empty string means all lines are imported, NULL means that default behaviour for given format will be used}
 
 \item{partition_by}{(Optional) Names of the columns the persisted dataset has been partitioned by.}
+
+\item{single_quotes}{If set to true, the parser expects single quotes. False for double quotes (default).}
+
+\item{escapechar}{(Optional) One ASCII character used to escape other characters.}
 }
 \description{
 Get a parse setup back for the staged data.

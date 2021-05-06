@@ -189,6 +189,8 @@ h2o.init <- function(ip = "localhost", port = 54321, name = NA_character_, start
   if (!h2o.clusterIsUp(tmpConn)) {
     if (!startH2O)
       stop("Cannot connect to H2O server. Please check that H2O is running at ", h2o.getBaseURL(tmpConn))
+    else if (.h2o.__CLIENT_VERSION)
+      stop("Client version of the library cannot be used to start a local H2O instance. Use h2o.connect(ip=\"hostname\", port=number) instead.")
     else if (ip == "localhost" || ip == "127.0.0.1") {
       cat("\nH2O is not running yet, starting it now...\n")
       
@@ -348,7 +350,10 @@ h2o.connect <- function(ip = "localhost", port = 54321, strict_version_check = T
 h2o.getConnection <- function() {
   conn <- .attemptConnection()
   if (is.null(conn))
-    stop("No active connection to an H2O cluster. Did you run `h2o.init()` ?")
+    if (.h2o.__CLIENT_VERSION)
+      stop("No active connection to an H2O cluster. Did you run `h2o.connect(ip=\"hostname\", port=number)` ?")
+    else
+      stop("No active connection to an H2O cluster. Did you run `h2o.init()` ?")
   conn
 }
 
@@ -457,6 +462,18 @@ h2o.clusterStatus <- function() {
   temp[,cnames]
 }
 
+#' Triggers auto-recovery resume - this will look into configured recovery dir and resume and
+#' tasks that were interrupted by unexpected cluster stopping.
+#'
+#' @param recovery_dir A \code{character} path to where cluster recovery data is stored, if blank, will use
+#'        cluster's configuration.
+#' @export
+h2o.resume <- function(recovery_dir=NULL) {
+  parms <- list()
+  parms$recovery_dir <- recovery_dir
+  invisible(.h2o.__remoteSend(.h2o.__RESUME, method = "POST", .params = parms))
+}
+
 #
 # Get a session ID at init
 .init.session_id <- function() {
@@ -490,17 +507,30 @@ h2o.clusterStatus <- function() {
   msg = paste0(
     "\n",
     "----------------------------------------------------------------------\n",
-    "\n",
-    "Your next step is to start H2O:\n",
-    "    > h2o.init()\n",
+    "\n")
+
+  if (.h2o.__CLIENT_VERSION)
+    msg = paste0(msg, "Your next step is to connect to H2O:\n", "    > h2o.connect(ip=\"hostname\", port=number)\n")
+  else
+    msg = paste0(msg, "Your next step is to start H2O:\n", "    > h2o.init()\n")
+
+  msg = paste0(
+    msg,
     "\n",
     "For H2O package documentation, ask for help:\n",
     "    > ??h2o\n",
-    "\n",
-    "After starting H2O, you can use the Web UI at http://localhost:54321\n",
-    "For more information visit https://docs.h2o.ai\n",
-    "\n",
-    "----------------------------------------------------------------------\n")
+    "\n")
+
+    if (!.h2o.__CLIENT_VERSION)
+      msg = paste0(
+        msg,
+        "After starting H2O, you can use the Web UI at http://localhost:54321\n",
+        "For more information visit https://docs.h2o.ai\n")
+
+    msg = paste0(
+      msg,
+      "\n",
+      "----------------------------------------------------------------------\n")
   packageStartupMessage(msg)
 
   # Shut down local H2O when user exits from R ONLY if h2o started from R
@@ -554,7 +584,7 @@ h2o.clusterStatus <- function() {
   if(any(grepl("GNU libgcj", jver))) {
     return("Sorry, GNU Java is not supported for H2O.")
   }
-  # NOTE for developers: keep the following blacklist in logically consistent with whitelist in java code - see water.H2O.checkUnsupportedJava, near line 1849
+  # NOTE for developers: keep the following blacklist in logically consistent with whitelist in java code - see the water.JavaVersionSupport.checkUnsupportedJava method
   if (any(grepl("^java version \"1\\.[1-7]\\.", jver))) {
     return(paste0("Your java is not supported: ", jver[1]))
   }
@@ -801,7 +831,7 @@ h2o.clusterStatus <- function() {
   # md5_check <- readLines(tcon, n = 1)
   # close(tcon)
   md5_file <- tempfile(fileext = ".md5")
-  .downloadFile(md5_url, dest = md5_file, mode = "w")
+  download.file(md5_url, destfile = md5_file, mode = "w", cacheOK = FALSE, quiet = TRUE)
   md5_check <- readLines(md5_file, n = 1L)
   if (nchar(md5_check) != 32) stop("md5 malformed, must be 32 characters (see ", md5_url, ")")
   unlink(md5_file)
@@ -811,7 +841,7 @@ h2o.clusterStatus <- function() {
   cat("Performing one-time download of h2o.jar from\n")
   cat("    ", h2o_url, "\n")
   cat("(This could take a few minutes, please be patient...)\n")
-  .downloadFile(h2o_url, dest = temp_file)
+  download.file(url = h2o_url, destfile = temp_file, mode = "wb", cacheOK = FALSE, quiet = TRUE)
 
   # Apply sanity checks
   if(!file.exists(temp_file))
@@ -828,20 +858,6 @@ h2o.clusterStatus <- function() {
   # Move good file into final position
   file.rename(temp_file, dest_file)
   return(dest_file[file.exists(dest_file)])
-}
-
-.downloadFile <- function(url, dest, mode = "wb") {
-  file.handle <- CFILE(dest, mode="wb")
-  opts <- list(
-    timeout = 600,
-    verbose = FALSE
-  )
-  curlPerform(
-    url = url,
-    writedata = file.handle@ref,
-    .opts = opts
-  )
-  close(file.handle)
 }
 
 #' View Network Traffic Speed

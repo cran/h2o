@@ -11,6 +11,8 @@ h2o.glm(
   model_id = NULL,
   validation_frame = NULL,
   nfolds = 0,
+  checkpoint = NULL,
+  export_checkpoints_dir = NULL,
   seed = -1,
   keep_cross_validation_models = TRUE,
   keep_cross_validation_predictions = FALSE,
@@ -61,7 +63,6 @@ h2o.glm(
   interactions = NULL,
   interaction_pairs = NULL,
   obj_reg = -1,
-  export_checkpoints_dir = NULL,
   stopping_rounds = 0,
   stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE",
     "AUC", "AUCPR", "lift_top_group", "misclassification", "mean_per_class_error",
@@ -71,7 +72,10 @@ h2o.glm(
   class_sampling_factors = NULL,
   max_after_balance_size = 5,
   max_runtime_secs = 0,
-  custom_metric_func = NULL
+  custom_metric_func = NULL,
+  generate_scoring_history = FALSE,
+  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+    "WEIGHTED_OVO")
 )
 }
 \arguments{
@@ -89,6 +93,10 @@ If the response is numeric, then a regression model will be trained, otherwise i
 \item{validation_frame}{Id of the validation data frame.}
 
 \item{nfolds}{Number of folds for K-fold cross-validation (0 to disable or >= 2). Defaults to 0.}
+
+\item{checkpoint}{Model checkpoint to resume training with.}
+
+\item{export_checkpoints_dir}{Automatically export generated models to this directory.}
 
 \item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}
@@ -223,8 +231,6 @@ max_active_predictors is set to 5000 otherwise it is set to 100000000. Defaults 
 
 \item{obj_reg}{Likelihood divider in objective value computation, default is 1/nobs Defaults to -1.}
 
-\item{export_checkpoints_dir}{Automatically export generated models to this directory.}
-
 \item{stopping_rounds}{Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the
 stopping_metric does not improve for k:=stopping_rounds scoring events (0 to disable) Defaults to 0.}
 
@@ -249,6 +255,12 @@ balance_classes. Defaults to 5.0.}
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.}
 
 \item{custom_metric_func}{Reference to custom evaluation function, format: `language:keyName=funcName`}
+
+\item{generate_scoring_history}{\code{Logical}. If set to true, will generate scoring history for GLM.  This may significantly slow down the
+algo. Defaults to FALSE.}
+
+\item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+"WEIGHTED_OVO". Defaults to AUTO.}
 }
 \value{
 A subclass of \code{\linkS4class{H2OModel}} is returned. The specific subclass depends on the machine

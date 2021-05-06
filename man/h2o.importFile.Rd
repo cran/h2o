@@ -19,7 +19,9 @@ h2o.importFile(
   decrypt_tool = NULL,
   skipped_columns = NULL,
   custom_non_data_line_markers = NULL,
-  partition_by = NULL
+  partition_by = NULL,
+  quotechar = NULL,
+  escapechar = ""
 )
 
 h2o.importFolder(
@@ -35,7 +37,9 @@ h2o.importFolder(
   decrypt_tool = NULL,
   skipped_columns = NULL,
   custom_non_data_line_markers = NULL,
-  partition_by = NULL
+  partition_by = NULL,
+  quotechar = NULL,
+  escapechar = "\\\\"
 )
 
 h2o.importHDFS(
@@ -61,7 +65,9 @@ h2o.uploadFile(
   progressBar = FALSE,
   parse_type = NULL,
   decrypt_tool = NULL,
-  skipped_columns = NULL
+  skipped_columns = NULL,
+  quotechar = NULL,
+  escapechar = "\\\\"
 )
 }
 \arguments{
@@ -98,6 +104,10 @@ acquired by calling \link{h2o.decryptionSetup}.}
 \item{custom_non_data_line_markers}{(Optional) If a line in imported file starts with any character in given string it will NOT be imported. Empty string means all lines are imported, NULL means that default behaviour for given format will be used}
 
 \item{partition_by}{names of the columns the persisted dataset has been partitioned by.}
+
+\item{quotechar}{A hint for the parser which character to expect as quoting character. None (default) means autodetection.}
+
+\item{escapechar}{(Optional) One ASCII character used to escape other characters.}
 
 \item{pattern}{(Optional) Character string containing a regular expression to match file(s) in
 the folder.}

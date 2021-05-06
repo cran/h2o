@@ -18,13 +18,16 @@ h2o.stackedEnsemble(
   metalearner_fold_assignment = c("AUTO", "Random", "Modulo", "Stratified"),
   metalearner_fold_column = NULL,
   metalearner_params = NULL,
+  metalearner_transform = c("NONE", "Logit"),
   max_runtime_secs = 0,
   weights_column = NULL,
   offset_column = NULL,
   seed = -1,
   score_training_samples = 10000,
   keep_levelone_frame = FALSE,
-  export_checkpoints_dir = NULL
+  export_checkpoints_dir = NULL,
+  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+    "WEIGHTED_OVO")
 )
 }
 \arguments{
@@ -66,6 +69,8 @@ classification problems. Must be one of: "AUTO", "Random", "Modulo", "Stratified
 
 \item{metalearner_params}{Parameters for metalearner algorithm}
 
+\item{metalearner_transform}{Transformation used for the level one frame. Must be one of: "NONE", "Logit". Defaults to NONE.}
+
 \item{max_runtime_secs}{Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.}
 
 \item{weights_column}{Column with observation weights. Giving some observation a weight of zero is equivalent to excluding it from
@@ -84,6 +89,9 @@ enter 0. Defaults to 10000.}
 \item{keep_levelone_frame}{\code{Logical}. Keep level one frame used for metalearner training. Defaults to FALSE.}
 
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
+
+\item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+"WEIGHTED_OVO". Defaults to AUTO.}
 }
 \description{
 Build a stacked ensemble (aka. Super Learner) using the H2O base

@@ -47,6 +47,7 @@ h2o.gam(
   gradient_epsilon = -1,
   link = c("family_default", "identity", "logit", "log", "inverse", "tweedie",
     "ologit"),
+  startval = NULL,
   prior = -1,
   cold_start = FALSE,
   lambda_min_ratio = -1,
@@ -68,9 +69,13 @@ h2o.gam(
   custom_metric_func = NULL,
   num_knots = NULL,
   knot_ids = NULL,
+  standardize_tp_gam_cols = FALSE,
+  scale_tp_penalty_mat = FALSE,
   bs = NULL,
   scale = NULL,
-  keep_gam_cols = FALSE
+  keep_gam_cols = FALSE,
+  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+    "WEIGHTED_OVO")
 )
 }
 \arguments{
@@ -83,7 +88,8 @@ If the response is numeric, then a regression model will be trained, otherwise i
 
 \item{training_frame}{Id of the training data frame.}
 
-\item{gam_columns}{Predictor column names for gam}
+\item{gam_columns}{Arrays of predictor column names for gam for smoothers using single or multiple predictors like
+{{'c1'},{'c2','c3'},{'c4'},...}}
 
 \item{model_id}{Destination id for this model; auto-generated if not specified.}
 
@@ -184,6 +190,8 @@ values above are 1E-8 and 1E-6 respectively. Defaults to -1.}
 \item{link}{Link function. Must be one of: "family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit".
 Defaults to family_default.}
 
+\item{startval}{double array to initialize coefficients for GAM.}
+
 \item{prior}{Prior probability for y==1. To be used only for logistic regression iff the data has been sampled and the mean
 of response does not reflect reality. Defaults to -1.}
 
@@ -237,13 +245,21 @@ balance_classes. Defaults to 5.0.}
 
 \item{num_knots}{Number of knots for gam predictors}
 
-\item{knot_ids}{String arrays storing frame keys of knots.  One for each gam column specified in gam_columns}
+\item{knot_ids}{String arrays storing frame keys of knots.  One for each gam column set specified in gam_columns}
 
-\item{bs}{Basis function type for each gam predictors, 0 for cr}
+\item{standardize_tp_gam_cols}{\code{Logical}. standardize tp (thin plate) predictor columns Defaults to FALSE.}
 
-\item{scale}{Smoothing parameter for gam predictors}
+\item{scale_tp_penalty_mat}{\code{Logical}. Scale penalty matrix for tp (thin plate) smoothers as in R Defaults to FALSE.}
+
+\item{bs}{Basis function type for each gam predictors, 0 for cr, 1 for thin plate regression with knots, 2 for thin
+plate regression with SVD.  If specified, must be the same size as gam_columns}
+
+\item{scale}{Smoothing parameter for gam predictors.  If specified, must be of the same length as gam_columns}
 
 \item{keep_gam_cols}{\code{Logical}. Save keys of model matrix Defaults to FALSE.}
+
+\item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+"WEIGHTED_OVO". Defaults to AUTO.}
 }
 \description{
 Creates a generalized additive model, specified by a response variable, a set of predictors, and a

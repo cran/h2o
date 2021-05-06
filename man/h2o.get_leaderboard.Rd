@@ -15,6 +15,7 @@ Currently supported extensions are:
 \item{'ALL': adds all columns below.}
 \item{'training_time_ms': column providing the training time of each model in milliseconds (doesn't include the training of cross validation models).}
 \item{'predict_time_per_row_ms': column providing the average prediction time by the model for a single row.}
+\item{'algo': column providing the algorithm name for each model.}
 }}
 }
 \value{

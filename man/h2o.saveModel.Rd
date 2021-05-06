@@ -4,7 +4,12 @@
 \alias{h2o.saveModel}
 \title{Save an H2O Model Object to Disk}
 \usage{
-h2o.saveModel(object, path = "", force = FALSE)
+h2o.saveModel(
+  object,
+  path = "",
+  force = FALSE,
+  export_cross_validation_predictions = FALSE
+)
 }
 \arguments{
 \item{object}{an \linkS4class{H2OModel} object.}
@@ -12,6 +17,10 @@ h2o.saveModel(object, path = "", force = FALSE)
 \item{path}{string indicating the directory the model will be written to.}
 
 \item{force}{logical, indicates how to deal with files that already exist.}
+
+\item{export_cross_validation_predictions}{logical, indicates whether the exported model 
+artifacts should also include CV Holdout Frame predictions.  Default is not to export 
+the predictions.}
 }
 \description{
 Save an \linkS4class{H2OModel} to disk. (Note that ensemble binary models 

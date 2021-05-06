@@ -9,12 +9,12 @@ h2o.removeAll(timeout_secs = 0, retained_elements = c())
 \arguments{
 \item{timeout_secs}{Timeout in seconds. Default is no timeout.}
 
-\item{retained_elements}{Frames and vectors to be retained. Other keys provided are ignored.}
+\item{retained_elements}{Instances or ids of models and frames to be retained. Combination of instances and ids in the same list is also a valid input.}
 }
 \description{
 Removes the data from the h2o cluster, but does not remove the local references.
-Retains frames and vectors specified in retained_elements argument.
-Retained keys must be keys of models and frames only. For models retained, training and validation frames are retained as well.
+Retains models, frames and vectors specified in retained_elements argument.
+Retained elements must be instances/ids of models and frames only. For models retained, training and validation frames are retained as well.
 Cross validation models of a retained model are NOT retained automatically, those must be specified explicitely.
 }
 \examples{

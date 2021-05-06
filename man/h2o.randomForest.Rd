@@ -59,6 +59,8 @@ h2o.randomForest(
   export_checkpoints_dir = NULL,
   check_constant_response = TRUE,
   gainslift_bins = -1,
+  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+    "WEIGHTED_OVO"),
   verbose = FALSE
 )
 }
@@ -192,6 +194,9 @@ column is a constant value.If disabled, then model will train regardless of the 
 constant value or not. Defaults to TRUE.}
 
 \item{gainslift_bins}{Gains/Lift table number of bins. 0 means disabled.. Default value -1 means automatic binning. Defaults to -1.}
+
+\item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+"WEIGHTED_OVO". Defaults to AUTO.}
 
 \item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree). Defaults to FALSE.}
 }

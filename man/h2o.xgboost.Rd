@@ -51,9 +51,12 @@ h2o.xgboost(
   max_abs_leafnode_pred = 0,
   max_delta_step = 0,
   monotone_constraints = NULL,
+  interaction_constraints = NULL,
   score_tree_interval = 0,
   min_split_improvement = 0,
   gamma = 0,
+  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+    "WEIGHTED_OVO"),
   nthread = -1,
   save_matrix_directory = NULL,
   build_tree_one_node = FALSE,
@@ -73,7 +76,7 @@ h2o.xgboost(
   reg_alpha = 0,
   dmatrix_type = c("auto", "dense", "sparse"),
   backend = c("auto", "gpu", "cpu"),
-  gpu_id = 0,
+  gpu_id = NULL,
   gainslift_bins = -1,
   verbose = FALSE
 )
@@ -182,12 +185,17 @@ Defaults to -1 (time-based random number).}
 \item{monotone_constraints}{A mapping representing monotonic constraints. Use +1 to enforce an increasing constraint and -1 to specify a
 decreasing constraint.}
 
+\item{interaction_constraints}{A set of allowed column interactions.}
+
 \item{score_tree_interval}{Score the model after every so many trees. Disabled if set to 0. Defaults to 0.}
 
 \item{min_split_improvement}{(same as gamma) Minimum relative improvement in squared error reduction for a split to happen Defaults to 0.0.}
 
 \item{gamma}{(same as min_split_improvement) Minimum relative improvement in squared error reduction for a split to happen
 Defaults to 0.0.}
+
+\item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+"WEIGHTED_OVO". Defaults to AUTO.}
 
 \item{nthread}{Number of parallel threads that can be used to run XGBoost. Cannot exceed H2O cluster limits (-nthreads
 parameter). Defaults to maximum available Defaults to -1.}
@@ -233,7 +241,7 @@ Defaults to auto.}
 \item{backend}{Backend. By default (auto), a GPU is used if available. Must be one of: "auto", "gpu", "cpu". Defaults to
 auto.}
 
-\item{gpu_id}{Which GPU to use.  Defaults to 0.}
+\item{gpu_id}{Which GPU(s) to use.}
 
 \item{gainslift_bins}{Gains/Lift table number of bins. 0 means disabled.. Default value -1 means automatic binning. Defaults to -1.}
 

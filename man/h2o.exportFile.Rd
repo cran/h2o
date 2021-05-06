@@ -10,7 +10,9 @@ h2o.exportFile(
   force = FALSE,
   sep = ",",
   compression = NULL,
-  parts = 1
+  parts = 1,
+  header = TRUE,
+  quote_header = TRUE
 )
 }
 \arguments{
@@ -25,7 +27,8 @@ hdfs:// or s3n://. Each row of data appears as line of the file.}
 \item{sep}{The field separator character. Values on each line of
 the file will be separated by this character (default ",").}
 
-\item{compression}{How to compress the exported dataset}
+\item{compression}{How to compress the exported dataset
+(default none; gzip, bzip2 and snappy available)}
 
 \item{parts}{integer, number of part files to export to. Default is to
 write to a single file. Large data can be exported to multiple
@@ -36,6 +39,12 @@ number of files.
 Parameter path will be considered to be a path to a directory
 if export to multiple part files is desired. Part files conform
 to naming scheme 'part-m-?????'.}
+
+\item{header}{logical, indicates whether to write the header line.
+Default is to include the header in the output file.}
+
+\item{quote_header}{logical, indicates whether column names should be
+quoted. Default is to use quotes.}
 }
 \description{
 Exports an H2OFrame (which can be either VA or FV) to a file.

@@ -9,7 +9,8 @@ h2o.make_metrics(
   actuals,
   domain = NULL,
   distribution = NULL,
-  weights = NULL
+  weights = NULL,
+  auc_type = "NONE"
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ h2o.make_metrics(
 \item{distribution}{Distribution for regression.}
 
 \item{weights}{(optional) An H2OFrame containing observation weights.}
+
+\item{auc_type}{(optional) For multinomial classification you have to specify which type of agregated AUC/AUCPR will be used to calculate this metric.}
 }
 \value{
 Returns an object of the \linkS4class{H2OModelMetrics} subclass.

@@ -10,11 +10,13 @@ h2o.targetencoder(
   training_frame,
   model_id = NULL,
   fold_column = NULL,
+  columns_to_encode = NULL,
   keep_original_categorical_columns = TRUE,
   blending = FALSE,
   inflection_point = 10,
   smoothing = 20,
-  data_leakage_handling = c("LeaveOneOut", "KFold", "None"),
+  data_leakage_handling = c("leave_one_out", "k_fold", "none", "LeaveOneOut", "KFold",
+    "None"),
   noise = 0.01,
   seed = -1,
   ...
@@ -33,6 +35,9 @@ If the response is numeric, then a regression model will be trained, otherwise i
 \item{model_id}{Destination id for this model; auto-generated if not specified.}
 
 \item{fold_column}{Column with cross-validation fold index assignment per observation.}
+
+\item{columns_to_encode}{List of categorical columns or groups of categorical columns to encode. When groups of columns are specified,
+each group is encoded as a single column (interactions are created internally).}
 
 \item{keep_original_categorical_columns}{\code{Logical}. If true, the original non-encoded categorical features will remain in the result frame.
 Defaults to TRUE.}
@@ -53,7 +58,8 @@ turns into a Heaviside step function. Defaults to 20.}
 \item{data_leakage_handling}{Data leakage handling strategy used to generate the encoding. Supported options are: 1) "none" (default) - no
 holdout, using the entire training frame. 2) "leave_one_out" - current row's response value is subtracted from
 the per-level frequencies pre-calculated on the entire training frame. 3) "k_fold" - encodings for a fold are
-generated based on out-of-fold data.  Must be one of: "LeaveOneOut", "KFold", "None". Defaults to None.}
+generated based on out-of-fold data.  Must be one of: "leave_one_out", "k_fold", "none", "LeaveOneOut",
+"KFold", "None". Defaults to None.}
 
 \item{noise}{The amount of noise to add to the encoded column. Use 0 to disable noise, and -1 (=AUTO) to let the algorithm
 determine a reasonable amount of noise. Defaults to 0.01.}
