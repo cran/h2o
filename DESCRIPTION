@@ -1,8 +1,8 @@
 Package: h2o
-Version: 3.32.1.2
+Version: 3.32.1.3
 Type: Package
 Title: R Interface for the 'H2O' Scalable Machine Learning Platform
-Date: 2021-04-29
+Date: 2021-05-19
 Authors@R: c(
     person("Erin", "LeDell", role = c("aut", "cre"), email = "erin@h2o.ai"),
     person("Navdeep", "Gill", role = c("aut")),
@@ -58,7 +58,7 @@ Collate: 'aggregator.R' 'astfun.R' 'automl.R' 'classes.R' 'config.R'
         'locate.R' 'grid.R' 'segment.R' 'predict.R' 'tf-idf.R'
         'rulefit.R' 'explain.R' 'zzz.R'
 RoxygenNote: 7.1.1
-Packaged: 2021-04-29 17:18:56 UTC; jenkins
+Packaged: 2021-05-19 18:03:15 UTC; jenkins
 Author: Erin LeDell [aut, cre],
   Navdeep Gill [aut],
   Spencer Aiello [aut],
@@ -86,4 +86,4 @@ Author: Erin LeDell [aut, cre],
   H2O.ai [cph, fnd]
 Maintainer: Erin LeDell <erin@h2o.ai>
 Repository: CRAN
-Date/Publication: 2021-05-06 10:10:05 UTC
+Date/Publication: 2021-05-23 04:30:08 UTC

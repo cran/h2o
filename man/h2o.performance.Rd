@@ -10,7 +10,8 @@ h2o.performance(
   train = FALSE,
   valid = FALSE,
   xval = FALSE,
-  data = NULL
+  data = NULL,
+  auc_type = "NONE"
 )
 }
 \arguments{
@@ -31,6 +32,9 @@ For more information visit: \url{https://0xdata.atlassian.net/browse/TN-9}}
 \item{xval}{A logical value indicating whether to return the cross-validation metrics (constructed during training).}
 
 \item{data}{(DEPRECATED) An H2OFrame. This argument is now called `newdata`.}
+
+\item{auc_type}{For multinomila model only. Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+"WEIGHTED_OVO". Default is "NONE"}
 }
 \value{
 Returns an object of the \linkS4class{H2OModelMetrics} subclass.

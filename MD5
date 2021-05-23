@@ -1,5 +1,5 @@
-35d12059ca367044e69a1c1cc2edafaf *DESCRIPTION
-1423a03773699eab94d7b281c7b0a4cf *NAMESPACE
+17b6ccb8e1c2ce1c8cf6b272733c9286 *DESCRIPTION
+a3df33551262b05aeea9bb8de306fc8e *NAMESPACE
 6fe38e24a23a87bd379ad2b4751f95f1 *NEWS
 046e6ece23d1099606763a6abf1af9c4 *R/aggregator.R
 3f4ee1978c2a2239edb3815832b5c33d *R/astfun.R
@@ -7,14 +7,14 @@ a5ee3c4fd77db523297ebc6af78662c1 *R/automl.R
 c0fdd2645fb17a70d67ef351997e623f *R/classes.R
 07e37e54d8b1dff17e3c8c94ac883bee *R/communication.R
 26c44d8ceb7a96e6a6b365a97592632b *R/config.R
-5e37180eb42e793b482bbc2aefaf95fc *R/connection.R
+bf388fd379f4e61c3e25c333320e6d1e *R/connection.R
 1845f2c3e5053dc9be095b990c8d92ad *R/constants.R
 05d44be3e8423c82f0007e6c9222a1d8 *R/coxph.R
 9e24e5f8261733b60c81c997a53d0d96 *R/coxphutils.R
 3e4eff97aa1ae9614f9d405fad3d4d3a *R/datasets.R
 bb94e3733e3f5f95f86ddd3bced2de04 *R/deeplearning.R
 d7f673b11d31e88178816e444ddada54 *R/edicts.R
-0383d4a5df13f0896541a8668627d498 *R/explain.R
+15e99a1903ad1a9d9c20f680128e8c2b *R/explain.R
 49e59130c67b214c5f258cd06a369382 *R/export.R
 98ec6231e3dfcf139e93cd55f66bfa89 *R/frame.R
 7817a113485d3bf655c830f53085b72e *R/gam.R
@@ -29,7 +29,7 @@ dc072938a24467cb545c45567ab82622 *R/kmeans.R
 559bd48ce5756eb311704d25bb6de1ff *R/kvstore.R
 7e8d3ebdc396c9f285935562cdff4dd0 *R/locate.R
 9fbcf238b88b1bc318482cbd3879ee63 *R/logging.R
-bf507a21a5a6fadba5f7ccab2221ee72 *R/models.R
+22fe6086fc475c31ec27cf75f28d283a *R/models.R
 fb8e26da0520a553b3f221ce25ca99d8 *R/naivebayes.R
 25ce93200179ddb4475e84b87c6d0cd2 *R/parse.R
 1b358d8ccda3dda327cf4720ca58bd01 *R/pca.R
@@ -45,7 +45,7 @@ e8945e23fcce559b627c6f0658aba3ee *R/targetencoder.R
 3d29cb085d67c7d07fd35a932cf770e8 *R/w2vutils.R
 8bfb9f69487fd9ad08d8783a14af0fde *R/word2vec.R
 caf0c3c35541190a663efb3cb8621025 *R/xgboost.R
-5b3fc31225e9cfa7b582f5bce026db70 *R/zzz.R
+7865e2946c5fc7e9c1dc5377b8b8a4b5 *R/zzz.R
 37470e8b841dfacb9152dca3a7576a7a *demo/00Index
 506ebeb7d4629bc95fb191b4a95f1e76 *demo/h2o.anomaly.R
 1b5fd62549d98b3545bc9cb3c1111c2c *demo/h2o.deeplearning.R
@@ -57,7 +57,7 @@ dcab4a64fc5d2007723ff2a174b0b35e *demo/h2o.kmeans.R
 49d02e01f8f52c313d633ba07fb44100 *demo/h2o.prcomp.R
 9922fd14a111c81d856f9eebddbea22a *demo/h2o.randomForest.R
 4c78aae07735fd15a71e626fb0466c0c *inst/branch.txt
-26ab0db90d72e28ad0ba1e22ee510510 *inst/buildnum.txt
+6d7fce9fee471194aa8b5b6e47267f03 *inst/buildnum.txt
 c2009f0054eecbceac0e820e4927e455 *inst/extdata/australia.csv
 fdbd7a2797e683a8f352462c6b140b7d *inst/extdata/housevotes.csv
 42615765a885ddf54427f12c34a0a070 *inst/extdata/iris.csv
@@ -165,7 +165,7 @@ db8a9b1f5b44f996a24a35cc3f1b2cc1 *man/dot-verify_dataxy.Rd
 61dc471e93657b72dec1fa3297eb6fb9 *man/feature_frequencies.H2OModel.Rd
 378ea84ebf19632b14f6855d91ff76c7 *man/generate_col_ind.Rd
 e0de41f699cb066cf379578923d0df59 *man/get_seed.H2OModel.Rd
-9705a0b788ab4a167aa854a14aff60ef *man/h2o-package.Rd
+82fc63742be1f25b0eb7ccce05dfce1f *man/h2o-package.Rd
 63b3c68103547f1ee9a4eabbc6650a7d *man/h2o.HGLMMetrics.Rd
 f681c0a688ae25c437114b844e42b560 *man/h2o.abs.Rd
 23a2815f1286909d355ce5c001bedeb1 *man/h2o.acos.Rd
@@ -369,7 +369,7 @@ d27b9e8e43cfb3ef8c0a06215017f25f *man/h2o.parseSetup.Rd
 3808c7923ab9f5aa087dbef4027904dd *man/h2o.partialPlot.Rd
 87e2aea53bef76993e43bab01774b73b *man/h2o.pd_multi_plot.Rd
 e9cff11883a49e71c82361aa2a067093 *man/h2o.pd_plot.Rd
-782fcc554d73d62426a3ff3c0817ce75 *man/h2o.performance.Rd
+8d5b2b82cf55ee8c364e9648bfef3493 *man/h2o.performance.Rd
 7e5a8c93c1021b825b5f0d0dabb4d919 *man/h2o.pivot.Rd
 dfc30ab574c833e927e1e48ff8c71afb *man/h2o.prcomp.Rd
 36d45878858069a1e244a7485e879409 *man/h2o.predict.Rd
