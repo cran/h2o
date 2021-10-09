@@ -8,7 +8,8 @@ The owner of the file saved is the user by which python session was executed.}
 h2o.download_model(
   model,
   path = NULL,
-  export_cross_validation_predictions = FALSE
+  export_cross_validation_predictions = FALSE,
+  filename = ""
 )
 }
 \arguments{
@@ -18,6 +19,8 @@ h2o.download_model(
 
 \item{export_cross_validation_predictions}{A boolean flag indicating whether the download model should be
 saved with CV Holdout Frame predictions. Default is not to export the predictions.}
+
+\item{filename}{string indicating the file name.}
 }
 \description{
 Download the model in binary format.

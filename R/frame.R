@@ -4023,14 +4023,17 @@ h2o.range <- function(x,na.rm = FALSE,finite = FALSE) {
 is.h2o <- function(x) inherits(x, "H2OFrame")
 
 h2o.class.map <- function() {
-  c("integer64"="numeric",
+  c(
+    "integer64"="numeric",
     "integer"="numeric",
     "double"="numeric",
     "complex"="numeric",
     "logical"="enum",
     "factor"="enum",
     "character"="string",
-    "Date"="Time")
+    "Date"="Time",
+    "POSIXct"="Time"
+  )
 }
 
 destination_frame.guess <- function(x) {
@@ -4171,7 +4174,10 @@ as.h2o.data.frame <- function(x, destination_frame="", use_datatable=TRUE, ...) 
   verbose <- getOption("h2o.verbose", FALSE)
   if (verbose) pt <- proc.time()[[3]]
   if (use_datatable && getOption("h2o.fwrite", TRUE) && use.package("data.table")) {
-    data.table::fwrite(x, tmpf, na="NA_h2o", row.names=FALSE, showProgress=FALSE)
+    data.table::fwrite(
+      x, tmpf,
+      na = "NA_h2o", row.names = FALSE, showProgress = FALSE, dateTimeAs = "write.csv"
+    )
     fun <- "fwrite"
   } else {
     write.csv(x, file = tmpf, row.names = FALSE, na="NA_h2o")
@@ -4451,17 +4457,25 @@ as.logical.H2OFrame <- function(x, ...) as.vector.H2OFrame(x, "logical")
 
 #' Convert H2O Data to Factors
 #'
-#' Convert a column into a factor column.
+#' Convert column/columns in the current frame to categoricals.
 #' @param x a column from an H2OFrame data set.
 #' @seealso \code{\link{as.factor}}.
 #' @examples
 #' \dontrun{
 #' library(h2o)
 #' h2o.init()
-#' prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
-#' prostate <- h2o.uploadFile(path = prostate_path)
-#' prostate[, 2] <- as.factor(prostate[, 2])
-#' summary(prostate)
+#' 
+#' # Single column
+#' cars <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+#' df <- h2o.importFile(cars)
+#' df["cylinders"] <- as.factor(df["cylinders"])
+#' h2o.describe(df["cylinders"])
+#' 
+#' # Multiple columns
+#' cars <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+#' df <- h2o.importFile(cars)
+#' df[c("cylinders","economy_20mpg")] <- as.factor(df[c("cylinders","economy_20mpg")])
+#' h2o.describe(df[c("cylinders","economy_20mpg")])
 #' }
 #' @export
 as.factor <- function(x) {

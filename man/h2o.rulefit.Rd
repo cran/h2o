@@ -45,8 +45,8 @@ Defaults to -1 (time-based random number).}
 
 \item{max_rule_length}{Maximum length of rules. Defaults to 3.}
 
-\item{max_num_rules}{The maximum number of rules to return. defaults to -1 which means the number of rules is selected  by
-diminishing returns in model deviance. Defaults to -1.}
+\item{max_num_rules}{The maximum number of rules to return. defaults to -1 which means the number of rules is selected
+by diminishing returns in model deviance. Defaults to -1.}
 
 \item{model_type}{Specifies type of base learners in the ensemble. Must be one of: "rules_and_linear", "rules", "linear". Defaults to rules_and_linear.}
 
@@ -54,7 +54,9 @@ diminishing returns in model deviance. Defaults to -1.}
 the dataset; giving an observation a relative weight of 2 is equivalent to repeating that row twice. Negative
 weights are not allowed. Note: Weights are per-row observation weights and do not increase the size of the
 data frame. This is typically the number of times a row is repeated, but non-integer values are supported as
-well. During training, rows with higher weights matter more, due to the larger loss function pre-factor.}
+well. During training, rows with higher weights matter more, due to the larger loss function pre-factor. If
+you set weight = 0 for a row, the returned prediction frame at that row is zero and this is incorrect. To get
+an accurate prediction, remove all rows with weight == 0.}
 
 \item{distribution}{Distribution function Must be one of: "AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
 "tweedie", "laplace", "quantile", "huber". Defaults to AUTO.}

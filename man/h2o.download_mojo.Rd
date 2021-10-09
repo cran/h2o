@@ -9,7 +9,8 @@ h2o.download_mojo(
   path = getwd(),
   get_genmodel_jar = FALSE,
   genmodel_name = "",
-  genmodel_path = ""
+  genmodel_path = "",
+  filename = ""
 )
 }
 \arguments{
@@ -17,11 +18,15 @@ h2o.download_mojo(
 
 \item{path}{The path where MOJO file should be saved. Saved to current directory by default.}
 
-\item{get_genmodel_jar}{If TRUE, then also download h2o-genmodel.jar and store it in either in the same folder}
+\item{get_genmodel_jar}{If TRUE, then also download h2o-genmodel.jar and store it in either in the same folder
+as the MOJO or in ``genmodel_path`` if specified.}
 
 \item{genmodel_name}{Custom name of genmodel jar.}
 
-\item{genmodel_path}{Path to store h2o-genmodel.jar. If left blank and ``get_genmodel_jar`` is TRUE, then the h2o-genmodel.jar}
+\item{genmodel_path}{Path to store h2o-genmodel.jar. If left blank and ``get_genmodel_jar`` is TRUE, then the h2o-genmodel.jar
+is saved to ``path``.}
+
+\item{filename}{string indicating the file name. (Type of file is always .zip)}
 }
 \value{
 Name of the MOJO file written to the path.

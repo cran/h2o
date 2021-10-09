@@ -4,7 +4,7 @@
 \alias{.get_first_of_family}
 \title{Get first of family models}
 \usage{
-.get_first_of_family(models, all_stackedensembles = TRUE)
+.get_first_of_family(models, all_stackedensembles = FALSE)
 }
 \arguments{
 \item{models}{models or model ids}

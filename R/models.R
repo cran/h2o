@@ -834,9 +834,9 @@ staged_predict_proba.H2OModel <- function(object, newdata, ...) {
 #' @export
 h2o.staged_predict_proba <- staged_predict_proba.H2OModel
 
-#' Predict feature contributions - SHAP values on an H2O Model (only DRF, GBM and XGBoost models).
+#' Predict feature contributions - SHAP values on an H2O Model (only DRF, GBM, XGBoost models and equivalent imported MOJOs).
 #'
-#' Returned H2OFrame has shape (#rows, #features + 1) - there is a feature contribution column for each input
+#' Default implemntation return H2OFrame shape (#rows, #features + 1) - there is a feature contribution column for each input
 #' feature, the last column is the model bias (same value for each row). The sum of the feature contributions
 #' and the bias term is equal to the raw prediction of the model. Raw prediction of tree-based model is the sum
 #' of the predictions of the individual trees before the inverse link function is applied to get the actual
@@ -851,6 +851,14 @@ h2o.staged_predict_proba <- staged_predict_proba.H2OModel
 #' @param output_format Specify how to output feature contributions in XGBoost - XGBoost by default outputs
 #'                      contributions for 1-hot encoded features, specifying a compact output format will produce
 #'                      a per-feature contribution. Defaults to original.
+#' @param top_n Return only #top_n highest contributions + bias
+#'              If top_n<0 then sort all SHAP values in descending order
+#'              If top_n<0 && bottom_n<0 then sort all SHAP values in descending order
+#' @param bottom_n Return only #bottom_n lowest contributions + bias
+#'                 If top_n and bottom_n are defined together then return array of #top_n + #bottom_n + bias
+#'                 If bottom_n<0 then sort all SHAP values in ascending order
+#'                 If top_n<0 && bottom_n<0 then sort all SHAP values in descending order
+#' @param compare_abs True to compare absolute values of contributions
 #' @param ... additional arguments to pass on.
 #' @return Returns an H2OFrame contain feature contributions for each input row.
 #' @seealso \code{\link{h2o.gbm}} and  \code{\link{h2o.randomForest}} for model
@@ -863,14 +871,27 @@ h2o.staged_predict_proba <- staged_predict_proba.H2OModel
 #' prostate <- h2o.uploadFile(path = prostate_path)
 #' prostate_gbm <- h2o.gbm(3:9, "AGE", prostate)
 #' h2o.predict(prostate_gbm, prostate)
+#' # Compute SHAP
 #' h2o.predict_contributions(prostate_gbm, prostate)
+#' # Compute SHAP and pick the top two highest
+#' h2o.predict_contributions(prostate_gbm, prostate, top_n=2)
+#' # Compute SHAP and pick the top two lowest
+#' h2o.predict_contributions(prostate_gbm, prostate, bottom_n=2)
+#' # Compute SHAP and pick the top two highest regardless of the sign
+#' h2o.predict_contributions(prostate_gbm, prostate, top_n=2, compare_abs=TRUE)
+#' # Compute SHAP and pick the top two lowest regardless of the sign
+#' h2o.predict_contributions(prostate_gbm, prostate, bottom_n=2, compare_abs=TRUE)
+#' # Compute SHAP values and show them all in descending order
+#' h2o.predict_contributions(prostate_gbm, prostate, top_n=-1)
+#' # Compute SHAP and pick the top two highest and top two lowest
+#' h2o.predict_contributions(prostate_gbm, prostate, top_n=2, bottom_n=2)
 #' }
 #' @export
-predict_contributions.H2OModel <- function(object, newdata, output_format = c("original", "compact"), ...) {
+predict_contributions.H2OModel <- function(object, newdata, output_format = c("original", "compact"), top_n=0, bottom_n=0, compare_abs=FALSE, ...) {
     if (missing(newdata)) {
         stop("predictions with a missing `newdata` argument is not implemented yet")
     }
-    params <- list(predict_contributions = TRUE)
+    params <- list(predict_contributions = TRUE, top_n=top_n, bottom_n=bottom_n, compare_abs=compare_abs)
     params$predict_contributions_output_format <- match.arg(output_format)
     url <- paste0('Predictions/models/', object@model_id, '/frames/',  h2o.getId(newdata))
     res <- .h2o.__remoteSend(url, method = "POST", .params = params, h2oRestApiVersion = 4)
@@ -2132,37 +2153,6 @@ h2o.logloss <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
   invisible(NULL)
 }
 
-#'
-#' Retrieve the variable importance.
-#'
-#' @param object An \linkS4class{H2OModel} object.
-#' @examples 
-#' \dontrun{
-#' library(h2o)
-#' h2o.init()
-#' 
-#' f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/prostate/prostate_complete.csv.zip"
-#' pros <- h2o.importFile(f)
-#' response <- "GLEASON"
-#' predictors <- c("ID", "AGE", "CAPSULE", "DCAPS", "PSA", "VOL", "DPROS")
-#' model <- h2o.glm(x = predictors, y = response, training_frame = pros)
-#' h2o.varimp(model)
-#' }
-#' @export
-h2o.varimp <- function(object) {
-  o <- object
-  if( is(o, "H2OModel") ) {
-    vi <- o@model$variable_importances
-    if( is.null(vi) ) {
-      warning("This model doesn't have variable importances", call. = FALSE)
-      return(invisible(NULL))
-    }
-    vi
-  } else {
-    warning( paste0("No variable importances for ", class(o)) )
-    return(NULL)
-  }
-}
 
 #'
 #' Retrieve per-variable split information for a given Isolation Forest model.
@@ -2242,7 +2232,7 @@ h2o.scoreHistoryGAM <- function(object) {
 h2o.get_ntrees_actual <- function(object) {
     o <- object
     if( is(o, "H2OModel") ) {
-        if(o@algorithm == "gbm" | o@algorithm == "drf"| o@algorithm == "isolationforest"| o@algorithm == "xgboost"){
+        if(o@algorithm == "gbm" | o@algorithm == "drf"| o@algorithm == "isolationforest"| o@algorithm == "xgboost" | o@algorithm == "extendedisolationforest"){
             sh <- o@model$model_summary['number_of_trees'][,1]
             if( is.null(sh) ) return(NULL)
             sh
@@ -2312,6 +2302,55 @@ h2o.feature_interaction <- function(model, max_interaction_depth = 100, max_tree
     }
 }
 
+
+#' Calculates Friedman and Popescu's H statistics, in order to test for the presence of an interaction between specified variables in h2o gbm and xgb models.
+#' H varies from 0 to 1. It will have a value of 0 if the model exhibits no interaction between specified variables and a correspondingly larger value for a 
+#' stronger interaction effect between them. NaN is returned if a computation is spoiled by weak main effects and rounding errors.
+#' 
+#' See Jerome H. Friedman and Bogdan E. Popescu, 2008, "Predictive learning via rule ensembles", *Ann. Appl. Stat.*
+#' **2**:916-954, http://projecteuclid.org/download/pdfview_1/euclid.aoas/1223908046, s. 8.1.
+#'
+#' @param model A trained gradient-boosting model.  
+#' @param frame A frame that current model has been fitted to.
+#' @param variables Variables of the interest.
+#'
+#' @examples
+#' \dontrun{
+#' library(h2o)
+#' h2o.init()
+#' prostate.hex <- h2o.importFile(
+#'        "https://s3.amazonaws.com/h2o-public-test-data/smalldata/logreg/prostate.csv",
+#'         destination_frame="prostate.hex"
+#'         )
+#' prostate.hex$CAPSULE <- as.factor(prostate.hex$CAPSULE)
+#' prostate.hex$RACE <- as.factor(prostate.hex$RACE)
+#' prostate.h2o <- h2o.gbm(x = 3:9, y = "CAPSULE", training_frame = prostate.hex, 
+#' distribution = "bernoulli", ntrees = 100, max_depth = 5, min_rows = 10, learn_rate = 0.1)
+#' h_val <- h2o.h(prostate.h2o, prostate.hex, c('DPROS','DCAPS'))
+#' }
+#' @export
+h2o.h <- function(model, frame, variables) {
+    o <- model
+    if (is(o, "H2OModel")) {
+        if (o@algorithm == "gbm" | o@algorithm == "xgboost"){
+            parms <- list()
+            parms$model_id <- model@model_id
+            parms$frame <- h2o.getId(frame)
+            parms$variables <- .collapse.char(variables)
+
+            json <- .h2o.doSafePOST(urlSuffix = "FriedmansPopescusH", parms=parms)
+            source <- .h2o.fromJSON(jsonlite::fromJSON(json,simplifyDataFrame=FALSE))
+
+            return(source$h)
+        } else {
+            warning(paste0("No calculation available for this model"))
+            return(NULL)
+        }
+    } else {
+        warning(paste0("No calculation available for ", class(o)))
+        return(NULL)
+    }
+}
 
 #'
 #' Retrieve the respective weight matrix
@@ -3978,6 +4017,7 @@ h2o.sdev <- function(object) {
   if (algo == "kmeans" ||
       algo == "glrm" ||
       algo == "pca" ||
+      algo == "extendedisolationforest" ||
       (algo == "deeplearning" && !is.null(params$autoencoder) && params$autoencoder)) {
     FALSE
   } else {
@@ -5026,6 +5066,7 @@ setMethod("length", signature(x = "H2OTree"), function(x) {
 #' @param tree_number Number of the tree in the model to fetch, starting with 1
 #' @param tree_class Name of the class of the tree (if applicable). This value is ignored for regression and binomial response column, as there is only one tree built.
 #'                   As there is exactly one class per categorical level, name of tree's class equals to the corresponding categorical level of response column.
+#' @param plain_language_rules (Optional) Whether to generate plain language rules. AUTO by default, meaning FALSE for big trees and TRUE for small trees.
 #' @return Returns an H2OTree object with detailed information about a tree.
 #' @examples 
 #' \dontrun{
@@ -5038,7 +5079,7 @@ setMethod("length", signature(x = "H2OTree"), function(x) {
 #' tree <- h2o.getModelTree(gbm_model, 1, "Iris-setosa")
 #' }
 #' @export
-h2o.getModelTree <- function(model, tree_number, tree_class = NA) {
+h2o.getModelTree <- function(model, tree_number, tree_class = NA, plain_language_rules="AUTO") {
   url <- "Tree"
   tree_class_request = tree_class;
   if(is.na(tree_class)){
@@ -5050,7 +5091,8 @@ h2o.getModelTree <- function(model, tree_number, tree_class = NA) {
       h2oRestApiVersion = 3,
       model = model@model_id,
       tree_number = tree_number - 1,
-      tree_class = tree_class_request
+      tree_class = tree_class_request,
+      plain_language_rules = plain_language_rules
     )
 
   res$thresholds[is.nan(res$thresholds)] <- NA
@@ -5084,7 +5126,6 @@ h2o.getModelTree <- function(model, tree_number, tree_class = NA) {
     res$predictions <- as.numeric(res$predictions)
   }
   
-  
   # Start of the tree-building process
   tree <- new(
     "H2OTree",
@@ -5097,8 +5138,8 @@ h2o.getModelTree <- function(model, tree_number, tree_class = NA) {
     features = res$features,
     nas = res$nas,
     predictions = res$predictions,
-    tree_decision_path = res$tree_decision_path,
-    decision_paths = res$decision_paths
+    tree_decision_path = ifelse(is.null(res$tree_decision_path), "Plain language rules generation is turned off.", res$tree_decision_path),
+    decision_paths = ifelse(is.na(res$decision_paths[1]), "Plain language rules generation is turned off.", res$decision_paths)
   )
 
   node_index <- 0

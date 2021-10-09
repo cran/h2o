@@ -23,6 +23,7 @@
 \alias{H2OWordEmbeddingMetrics-class}
 \alias{H2OCoxPHMetrics-class}
 \alias{H2OAnomalyDetectionMetrics-class}
+\alias{show,H2OAnomalyDetectionMetrics-method}
 \alias{H2OTargetEncoderMetrics-class}
 \title{The H2OModelMetrics Object.}
 \usage{
@@ -41,6 +42,8 @@
 \S4method{show}{H2OAutoEncoderMetrics}(object)
 
 \S4method{show}{H2ODimReductionMetrics}(object)
+
+\S4method{show}{H2OAnomalyDetectionMetrics}(object)
 }
 \arguments{
 \item{object}{An \code{H2OModelMetrics} object}

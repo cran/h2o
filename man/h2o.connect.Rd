@@ -58,7 +58,6 @@ Connect to a running H2O instance.
 \dontrun{
 library(h2o)
 # Try to connect to a H2O instance running at http://localhost:54321/cluster_X
-# If not found, start a local H2O instance from R with the default settings.
 #h2o.connect(ip = "localhost", port = 54321, context_path = "cluster_X")
 # Or
 #config = list(ip = "localhost", port = 54321, context_path = "cluster_X")

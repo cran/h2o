@@ -8,7 +8,8 @@ h2o.saveModel(
   object,
   path = "",
   force = FALSE,
-  export_cross_validation_predictions = FALSE
+  export_cross_validation_predictions = FALSE,
+  filename = ""
 )
 }
 \arguments{
@@ -21,6 +22,8 @@ h2o.saveModel(
 \item{export_cross_validation_predictions}{logical, indicates whether the exported model 
 artifacts should also include CV Holdout Frame predictions.  Default is not to export 
 the predictions.}
+
+\item{filename}{string indicating the file name.}
 }
 \description{
 Save an \linkS4class{H2OModel} to disk. (Note that ensemble binary models 

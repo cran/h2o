@@ -55,8 +55,6 @@ h2o.xgboost(
   score_tree_interval = 0,
   min_split_improvement = 0,
   gamma = 0,
-  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
-    "WEIGHTED_OVO"),
   nthread = -1,
   save_matrix_directory = NULL,
   build_tree_one_node = FALSE,
@@ -78,6 +76,9 @@ h2o.xgboost(
   backend = c("auto", "gpu", "cpu"),
   gpu_id = NULL,
   gainslift_bins = -1,
+  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+    "WEIGHTED_OVO"),
+  scale_pos_weight = 1,
   verbose = FALSE
 )
 }
@@ -119,7 +120,9 @@ stratify the folds based on the response variable, for classification problems. 
 the dataset; giving an observation a relative weight of 2 is equivalent to repeating that row twice. Negative
 weights are not allowed. Note: Weights are per-row observation weights and do not increase the size of the
 data frame. This is typically the number of times a row is repeated, but non-integer values are supported as
-well. During training, rows with higher weights matter more, due to the larger loss function pre-factor.}
+well. During training, rows with higher weights matter more, due to the larger loss function pre-factor. If
+you set weight = 0 for a row, the returned prediction frame at that row is zero and this is incorrect. To get
+an accurate prediction, remove all rows with weight == 0.}
 
 \item{stopping_rounds}{Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the
 stopping_metric does not improve for k:=stopping_rounds scoring events (0 to disable) Defaults to 0.}
@@ -194,9 +197,6 @@ decreasing constraint.}
 \item{gamma}{(same as min_split_improvement) Minimum relative improvement in squared error reduction for a split to happen
 Defaults to 0.0.}
 
-\item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
-"WEIGHTED_OVO". Defaults to AUTO.}
-
 \item{nthread}{Number of parallel threads that can be used to run XGBoost. Cannot exceed H2O cluster limits (-nthreads
 parameter). Defaults to maximum available Defaults to -1.}
 
@@ -244,6 +244,12 @@ auto.}
 \item{gpu_id}{Which GPU(s) to use.}
 
 \item{gainslift_bins}{Gains/Lift table number of bins. 0 means disabled.. Default value -1 means automatic binning. Defaults to -1.}
+
+\item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+"WEIGHTED_OVO". Defaults to AUTO.}
+
+\item{scale_pos_weight}{Controls the effect of observations with positive labels in relation to the observations with negative labels
+on gradient calculation. Useful for imbalanced problems. Defaults to 1.0.}
 
 \item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree). Defaults to FALSE.}
 }

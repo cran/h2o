@@ -21,7 +21,7 @@
 #' @param ...  arguments describing parameters to use with algorithm (i.e., x, y, training_frame).
 #'        Look at the specific algorithm - h2o.gbm, h2o.glm, h2o.kmeans, h2o.deepLearning - for available parameters.
 #' @param hyper_params  List of lists of hyper parameters (i.e., \code{list(ntrees=c(1,2), max_depth=c(5,7))}).
-#' @param is_supervised  (Optional) If specified then override the default heuristic which decides if the given algorithm
+#' @param is_supervised [Deprecated] It is not possible to override default behaviour. (Optional) If specified then override the default heuristic which decides if the given algorithm
 #'        name and parameters specify a supervised or unsupervised algorithm.
 #' @param do_hyper_params_check  Perform client check for specified hyper parameters. It can be time expensive for
 #'        large hyper space.
@@ -73,8 +73,11 @@ h2o.grid <- function(algorithm,
                      recovery_dir = NULL,
                      parallelism = 1)
 {
+  if (!is.null(is_supervised)) {
+    warning("Parameter is_supervised is deprecated. It is not possible to override default behaviour.")
+  }
   #Unsupervised algos to account for in grid (these algos do not need response)
-  unsupervised_algos <- c("kmeans", "pca", "svd", "glrm")
+  unsupervised_algos <- c("kmeans", "pca", "svd", "glrm", "extendedisolationforest")
   # Parameter list
   dots <- list(...)
   # Add x, y, and training_frame
@@ -258,8 +261,14 @@ h2o.getGrid <- function(grid_id, sort_by, decreasing, verbose = FALSE) {
   failure_details <- lapply(json$failure_details, function(msg) { msg })
   failure_stack_traces <- lapply(json$failure_stack_traces, function(msg) { msg })
   failed_raw_params <- if (is.list(json$failed_raw_params)) matrix(nrow=0, ncol=0) else json$failed_raw_params
+  warning_details <- lapply(json$warning_details, function(msg) { msg })
 
   # print out the failure/warning messages from Java if it exists
+  if (length(warning_details) > 0)  {
+    for (index in 1:length(warning_details)) {
+      warning(warning_details[[index]])
+    }
+  }
   if (length(failure_details) > 0) {
     warning("Some models were not built due to a failure, for more details run `summary(grid_object, show_stack_traces = TRUE)`")
     if (verbose) {

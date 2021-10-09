@@ -4,7 +4,7 @@
 \alias{h2o.saveModelDetails}
 \title{Save an H2O Model Details}
 \usage{
-h2o.saveModelDetails(object, path = "", force = FALSE)
+h2o.saveModelDetails(object, path = "", force = FALSE, filename = "")
 }
 \arguments{
 \item{object}{an \linkS4class{H2OModel} object.}
@@ -12,6 +12,8 @@ h2o.saveModelDetails(object, path = "", force = FALSE)
 \item{path}{string indicating the directory the model details will be written to.}
 
 \item{force}{logical, indicates how to deal with files that already exist.}
+
+\item{filename}{string indicating the file name. (Type of file is always .json)}
 }
 \description{
 Save Model Details of an H2O Model in JSON Format

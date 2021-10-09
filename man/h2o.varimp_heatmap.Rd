@@ -7,7 +7,7 @@
 h2o.varimp_heatmap(object, top_n = 20)
 }
 \arguments{
-\item{object}{An H2OAutoML object or list of H2O models.}
+\item{object}{A list of H2O models, an H2O AutoML instance, or an H2OFrame with a 'model_id' column (e.g. H2OAutoML leaderboard).}
 
 \item{top_n}{Integer specifying the number models shown in the heatmap 
 (based on leaderboard ranking). Defaults to 20.}

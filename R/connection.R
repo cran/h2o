@@ -310,7 +310,6 @@ h2o.init <- function(ip = "localhost", port = 54321, name = NA_character_, start
 #' \dontrun{
 #' library(h2o)
 #' # Try to connect to a H2O instance running at http://localhost:54321/cluster_X
-#' # If not found, start a local H2O instance from R with the default settings.
 #' #h2o.connect(ip = "localhost", port = 54321, context_path = "cluster_X")
 #' # Or
 #' #config = list(ip = "localhost", port = 54321, context_path = "cluster_X")
@@ -335,7 +334,7 @@ h2o.connect <- function(ip = "localhost", port = 54321, strict_version_check = T
    do.call(h2o.init, c(startH2O=FALSE, config))
  } else {
    # Pass arguments directly
-   h2o.init(ip=ip, port=port, strict_version_check=strict_version_check,
+   h2o.init(ip=ip, port=port, startH2O=FALSE, strict_version_check=strict_version_check,
             proxy=proxy, https=https, cacert=cacert, insecure=insecure, password=password,
             username=username, use_spnego=use_spnego, cookies=cookies, context_path=context_path)
  }
@@ -614,12 +613,12 @@ h2o.resume <- function(recovery_dir=NULL) {
   if (!is.null(jver_error)) {
     stop(jver_error, "\n",
     "Please download the latest Java SE JDK from the following URL:\n",
-    "https://www.oracle.com/technetwork/java/javase/downloads/index.html")
+    "http://docs.h2o.ai/h2o/latest-stable/h2o-docs/welcome.html#java-requirements")
   }
   if(any(grepl("Client VM", jver))) {
     warning("You have a 32-bit version of Java. H2O works best with 64-bit Java.\n",
             "Please download the latest Java SE JDK from the following URL:\n",
-            "https://www.oracle.com/technetwork/java/javase/downloads/index.html")
+            "http://docs.h2o.ai/h2o/latest-stable/h2o-docs/welcome.html#java-requirements")
 
     # Set default max_memory to be 1g for 32-bit JVM.
     if(is.null(max_memory)) max_memory = "1g"
@@ -647,8 +646,12 @@ h2o.resume <- function(recovery_dir=NULL) {
   if(enable_assertions) args <- c(args, "-ea")
   if(!is.null(jvm_custom_args)) args <- c(args,jvm_custom_args)
 
-  class_path <- paste0(c(jar_file, extra_classpath), collapse=.Platform$path.sep)
-  args <- c(args, "-cp", class_path, "water.H2OApp")
+  if (!is.null(extra_classpath)) {
+    class_path <- paste0(c(jar_file, extra_classpath), collapse=.Platform$path.sep)
+    args <- c(args, "-cp", class_path, "water.H2OApp")
+  } else {
+    args <- c(args, "-jar", jar_file)
+  }
   args <- c(args, "-name", name)
   args <- c(args, "-ip", ip)
   if (bind_to_localhost) {
@@ -663,6 +666,7 @@ h2o.resume <- function(recovery_dir=NULL) {
 
   if(nthreads > 0L) args <- c(args, "-nthreads", nthreads)
   if(!is.null(license)) args <- c(args, "-license", license)
+  args <- c(args, "-allow_unsupported_java")
 
   cat("\n")
   cat(        "Note:  In case of errors look at the following log files:\n")

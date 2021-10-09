@@ -13,7 +13,7 @@ h2o.model_correlation_heatmap(
 )
 }
 \arguments{
-\item{object}{An H2OAutoML object or list of H2O models.}
+\item{object}{A list of H2O models, an H2O AutoML instance, or an H2OFrame with a 'model_id' column (e.g. H2OAutoML leaderboard).}
 
 \item{newdata}{An H2O Frame.  Predictions from the models will be generated using this frame, 
 so this should be a holdout set.}

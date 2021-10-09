@@ -4,7 +4,7 @@
 \alias{h2o.save_mojo}
 \title{Save an H2O Model Object as Mojo to Disk}
 \usage{
-h2o.save_mojo(object, path = "", force = FALSE)
+h2o.save_mojo(object, path = "", force = FALSE, filename = "")
 }
 \arguments{
 \item{object}{an \linkS4class{H2OModel} object.}
@@ -12,6 +12,8 @@ h2o.save_mojo(object, path = "", force = FALSE)
 \item{path}{string indicating the directory the model will be written to.}
 
 \item{force}{logical, indicates how to deal with files that already exist.}
+
+\item{filename}{string indicating the file name. (Type of file is always .zip)}
 }
 \description{
 Save an MOJO (Model Object, Optimized) to disk.

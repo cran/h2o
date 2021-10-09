@@ -4,7 +4,12 @@
 \alias{h2o.getModelTree}
 \title{Fetchces a single tree of a H2O model. This function is intended to be used on Gradient Boosting Machine models or Distributed Random Forest models.}
 \usage{
-h2o.getModelTree(model, tree_number, tree_class = NA)
+h2o.getModelTree(
+  model,
+  tree_number,
+  tree_class = NA,
+  plain_language_rules = "AUTO"
+)
 }
 \arguments{
 \item{model}{Model with trees}
@@ -13,6 +18,8 @@ h2o.getModelTree(model, tree_number, tree_class = NA)
 
 \item{tree_class}{Name of the class of the tree (if applicable). This value is ignored for regression and binomial response column, as there is only one tree built.
 As there is exactly one class per categorical level, name of tree's class equals to the corresponding categorical level of response column.}
+
+\item{plain_language_rules}{(Optional) Whether to generate plain language rules. AUTO by default, meaning FALSE for big trees and TRUE for small trees.}
 }
 \value{
 Returns an H2OTree object with detailed information about a tree.

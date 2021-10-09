@@ -15,8 +15,7 @@ h2o.explain(
 )
 }
 \arguments{
-\item{object}{One of the following: an H2O model, a list of H2O models, an H2OAutoML object or 
-an H2OAutoML Leaderboard slice.}
+\item{object}{A list of H2O models, an H2O AutoML instance, or an H2OFrame with a 'model_id' column (e.g. H2OAutoML leaderboard).}
 
 \item{newdata}{An H2OFrame.}
 

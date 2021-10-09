@@ -38,7 +38,7 @@ Look at the specific algorithm - h2o.gbm, h2o.glm, h2o.kmeans, h2o.deepLearning 
 
 \item{hyper_params}{List of lists of hyper parameters (i.e., \code{list(ntrees=c(1,2), max_depth=c(5,7))}).}
 
-\item{is_supervised}{(Optional) If specified then override the default heuristic which decides if the given algorithm
+\item{is_supervised}{[Deprecated] It is not possible to override default behaviour. (Optional) If specified then override the default heuristic which decides if the given algorithm
 name and parameters specify a supervised or unsupervised algorithm.}
 
 \item{do_hyper_params_check}{Perform client check for specified hyper parameters. It can be time expensive for

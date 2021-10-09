@@ -3,12 +3,15 @@
 \name{predict_contributions.H2OModel}
 \alias{predict_contributions.H2OModel}
 \alias{h2o.predict_contributions}
-\title{Predict feature contributions - SHAP values on an H2O Model (only DRF, GBM and XGBoost models).}
+\title{Predict feature contributions - SHAP values on an H2O Model (only DRF, GBM, XGBoost models and equivalent imported MOJOs).}
 \usage{
 predict_contributions.H2OModel(
   object,
   newdata,
   output_format = c("original", "compact"),
+  top_n = 0,
+  bottom_n = 0,
+  compare_abs = FALSE,
   ...
 )
 
@@ -16,6 +19,9 @@ h2o.predict_contributions(
   object,
   newdata,
   output_format = c("original", "compact"),
+  top_n = 0,
+  bottom_n = 0,
+  compare_abs = FALSE,
   ...
 )
 }
@@ -30,13 +36,24 @@ variables with which to predict.}
 contributions for 1-hot encoded features, specifying a compact output format will produce
 a per-feature contribution. Defaults to original.}
 
+\item{top_n}{Return only #top_n highest contributions + bias
+If top_n<0 then sort all SHAP values in descending order
+If top_n<0 && bottom_n<0 then sort all SHAP values in descending order}
+
+\item{bottom_n}{Return only #bottom_n lowest contributions + bias
+If top_n and bottom_n are defined together then return array of #top_n + #bottom_n + bias
+If bottom_n<0 then sort all SHAP values in ascending order
+If top_n<0 && bottom_n<0 then sort all SHAP values in descending order}
+
+\item{compare_abs}{True to compare absolute values of contributions}
+
 \item{...}{additional arguments to pass on.}
 }
 \value{
 Returns an H2OFrame contain feature contributions for each input row.
 }
 \description{
-Returned H2OFrame has shape (#rows, #features + 1) - there is a feature contribution column for each input
+Default implemntation return H2OFrame shape (#rows, #features + 1) - there is a feature contribution column for each input
 feature, the last column is the model bias (same value for each row). The sum of the feature contributions
 and the bias term is equal to the raw prediction of the model. Raw prediction of tree-based model is the sum
 of the predictions of the individual trees before the inverse link function is applied to get the actual
@@ -53,7 +70,20 @@ prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
 prostate <- h2o.uploadFile(path = prostate_path)
 prostate_gbm <- h2o.gbm(3:9, "AGE", prostate)
 h2o.predict(prostate_gbm, prostate)
+# Compute SHAP
 h2o.predict_contributions(prostate_gbm, prostate)
+# Compute SHAP and pick the top two highest
+h2o.predict_contributions(prostate_gbm, prostate, top_n=2)
+# Compute SHAP and pick the top two lowest
+h2o.predict_contributions(prostate_gbm, prostate, bottom_n=2)
+# Compute SHAP and pick the top two highest regardless of the sign
+h2o.predict_contributions(prostate_gbm, prostate, top_n=2, compare_abs=TRUE)
+# Compute SHAP and pick the top two lowest regardless of the sign
+h2o.predict_contributions(prostate_gbm, prostate, bottom_n=2, compare_abs=TRUE)
+# Compute SHAP values and show them all in descending order
+h2o.predict_contributions(prostate_gbm, prostate, top_n=-1)
+# Compute SHAP and pick the top two highest and top two lowest
+h2o.predict_contributions(prostate_gbm, prostate, top_n=2, bottom_n=2)
 }
 }
 \seealso{
