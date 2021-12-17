@@ -4,10 +4,13 @@
 \alias{h2o.coef_norm}
 \title{Return coefficients fitted on the standardized data (requires standardize = True, which is on by default). These coefficients can be used to evaluate variable importance.}
 \usage{
-h2o.coef_norm(object)
+h2o.coef_norm(object, predictorSize = -1)
 }
 \arguments{
 \item{object}{an \linkS4class{H2OModel} object.}
+
+\item{predictorSize}{predictor subset size.  If specified, will only return model coefficients of that subset size.  If
+not specified will return a lists of model coefficient dicts for all predictor subset size.}
 }
 \description{
 Return coefficients fitted on the standardized data (requires standardize = True, which is on by default). These coefficients can be used to evaluate variable importance.
@@ -30,6 +33,6 @@ cars_glm <- h2o.glm(balance_classes = TRUE,
                     y = response, 
                     training_frame = train, 
                     validation_frame = valid)
-h2o.coef(cars_glm)
+h2o.coef_norm(cars_glm)
 }
 }

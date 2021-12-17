@@ -10,7 +10,8 @@ as.numeric(x)
 \item{x}{a column from an H2OFrame data set.}
 }
 \description{
-Converts an H2O column into a numeric value column.
+Converts an H2O column into a numeric value column. If the column type is enum and you want to convert it to numeric, you should first convert it 
+to character then convert it to numeric. Otherwise, the values may be converted to underlying factor values, not the expected mapped values.
 }
 \examples{
 \dontrun{

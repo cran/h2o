@@ -4,10 +4,12 @@
 \alias{h2o.upload_mojo}
 \title{Imports a MOJO from a local filesystem, creating a Generic model with it.}
 \usage{
-h2o.upload_mojo(mojo_local_file_path)
+h2o.upload_mojo(mojo_local_file_path, model_id = NULL)
 }
 \arguments{
 \item{mojo_local_file_path}{Filesystem path to the model imported}
+
+\item{model_id}{Model ID, default is NULL}
 }
 \value{
 Returns H2O Generic Model embedding given MOJO model

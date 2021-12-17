@@ -10,7 +10,8 @@ h2o.asnumeric(x)
 \item{x}{An H2OFrame object.}
 }
 \description{
-Convert H2O Data to Numerics
+If the column type is enum and you want to convert it to numeric, you should first convert it to character then convert it to numeric. 
+Otherwise, the values may be converted to underlying factor values, not the expected mapped values.
 }
 \examples{
 \dontrun{
@@ -19,6 +20,7 @@ h2o.init()
 
 f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
 cars <- h2o.importFile(f)
+h2o.ascharacter(cars)
 h2o.asnumeric(cars)
 }
 }

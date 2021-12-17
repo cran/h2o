@@ -60,9 +60,9 @@ validation_frame will be ignored.}
 this data frame intead of using cross-validation metrics, which is the default.}
 
 \item{blending_frame}{Blending frame (H2OFrame or ID) used to train the the metalearning algorithm in Stacked Ensembles (instead of relying on cross-validated predicted values); Optional.
-When provided, it also is recommended to disable cross validation by setting `nfolds=0` and to provide a leaderboard frame for scoring purposes.}
+When provided, it also is recommended to disable cross validation by setting \code{nfolds=0} and to provide a leaderboard frame for scoring purposes.}
 
-\item{nfolds}{Number of folds for k-fold cross-validation. Must be >= 2; defaults to 5. Use 0 to disable cross-validation; 
+\item{nfolds}{Number of folds for k-fold cross-validation. Must be >= 2; defaults to 5. Use 0 to disable cross-validation;
 this will also disable Stacked Ensemble (thus decreasing the overall model performance).}
 
 \item{fold_column}{Column with cross-validation fold index assignment per observation; used to override the default, randomized, 5-fold cross-validation scheme for individual models in the AutoML run.}
@@ -70,16 +70,16 @@ this will also disable Stacked Ensemble (thus decreasing the overall model perfo
 \item{weights_column}{Column with observation weights. Giving some observation a weight of zero is equivalent to excluding it from
 the dataset; giving an observation a relative weight of 2 is equivalent to repeating that row twice. Negative weights are not allowed.}
 
-\item{balance_classes}{\code{Logical}. Specify whether to oversample the minority classes to balance the class distribution; only applicable to classification. If the oversampled size of the 
-dataset exceeds the maximum size calculated during `max_after_balance_size` parameter, then the majority class will be undersampled to satisfy the size limit. Defaults to FALSE.}
+\item{balance_classes}{\code{Logical}. Specify whether to oversample the minority classes to balance the class distribution; only applicable to classification. If the oversampled size of the
+dataset exceeds the maximum size calculated during \code{max_after_balance_size} parameter, then the majority class will be undersampled to satisfy the size limit. Defaults to FALSE.}
 
 \item{class_sampling_factors}{Desired over/under-sampling ratios per class (in lexicographic order). If not specified, sampling factors will
-be automatically computed to obtain class balance during training. Requires `balance_classes`.}
+be automatically computed to obtain class balance during training. Requires \code{balance_classes}.}
 
 \item{max_after_balance_size}{Maximum relative size of the training data after balancing class counts (can be less than 1.0). Requires
-`balance_classes`. Defaults to 5.0.}
+\code{balance_classes}. Defaults to 5.0.}
 
-\item{max_runtime_secs}{This argument specifies the maximum time that the AutoML process will run for. If neither `max_runtime_secs` nor `max_models` are specified by the user, then `max_runtime_secs` defaults to 3600 seconds (1 hour).}
+\item{max_runtime_secs}{This argument specifies the maximum time that the AutoML process will run for. If neither \code{max_runtime_secs} nor \code{max_models} are specified by the user, then \code{max_runtime_secs} defaults to 3600 seconds (1 hour).}
 
 \item{max_runtime_secs_per_model}{Maximum runtime in seconds dedicated to each individual model training process. Use 0 to disable. Defaults to 0.}
 
@@ -92,22 +92,22 @@ Must be one of "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AU
 dataset is at least 1 million rows; otherwise it defaults to a bigger value determined by the size of the dataset and the non-NA-rate.  In that case, the value is computed
 as 1/sqrt(nrows * non-NA-rate).}
 
-\item{stopping_rounds}{Integer. Early stopping based on convergence of `stopping_metric`. Stop if simple moving average of length k of the `stopping_metric`
-does not improve for k (`stopping_rounds`) scoring events. Defaults to 3 and must be an non-zero integer.  Use 0 to disable early stopping.}
+\item{stopping_rounds}{Integer. Early stopping based on convergence of \code{stopping_metric}. Stop if simple moving average of length k of the \code{stopping_metric}
+does not improve for k (\code{stopping_rounds}) scoring events. Defaults to 3 and must be an non-zero integer.  Use 0 to disable early stopping.}
 
-\item{seed}{Integer. Set a seed for reproducibility. AutoML can only guarantee reproducibility if `max_models` or early stopping is used
-because `max_runtime_secs` is resource limited, meaning that if the resources are not the same between runs, AutoML may be able to train more models on one run vs another.
-In addition, H2O Deep Learning models are not reproducible by default for performance reasons, so if the user requires reproducibility, then `exclude_algos` must
+\item{seed}{Integer. Set a seed for reproducibility. AutoML can only guarantee reproducibility if \code{max_models} or early stopping is used
+because \code{max_runtime_secs} is resource limited, meaning that if the resources are not the same between runs, AutoML may be able to train more models on one run vs another.
+In addition, H2O Deep Learning models are not reproducible by default for performance reasons, so if the user requires reproducibility, then \code{exclude_algos} must
 contain "DeepLearning".}
 
 \item{project_name}{Character string to identify an AutoML project.  Defaults to NULL, which means a project name will be auto-generated. More models can be trained and added to an existing
 AutoML project by specifying the same project name in multiple calls to the AutoML function (as long as the same training frame is used in subsequent runs).}
 
-\item{exclude_algos}{Vector of character strings naming the algorithms to skip during the model-building phase.  An example use is `exclude_algos = c("GLM", "DeepLearning", "DRF")`,
+\item{exclude_algos}{Vector of character strings naming the algorithms to skip during the model-building phase.  An example use is \code{exclude_algos = c("GLM", "DeepLearning", "DRF")},
 and the full list of options is: "DRF" (Random Forest and Extremely-Randomized Trees), "GLM", "XGBoost", "GBM", "DeepLearning" and "StackedEnsemble".
 Defaults to NULL, which means that all appropriate H2O algorithms will be used, if the search stopping criteria allow. Optional.}
 
-\item{include_algos}{Vector of character strings naming the algorithms to restrict to during the model-building phase. This can't be used in combination with `exclude_algos` param.
+\item{include_algos}{Vector of character strings naming the algorithms to restrict to during the model-building phase. This can't be used in combination with \code{exclude_algos} param.
 Defaults to NULL, which means that all appropriate H2O algorithms will be used, if the search stopping criteria allow. Optional.}
 
 \item{modeling_plan}{List. The list of modeling steps to be used by the AutoML engine (they may not all get executed, depending on other constraints). Optional (Expert usage only).}
@@ -133,7 +133,7 @@ For regression choose between "mean_residual_deviance", "RMSE", "MSE", "MAE", an
 \item{export_checkpoints_dir}{(Optional) Path to a directory where every model will be stored in binary form.}
 
 \item{verbosity}{Verbosity of the backend messages printed during training; Optional.
-Must be one of NULL (live log disabled), "debug", "info", "warn". Defaults to "warn".}
+Must be one of NULL (live log disabled), "debug", "info", "warn", "error". Defaults to "warn".}
 
 \item{...}{Additional (experimental) arguments to be passed through; Optional.}
 }
@@ -142,18 +142,37 @@ An \linkS4class{H2OAutoML} object.
 }
 \description{
 The Automatic Machine Learning (AutoML) function automates the supervised machine learning model training process.
-The current version of AutoML trains and cross-validates the following algorithms:
-three pre-specified XGBoost GBM (Gradient Boosting Machine) models, a fixed grid of GLMs,
-a default Random Forest (DRF), five pre-specified H2O GBMs, a near-default Deep Neural Net,
-an Extremely Randomized Forest (XRT), a random grid of XGBoost GBMs, a random grid of H2O GBMs,
-and a random grid of Deep Neural Nets. In some cases, there will not be enough time to complete all the algorithms,
-so some may be missing from the leaderboard. AutoML trains several Stacked Ensemble models during the run.
-Two kinds of Stacked Ensemble models are trained one of all available models, and one of only the best models of each kind.
-Note that Stacked Ensemble models are trained only if there isn't another stacked ensemble with the same base models.
+AutoML finds the best model, given a training frame and response, and returns an H2OAutoML object,
+which contains a leaderboard of all the models that were trained in the process, ranked by a default model performance metric.
 }
 \details{
-AutoML finds the best model, given a training frame and response, and returns an H2OAutoML object,
-         which contains a leaderboard of all the models that were trained in the process, ranked by a default model performance metric.
+AutoML trains several models, cross-validated by default, by using the following available algorithms:
+\itemize{
+\item XGBoost
+\item GBM (Gradient Boosting Machine)
+\item GLM (Generalized Linear Model)
+\item DRF (Distributed Random Forest)
+\item XRT (eXtremely Randomized Trees)
+\item DeepLearning (Fully Connected Deep Neural Network)
+}
+
+It also applies HPO on the following algorithms:
+\itemize{
+\item XGBoost
+\item GBM
+\item DeepLearning
+}
+
+In some cases, there will not be enough time to complete all the algorithms, so some may be missing from the leaderboard.
+
+Finally, AutoML also trains several Stacked Ensemble models at various stages during the run.
+Mainly two kinds of Stacked Ensemble models are trained:
+\itemize{
+\item one of all available models at time t.
+\item one of only the best models of each kind at time t.
+}
+
+Note that Stacked Ensemble models are trained only if there isn't another stacked ensemble with the same base models.
 }
 \examples{
 \dontrun{

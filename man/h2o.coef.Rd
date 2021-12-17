@@ -4,10 +4,13 @@
 \alias{h2o.coef}
 \title{Return the coefficients that can be applied to the non-standardized data.}
 \usage{
-h2o.coef(object)
+h2o.coef(object, predictorSize = -1)
 }
 \arguments{
 \item{object}{an \linkS4class{H2OModel} object.}
+
+\item{predictorSize}{predictor subset size.  If specified, will only return model coefficients of that subset size.  If
+not specified will return a lists of model coefficient dicts for all predictor subset size.}
 }
 \description{
 Note: standardize = True by default. If set to False, then coef() returns the coefficients that are fit directly.

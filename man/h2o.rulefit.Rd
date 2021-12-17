@@ -19,7 +19,10 @@ h2o.rulefit(
   weights_column = NULL,
   distribution = c("AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
     "tweedie", "laplace", "quantile", "huber"),
-  rule_generation_ntrees = 50
+  rule_generation_ntrees = 50,
+  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+    "WEIGHTED_OVO"),
+  remove_duplicates = TRUE
 )
 }
 \arguments{
@@ -62,6 +65,12 @@ an accurate prediction, remove all rows with weight == 0.}
 "tweedie", "laplace", "quantile", "huber". Defaults to AUTO.}
 
 \item{rule_generation_ntrees}{specifies the number of trees to build in the tree model. Defaults to 50. Defaults to 50.}
+
+\item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
+"WEIGHTED_OVO". Defaults to AUTO.}
+
+\item{remove_duplicates}{\code{Logical}. whether to remove rules which are identical to an earlier rule. Defaults to true. Defaults to
+TRUE.}
 }
 \description{
 Builds a Distributed RuleFit model on a parsed dataset, for regression or 

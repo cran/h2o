@@ -752,6 +752,11 @@ predict_leaf_node_assignment.H2OModel <- function(object, newdata, type = c("Pat
 #' @export
 h2o.predict_leaf_node_assignment <- predict_leaf_node_assignment.H2OModel
 
+h2o.result <- function(model) {
+  if (!is(model, "H2OModel")) stop("h2o.result can only be applied to H2OModel instances with constant results")
+  return(as.data.frame(.newExpr("result", model@model_id)))
+}
+
 h2o.crossValidate <- function(model, nfolds, model.type = c("gbm", "glm", "deeplearning"), params, strategy = c("mod1", "random")) {
   output <- data.frame()
 
@@ -1722,6 +1727,9 @@ h2o.giniCoef <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 #'
 #' Note: standardize = True by default. If set to False, then coef() returns the coefficients that are fit directly.
 #'
+#' @param object An \linkS4class{H2OModel} object.
+#' @param predictorSize predictor subset size.  If specified, will only return model coefficients of that subset size.  If
+#'          not specified will return a lists of model coefficient dicts for all predictor subset size.
 #' @param object an \linkS4class{H2OModel} object.
 #' @examples 
 #' \dontrun{
@@ -1744,16 +1752,43 @@ h2o.giniCoef <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 #' h2o.coef(cars_glm)
 #' }
 #' @export
-h2o.coef <- function(object) {
-  if (is(object, "H2OModel") && object@algorithm %in% c("glm", "gam", "coxph")) {
+h2o.coef <- function(object, predictorSize=-1) {
+  if (is(object, "H2OModel") && object@algorithm %in% c("glm", "gam", "coxph", "maxrglm")) {
     if ((object@algorithm == "glm" || object@algorithm == "gam") && (object@allparameters$family %in% c("multinomial", "ordinal"))) {
         grabCoeff(object@model$coefficients_table, "coefs_class", FALSE)
     } else {
-      structure(object@model$coefficients_table$coefficients,
+      if (object@algorithm == "maxrglm") {
+        modelIDs <- object@model$best_model_ids
+        numModels = length(modelIDs)
+        if (predictorSize == 0)
+          stop("predictorSize (predictor subset size) must be between 0 and the total number of predictors used.")
+        if (predictorSize > numModels)
+          stop("predictorSize (predictor subset size) cannot exceed the total number of predictors used.")
+        if (predictorSize > 0) { # subset size was specified
+          return(grabOneModelCoef(modelIDs, predictorSize, FALSE))
+        } else {
+        coeffs <- vector("list", numModels)
+        for (index in seq(numModels)) {
+          coeffs[[index]] <- grabOneModelCoef(modelIDs, index, FALSE)
+        }
+        return(coeffs)
+          }
+      } else {
+        structure(object@model$coefficients_table$coefficients,
                 names = object@model$coefficients_table$names)
+      }
     }
   } else {
     stop("Can only extract coefficients from GAM, GLM and CoxPH models")
+  }
+}
+
+grabOneModelCoef <- function(modelIDs, index, standardized) {
+  oneModel <- h2o.getModel(modelIDs[[index]]$name)
+  if (standardized) {
+    return(h2o.coef_norm(oneModel))
+  } else {
+      return(h2o.coef(oneModel))
   }
 }
 
@@ -1761,6 +1796,8 @@ h2o.coef <- function(object) {
 #' Return coefficients fitted on the standardized data (requires standardize = True, which is on by default). These coefficients can be used to evaluate variable importance.
 #'
 #' @param object an \linkS4class{H2OModel} object.
+#' @param predictorSize predictor subset size.  If specified, will only return model coefficients of that subset size.  If
+#'          not specified will return a lists of model coefficient dicts for all predictor subset size.
 #' @examples 
 #' \dontrun{
 #' library(h2o)
@@ -1779,16 +1816,38 @@ h2o.coef <- function(object) {
 #'                     y = response, 
 #'                     training_frame = train, 
 #'                     validation_frame = valid)
-#' h2o.coef(cars_glm)
+#' h2o.coef_norm(cars_glm)
 #' }
 #' @export
-h2o.coef_norm <- function(object) {
-  if (is(object, "H2OModel") && ((object@algorithm == "glm") || (object@algorithm == "gam"))) {
+h2o.coef_norm <- function(object, predictorSize=-1) {
+  if (is(object, "H2OModel") &&
+      (object@algorithm %in% c("glm", "gam", "coxph", "maxrglm"))) {
+    if (object@algorithm == "maxrglm") {
+      modelIDs <- object@model$best_model_ids
+      numModels = length(modelIDs)
+      if (predictorSize == 0)
+        stop("predictorSize (predictor subset size) must be between 0 and the total number of predictors used.")
+      if (predictorSize > numModels)
+        stop("predictorSize (predictor subset size) cannot exceed the total number of predictors used.")
+      if (predictorSize > 0) { # subset size was specified {
+        return(grabOneModelCoef(modelIDs, predictorSize, TRUE))
+      } else {
+      coeffs <- vector("list", numModels)
+      for (index in seq(numModels)) {
+        coeffs[[index]] <- grabOneModelCoef(modelIDs, index, TRUE)
+      }
+      return(coeffs)
+      }
+    }
     if (object@allparameters$family %in% c("multinomial", "ordinal")) {
-        grabCoeff(object@model$coefficients_table, "std_coefs_class", TRUE)
+      grabCoeff(object@model$coefficients_table,
+                "std_coefs_class",
+                TRUE)
     } else {
-      structure(object@model$coefficients_table$standardized_coefficients,
-                names = object@model$coefficients_table$names)
+      structure(
+        object@model$coefficients_table$standardized_coefficients,
+        names = object@model$coefficients_table$names
+      )
     }
   } else {
     stop("Can only extract coefficients from GAMs/GLMs")
@@ -5284,6 +5343,7 @@ h2o.get_seed <- get_seed.H2OModel
 #' predictions <- h2o.predict(generic_model, dataset)
 #'
 #' @param mojo_file_path Filesystem path to the model imported
+#' @param model_id Model ID, default is NULL
 #' @return Returns H2O Generic Model based on given embedded model
 #'
 #' @examples
@@ -5307,7 +5367,7 @@ h2o.get_seed <- get_seed.H2OModel
 #' generic_model_predictions  <- h2o.predict(generic_model, data)
 #' }
 #' @export
-h2o.genericModel <- function(mojo_file_path){
+h2o.genericModel <- function(mojo_file_path, model_id=NULL){
   h2o.generic(path = mojo_file_path)
 }
 
@@ -5318,6 +5378,7 @@ h2o.genericModel <- function(mojo_file_path){
 #' predictions <- h2o.predict(mojo_model, dataset)
 #'
 #' @param mojo_file_path Filesystem path to the model imported
+#' @param model_id Model ID, default is NULL
 #' @return Returns H2O Generic Model embedding given MOJO model
 #'
 #' @examples
@@ -5340,8 +5401,8 @@ h2o.genericModel <- function(mojo_file_path){
 #' predictions  <- h2o.predict(mojo_model, data)
 #' }
 #' @export
-h2o.import_mojo <- function(mojo_file_path){
-  model <- h2o.generic(path = mojo_file_path)
+h2o.import_mojo <- function(mojo_file_path, model_id=NULL){
+  model <- h2o.generic(path = mojo_file_path, model_id)
   return(model)
 }
 
@@ -5353,6 +5414,7 @@ h2o.import_mojo <- function(mojo_file_path){
 #' predictions <- h2o.predict(mojo_model, dataset)
 #'
 #' @param mojo_local_file_path Filesystem path to the model imported
+#' @param model_id Model ID, default is NULL
 #' @return Returns H2O Generic Model embedding given MOJO model
 #'
 #' @examples
@@ -5376,9 +5438,9 @@ h2o.import_mojo <- function(mojo_file_path){
 #' predictions  <- h2o.predict(mojo_model, data)
 #' }
 #' @export
-h2o.upload_mojo <- function(mojo_local_file_path){
+h2o.upload_mojo <- function(mojo_local_file_path, model_id=NULL){
   model_file_key <- h2o.uploadFile(mojo_local_file_path, parse = FALSE)
-  model <- h2o.generic(model_key = model_file_key)
+  model <- h2o.generic(model_key = model_file_key, model_id = model_id, path = mojo_local_file_path)
   return(model)
 }
 
