@@ -10,7 +10,10 @@ h2o.make_metrics(
   domain = NULL,
   distribution = NULL,
   weights = NULL,
-  auc_type = "NONE"
+  treatment = NULL,
+  auc_type = "NONE",
+  auuc_type = "AUTO",
+  auuc_nbins = -1
 )
 }
 \arguments{
@@ -24,7 +27,15 @@ h2o.make_metrics(
 
 \item{weights}{(optional) An H2OFrame containing observation weights.}
 
+\item{treatment}{(optional, for uplift models only) An H2OFrame containing treatment column for uplift classification.}
+
 \item{auc_type}{(optional) For multinomial classification you have to specify which type of agregated AUC/AUCPR will be used to calculate this metric.}
+
+\item{auuc_type}{(optional) For uplift binomial classification you have to specify which type of AUUC will be used to 
+calculate this metric. Possibilities are gini, lift, gain, AUTO. Default is AUTO which means qini.}
+
+\item{auuc_nbins}{(optional) For uplift binomial classification you have to specify number of bins to be used 
+for calculation the AUUC. Default is -1, which means 1000.}
 }
 \value{
 Returns an object of the \linkS4class{H2OModelMetrics} subclass.

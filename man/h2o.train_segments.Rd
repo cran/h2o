@@ -14,7 +14,7 @@ h2o.train_segments(
 }
 \arguments{
 \item{algorithm}{Name of algorithm to use in training segment models (gbm, randomForest, kmeans, glm, deeplearning, naivebayes, psvm,
-xgboost, pca, svd, targetencoder, aggregator, word2vec, coxph, isolationforest, kmeans, stackedensemble, glrm, gam, anovaglm, maxrglm).}
+xgboost, pca, svd, targetencoder, aggregator, word2vec, coxph, isolationforest, kmeans, stackedensemble, glrm, gam, anovaglm, modelselection).}
 
 \item{segment_columns}{A list of columns to segment-by. H2O will group the training (and validation) dataset by the segment-by columns
 and train a separate model for each segment (group of rows).}

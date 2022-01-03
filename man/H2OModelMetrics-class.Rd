@@ -8,6 +8,8 @@
 \alias{H2OUnknownMetrics-class}
 \alias{H2OBinomialMetrics-class}
 \alias{show,H2OBinomialMetrics-method}
+\alias{H2OBinomialUpliftMetrics-class}
+\alias{show,H2OBinomialUpliftMetrics-method}
 \alias{H2OMultinomialMetrics-class}
 \alias{show,H2OMultinomialMetrics-method}
 \alias{H2OOrdinalMetrics-class}
@@ -30,6 +32,8 @@
 \S4method{show}{H2OModelMetrics}(object)
 
 \S4method{show}{H2OBinomialMetrics}(object)
+
+\S4method{show}{H2OBinomialUpliftMetrics}(object)
 
 \S4method{show}{H2OMultinomialMetrics}(object)
 

@@ -11,7 +11,7 @@ h2o.automl(
   validation_frame = NULL,
   leaderboard_frame = NULL,
   blending_frame = NULL,
-  nfolds = 5,
+  nfolds = -1,
   fold_column = NULL,
   weights_column = NULL,
   balance_classes = FALSE,

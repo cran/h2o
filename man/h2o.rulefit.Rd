@@ -22,7 +22,8 @@ h2o.rulefit(
   rule_generation_ntrees = 50,
   auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
     "WEIGHTED_OVO"),
-  remove_duplicates = TRUE
+  remove_duplicates = TRUE,
+  lambda = NULL
 )
 }
 \arguments{
@@ -64,13 +65,15 @@ an accurate prediction, remove all rows with weight == 0.}
 \item{distribution}{Distribution function Must be one of: "AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
 "tweedie", "laplace", "quantile", "huber". Defaults to AUTO.}
 
-\item{rule_generation_ntrees}{specifies the number of trees to build in the tree model. Defaults to 50. Defaults to 50.}
+\item{rule_generation_ntrees}{Specifies the number of trees to build in the tree model. Defaults to 50. Defaults to 50.}
 
 \item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
 "WEIGHTED_OVO". Defaults to AUTO.}
 
-\item{remove_duplicates}{\code{Logical}. whether to remove rules which are identical to an earlier rule. Defaults to true. Defaults to
+\item{remove_duplicates}{\code{Logical}. Whether to remove rules which are identical to an earlier rule. Defaults to true. Defaults to
 TRUE.}
+
+\item{lambda}{Lambda for LASSO regressor.}
 }
 \description{
 Builds a Distributed RuleFit model on a parsed dataset, for regression or 

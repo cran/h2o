@@ -4,7 +4,7 @@
 \alias{h2o.centroid_stats}
 \title{Retrieve centroid statistics}
 \usage{
-h2o.centroid_stats(object, train = FALSE, valid = FALSE, xval = FALSE)
+h2o.centroid_stats(object, train = FALSE, valid = FALSE)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OClusteringModel} object.}
@@ -12,14 +12,12 @@ h2o.centroid_stats(object, train = FALSE, valid = FALSE, xval = FALSE)
 \item{train}{Retrieve the training centroid statistics}
 
 \item{valid}{Retrieve the validation centroid statistics}
-
-\item{xval}{Retrieve the cross-validation centroid statistics}
 }
 \description{
 Retrieve the centroid statistics.
-If "train", "valid", and "xval" parameters are FALSE (default), then the training centroid stats value is returned. If more
-than one parameter is set to TRUE, then a named list of centroid stats data frames are returned, where the names are "train", "valid"
-or "xval".
+If "train" and "valid" parameters are FALSE (default), then the training centroid stats value is returned. If more
+than one parameter is set to TRUE, then a named list of centroid stats data frames are returned, where the names are "train" or "valid"
+For cross validation metrics this statistics are not available.
 }
 \examples{
 \dontrun{

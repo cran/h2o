@@ -1,8 +1,8 @@
 Package: h2o
-Version: 3.34.0.6
+Version: 3.36.0.1
 Type: Package
 Title: R Interface for the 'H2O' Scalable Machine Learning Platform
-Date: 2021-12-15
+Date: 2022-12-29
 Authors@R: c(
     person("Erin", "LeDell", role = c("aut", "cre"), email = "erin@h2o.ai"),
     person("Navdeep", "Gill", role = c("aut")),
@@ -27,7 +27,8 @@ Authors@R: c(
     person("Matt", "Dowle", role = c("ctb")),
     person("Yuan", "Tang", role = c("ctb")),    
     person("Lauren", "DiPerna", role = c("ctb")), 
-    person("Tomas", "Fryda", role = c("ctb")),        
+    person("Tomas", "Fryda", role = c("ctb")),
+    person("Veronika", "Maurerova", role=c("ctb")),        
     person("H2O.ai", role = c("cph", "fnd"))
     )
 Description: R interface for 'H2O', the scalable open source machine learning
@@ -35,13 +36,13 @@ Description: R interface for 'H2O', the scalable open source machine learning
     unsupervised machine learning algorithms such as Generalized Linear
     Models (GLM), Gradient Boosting Machines (including XGBoost), Random Forests,
     Deep Neural Networks (Deep Learning), Stacked Ensembles, Naive Bayes,
-    Generalized Additive Models (GAM), ANOVA GLM, Cox Proportional Hazards, K-Means, PCA, Maximum R GLM (maxrglm),
+    Generalized Additive Models (GAM), ANOVA GLM, Cox Proportional Hazards, K-Means, PCA, ModelSelection,
     Word2Vec, as well as a fully automatic machine learning algorithm (H2O AutoML).
 License: Apache License (== 2.0)
 URL: https://github.com/h2oai/h2o-3
 BugReports: https://h2oai.atlassian.net/projects/PUBDEV
 NeedsCompilation: no
-SystemRequirements: Java (>= 8, < 16)
+SystemRequirements: Java (>= 8, <= 17)
 Depends: R (>= 2.13.0), methods, stats
 Imports: graphics, tools, utils, RCurl, jsonlite
 Suggests: ggplot2 (>= 3.3.0), mlbench, Matrix, slam, bit64 (>= 0.9.7),
@@ -53,13 +54,14 @@ Collate: 'aggregator.R' 'astfun.R' 'automl.R' 'classes.R' 'config.R'
         'import.R' 'isolationforest.R' 'extendedisolationforest.R'
         'parse.R' 'export.R' 'edicts.R' 'models.R' 'coxph.R'
         'coxphutils.R' 'kmeans.R' 'gam.R' 'anovaglm.R' 'gbm.R'
-        'generic.R' 'glm.R' 'glrm.R' 'maxrglm.R' 'pca.R' 'svd.R'
+        'generic.R' 'glm.R' 'glrm.R' 'modelselection.R' 'pca.R' 'svd.R'
         'psvm.R' 'deeplearning.R' 'stackedensemble.R' 'xgboost.R'
         'randomforest.R' 'naivebayes.R' 'word2vec.R' 'w2vutils.R'
         'locate.R' 'grid.R' 'segment.R' 'predict.R' 'tf-idf.R'
-        'rulefit.R' 'explain.R' 'permutation_varimp.R' 'zzz.R'
-RoxygenNote: 7.1.1
-Packaged: 2021-12-15 16:18:40 UTC; jenkins
+        'rulefit.R' 'explain.R' 'permutation_varimp.R' 'infogram.R'
+        'zzz.R' 'upliftrandomforest.R'
+RoxygenNote: 7.1.2
+Packaged: 2021-12-29 12:47:24 UTC; jenkins
 Author: Erin LeDell [aut, cre],
   Navdeep Gill [aut],
   Spencer Aiello [aut],
@@ -84,7 +86,8 @@ Author: Erin LeDell [aut, cre],
   Yuan Tang [ctb],
   Lauren DiPerna [ctb],
   Tomas Fryda [ctb],
+  Veronika Maurerova [ctb],
   H2O.ai [cph, fnd]
 Maintainer: Erin LeDell <erin@h2o.ai>
 Repository: CRAN
-Date/Publication: 2021-12-17 09:40:02 UTC
+Date/Publication: 2022-01-04 00:10:04 UTC
