@@ -21,6 +21,13 @@ h2o.modelSelection(
   score_iteration_interval = 0,
   offset_column = NULL,
   weights_column = NULL,
+  family = c("AUTO", "gaussian", "binomial", "fractionalbinomial", "quasibinomial",
+    "poisson", "gamma", "tweedie", "negativebinomial"),
+  link = c("family_default", "identity", "logit", "log", "inverse", "tweedie",
+    "ologit"),
+  tweedie_variance_power = 0,
+  tweedie_link_power = 0,
+  theta = 0,
   solver = c("AUTO", "IRLSM", "L_BFGS", "COORDINATE_DESCENT_NAIVE",
     "COORDINATE_DESCENT", "GRADIENT_DESCENT_LH", "GRADIENT_DESCENT_SQERR"),
   alpha = NULL,
@@ -58,7 +65,9 @@ h2o.modelSelection(
   custom_metric_func = NULL,
   nparallelism = 0,
   max_predictor_number = 1,
-  mode = c("allsubsets", "maxr")
+  min_predictor_number = 1,
+  mode = c("allsubsets", "maxr", "backward"),
+  p_values_threshold = 0
 )
 }
 \arguments{
@@ -101,6 +110,19 @@ data frame. This is typically the number of times a row is repeated, but non-int
 well. During training, rows with higher weights matter more, due to the larger loss function pre-factor. If
 you set weight = 0 for a row, the returned prediction frame at that row is zero and this is incorrect. To get
 an accurate prediction, remove all rows with weight == 0.}
+
+\item{family}{Family. For MaxR, only gaussian.  For backward, ordinal and multinomial families are not supported Must be one
+of: "AUTO", "gaussian", "binomial", "fractionalbinomial", "quasibinomial", "poisson", "gamma", "tweedie",
+"negativebinomial". Defaults to AUTO.}
+
+\item{link}{Link function. Must be one of: "family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit".
+Defaults to family_default.}
+
+\item{tweedie_variance_power}{Tweedie variance power Defaults to 0.}
+
+\item{tweedie_link_power}{Tweedie link power Defaults to 0.}
+
+\item{theta}{Theta Defaults to 0.}
 
 \item{solver}{AUTO will set the solver based on given data and the other parameters. IRLSM is fast on on problems with small
 number of predictors and for lambda-search with L1 penalty, L_BFGS scales better for datasets with many
@@ -202,13 +224,20 @@ balance_classes. Defaults to 5.0.}
 
 \item{custom_metric_func}{Reference to custom evaluation function, format: `language:keyName=funcName`}
 
-\item{nparallelism}{number of models to build in parallel.  Default to 0.0 which is adaptive to the system capability Defaults to
+\item{nparallelism}{number of models to build in parallel.  Defaults to 0.0 which is adaptive to the system capability Defaults to
 0.}
 
-\item{max_predictor_number}{Maximum number of predictors to be considered when building GLM models.  Defaiult to 1. Defaults to 1.}
+\item{max_predictor_number}{Maximum number of predictors to be considered when building GLM models.  Defaults to 1. Defaults to 1.}
 
-\item{mode}{Mode: used to choose model selection algorithm to use,  Must be one of: "allsubsets", "maxr". Defaults to
+\item{min_predictor_number}{For mode = 'backward' only.  Minimum number of predictors to be considered when building GLM models starting
+with all predictors to be included.  Defaults to 1. Defaults to 1.}
+
+\item{mode}{Mode: Used to choose model selection algorithms to use.  Options include 'allsubsets' for all subsets, 'maxr'
+for MaxR, 'backward' for backward selection Must be one of: "allsubsets", "maxr", "backward". Defaults to
 maxr.}
+
+\item{p_values_threshold}{For mode='backward' only.  If specified, will stop the model building process when all coefficientsp-values
+drop below this threshold  Defaults to 0.}
 }
 \description{
 H2O ModelSelection is used to build the best model with one predictor, two predictors, ... up to max_predictor_number 

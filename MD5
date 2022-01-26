@@ -1,4 +1,4 @@
-01d3fe3ca667b0d6b2bab1754838cae1 *DESCRIPTION
+fcec4f243c5fefadb92017abb1cca1b0 *DESCRIPTION
 01c6388d37738688aa5322cb8a2598e9 *NAMESPACE
 6fe38e24a23a87bd379ad2b4751f95f1 *NEWS
 046e6ece23d1099606763a6abf1af9c4 *R/aggregator.R
@@ -18,10 +18,10 @@ d7f673b11d31e88178816e444ddada54 *R/edicts.R
 2ae580f7d00c0d141c97777b45526a58 *R/explain.R
 1a9c732b045d72f771a9c4affa051006 *R/export.R
 848783c34c80450adfd0270ddf6a9742 *R/extendedisolationforest.R
-d8b4c69cf16c6ce10cc7d8c09ffe98f0 *R/frame.R
+a209da09d69d8aa7a8204bc5acb1b6f6 *R/frame.R
 b2bf6b567b404211295200666e7c2200 *R/gam.R
 5496a85141ffe4aeb80f8105911983fc *R/gbm.R
-f4eac4f399f98f515f3fda491af2bedd *R/generic.R
+c58f0fe845e6bc1fed19983f97a5289b *R/generic.R
 0cf584a7af3343f4ef25e9a02479ee96 *R/glm.R
 f5e0d2ed42f6f094b5406808e212cd31 *R/glrm.R
 e6c72ea7ac448723b5fb97fe1cac1c4c *R/grid.R
@@ -32,8 +32,8 @@ dc072938a24467cb545c45567ab82622 *R/kmeans.R
 12763e6b17768b99d4821b391a0e5aaa *R/kvstore.R
 7e8d3ebdc396c9f285935562cdff4dd0 *R/locate.R
 9fbcf238b88b1bc318482cbd3879ee63 *R/logging.R
-e55ac217ba767f21c58715f03ced8f79 *R/models.R
-8f1ba37a480418979cd678749d4c409b *R/modelselection.R
+5b6d2ff249bd0aab64253b7dfb99f5fa *R/models.R
+a6afe55d62110ee97ca60ef98c3ae119 *R/modelselection.R
 fb8e26da0520a553b3f221ce25ca99d8 *R/naivebayes.R
 25ce93200179ddb4475e84b87c6d0cd2 *R/parse.R
 93693132826845434eefdd91705e6707 *R/pca.R
@@ -63,7 +63,7 @@ dcab4a64fc5d2007723ff2a174b0b35e *demo/h2o.kmeans.R
 49d02e01f8f52c313d633ba07fb44100 *demo/h2o.prcomp.R
 9922fd14a111c81d856f9eebddbea22a *demo/h2o.randomForest.R
 c33d4ee9d1233c93a33b836461fd0fb2 *inst/branch.txt
-b026324c6904b2a9cb4b88d6d61c81d1 *inst/buildnum.txt
+26ab0db90d72e28ad0ba1e22ee510510 *inst/buildnum.txt
 c2009f0054eecbceac0e820e4927e455 *inst/extdata/australia.csv
 fdbd7a2797e683a8f352462c6b140b7d *inst/extdata/housevotes.csv
 42615765a885ddf54427f12c34a0a070 *inst/extdata/iris.csv
@@ -174,7 +174,7 @@ db8a9b1f5b44f996a24a35cc3f1b2cc1 *man/dot-verify_dataxy.Rd
 61dc471e93657b72dec1fa3297eb6fb9 *man/feature_frequencies.H2OModel.Rd
 378ea84ebf19632b14f6855d91ff76c7 *man/generate_col_ind.Rd
 e0de41f699cb066cf379578923d0df59 *man/get_seed.H2OModel.Rd
-e0672e29da8d6a98975d375295f3558e *man/h2o-package.Rd
+f91c44a1261759883e045c6c359b3d2f *man/h2o-package.Rd
 63b3c68103547f1ee9a4eabbc6650a7d *man/h2o.HGLMMetrics.Rd
 f681c0a688ae25c437114b844e42b560 *man/h2o.abs.Rd
 23a2815f1286909d355ce5c001bedeb1 *man/h2o.acos.Rd
@@ -360,7 +360,7 @@ cf11fd0db21b4155881029737e4d9cd7 *man/h2o.melt.Rd
 794edd31e3403d5f9a01348a4a8c4cc8 *man/h2o.metric.Rd
 d7bfbbe72fe7cb88440dcfc523a67b31 *man/h2o.min.Rd
 ab5dd0aab978a1689dc9a43a5b27d880 *man/h2o.mktime.Rd
-b166640a918555a7d1db9309ced5babf *man/h2o.modelSelection.Rd
+e68292fcb6b404a49417f23ea74f6b19 *man/h2o.modelSelection.Rd
 61f07028217ff3a3c6c1fb10ee8b9a62 *man/h2o.model_correlation.Rd
 66f39338bf0cf2da4cd0de4c7e9adf4e *man/h2o.model_correlation_heatmap.Rd
 b6a21488956df3003008a1670202da67 *man/h2o.mojo_predict_csv.Rd
