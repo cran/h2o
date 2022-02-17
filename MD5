@@ -1,12 +1,12 @@
-fcec4f243c5fefadb92017abb1cca1b0 *DESCRIPTION
-01c6388d37738688aa5322cb8a2598e9 *NAMESPACE
+cd4603fe11497f0fa97ceda4ef73a832 *DESCRIPTION
+85333e5948827c578cd98a4c04e30532 *NAMESPACE
 6fe38e24a23a87bd379ad2b4751f95f1 *NEWS
 046e6ece23d1099606763a6abf1af9c4 *R/aggregator.R
 c5ec9b8e0ee477689009d33a3eec2c06 *R/anovaglm.R
 3f4ee1978c2a2239edb3815832b5c33d *R/astfun.R
-a86b926e27c92d39e4d49ef004a2029e *R/automl.R
+ef49e0265aa4fa425d98f15d100330b7 *R/automl.R
 6e453737939cd525ea2c0b1c2d545339 *R/classes.R
-7894700f3ef7213de7eb3785f85ac0a9 *R/communication.R
+9aec2f69bead00f0d979537e3fa1fc13 *R/communication.R
 26c44d8ceb7a96e6a6b365a97592632b *R/config.R
 cfd82b3b7ecdcf392bf00fae93bc63e7 *R/connection.R
 1845f2c3e5053dc9be095b990c8d92ad *R/constants.R
@@ -18,7 +18,7 @@ d7f673b11d31e88178816e444ddada54 *R/edicts.R
 2ae580f7d00c0d141c97777b45526a58 *R/explain.R
 1a9c732b045d72f771a9c4affa051006 *R/export.R
 848783c34c80450adfd0270ddf6a9742 *R/extendedisolationforest.R
-a209da09d69d8aa7a8204bc5acb1b6f6 *R/frame.R
+ba3c71b4e811d260eed0981b02aef41c *R/frame.R
 b2bf6b567b404211295200666e7c2200 *R/gam.R
 5496a85141ffe4aeb80f8105911983fc *R/gbm.R
 c58f0fe845e6bc1fed19983f97a5289b *R/generic.R
@@ -63,7 +63,7 @@ dcab4a64fc5d2007723ff2a174b0b35e *demo/h2o.kmeans.R
 49d02e01f8f52c313d633ba07fb44100 *demo/h2o.prcomp.R
 9922fd14a111c81d856f9eebddbea22a *demo/h2o.randomForest.R
 c33d4ee9d1233c93a33b836461fd0fb2 *inst/branch.txt
-26ab0db90d72e28ad0ba1e22ee510510 *inst/buildnum.txt
+6d7fce9fee471194aa8b5b6e47267f03 *inst/buildnum.txt
 c2009f0054eecbceac0e820e4927e455 *inst/extdata/australia.csv
 fdbd7a2797e683a8f352462c6b140b7d *inst/extdata/housevotes.csv
 42615765a885ddf54427f12c34a0a070 *inst/extdata/iris.csv
@@ -174,7 +174,7 @@ db8a9b1f5b44f996a24a35cc3f1b2cc1 *man/dot-verify_dataxy.Rd
 61dc471e93657b72dec1fa3297eb6fb9 *man/feature_frequencies.H2OModel.Rd
 378ea84ebf19632b14f6855d91ff76c7 *man/generate_col_ind.Rd
 e0de41f699cb066cf379578923d0df59 *man/get_seed.H2OModel.Rd
-f91c44a1261759883e045c6c359b3d2f *man/h2o-package.Rd
+bb4d02146aa930ca6c8b939f6e0483c9 *man/h2o-package.Rd
 63b3c68103547f1ee9a4eabbc6650a7d *man/h2o.HGLMMetrics.Rd
 f681c0a688ae25c437114b844e42b560 *man/h2o.abs.Rd
 23a2815f1286909d355ce5c001bedeb1 *man/h2o.acos.Rd
@@ -475,6 +475,7 @@ b090bb10666ec97cc5b0cd77f5ef4b28 *man/h2o.targetencoder.Rd
 85f268b9cab7a95102c9c55b6239360b *man/h2o.toFrame.Rd
 427c3f0846cf2cc6bd716a4a7b5b77fd *man/h2o.tokenize.Rd
 47da5013af3f02cd84500b8567343f7e *man/h2o.tolower.Rd
+e49546e779813aa8fa7e49a0a979bcc5 *man/h2o.topBottomN.Rd
 2481391f0e2052082c559ce4acbaf1cd *man/h2o.topN.Rd
 239d931169757c3e5aabf60bfbb5a921 *man/h2o.tot_withinss.Rd
 0b3d43a307a357eb6788f2e26efbf947 *man/h2o.totss.Rd
