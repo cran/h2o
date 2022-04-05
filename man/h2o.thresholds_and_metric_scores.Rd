@@ -29,8 +29,8 @@ train$treatment <- as.factor(train$treatment)
 train$conversion <- as.factor(train$conversion)
 
 model <- h2o.upliftRandomForest(training_frame=train, x=sprintf("f\%s",seq(0:10)), y="conversion",
-                                       ntrees=10, max_depth=5, treatment_column="treatment", 
-                                       auuc_type="AUTO")
+                                ntrees=10, max_depth=5, treatment_column="treatment", 
+                                auuc_type="AUTO")
 perf <- h2o.performance(model, train=TRUE) 
 h2o.thresholds_and_metric_scores(perf)
 }

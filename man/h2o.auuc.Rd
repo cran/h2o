@@ -4,7 +4,7 @@
 \alias{h2o.auuc}
 \title{Retrieve the default AUUC}
 \usage{
-h2o.auuc(object, train = FALSE, valid = FALSE)
+h2o.auuc(object, train = FALSE, valid = FALSE, metric = NULL)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OBinomialUpliftMetrics}}
@@ -12,10 +12,12 @@ h2o.auuc(object, train = FALSE, valid = FALSE)
 \item{train}{Retrieve the training AUUC}
 
 \item{valid}{Retrieve the validation AUUC}
+
+\item{metric}{Specify the AUUC metric to get specific AUUC. Possibilities are NULL, "qini", "lift", "gain".}
 }
 \description{
-Retrieves the AUUC value from an \linkS4class{H2OBinomialUpliftMetrics}. The type of AUUC depends on auuc_type which
-was set before training. If you need specific AUUC, see h2o.auuc_table function.
+Retrieves the AUUC value from an \linkS4class{H2OBinomialUpliftMetrics}. If the metric parameter is "AUTO", 
+the type of AUUC depends on auuc_type which was set before training. If you need specific AUUC, set metric parameter.
 If "train" and "valid" parameters are FALSE (default), then the training AUUC value is returned. If more
 than one parameter is set to TRUE, then a named vector of AUUCs are returned, where the names are "train", "valid".
 }
@@ -29,8 +31,8 @@ train$treatment <- as.factor(train$treatment)
 train$conversion <- as.factor(train$conversion)
 
 model <- h2o.upliftRandomForest(training_frame=train, x=sprintf("f\%s",seq(0:10)), y="conversion",
-                                       ntrees=10, max_depth=5, treatment_column="treatment", 
-                                       auuc_type="AUTO")
+                                ntrees=10, max_depth=5, treatment_column="treatment", 
+                                auuc_type="AUTO")
 perf <- h2o.performance(model, train=TRUE) 
 h2o.auuc(perf)
 }

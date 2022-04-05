@@ -15,7 +15,7 @@ h2o.auuc_table(object, train = FALSE, valid = FALSE)
 }
 \description{
 Retrieves the all types of AUUC in a table from an \linkS4class{H2OBinomialUpliftMetrics}.
-If "train" and "valid" parameters are FALSE (default), then the training AUUC values is returned. If more
+If "train" and "valid" parameters are FALSE (default), then the training AUUC values are returned. If more
 than one parameter is set to TRUE, then a named vector of AUUCs are returned, where the names are "train", "valid".
 }
 \examples{

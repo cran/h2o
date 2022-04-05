@@ -152,7 +152,7 @@ NULL
 .h2o.processResponseWarnings <- function(res) {
   if(length(res$messages) != 0L){
     warn <- lapply(res$messages, function(y) {
-      if(class(y) == "list" && y$message_type == "WARN" )
+      if (inherits(y, "list") && y$message_type == "WARN" )
         paste0(y$message, ".\n")
       else ""
     })
@@ -1196,14 +1196,15 @@ h2o.auc <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 
 #' Retrieve the default AUUC
 #'
-#' Retrieves the AUUC value from an \linkS4class{H2OBinomialUpliftMetrics}. The type of AUUC depends on auuc_type which
-#' was set before training. If you need specific AUUC, see h2o.auuc_table function.
+#' Retrieves the AUUC value from an \linkS4class{H2OBinomialUpliftMetrics}. If the metric parameter is "AUTO", 
+#' the type of AUUC depends on auuc_type which was set before training. If you need specific AUUC, set metric parameter.
 #' If "train" and "valid" parameters are FALSE (default), then the training AUUC value is returned. If more
 #' than one parameter is set to TRUE, then a named vector of AUUCs are returned, where the names are "train", "valid".
 #'
 #' @param object An \linkS4class{H2OBinomialUpliftMetrics}
 #' @param train Retrieve the training AUUC
 #' @param valid Retrieve the validation AUUC
+#' @param metric Specify the AUUC metric to get specific AUUC. Possibilities are NULL, "qini", "lift", "gain".
 #' @examples
 #' \dontrun{
 #' library(h2o)
@@ -1214,30 +1215,52 @@ h2o.auc <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 #' train$conversion <- as.factor(train$conversion)
 #' 
 #' model <- h2o.upliftRandomForest(training_frame=train, x=sprintf("f%s",seq(0:10)), y="conversion",
-#'                                        ntrees=10, max_depth=5, treatment_column="treatment", 
-#'                                        auuc_type="AUTO")
+#'                                 ntrees=10, max_depth=5, treatment_column="treatment", 
+#'                                 auuc_type="AUTO")
 #' perf <- h2o.performance(model, train=TRUE) 
 #' h2o.auuc(perf)
 #' }
 #' @export
-h2o.auuc <- function(object, train=FALSE, valid=FALSE) {
-    if( is(object, "H2OModelMetrics") ) return( object@metrics$AUUC )
+h2o.auuc <- function(object, train=FALSE, valid=FALSE, metric=NULL) {
+    if(!is.null(metric) && !metric %in% c("qini", "lift", "gain")) 
+        stop("metric must be NULL, 'qini', 'lift' or 'gain'")
+    if( is(object, "H2OModelMetrics") ) {
+        if(is.null(metric)) { 
+            return( object@metrics$AUUC )
+        } else {
+            return( eval(parse(text=paste("object@metrics$auuc_table$", metric,"[1]", sep=""))))
+        }
+    }
     if( is(object, "H2OModel") ) {
         model.parts <- .model.parts(object)
         if ( !train && !valid ) {
-            metric <- model.parts$tm@metrics$AUUC
-            if ( !is.null(metric) ) return(metric)
+            if (is.null(metric)) { 
+                mm <- model.parts$tm@metrics$AUUC
+            } else {
+                mm <- eval(parse(text=paste("model.parts$tm@metrics$auuc_table$", metric,"[1]", sep="")))
+            }
+            if ( !is.null(mm) ) return(mm)
         }
         v <- c()
         v_names <- c()
         if ( train ) {
-            v <- c(v,model.parts$tm@metrics$AUUC)
+            if (is.null(metric)) { 
+                mm <- model.parts$tm@metrics$AUUC
+            } else {
+                mm <- eval(parse(text=paste("model.parts$tm@metrics$auuc_table$", metric,"[1]", sep="")))
+            }
+            v <- c(v, mm)
             v_names <- c(v_names,"train")
         }
         if ( valid ) {
             if( is.null(model.parts$vm) ) return(invisible(.warn.no.validation()))
             else {
-                v <- c(v,model.parts$vm@metrics$AUUC)
+                if (is.null(metric)) { 
+                    mm <- model.parts$vm@metrics$AUUC
+                } else {
+                    mm <- eval(parse(text=paste("model.parts$vm@metrics$auuc_table$", metric,"[1]", sep="")))
+                }
+                v <- c(v, mm)
                 v_names <- c(v_names,"valid")
             }
         }
@@ -1253,7 +1276,7 @@ h2o.auuc <- function(object, train=FALSE, valid=FALSE) {
 #' Retrieve the all types of AUUC in a table
 #'
 #' Retrieves the all types of AUUC in a table from an \linkS4class{H2OBinomialUpliftMetrics}.
-#' If "train" and "valid" parameters are FALSE (default), then the training AUUC values is returned. If more
+#' If "train" and "valid" parameters are FALSE (default), then the training AUUC values are returned. If more
 #' than one parameter is set to TRUE, then a named vector of AUUCs are returned, where the names are "train", "valid".
 #'
 #' @param object An \linkS4class{H2OBinomialUpliftMetrics}
@@ -1325,8 +1348,8 @@ h2o.auuc_table <- function(object, train=FALSE, valid=FALSE) {
 #' train$conversion <- as.factor(train$conversion)
 #' 
 #' model <- h2o.upliftRandomForest(training_frame=train, x=sprintf("f%s",seq(0:10)), y="conversion",
-#'                                        ntrees=10, max_depth=5, treatment_column="treatment", 
-#'                                        auuc_type="AUTO")
+#'                                 ntrees=10, max_depth=5, treatment_column="treatment", 
+#'                                 auuc_type="AUTO")
 #' perf <- h2o.performance(model, train=TRUE) 
 #' h2o.thresholds_and_metric_scores(perf)
 #' }
@@ -1358,6 +1381,178 @@ h2o.thresholds_and_metric_scores <- function(object, train=FALSE, valid=FALSE) {
         }
     }
     warning(paste0("No thresholds_and_metric_score table for ", class(object)))
+    invisible(NULL)
+}
+
+#' Retrieve the default Qini value
+#'
+#' Retrieves the Qini value from an \linkS4class{H2OBinomialUpliftMetrics}.
+#' If "train" and "valid" parameters are FALSE (default), then the training Qini value is returned. If more
+#' than one parameter is set to TRUE, then a named vector of Qini values are returned, where the names are "train", "valid".
+#'
+#' @param object An \linkS4class{H2OBinomialUpliftMetrics} or 
+#' @param train Retrieve the training Qini value
+#' @param valid Retrieve the validation Qini
+#' @examples
+#' \dontrun{
+#' library(h2o)
+#' h2o.init()
+#' f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/uplift/criteo_uplift_13k.csv"
+#' train <- h2o.importFile(f)
+#' train$treatment <- as.factor(train$treatment)
+#' train$conversion <- as.factor(train$conversion)
+#' 
+#' model <- h2o.upliftRandomForest(training_frame=train, x=sprintf("f%s",seq(0:10)), y="conversion",
+#'                                 ntrees=10, max_depth=5, treatment_column="treatment",
+#'                                 auuc_type="AUTO")
+#' perf <- h2o.performance(model, train=TRUE) 
+#' h2o.qini(perf)
+#' }
+#' @export
+h2o.qini <- function(object, train=FALSE, valid=FALSE) {
+    if( is(object, "H2OModelMetrics") ) return( object@metrics$qini )
+    if( is(object, "H2OModel") ) {
+        model.parts <- .model.parts(object)
+        if ( !train && !valid ) {
+            metric <- model.parts$tm@metrics$qini
+            if ( !is.null(metric) ) return(metric)
+        }
+        v <- c()
+        v_names <- c()
+        if ( train ) {
+            v <- c(v,model.parts$tm@metrics$qini)
+            v_names <- c(v_names,"train")
+        }
+        if ( valid ) {
+            if( is.null(model.parts$vm) ) return(invisible(.warn.no.validation()))
+            else {
+                v <- c(v,model.parts$vm@metrics$qini)
+                v_names <- c(v_names,"valid")
+            }
+        }
+        if ( !is.null(v) ) {
+            names(v) <- v_names
+            if ( length(v)==1 ) { return( v[[1]] ) } else { return( v ) }
+        }
+    }
+    warning(paste0("No Qini value for ", class(object)))
+    invisible(NULL)
+}
+
+#' Retrieve the default AECU (Average Excess Cumulative Uplift = area between AUUC and random AUUC)
+#'
+#' Retrieves the AECU value from an \linkS4class{H2OBinomialUpliftMetrics}. You need to specificy the type of AECU
+#' using metric parameter. Defaults "qini". Qini AECU equals the Qini value.
+#' If "train" and "valid" parameters are FALSE (default), then the training AECU value is returned. If more
+#' than one parameter is set to TRUE, then a named vector of AECUs are returned, where the names are "train", "valid".
+#'
+#' @param object An \linkS4class{H2OBinomialUpliftMetrics}
+#' @param train Retrieve the training AECU
+#' @param valid Retrieve the validation AECU
+#' @param metric Specify metric of AECU. Posibilities are "qini", "lift", "gain", defaults "qini".
+#' @examples
+#' \dontrun{
+#' library(h2o)
+#' h2o.init()
+#' f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/uplift/criteo_uplift_13k.csv"
+#' train <- h2o.importFile(f)
+#' train$treatment <- as.factor(train$treatment)
+#' train$conversion <- as.factor(train$conversion)
+#' 
+#' model <- h2o.upliftRandomForest(training_frame=train, x=sprintf("f%s",seq(0:10)), y="conversion",
+#'                                 ntrees=10, max_depth=5, treatment_column="treatment",
+#'                                 auuc_type="AUTO")
+#' perf <- h2o.performance(model, train=TRUE) 
+#' h2o.aecu(perf)
+#' }
+#' @export
+h2o.aecu <- function(object, train=FALSE, valid=FALSE, metric="qini") {
+    if(!metric %in% c("qini", "lift", "gain")) stop("metric must be 'qini', 'lift' or 'gain'")
+    if( is(object, "H2OModelMetrics") ) {
+        return( eval(parse(text=paste("object@metrics$aecu_table$", metric,"[1]", sep=""))))
+    }
+    if( is(object, "H2OModel") ) {
+        model.parts <- .model.parts(object)
+        if ( !train && !valid ) {
+            mm <- eval(parse(text=paste("model.parts$tm@metrics$aecu_table$", metric,"[1]", sep="")))
+            if ( !is.null(mm) ) return(mm)
+        }
+        v <- c()
+        v_names <- c()
+        if ( train ) {
+            mm <- eval(parse(text=paste("model.parts$tm@metrics$aecu_table$", metric,"[1]", sep="")))
+            v <- c(v, mm)
+            v_names <- c(v_names,"train")
+        }
+        if ( valid ) {
+            if( is.null(model.parts$vm) ) return(invisible(.warn.no.validation()))
+            else {
+                mm <- eval(parse(text=paste("model.parts$vm@metrics$auuc_table$", metric,"[1]", sep="")))
+                v <- c(v, mm)
+                v_names <- c(v_names,"valid")
+            }
+        }
+        if ( !is.null(v) ) {
+            names(v) <- v_names
+            if ( length(v)==1 ) { return( v[[1]] ) } else { return( v ) }
+        }
+    }
+    warning(paste0("No AECU for ", class(object)))
+    invisible(NULL)
+}
+
+#' Retrieve the all types of AECU (average excess cumulative uplift) value in a table
+#'
+#' Retrieves the all types of AECU value in a table from an \linkS4class{H2OBinomialUpliftMetrics}.
+#' If "train" and "valid" parameters are FALSE (default), then the training AECU values are returned. If more
+#' than one parameter is set to TRUE, then a named vector of AECU values are returned, where the names are "train", "valid".
+#'
+#' @param object An \linkS4class{H2OBinomialUpliftMetrics}
+#' @param train Retrieve the training AECU values table
+#' @param valid Retrieve the validation AECU values table
+#' @examples
+#' \dontrun{
+#' library(h2o)
+#' h2o.init()
+#' f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/uplift/criteo_uplift_13k.csv"
+#' train <- h2o.importFile(f)
+#' train$treatment <- as.factor(train$treatment)
+#' train$conversion <- as.factor(train$conversion)
+#' 
+#' model <- h2o.upliftRandomForest(training_frame=train, x=sprintf("f%s",seq(0:10)), y="conversion",
+#'                                 ntrees=10, max_depth=5, treatment_column="treatment",
+#'                                 auuc_type="AUTO")
+#' perf <- h2o.performance(model, train=TRUE) 
+#' h2o.aecu_table(perf)
+#' }
+#' @export
+h2o.aecu_table <- function(object, train=FALSE, valid=FALSE) {
+    if( is(object, "H2OModelMetrics") ) return( object@metrics$aecu_table )
+    if( is(object, "H2OModel") ) {
+        model.parts <- .model.parts(object)
+        if ( !train && !valid ) {
+            metric <- model.parts$tm@metrics$aecu_table
+            if ( !is.null(metric) ) return(metric)
+        }
+        v <- c()
+        v_names <- c()
+        if ( train ) {
+            v <- c(v,model.parts$tm@metrics$aecu_table)
+            v_names <- c(v_names,"train")
+        }
+        if ( valid ) {
+            if( is.null(model.parts$vm) ) return(invisible(.warn.no.validation()))
+            else {
+                v <- c(v,model.parts$vm@metrics$aecu_table)
+                v_names <- c(v_names,"valid")
+            }
+        }
+        if ( !is.null(v) ) {
+            names(v) <- v_names
+            if ( length(v)==1 ) { return( v[[1]] ) } else { return( v ) }
+        }
+    }
+    warning(paste0("No AECU table for ", class(object)))
     invisible(NULL)
 }
 
@@ -2808,7 +3003,7 @@ h2o.metric <- function(object, thresholds, metric, transform=NULL) {
           }
         }
       }
-    } else if (thresholds == 'max' && missing(metric)) {
+    } else if (all(thresholds == 'max') && missing(metric)) {
       metrics <- object@metrics$max_criteria_and_metric_scores
     } else {
       if (missing(metric)) {
@@ -2816,7 +3011,7 @@ h2o.metric <- function(object, thresholds, metric, transform=NULL) {
       } else {
         h2o_metric <- unlist(lapply(metric, function(m) ifelse(m %in% avail_metrics, m, ifelse(m %in% names(.h2o.metrics_aliases), .h2o.metrics_aliases[m], m))))
       }
-      if (thresholds == 'max') thresholds <- h2o.find_threshold_by_max_metric(object, h2o_metric)
+      if (all(thresholds == 'max')) thresholds <- h2o.find_threshold_by_max_metric(object, h2o_metric)
       metrics <- lapply(thresholds, function(t,o,m) h2o.find_row_by_threshold(o, t)[, m], object, h2o_metric)
       if (!missing(transform) && 'op' %in% names(transform)) {
         metrics <- lapply(metrics, transform$op)
@@ -3782,7 +3977,7 @@ setMethod("h2o.confusionMatrix", "H2OModelMetrics", function(object, thresholds=
   if( is(thresholds, "list") ) thresholds_list = thresholds
     else {
       if( is.null(thresholds) ) thresholds_list = list()
-      else thresholds_list = list(thresholds)
+      else thresholds_list = as.list(thresholds)
   }
 
   # error check the metrics_list and thresholds_list
@@ -4200,8 +4395,9 @@ plot.H2OBinomialMetrics <- function(x, type = "roc", main, ...) {
 }
 
 #' @export
-plot.H2OBinomialUpliftMetrics <- function(x, metric = "qini", main, ...) {
-    if(!metric %in% c("qini", "lift", "gain")) stop("metric must be 'qini' or 'lift' or 'gain'")
+plot.H2OBinomialUpliftMetrics <- function(x, metric="AUTO", main, ...) {
+    if(!metric %in% c("AUTO", "qini", "lift", "gain")) stop("metric must be 'AUTO', 'qini' or 'lift' or 'gain'")
+    if (metric == "AUTO") metric = "qini"
     xaxis <- "Number Targeted"; yaxis = paste("Cumulative", metric)
     if(missing(main)) {
         main <- paste("Cumulative Uplift Curve - ", metric)
@@ -4211,7 +4407,7 @@ plot.H2OBinomialUpliftMetrics <- function(x, metric = "qini", main, ...) {
             main <- paste(main, "(on valid)")
         }
     }
-    metric.auuc <- sprintf('%.4f', eval(parse(text=paste("x@metrics$auuc_table$", metric,"[1]", sep=""))))
+    metric.auuc <- h2o.auuc(x, metric)
     main <- paste(main, "\nAUUC=", metric.auuc)
     xdata <- x@metrics$thresholds_and_metric_scores$n
     ydata <- eval(parse(text=paste("x@metrics$thresholds_and_metric_scores$", metric, sep="")))
@@ -4847,14 +5043,12 @@ h2o.partialPlot <- function(object, data, cols, destination_key, nbins=20, plot 
       legendColors <- c()
       legendLtys <- c()
       legendPchs <- c()
-      legendBtys <- c()
       for ( i in 1: length(targets)) {
         # target label
         legendTargets <- append(legendTargets, targets[i])
         legendColors <- append(legendColors, colors[i])
         legendLtys <- append(legendLtys, lty)
         legendPchs <- append(legendPchs, pch)
-        legendBtys <- append(legendBtys, "n")
         # target NAN line label
         if (has_NA[i]) {
           legendTargets <- append(legendTargets, paste(targets[i], " NAN"))
@@ -4862,9 +5056,8 @@ h2o.partialPlot <- function(object, data, cols, destination_key, nbins=20, plot 
           legendLtys <- append(legendLtys, 5)
         } 
         legendPchs <- append(legendPchs, NULL)
-        legendBtys <- append(legendBtys, NULL)
       }
-      legend("topright", legend=legendTargets, col=legendColors, lty=legendLtys, pch=legendPchs, bty=legendBtys, ncol=length(pps))
+      legend("topright", legend=legendTargets, col=legendColors, lty=legendLtys, pch=legendPchs, bty="n", ncol=length(pps))
     }  else {
       legend("topright",legend=targets, col=colors, lty=lty, pch=pch, bty="n", ncol=length(pps))
     }
@@ -5213,7 +5406,7 @@ setMethod('show', 'H2ONode',
 
 print.H2ONode <- function(node){
   cat("Node ID", node@id, "\n\n")
-  if(class(node) == "H2OLeafNode"){
+  if (inherits(node, "H2OLeafNode")) {
     cat("Terminal node. Prediction is", node@prediction)
     return()
   }

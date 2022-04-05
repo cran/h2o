@@ -61,7 +61,7 @@ if (requireNamespace("Matrix", quietly=TRUE)) {
 }
 }
 \references{
-\url{https://www.h2o.ai/blog/fast-csv-writing-for-r/}
+\url{https://h2o.ai/blog/fast-csv-writing-for-r/}
 }
 \seealso{
 \code{\link{use.package}}
