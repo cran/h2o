@@ -20,6 +20,8 @@ h2o.automl(
   max_runtime_secs = NULL,
   max_runtime_secs_per_model = NULL,
   max_models = NULL,
+  distribution = c("AUTO", "bernoulli", "ordinal", "multinomial", "gaussian",
+    "poisson", "gamma", "tweedie", "laplace", "quantile", "huber", "custom"),
   stopping_metric = c("AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE",
     "AUC", "AUCPR", "lift_top_group", "misclassification", "mean_per_class_error"),
   stopping_tolerance = NULL,
@@ -79,11 +81,17 @@ be automatically computed to obtain class balance during training. Requires \cod
 \item{max_after_balance_size}{Maximum relative size of the training data after balancing class counts (can be less than 1.0). Requires
 \code{balance_classes}. Defaults to 5.0.}
 
-\item{max_runtime_secs}{This argument specifies the maximum time that the AutoML process will run for. If neither \code{max_runtime_secs} nor \code{max_models} are specified by the user, then \code{max_runtime_secs} defaults to 3600 seconds (1 hour).}
+\item{max_runtime_secs}{This argument specifies the maximum time that the AutoML process will run for.
+If both \code{max_runtime_secs} and \code{max_models} are specified, then the AutoML run will stop as soon as it hits either of these limits.
+If neither \code{max_runtime_secs} nor \code{max_models} are specified by the user, then \code{max_runtime_secs} defaults to 3600 seconds (1 hour).}
 
-\item{max_runtime_secs_per_model}{Maximum runtime in seconds dedicated to each individual model training process. Use 0 to disable. Defaults to 0.}
+\item{max_runtime_secs_per_model}{Maximum runtime in seconds dedicated to each individual model training process. Use 0 to disable. Defaults to 0.
+Note that models constrained by a time budget are not guaranteed reproducible.}
 
-\item{max_models}{Maximum number of models to build in the AutoML process (does not include Stacked Ensembles). Defaults to NULL (no strict limit).}
+\item{max_models}{Maximum number of models to build in the AutoML process (does not include Stacked Ensembles). Defaults to NULL (no strict limit).
+Always set this parameter to ensure AutoML reproducibility: all models are then trained until convergence and none is constrained by a time budget.}
+
+\item{distribution}{Distribution function used by algorithms that support it; other algorithms use their defaults. Possible values: "AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma", "tweedie", "laplace", "quantile", "huber", "custom", and for parameterized distributions list form is used to specify the parameter, e.g., \code{list(type = "tweedie", tweedie_power = 1.5)}. Defaults to "AUTO".}
 
 \item{stopping_metric}{Metric to use for early stopping ("AUTO" is logloss for classification, deviance for regression).
 Must be one of "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "AUCPR", "lift_top_group", "misclassification", "mean_per_class_error". Defaults to "AUTO".}

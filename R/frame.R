@@ -1693,7 +1693,7 @@ NULL
 #' @export
 `[.H2OFrame` <- function(data,row,col,drop=TRUE) {
   chk.H2OFrame(data)
-
+  types <- attr(data, "types")
   # This function is called with a huge variety of argument styles
   # Here's the breakdown:
   #   Style          Type  #args  Description
@@ -1776,8 +1776,10 @@ NULL
     data <- .newExpr("rows",data,row) # Row selector
   }
 
-  if( is1by1 ) .fetch.data(data,1L)[[1]]
-  else data
+  data <- if( is1by1 ) .fetch.data(data,1L)[[1]]
+            else data
+  attr(data, "types") <- types[col]
+  return(data)
 }
 
 #' @rdname H2OFrame-Extract
@@ -4158,7 +4160,7 @@ as.h2o.H2OFrame <- function(x, destination_frame="", ...) {
 #' @details 
 #' Method \code{as.h2o.data.frame} will use \code{\link[data.table]{fwrite}} if data.table package is installed in required version.
 #' @seealso \code{\link{use.package}}
-#' @references \url{https://www.h2o.ai/blog/fast-csv-writing-for-r/}
+#' @references \url{https://h2o.ai/blog/fast-csv-writing-for-r/}
 #' @export
 as.h2o.data.frame <- function(x, destination_frame="", use_datatable=TRUE, ...) {
   if( destination_frame=="" ) {
@@ -4944,6 +4946,35 @@ h2o.relevel <- function(x,y) {
   .newExpr("relevel", x, .quote(y))
 }
 
+#' Reorders levels of factor columns by the frequencies for the individual levels. 
+#'
+#' The levels of a factor are reordered so that the most frequency level is at level 0, 
+#' remaining levels are ordered from the second most frequent to the least frequent.
+#'
+#' @param x H2O frame with some factor columns
+#' @param weights_column optional name of weights column
+#' @param top_n optional number of most frequent levels to move to the top (eg.: for top_n=1 move only the most frequent level)
+ #' @return new reordered frame
+#' @examples
+#' \dontrun{
+#' library(h2o)
+#' h2o.init()
+#'
+#' # Convert iris dataset to an H2OFrame
+#' iris_hf <- as.h2o(iris)
+#' # Look at current ordering of the Species column levels
+#' h2o.levels(iris_hf["Species"])
+#' # "setosa"     "versicolor" "virginica" 
+#' # Change the reference level to "virginica"
+#' iris_hf["Species"] <- h2o.relevel_by_frequency(x = iris_hf["Species"])
+#' # Observe new ordering
+#' h2o.levels(iris_hf["Species"])
+#' # "virginica"  "versicolor" "setosa"
+#' }
+#' @export
+h2o.relevel_by_frequency <- function(x, weights_column=NULL, top_n=-1) {
+  .newExpr("relevel.by.freq", x, ifelse(is.null(weights_column), NA, .quote(weights_column)), top_n)
+}
 
 #' Group and Apply by Column
 #'

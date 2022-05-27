@@ -10,7 +10,11 @@ h2o.pd_plot(
   column,
   target = NULL,
   row_index = NULL,
-  max_levels = 30
+  max_levels = 30,
+  binary_response_scale = c("response", "logodds"),
+  grouping_column = NULL,
+  nbins = 100,
+  show_rug = TRUE
 )
 }
 \arguments{
@@ -26,6 +30,16 @@ h2o.pd_plot(
 
 \item{max_levels}{An integer specifying the maximum number of factor levels to show.
 Defaults to 30.}
+
+\item{binary_response_scale}{Option for binary model to display (on the y-axis) the logodds instead of the actual
+score. Can be one of: "response", "logodds". Defaults to "response".}
+
+\item{grouping_column}{A feature column name to group the data and provide separate sets of plots
+by grouping feature values}
+
+\item{nbins}{A number of bins used. Defaults to 100.}
+
+\item{show_rug}{Show rug to visualize the density of the column. Defaults to TRUE.}
 }
 \value{
 A ggplot2 object

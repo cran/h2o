@@ -184,18 +184,18 @@ Defaults to FALSE.}
 
 \item{max_iterations}{Maximum number of iterations Defaults to -1.}
 
-\item{objective_epsilon}{Converge if  objective value changes less than this. Default indicates: If lambda_search is set to True the
-value of objective_epsilon is set to .0001. If the lambda_search is set to False and lambda is equal to zero,
-the value of objective_epsilon is set to .000001, for any other value of lambda the default value of
+\item{objective_epsilon}{Converge if  objective value changes less than this. Default (of -1.0) indicates: If lambda_search is set to
+True the value of objective_epsilon is set to .0001. If the lambda_search is set to False and lambda is equal
+to zero, the value of objective_epsilon is set to .000001, for any other value of lambda the default value of
 objective_epsilon is set to .0001. Defaults to -1.}
 
 \item{beta_epsilon}{Converge if  beta changes less (using L-infinity norm) than beta esilon, ONLY applies to IRLSM solver
 Defaults to 0.0001.}
 
 \item{gradient_epsilon}{Converge if  objective changes less (using L-infinity norm) than this, ONLY applies to L-BFGS solver. Default
-indicates: If lambda_search is set to False and lambda is equal to zero, the default value of gradient_epsilon
-is equal to .000001, otherwise the default value is .0001. If lambda_search is set to True, the conditional
-values above are 1E-8 and 1E-6 respectively. Defaults to -1.}
+(of -1.0) indicates: If lambda_search is set to False and lambda is equal to zero, the default value of
+gradient_epsilon is equal to .000001, otherwise the default value is .0001. If lambda_search is set to True,
+the conditional values above are 1E-8 and 1E-6 respectively. Defaults to -1.}
 
 \item{link}{Link function. Must be one of: "family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit".
 Defaults to family_default.}
@@ -231,7 +231,7 @@ max_active_predictors is set to 5000 otherwise it is set to 100000000. Defaults 
 
 \item{interaction_pairs}{A list of pairwise (first order) column interactions.}
 
-\item{obj_reg}{Likelihood divider in objective value computation, default is 1/nobs Defaults to -1.}
+\item{obj_reg}{Likelihood divider in objective value computation, default (of -1.0) will set it to 1/nobs Defaults to -1.}
 
 \item{stopping_rounds}{Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the
 stopping_metric does not improve for k:=stopping_rounds scoring events (0 to disable) Defaults to 0.}

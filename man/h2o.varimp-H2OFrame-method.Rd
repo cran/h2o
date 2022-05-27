@@ -4,10 +4,13 @@
 \alias{h2o.varimp,H2OFrame-method}
 \title{Retrieve the variable importance.}
 \usage{
-\S4method{h2o.varimp}{H2OFrame}(object)
+\S4method{h2o.varimp}{H2OFrame}(object, num_of_features = NULL)
 }
 \arguments{
 \item{object}{A leaderboard frame.}
+
+\item{num_of_features}{Integer specifying the number of features returned based on the maximum
+importance across the models. Use NULL for unlimited. Defaults to NULL.}
 }
 \description{
 Retrieve the variable importance.

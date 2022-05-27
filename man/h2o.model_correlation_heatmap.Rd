@@ -15,10 +15,10 @@ h2o.model_correlation_heatmap(
 \arguments{
 \item{object}{A list of H2O models, an H2O AutoML instance, or an H2OFrame with a 'model_id' column (e.g. H2OAutoML leaderboard).}
 
-\item{newdata}{An H2O Frame.  Predictions from the models will be generated using this frame, 
+\item{newdata}{An H2O Frame.  Predictions from the models will be generated using this frame,
 so this should be a holdout set.}
 
-\item{top_n}{Integer specifying the number models shown in the heatmap (used only with an 
+\item{top_n}{Integer specifying the number models shown in the heatmap (used only with an
 AutoML object, and based on the leaderboard ranking.  Defaults to 20.}
 
 \item{cluster_models}{Logical.  Order models based on their similarity.  Defaults to TRUE.}

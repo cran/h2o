@@ -4,7 +4,21 @@
 \alias{h2o.ice_plot}
 \title{Plot Individual Conditional Expectation (ICE) for each decile}
 \usage{
-h2o.ice_plot(model, newdata, column, target = NULL, max_levels = 30)
+h2o.ice_plot(
+  model,
+  newdata,
+  column,
+  target = NULL,
+  max_levels = 30,
+  show_pdp = TRUE,
+  binary_response_scale = c("response", "logodds"),
+  centered = FALSE,
+  grouping_column = NULL,
+  output_graphing_data = FALSE,
+  nbins = 100,
+  show_rug = TRUE,
+  ...
+)
 }
 \arguments{
 \item{model}{An H2OModel.}
@@ -17,16 +31,37 @@ h2o.ice_plot(model, newdata, column, target = NULL, max_levels = 30)
 
 \item{max_levels}{An integer specifying the maximum number of factor levels to show.
 Defaults to 30.}
+
+\item{show_pdp}{Option to turn on/off PDP line. Defaults to TRUE.}
+
+\item{binary_response_scale}{Option for binary model to display (on the y-axis) the logodds instead of the actual
+score. Can be one of: "response", "logodds". Defaults to "response".}
+
+\item{centered}{A boolean whether to center curves around 0 at the first valid x value or not. Defaults to FALSE.}
+
+\item{grouping_column}{A feature column name to group the data and provide separate sets of plots
+by grouping feature values}
+
+\item{output_graphing_data}{A bool whether to output final graphing data to a frame. Defaults to FALSE.}
+
+\item{nbins}{A number of bins used. Defaults to 100.}
+
+\item{show_rug}{Show rug to visualize the density of the column. Defaults to TRUE.}
+
+\item{...}{Custom parameters.}
 }
 \value{
 A ggplot2 object
 }
 \description{
-Individual Conditional Expectation (ICE) plot gives a graphical depiction of the marginal 
-effect of a variable on the response. ICE plots are similar to partial dependence plots (PDP); 
-PDP shows the average effect of a feature while ICE plot shows the effect for a single 
-instance. This function will plot the effect for each decile. In contrast to the PDP, 
+Individual Conditional Expectation (ICE) plot gives a graphical depiction of the marginal
+effect of a variable on the response. ICE plots are similar to partial dependence plots (PDP);
+PDP shows the average effect of a feature while ICE plot shows the effect for a single
+instance. This function will plot the effect for each decile. In contrast to the PDP,
 ICE plots can provide more insight, especially when there is stronger feature interaction.
+Also, the plot shows the original observation values marked by semi-transparent circle on each ICE line.
+Please note, that the score of the original observation value may differ from score value of underlying
+ICE line at original observation point as ICE line is drawn as an interpolation of several points.
 }
 \examples{
 \dontrun{

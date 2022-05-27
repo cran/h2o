@@ -18,7 +18,7 @@ only. Must be a binary classification or regression model.}
 
 \item{newdata}{An H2O Frame, used to determine feature contributions.}
 
-\item{columns}{List of columns or list of indices of columns to show. 
+\item{columns}{List of columns or list of indices of columns to show.
 If specified, then the \code{top_n_features} parameter will be ignored.}
 
 \item{top_n_features}{Integer specifying the maximum number of columns to show (ranked by variable importance).}
@@ -29,7 +29,7 @@ If specified, then the \code{top_n_features} parameter will be ignored.}
 A ggplot2 object
 }
 \description{
-SHAP summary plot shows the contribution of the features for each instance (row of data). 
+SHAP summary plot shows the contribution of the features for each instance (row of data).
 The sum of the feature contributions and the bias term is equal to the raw prediction
 of the model, i.e., prediction before applying inverse link function.
 }

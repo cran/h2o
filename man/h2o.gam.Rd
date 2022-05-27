@@ -68,6 +68,7 @@ h2o.gam(
   max_runtime_secs = 0,
   custom_metric_func = NULL,
   num_knots = NULL,
+  spline_orders = NULL,
   knot_ids = NULL,
   standardize_tp_gam_cols = FALSE,
   scale_tp_penalty_mat = FALSE,
@@ -247,14 +248,17 @@ balance_classes. Defaults to 5.0.}
 
 \item{num_knots}{Number of knots for gam predictors}
 
-\item{knot_ids}{String arrays storing frame keys of knots.  One for each gam column set specified in gam_columns}
+\item{spline_orders}{Order of I-splines used for gam predictors. If specified, must be the same size as gam_columns.Values for bs=0
+or 1 will be ignored.}
+
+\item{knot_ids}{Array storing frame keys of knots.  One for each gam column set specified in gam_columns}
 
 \item{standardize_tp_gam_cols}{\code{Logical}. standardize tp (thin plate) predictor columns Defaults to FALSE.}
 
 \item{scale_tp_penalty_mat}{\code{Logical}. Scale penalty matrix for tp (thin plate) smoothers as in R Defaults to FALSE.}
 
-\item{bs}{Basis function type for each gam predictors, 0 for cr, 1 for thin plate regression with knots, 2 for thin
-plate regression with SVD.  If specified, must be the same size as gam_columns}
+\item{bs}{Basis function type for each gam predictors, 0 for cr, 1 for thin plate regression with knots, 2 for monotone
+splines.  If specified, must be the same size as gam_columns}
 
 \item{scale}{Smoothing parameter for gam predictors.  If specified, must be of the same length as gam_columns}
 

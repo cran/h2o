@@ -28,7 +28,7 @@ parameter top_n_features will be ignored.}
 \item{top_n_features}{An integer specifying the number of columns to use, ranked by variable importance
 (where applicable).}
 
-\item{include_explanations}{If specified, return only the specified model explanations. 
+\item{include_explanations}{If specified, return only the specified model explanations.
 (Mutually exclusive with exclude_explanations)}
 
 \item{exclude_explanations}{Exclude specified model explanations.}
@@ -40,10 +40,10 @@ parameter top_n_features will be ignored.}
 List of outputs with class "H2OExplanation"
 }
 \description{
-Explain the behavior of a model or group of models with respect to a single row of data. 
-The function returns a list of explanations, which are individual units of explanation 
-such as a partial dependence plot or a variable importance plot.  Most of the explanations 
-are visual (ggplot plots).  These plots can also be created by individual utility functions 
+Explain the behavior of a model or group of models with respect to a single row of data.
+The function returns a list of explanations, which are individual units of explanation
+such as a partial dependence plot or a variable importance plot.  Most of the explanations
+are visual (ggplot plots).  These plots can also be created by individual utility functions
 as well.
 }
 \examples{

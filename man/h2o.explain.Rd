@@ -30,18 +30,18 @@ parameter top_n_features will be ignored.}
 
 \item{exclude_explanations}{Exclude specified model explanations.}
 
-\item{plot_overrides}{Overrides for individual model explanations, e.g. 
+\item{plot_overrides}{Overrides for individual model explanations, e.g.
 \code{list(shap_summary_plot = list(columns = 50))}.}
 }
 \value{
 List of outputs with class "H2OExplanation"
 }
 \description{
-The H2O Explainability Interface is a convenient wrapper to a number of explainabilty 
-methods and visualizations in H2O.  The function can be applied to a single model or group 
-of models and returns a list of explanations, which are individual units of explanation 
-such as a partial dependence plot or a variable importance plot.  Most of the explanations 
-are visual (ggplot plots).  These plots can also be created by individual utility functions 
+The H2O Explainability Interface is a convenient wrapper to a number of explainabilty
+methods and visualizations in H2O.  The function can be applied to a single model or group
+of models and returns a list of explanations, which are individual units of explanation
+such as a partial dependence plot or a variable importance plot.  Most of the explanations
+are visual (ggplot plots).  These plots can also be created by individual utility functions
 as well.
 }
 \examples{

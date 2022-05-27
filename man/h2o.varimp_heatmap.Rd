@@ -4,23 +4,27 @@
 \alias{h2o.varimp_heatmap}
 \title{Variable Importance Heatmap across multiple models}
 \usage{
-h2o.varimp_heatmap(object, top_n = 20)
+h2o.varimp_heatmap(object, top_n = 20, num_of_features = 20)
 }
 \arguments{
 \item{object}{A list of H2O models, an H2O AutoML instance, or an H2OFrame with a 'model_id' column (e.g. H2OAutoML leaderboard).}
 
-\item{top_n}{Integer specifying the number models shown in the heatmap 
+\item{top_n}{Integer specifying the number models shown in the heatmap
 (based on leaderboard ranking). Defaults to 20.}
+
+\item{num_of_features}{Integer specifying the number of features shown in the heatmap
+based on the maximum variable importance across the models.
+Use NULL for unlimited. Defaults to 20.}
 }
 \value{
 A ggplot2 object.
 }
 \description{
 Variable importance heatmap shows variable importance across multiple models.
-Some models in H2O return variable importance for one-hot (binary indicator) 
+Some models in H2O return variable importance for one-hot (binary indicator)
 encoded versions of categorical columns (e.g. Deep Learning, XGBoost).  In order
 for the variable importance of categorical columns to be compared across all model
-types we compute a summarization of the the variable importance across all one-hot 
+types we compute a summarization of the the variable importance across all one-hot
 encoded features and return a single variable importance for the original categorical
 feature. By default, the models and variables are ordered by their similarity.
 }

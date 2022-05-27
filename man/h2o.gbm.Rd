@@ -54,7 +54,7 @@ h2o.gbm(
   col_sample_rate_per_tree = 1,
   min_split_improvement = 1e-05,
   histogram_type = c("AUTO", "UniformAdaptive", "Random", "QuantilesGlobal",
-    "RoundRobin"),
+    "RoundRobin", "UniformRobust"),
   max_abs_leafnode_pred = Inf,
   pred_noise_bandwidth = 0,
   categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
@@ -69,6 +69,7 @@ h2o.gbm(
   gainslift_bins = -1,
   auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
     "WEIGHTED_OVO"),
+  interaction_constraints = NULL,
   verbose = FALSE
 )
 }
@@ -193,7 +194,7 @@ Defaults to FALSE.}
 \item{min_split_improvement}{Minimum relative improvement in squared error reduction for a split to happen Defaults to 1e-05.}
 
 \item{histogram_type}{What type of histogram to use for finding optimal split points Must be one of: "AUTO", "UniformAdaptive",
-"Random", "QuantilesGlobal", "RoundRobin". Defaults to AUTO.}
+"Random", "QuantilesGlobal", "RoundRobin", "UniformRobust". Defaults to AUTO.}
 
 \item{max_abs_leafnode_pred}{Maximum absolute value of a leaf node prediction Defaults to 1.797693135e+308.}
 
@@ -224,6 +225,8 @@ constant value or not. Defaults to TRUE.}
 
 \item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
 "WEIGHTED_OVO". Defaults to AUTO.}
+
+\item{interaction_constraints}{A set of allowed column interactions.}
 
 \item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree). Defaults to FALSE.}
 }

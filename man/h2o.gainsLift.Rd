@@ -2,11 +2,14 @@
 % Please edit documentation in R/models.R
 \name{h2o.gainsLift}
 \alias{h2o.gainsLift}
+\alias{h2o.gains_lift}
 \alias{h2o.gainsLift,H2OModel-method}
 \alias{h2o.gainsLift,H2OModelMetrics-method}
 \title{Access H2O Gains/Lift Tables}
 \usage{
 h2o.gainsLift(object, ...)
+
+h2o.gains_lift(object, ...)
 
 \S4method{h2o.gainsLift}{H2OModel}(object, newdata, valid = FALSE, xval = FALSE, ...)
 

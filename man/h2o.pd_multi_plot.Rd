@@ -11,7 +11,8 @@ h2o.pd_multi_plot(
   best_of_family = TRUE,
   target = NULL,
   row_index = NULL,
-  max_levels = 30
+  max_levels = 30,
+  show_rug = TRUE
 )
 }
 \arguments{
@@ -21,7 +22,7 @@ h2o.pd_multi_plot(
 
 \item{column}{A feature column name to inspect.  Character string.}
 
-\item{best_of_family}{If TRUE, plot only the best model of each algorithm family; 
+\item{best_of_family}{If TRUE, plot only the best model of each algorithm family;
 if FALSE, plot all models. Defaults to TRUE.}
 
 \item{target}{If multinomial, plot PDP just for \code{target} category.}
@@ -30,6 +31,8 @@ if FALSE, plot all models. Defaults to TRUE.}
 
 \item{max_levels}{An integer specifying the maximum number of factor levels to show.
 Defaults to 30.}
+
+\item{show_rug}{Show rug to visualize the density of the column. Defaults to TRUE.}
 }
 \value{
 A ggplot2 object

@@ -22,7 +22,7 @@ only. Must be a binary classification or regression model.}
 
 \item{row_index}{Instance row index.}
 
-\item{columns}{List of columns or list of indices of columns to show. 
+\item{columns}{List of columns or list of indices of columns to show.
 If specified, then the \code{top_n_features} parameter will be ignored.}
 
 \item{top_n_features}{Integer specifying the maximum number of columns to show (ranked by their contributions).
@@ -31,7 +31,7 @@ for each contribution_type.}
 
 \item{plot_type}{Either "barplot" or "breakdown".  Defaults to "barplot".}
 
-\item{contribution_type}{When \code{plot_type == "barplot"}, plot one of "negative", 
+\item{contribution_type}{When \code{plot_type == "barplot"}, plot one of "negative",
 "positive", or "both" contributions.  Defaults to "both".}
 }
 \value{

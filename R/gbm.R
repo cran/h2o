@@ -85,7 +85,7 @@
 #' @param col_sample_rate_per_tree Column sample rate per tree (from 0.0 to 1.0) Defaults to 1.
 #' @param min_split_improvement Minimum relative improvement in squared error reduction for a split to happen Defaults to 1e-05.
 #' @param histogram_type What type of histogram to use for finding optimal split points Must be one of: "AUTO", "UniformAdaptive",
-#'        "Random", "QuantilesGlobal", "RoundRobin". Defaults to AUTO.
+#'        "Random", "QuantilesGlobal", "RoundRobin", "UniformRobust". Defaults to AUTO.
 #' @param max_abs_leafnode_pred Maximum absolute value of a leaf node prediction Defaults to 1.797693135e+308.
 #' @param pred_noise_bandwidth Bandwidth (sigma) of Gaussian multiplicative noise ~N(1,sigma) for tree node predictions Defaults to 0.
 #' @param categorical_encoding Encoding scheme for categorical features Must be one of: "AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
@@ -104,6 +104,7 @@
 #' @param gainslift_bins Gains/Lift table number of bins. 0 means disabled.. Default value -1 means automatic binning. Defaults to -1.
 #' @param auc_type Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
 #'        "WEIGHTED_OVO". Defaults to AUTO.
+#' @param interaction_constraints A set of allowed column interactions.
 #' @param verbose \code{Logical}. Print scoring history to the console (Metrics per tree). Defaults to FALSE.
 #' @seealso \code{\link{predict.H2OModel}} for prediction
 #' @examples
@@ -166,7 +167,7 @@ h2o.gbm <- function(x,
                     col_sample_rate_change_per_level = 1,
                     col_sample_rate_per_tree = 1,
                     min_split_improvement = 1e-05,
-                    histogram_type = c("AUTO", "UniformAdaptive", "Random", "QuantilesGlobal", "RoundRobin"),
+                    histogram_type = c("AUTO", "UniformAdaptive", "Random", "QuantilesGlobal", "RoundRobin", "UniformRobust"),
                     max_abs_leafnode_pred = 1.797693135e+308,
                     pred_noise_bandwidth = 0,
                     categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
@@ -179,6 +180,7 @@ h2o.gbm <- function(x,
                     check_constant_response = TRUE,
                     gainslift_bins = -1,
                     auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO", "WEIGHTED_OVO"),
+                    interaction_constraints = NULL,
                     verbose = FALSE)
 {
   # Validate required training_frame first and other frame args: should be a valid key or an H2OFrame object
@@ -320,6 +322,8 @@ h2o.gbm <- function(x,
     parms$gainslift_bins <- gainslift_bins
   if (!missing(auc_type))
     parms$auc_type <- auc_type
+  if (!missing(interaction_constraints))
+    parms$interaction_constraints <- interaction_constraints
 
   # Error check and build model
   model <- .h2o.modelJob('gbm', parms, h2oRestApiVersion=3, verbose=verbose)
@@ -369,7 +373,7 @@ h2o.gbm <- function(x,
                                     col_sample_rate_change_per_level = 1,
                                     col_sample_rate_per_tree = 1,
                                     min_split_improvement = 1e-05,
-                                    histogram_type = c("AUTO", "UniformAdaptive", "Random", "QuantilesGlobal", "RoundRobin"),
+                                    histogram_type = c("AUTO", "UniformAdaptive", "Random", "QuantilesGlobal", "RoundRobin", "UniformRobust"),
                                     max_abs_leafnode_pred = 1.797693135e+308,
                                     pred_noise_bandwidth = 0,
                                     categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
@@ -382,6 +386,7 @@ h2o.gbm <- function(x,
                                     check_constant_response = TRUE,
                                     gainslift_bins = -1,
                                     auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO", "WEIGHTED_OVO"),
+                                    interaction_constraints = NULL,
                                     segment_columns = NULL,
                                     segment_models_id = NULL,
                                     parallelism = 1)
@@ -527,6 +532,8 @@ h2o.gbm <- function(x,
     parms$gainslift_bins <- gainslift_bins
   if (!missing(auc_type))
     parms$auc_type <- auc_type
+  if (!missing(interaction_constraints))
+    parms$interaction_constraints <- interaction_constraints
 
   # Build segment-models specific parameters
   segment_parms <- list()

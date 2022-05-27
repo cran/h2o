@@ -1,8 +1,8 @@
 Package: h2o
-Version: 3.36.0.4
+Version: 3.36.1.2
 Type: Package
 Title: R Interface for the 'H2O' Scalable Machine Learning Platform
-Date: 2022-03-30
+Date: 2022-05-26
 Authors@R: c(
     person("Erin", "LeDell", role = c("aut", "cre"), email = "erin@h2o.ai"),
     person("Navdeep", "Gill", role = c("aut")),
@@ -47,7 +47,7 @@ Depends: R (>= 2.13.0), methods, stats
 Imports: graphics, tools, utils, RCurl, jsonlite
 Suggests: ggplot2 (>= 3.3.0), mlbench, Matrix, slam, bit64 (>= 0.9.7),
         data.table (>= 1.9.8), rgl (>= 0.100.19), plot3Drgl (>= 1.0.1),
-        survival, DT, IRdisplay, htmltools, plotly, repr
+        survival, DT, IRdisplay, htmltools, plotly, repr, curl
 Collate: 'aggregator.R' 'astfun.R' 'automl.R' 'classes.R' 'config.R'
         'connection.R' 'constants.R' 'datasets.R' 'logging.R'
         'communication.R' 'kvstore.R' 'frame.R' 'targetencoder.R'
@@ -61,7 +61,7 @@ Collate: 'aggregator.R' 'astfun.R' 'automl.R' 'classes.R' 'config.R'
         'rulefit.R' 'explain.R' 'permutation_varimp.R' 'infogram.R'
         'zzz.R' 'upliftrandomforest.R'
 RoxygenNote: 7.1.2
-Packaged: 2022-04-05 03:42:47 UTC; me
+Packaged: 2022-05-26 14:54:01 UTC; jenkins
 Author: Erin LeDell [aut, cre],
   Navdeep Gill [aut],
   Spencer Aiello [aut],
@@ -90,4 +90,4 @@ Author: Erin LeDell [aut, cre],
   H2O.ai [cph, fnd]
 Maintainer: Erin LeDell <erin@h2o.ai>
 Repository: CRAN
-Date/Publication: 2022-04-05 06:50:02 UTC
+Date/Publication: 2022-05-28 00:00:02 UTC

@@ -15,11 +15,11 @@ h2o.residual_analysis_plot(model, newdata)
 A ggplot2 object
 }
 \description{
-Do Residual Analysis and plot the fitted values vs residuals on a test dataset. 
-Ideally, residuals should be randomly distributed. Patterns in this plot can indicate 
-potential problems with the model selection, e.g., using simpler model than necessary, 
-not accounting for heteroscedasticity, autocorrelation, etc.  If you notice "striped" 
-lines of residuals, that is just an indication that your response variable was integer 
+Do Residual Analysis and plot the fitted values vs residuals on a test dataset.
+Ideally, residuals should be randomly distributed. Patterns in this plot can indicate
+potential problems with the model selection, e.g., using simpler model than necessary,
+not accounting for heteroscedasticity, autocorrelation, etc.  If you notice "striped"
+lines of residuals, that is just an indication that your response variable was integer
 valued instead of real valued.
 }
 \examples{

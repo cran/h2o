@@ -119,11 +119,13 @@
 #' @param max_runtime_secs Maximum allowed runtime in seconds for model training. Use 0 to disable. Defaults to 0.
 #' @param custom_metric_func Reference to custom evaluation function, format: `language:keyName=funcName`
 #' @param num_knots Number of knots for gam predictors
-#' @param knot_ids String arrays storing frame keys of knots.  One for each gam column set specified in gam_columns
+#' @param spline_orders Order of I-splines used for gam predictors. If specified, must be the same size as gam_columns.Values for bs=0
+#'        or 1 will be ignored.
+#' @param knot_ids Array storing frame keys of knots.  One for each gam column set specified in gam_columns
 #' @param standardize_tp_gam_cols \code{Logical}. standardize tp (thin plate) predictor columns Defaults to FALSE.
 #' @param scale_tp_penalty_mat \code{Logical}. Scale penalty matrix for tp (thin plate) smoothers as in R Defaults to FALSE.
-#' @param bs Basis function type for each gam predictors, 0 for cr, 1 for thin plate regression with knots, 2 for thin
-#'        plate regression with SVD.  If specified, must be the same size as gam_columns
+#' @param bs Basis function type for each gam predictors, 0 for cr, 1 for thin plate regression with knots, 2 for monotone
+#'        splines.  If specified, must be the same size as gam_columns
 #' @param scale Smoothing parameter for gam predictors.  If specified, must be of the same length as gam_columns
 #' @param keep_gam_cols \code{Logical}. Save keys of model matrix Defaults to FALSE.
 #' @param auc_type Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
@@ -199,6 +201,7 @@ h2o.gam <- function(x,
                     max_runtime_secs = 0,
                     custom_metric_func = NULL,
                     num_knots = NULL,
+                    spline_orders = NULL,
                     knot_ids = NULL,
                     standardize_tp_gam_cols = FALSE,
                     scale_tp_penalty_mat = FALSE,
@@ -345,6 +348,8 @@ h2o.gam <- function(x,
     parms$custom_metric_func <- custom_metric_func
   if (!missing(num_knots))
     parms$num_knots <- num_knots
+  if (!missing(spline_orders))
+    parms$spline_orders <- spline_orders
   if (!missing(knot_ids))
     parms$knot_ids <- knot_ids
   if (!missing(gam_columns))
@@ -446,6 +451,7 @@ h2o.gam <- function(x,
                                     max_runtime_secs = 0,
                                     custom_metric_func = NULL,
                                     num_knots = NULL,
+                                    spline_orders = NULL,
                                     knot_ids = NULL,
                                     standardize_tp_gam_cols = FALSE,
                                     scale_tp_penalty_mat = FALSE,
@@ -597,6 +603,8 @@ h2o.gam <- function(x,
     parms$custom_metric_func <- custom_metric_func
   if (!missing(num_knots))
     parms$num_knots <- num_knots
+  if (!missing(spline_orders))
+    parms$spline_orders <- spline_orders
   if (!missing(knot_ids))
     parms$knot_ids <- knot_ids
   if (!missing(gam_columns))

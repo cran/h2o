@@ -4,12 +4,15 @@
 \alias{h2o.varimp,H2OAutoML-method}
 \title{Retrieve the variable importance.}
 \usage{
-\S4method{h2o.varimp}{H2OAutoML}(object, top_n = 20)
+\S4method{h2o.varimp}{H2OAutoML}(object, top_n = 20, num_of_features = NULL)
 }
 \arguments{
 \item{object}{An \linkS4class{H2OAutoML} object.}
 
 \item{top_n}{Show at most top_n models}
+
+\item{num_of_features}{Integer specifying the number of features returned based on the maximum
+importance across the models. Use NULL for unlimited. Defaults to NULL.}
 }
 \description{
 Retrieve the variable importance.

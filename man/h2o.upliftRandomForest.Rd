@@ -28,7 +28,7 @@ h2o.upliftRandomForest(
   col_sample_rate_change_per_level = 1,
   col_sample_rate_per_tree = 1,
   histogram_type = c("AUTO", "UniformAdaptive", "Random", "QuantilesGlobal",
-    "RoundRobin"),
+    "RoundRobin", "UniformRobust"),
   categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
     "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
   distribution = c("AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
@@ -95,7 +95,7 @@ classification and p/3 for regression (where p is the # of predictors Defaults t
 \item{col_sample_rate_per_tree}{Column sample rate per tree (from 0.0 to 1.0) Defaults to 1.}
 
 \item{histogram_type}{What type of histogram to use for finding optimal split points Must be one of: "AUTO", "UniformAdaptive",
-"Random", "QuantilesGlobal", "RoundRobin". Defaults to AUTO.}
+"Random", "QuantilesGlobal", "RoundRobin", "UniformRobust". Defaults to AUTO.}
 
 \item{categorical_encoding}{Encoding scheme for categorical features Must be one of: "AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
 "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to AUTO.}
