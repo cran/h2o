@@ -60,6 +60,7 @@ h2o.xgboost(
   build_tree_one_node = FALSE,
   calibrate_model = FALSE,
   calibration_frame = NULL,
+  calibration_method = c("AUTO", "PlattScaling", "IsotonicRegression"),
   max_bins = 256,
   max_leaves = 0,
   sample_type = c("uniform", "weighted"),
@@ -205,10 +206,12 @@ parameter). Defaults to maximum available Defaults to -1.}
 \item{build_tree_one_node}{\code{Logical}. Run on one node only; no network overhead but fewer cpus used. Suitable for small datasets.
 Defaults to FALSE.}
 
-\item{calibrate_model}{\code{Logical}. Use Platt Scaling to calculate calibrated class probabilities. Calibration can provide more
-accurate estimates of class probabilities. Defaults to FALSE.}
+\item{calibrate_model}{\code{Logical}. Use Platt Scaling (default) or Isotonic Regression to calculate calibrated class
+probabilities. Calibration can provide more accurate estimates of class probabilities. Defaults to FALSE.}
 
-\item{calibration_frame}{Calibration frame for Platt Scaling}
+\item{calibration_frame}{Data for model calibration}
+
+\item{calibration_method}{Calibration method to use Must be one of: "AUTO", "PlattScaling", "IsotonicRegression". Defaults to AUTO.}
 
 \item{max_bins}{For tree_method=hist only: maximum number of bins Defaults to 256.}
 

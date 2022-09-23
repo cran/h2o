@@ -61,9 +61,12 @@ h2o.gbm(
     "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
   calibrate_model = FALSE,
   calibration_frame = NULL,
+  calibration_method = c("AUTO", "PlattScaling", "IsotonicRegression"),
   custom_metric_func = NULL,
   custom_distribution_func = NULL,
   export_checkpoints_dir = NULL,
+  in_training_checkpoints_dir = NULL,
+  in_training_checkpoints_tree_interval = 1,
   monotone_constraints = NULL,
   check_constant_response = TRUE,
   gainslift_bins = -1,
@@ -203,16 +206,24 @@ Defaults to FALSE.}
 \item{categorical_encoding}{Encoding scheme for categorical features Must be one of: "AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
 "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to AUTO.}
 
-\item{calibrate_model}{\code{Logical}. Use Platt Scaling to calculate calibrated class probabilities. Calibration can provide more
-accurate estimates of class probabilities. Defaults to FALSE.}
+\item{calibrate_model}{\code{Logical}. Use Platt Scaling (default) or Isotonic Regression to calculate calibrated class
+probabilities. Calibration can provide more accurate estimates of class probabilities. Defaults to FALSE.}
 
-\item{calibration_frame}{Calibration frame for Platt Scaling}
+\item{calibration_frame}{Data for model calibration}
+
+\item{calibration_method}{Calibration method to use Must be one of: "AUTO", "PlattScaling", "IsotonicRegression". Defaults to AUTO.}
 
 \item{custom_metric_func}{Reference to custom evaluation function, format: `language:keyName=funcName`}
 
 \item{custom_distribution_func}{Reference to custom distribution, format: `language:keyName=funcName`}
 
 \item{export_checkpoints_dir}{Automatically export generated models to this directory.}
+
+\item{in_training_checkpoints_dir}{Create checkpoints into defined directory while training process is still running. In case of cluster
+shutdown, this checkpoint can be used to restart training.}
+
+\item{in_training_checkpoints_tree_interval}{Checkpoint the model after every so many trees. Parameter is used only when in_training_checkpoints_dir is
+defined Defaults to 1.}
 
 \item{monotone_constraints}{A mapping representing monotonic constraints. Use +1 to enforce an increasing constraint and -1 to specify a
 decreasing constraint.}

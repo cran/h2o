@@ -16,3 +16,13 @@ h2o.as_date(x, format, ...)
 \description{
 Functions to convert between character representations and objects of class "Date" representing calendar dates.
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/jira/v-11-eurodate.csv"
+hdf <- h2o.importFile(f)
+h2o.as_date(hdf["ds5"], "\%d.\%m.\%y \%H:\%M")
+}
+}

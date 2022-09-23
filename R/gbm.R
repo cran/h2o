@@ -90,12 +90,17 @@
 #' @param pred_noise_bandwidth Bandwidth (sigma) of Gaussian multiplicative noise ~N(1,sigma) for tree node predictions Defaults to 0.
 #' @param categorical_encoding Encoding scheme for categorical features Must be one of: "AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
 #'        "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to AUTO.
-#' @param calibrate_model \code{Logical}. Use Platt Scaling to calculate calibrated class probabilities. Calibration can provide more
-#'        accurate estimates of class probabilities. Defaults to FALSE.
-#' @param calibration_frame Calibration frame for Platt Scaling
+#' @param calibrate_model \code{Logical}. Use Platt Scaling (default) or Isotonic Regression to calculate calibrated class
+#'        probabilities. Calibration can provide more accurate estimates of class probabilities. Defaults to FALSE.
+#' @param calibration_frame Data for model calibration
+#' @param calibration_method Calibration method to use Must be one of: "AUTO", "PlattScaling", "IsotonicRegression". Defaults to AUTO.
 #' @param custom_metric_func Reference to custom evaluation function, format: `language:keyName=funcName`
 #' @param custom_distribution_func Reference to custom distribution, format: `language:keyName=funcName`
 #' @param export_checkpoints_dir Automatically export generated models to this directory.
+#' @param in_training_checkpoints_dir Create checkpoints into defined directory while training process is still running. In case of cluster
+#'        shutdown, this checkpoint can be used to restart training.
+#' @param in_training_checkpoints_tree_interval Checkpoint the model after every so many trees. Parameter is used only when in_training_checkpoints_dir is
+#'        defined Defaults to 1.
 #' @param monotone_constraints A mapping representing monotonic constraints. Use +1 to enforce an increasing constraint and -1 to specify a
 #'        decreasing constraint.
 #' @param check_constant_response \code{Logical}. Check if response column is constant. If enabled, then an exception is thrown if the response
@@ -173,9 +178,12 @@ h2o.gbm <- function(x,
                     categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
                     calibrate_model = FALSE,
                     calibration_frame = NULL,
+                    calibration_method = c("AUTO", "PlattScaling", "IsotonicRegression"),
                     custom_metric_func = NULL,
                     custom_distribution_func = NULL,
                     export_checkpoints_dir = NULL,
+                    in_training_checkpoints_dir = NULL,
+                    in_training_checkpoints_tree_interval = 1,
                     monotone_constraints = NULL,
                     check_constant_response = TRUE,
                     gainslift_bins = -1,
@@ -308,12 +316,18 @@ h2o.gbm <- function(x,
     parms$calibrate_model <- calibrate_model
   if (!missing(calibration_frame))
     parms$calibration_frame <- calibration_frame
+  if (!missing(calibration_method))
+    parms$calibration_method <- calibration_method
   if (!missing(custom_metric_func))
     parms$custom_metric_func <- custom_metric_func
   if (!missing(custom_distribution_func))
     parms$custom_distribution_func <- custom_distribution_func
   if (!missing(export_checkpoints_dir))
     parms$export_checkpoints_dir <- export_checkpoints_dir
+  if (!missing(in_training_checkpoints_dir))
+    parms$in_training_checkpoints_dir <- in_training_checkpoints_dir
+  if (!missing(in_training_checkpoints_tree_interval))
+    parms$in_training_checkpoints_tree_interval <- in_training_checkpoints_tree_interval
   if (!missing(monotone_constraints))
     parms$monotone_constraints <- monotone_constraints
   if (!missing(check_constant_response))
@@ -379,9 +393,12 @@ h2o.gbm <- function(x,
                                     categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
                                     calibrate_model = FALSE,
                                     calibration_frame = NULL,
+                                    calibration_method = c("AUTO", "PlattScaling", "IsotonicRegression"),
                                     custom_metric_func = NULL,
                                     custom_distribution_func = NULL,
                                     export_checkpoints_dir = NULL,
+                                    in_training_checkpoints_dir = NULL,
+                                    in_training_checkpoints_tree_interval = 1,
                                     monotone_constraints = NULL,
                                     check_constant_response = TRUE,
                                     gainslift_bins = -1,
@@ -518,12 +535,18 @@ h2o.gbm <- function(x,
     parms$calibrate_model <- calibrate_model
   if (!missing(calibration_frame))
     parms$calibration_frame <- calibration_frame
+  if (!missing(calibration_method))
+    parms$calibration_method <- calibration_method
   if (!missing(custom_metric_func))
     parms$custom_metric_func <- custom_metric_func
   if (!missing(custom_distribution_func))
     parms$custom_distribution_func <- custom_distribution_func
   if (!missing(export_checkpoints_dir))
     parms$export_checkpoints_dir <- export_checkpoints_dir
+  if (!missing(in_training_checkpoints_dir))
+    parms$in_training_checkpoints_dir <- in_training_checkpoints_dir
+  if (!missing(in_training_checkpoints_tree_interval))
+    parms$in_training_checkpoints_tree_interval <- in_training_checkpoints_tree_interval
   if (!missing(monotone_constraints))
     parms$monotone_constraints <- monotone_constraints
   if (!missing(check_constant_response))

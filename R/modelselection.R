@@ -33,9 +33,9 @@
 #'        well. During training, rows with higher weights matter more, due to the larger loss function pre-factor. If
 #'        you set weight = 0 for a row, the returned prediction frame at that row is zero and this is incorrect. To get
 #'        an accurate prediction, remove all rows with weight == 0.
-#' @param family Family. For MaxR, only gaussian.  For backward, ordinal and multinomial families are not supported Must be one
-#'        of: "AUTO", "gaussian", "binomial", "fractionalbinomial", "quasibinomial", "poisson", "gamma", "tweedie",
-#'        "negativebinomial". Defaults to AUTO.
+#' @param family Family. For maxr/maxrsweep, only gaussian.  For backward, ordinal and multinomial families are not supported
+#'        Must be one of: "AUTO", "gaussian", "binomial", "fractionalbinomial", "quasibinomial", "poisson", "gamma",
+#'        "tweedie", "negativebinomial". Defaults to AUTO.
 #' @param link Link function. Must be one of: "family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit".
 #'        Defaults to family_default.
 #' @param tweedie_variance_power Tweedie variance power Defaults to 0.
@@ -48,7 +48,7 @@
 #' @param alpha Distribution of regularization between the L1 (Lasso) and L2 (Ridge) penalties. A value of 1 for alpha
 #'        represents Lasso regression, a value of 0 produces Ridge regression, and anything in between specifies the
 #'        amount of mixing between the two. Default value of alpha is 0 when SOLVER = 'L-BFGS'; 0.5 otherwise.
-#' @param lambda Regularization strength
+#' @param lambda Regularization strength Defaults to c(0.0).
 #' @param lambda_search \code{Logical}. Use lambda search starting at lambda max, given lambda is then interpreted as lambda min
 #'        Defaults to FALSE.
 #' @param early_stopping \code{Logical}. Stop early when there is no more relative improvement on train or validation (if provided)
@@ -64,7 +64,7 @@
 #' @param compute_p_values \code{Logical}. Request p-values computation, p-values work only with IRLSM solver and no regularization
 #'        Defaults to FALSE.
 #' @param remove_collinear_columns \code{Logical}. In case of linearly dependent columns, remove some of the dependent columns Defaults to FALSE.
-#' @param intercept \code{Logical}. Include constant term in the model Defaults to FALSE.
+#' @param intercept \code{Logical}. Include constant term in the model Defaults to TRUE.
 #' @param non_negative \code{Logical}. Restrict coefficients (not intercept) to be non-negative Defaults to FALSE.
 #' @param max_iterations Maximum number of iterations Defaults to 0.
 #' @param objective_epsilon Converge if  objective value changes less than this. Default (of -1.0) indicates: If lambda_search is set to
@@ -115,8 +115,8 @@
 #' @param min_predictor_number For mode = 'backward' only.  Minimum number of predictors to be considered when building GLM models starting
 #'        with all predictors to be included.  Defaults to 1. Defaults to 1.
 #' @param mode Mode: Used to choose model selection algorithms to use.  Options include 'allsubsets' for all subsets, 'maxr'
-#'        for MaxR, 'backward' for backward selection Must be one of: "allsubsets", "maxr", "backward". Defaults to
-#'        maxr.
+#'        for MaxR calling GLM to build all models, 'maxrsweep' for using sweep in MaxR, 'backward' for backward
+#'        selection Must be one of: "allsubsets", "maxr", "maxrsweep", "backward". Defaults to maxr.
 #' @param p_values_threshold For mode='backward' only.  If specified, will stop the model building process when all coefficientsp-values
 #'        drop below this threshold  Defaults to 0.
 #' @examples
@@ -151,7 +151,7 @@ h2o.modelSelection <- function(x,
                                theta = 0,
                                solver = c("AUTO", "IRLSM", "L_BFGS", "COORDINATE_DESCENT_NAIVE", "COORDINATE_DESCENT", "GRADIENT_DESCENT_LH", "GRADIENT_DESCENT_SQERR"),
                                alpha = NULL,
-                               lambda = NULL,
+                               lambda = c(0.0),
                                lambda_search = FALSE,
                                early_stopping = FALSE,
                                nlambdas = 0,
@@ -160,7 +160,7 @@ h2o.modelSelection <- function(x,
                                plug_values = NULL,
                                compute_p_values = FALSE,
                                remove_collinear_columns = FALSE,
-                               intercept = FALSE,
+                               intercept = TRUE,
                                non_negative = FALSE,
                                max_iterations = 0,
                                objective_epsilon = -1,
@@ -184,7 +184,7 @@ h2o.modelSelection <- function(x,
                                nparallelism = 0,
                                max_predictor_number = 1,
                                min_predictor_number = 1,
-                               mode = c("allsubsets", "maxr", "backward"),
+                               mode = c("allsubsets", "maxr", "maxrsweep", "backward"),
                                p_values_threshold = 0)
 {
   # Validate required training_frame first and other frame args: should be a valid key or an H2OFrame object
@@ -319,7 +319,7 @@ h2o.modelSelection <- function(x,
   model <- .h2o.modelJob('modelselection', parms, h2oRestApiVersion=3, verbose=FALSE)
   return(model)
 }
-.h2o.train_segments_modelSelection <- function(x,
+.h2o.train_segments_modelselection <- function(x,
                                                y,
                                                training_frame,
                                                validation_frame = NULL,
@@ -339,7 +339,7 @@ h2o.modelSelection <- function(x,
                                                theta = 0,
                                                solver = c("AUTO", "IRLSM", "L_BFGS", "COORDINATE_DESCENT_NAIVE", "COORDINATE_DESCENT", "GRADIENT_DESCENT_LH", "GRADIENT_DESCENT_SQERR"),
                                                alpha = NULL,
-                                               lambda = NULL,
+                                               lambda = c(0.0),
                                                lambda_search = FALSE,
                                                early_stopping = FALSE,
                                                nlambdas = 0,
@@ -348,7 +348,7 @@ h2o.modelSelection <- function(x,
                                                plug_values = NULL,
                                                compute_p_values = FALSE,
                                                remove_collinear_columns = FALSE,
-                                               intercept = FALSE,
+                                               intercept = TRUE,
                                                non_negative = FALSE,
                                                max_iterations = 0,
                                                objective_epsilon = -1,
@@ -372,7 +372,7 @@ h2o.modelSelection <- function(x,
                                                nparallelism = 0,
                                                max_predictor_number = 1,
                                                min_predictor_number = 1,
-                                               mode = c("allsubsets", "maxr", "backward"),
+                                               mode = c("allsubsets", "maxr", "maxrsweep", "backward"),
                                                p_values_threshold = 0,
                                                segment_columns = NULL,
                                                segment_models_id = NULL,
@@ -528,7 +528,31 @@ h2o.modelSelection <- function(x,
 #' @export   
 h2o.get_best_r2_values<- function(model) {
   if( is(model, "H2OModel") && (model@algorithm=='modelselection'))
-    return(return(model@model$best_r2_values))
+    return(model@model$best_r2_values)
+}
+
+#' Extracts the predictor added to model at each step.
+#'
+#' @param model is a H2OModel with algorithm name of modelselection
+#' @export   
+h2o.get_predictors_added_per_step<- function(model) {
+  if( is(model, "H2OModel") && (model@algorithm=='modelselection')) {
+    if (model@allparameters$mode != 'backard') {
+      return(model@model$predictors_added_per_step)
+    } else {
+      stop("h2o.get_predictors_added_per_step can not be called with model = backward")
+    }
+  }
+}
+
+#' Extracts the predictor removed to model at each step.
+#'
+#' @param model is a H2OModel with algorithm name of modelselection
+#' @export   
+h2o.get_predictors_removed_per_step<- function(model) {
+  if( is(model, "H2OModel") && (model@algorithm=='modelselection')) {
+    return(model@model$predictors_removed_per_step)
+  }
 }
 
 #' Extracts the subset of predictor names that yield the best R2 value for each predictor subset size.

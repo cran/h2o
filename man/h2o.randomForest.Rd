@@ -53,6 +53,7 @@ h2o.randomForest(
     "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
   calibrate_model = FALSE,
   calibration_frame = NULL,
+  calibration_method = c("AUTO", "PlattScaling", "IsotonicRegression"),
   distribution = c("AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
     "tweedie", "laplace", "quantile", "huber"),
   custom_metric_func = NULL,
@@ -180,10 +181,12 @@ accuracy. Defaults to FALSE.}
 \item{categorical_encoding}{Encoding scheme for categorical features Must be one of: "AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
 "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to AUTO.}
 
-\item{calibrate_model}{\code{Logical}. Use Platt Scaling to calculate calibrated class probabilities. Calibration can provide more
-accurate estimates of class probabilities. Defaults to FALSE.}
+\item{calibrate_model}{\code{Logical}. Use Platt Scaling (default) or Isotonic Regression to calculate calibrated class
+probabilities. Calibration can provide more accurate estimates of class probabilities. Defaults to FALSE.}
 
-\item{calibration_frame}{Calibration frame for Platt Scaling}
+\item{calibration_frame}{Data for model calibration}
+
+\item{calibration_method}{Calibration method to use Must be one of: "AUTO", "PlattScaling", "IsotonicRegression". Defaults to AUTO.}
 
 \item{distribution}{Distribution. This argument is deprecated and has no use for Random Forest.}
 

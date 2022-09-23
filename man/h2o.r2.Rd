@@ -17,7 +17,7 @@ h2o.r2(object, train = FALSE, valid = FALSE, xval = FALSE)
 }
 \description{
 Retrieves the R2 value from an H2O model.
-Will return R^2 for GLM Models and will return NaN otherwise.
+Will return R^2 for GLM Models.
 If "train", "valid", and "xval" parameters are FALSE (default), then the training R2 value is returned. If more
 than one parameter is set to TRUE, then a named vector of R2s are returned, where the names are "train", "valid"
 or "xval".

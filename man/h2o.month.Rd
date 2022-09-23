@@ -23,6 +23,16 @@ An H2OFrame object containing the entries of \code{x} converted to months of
 Converts the entries of an H2OFrame object from milliseconds to months (on a 1 to
 12 scale).
 }
+\examples{
+\dontrun{
+library(h2o)
+h2o.init()
+
+f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/jira/v-11-eurodate.csv"
+hdf <- h2o.importFile(f)
+h2o.month(hdf["ds9"])
+}
+}
 \seealso{
 \code{\link{h2o.year}}
 }

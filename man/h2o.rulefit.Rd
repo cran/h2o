@@ -23,7 +23,8 @@ h2o.rulefit(
   auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
     "WEIGHTED_OVO"),
   remove_duplicates = TRUE,
-  lambda = NULL
+  lambda = NULL,
+  max_categorical_levels = 10
 )
 }
 \arguments{
@@ -74,6 +75,9 @@ an accurate prediction, remove all rows with weight == 0.}
 TRUE.}
 
 \item{lambda}{Lambda for LASSO regressor.}
+
+\item{max_categorical_levels}{For every categorical feature, only use this many most frequent categorical levels for model training. Only
+used for categorical_encoding == EnumLimited. Defaults to 10.}
 }
 \description{
 Builds a Distributed RuleFit model on a parsed dataset, for regression or 

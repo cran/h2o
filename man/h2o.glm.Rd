@@ -42,6 +42,8 @@ h2o.glm(
   missing_values_handling = c("MeanImputation", "Skip", "PlugValues"),
   plug_values = NULL,
   compute_p_values = FALSE,
+  dispersion_parameter_method = c("deviance", "pearson", "ml"),
+  init_dispersion_parameter = 1,
   remove_collinear_columns = FALSE,
   intercept = TRUE,
   non_negative = FALSE,
@@ -75,7 +77,15 @@ h2o.glm(
   custom_metric_func = NULL,
   generate_scoring_history = FALSE,
   auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
-    "WEIGHTED_OVO")
+    "WEIGHTED_OVO"),
+  dispersion_epsilon = 1e-04,
+  tweedie_epsilon = 8e-17,
+  max_iterations_dispersion = 3000,
+  build_null_model = FALSE,
+  fix_dispersion_parameter = FALSE,
+  generate_variable_inflation_factors = FALSE,
+  fix_tweedie_variance_power = TRUE,
+  dispersion_learning_rate = 0.5
 )
 }
 \arguments{
@@ -176,6 +186,13 @@ training/validation frame, use with conjunction missing_values_handling = PlugVa
 \item{compute_p_values}{\code{Logical}. Request p-values computation, p-values work only with IRLSM solver and no regularization
 Defaults to FALSE.}
 
+\item{dispersion_parameter_method}{Method used to estimate the dispersion parameter for Tweedie, Gamma and Negative Binomial only. Must be one
+of: "deviance", "pearson", "ml". Defaults to pearson.}
+
+\item{init_dispersion_parameter}{Only used for Tweedie, Gamma and Negative Binomial GLM.  Store the initial value of dispersion parameter.  If
+fix_dispersion_parameter is set, this value will be used in the calculation of p-values.Default to 1.0.
+Defaults to 1.}
+
 \item{remove_collinear_columns}{\code{Logical}. In case of linearly dependent columns, remove some of the dependent columns Defaults to FALSE.}
 
 \item{intercept}{\code{Logical}. Include constant term in the model Defaults to TRUE.}
@@ -263,6 +280,33 @@ algo. Defaults to FALSE.}
 
 \item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
 "WEIGHTED_OVO". Defaults to AUTO.}
+
+\item{dispersion_epsilon}{If changes in dispersion parameter estimation or loglikelihood value is smaller than dispersion_epsilon, will
+break out of the dispersion parameter estimation loop using maximum likelihood. Defaults to 0.0001.}
+
+\item{tweedie_epsilon}{In estimating tweedie dispersion parameter using maximum likelihood, this is used to choose the lower and
+upper indices in the approximating of the infinite series summation. Defaults to 8e-17.}
+
+\item{max_iterations_dispersion}{Control the maximum number of iterations in the dispersion parameter estimation loop using maximum likelihood.
+Defaults to 3000.}
+
+\item{build_null_model}{\code{Logical}. If set, will build a model with only the intercept.  Default to false. Defaults to FALSE.}
+
+\item{fix_dispersion_parameter}{\code{Logical}. Only used for Tweedie, Gamma and Negative Binomial GLM.  If set, will use the dispsersion
+parameter in init_dispersion_parameter as the standard error and use it to calculate the p-values. Default to
+false. Defaults to FALSE.}
+
+\item{generate_variable_inflation_factors}{\code{Logical}. if true, will generate variable inflation factors for numerical predictors.  Default to false.
+Defaults to FALSE.}
+
+\item{fix_tweedie_variance_power}{\code{Logical}. If true, will fix tweedie variance power value to the value set in tweedie_variance_power.
+Defaults to TRUE.}
+
+\item{dispersion_learning_rate}{Dispersion learning rate is only valid for tweedie family dispersion parameter estimation using ml. It must be
+> 0.  This controls how much the dispersion parameter estimate is to be changed when the calculated
+loglikelihood actually decreases with the new dispersion.  In this case, instead of setting new dispersion =
+dispersion - change, we set new dispersion = dispersion + dispersion_learning_rate * change. Defaults to 0.5.
+Defaults to 0.5.}
 }
 \value{
 A subclass of \code{\linkS4class{H2OModel}} is returned. The specific subclass depends on the machine

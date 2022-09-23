@@ -31,7 +31,7 @@ h2o.modelSelection(
   solver = c("AUTO", "IRLSM", "L_BFGS", "COORDINATE_DESCENT_NAIVE",
     "COORDINATE_DESCENT", "GRADIENT_DESCENT_LH", "GRADIENT_DESCENT_SQERR"),
   alpha = NULL,
-  lambda = NULL,
+  lambda = c(0),
   lambda_search = FALSE,
   early_stopping = FALSE,
   nlambdas = 0,
@@ -40,7 +40,7 @@ h2o.modelSelection(
   plug_values = NULL,
   compute_p_values = FALSE,
   remove_collinear_columns = FALSE,
-  intercept = FALSE,
+  intercept = TRUE,
   non_negative = FALSE,
   max_iterations = 0,
   objective_epsilon = -1,
@@ -66,7 +66,7 @@ h2o.modelSelection(
   nparallelism = 0,
   max_predictor_number = 1,
   min_predictor_number = 1,
-  mode = c("allsubsets", "maxr", "backward"),
+  mode = c("allsubsets", "maxr", "maxrsweep", "backward"),
   p_values_threshold = 0
 )
 }
@@ -111,9 +111,9 @@ well. During training, rows with higher weights matter more, due to the larger l
 you set weight = 0 for a row, the returned prediction frame at that row is zero and this is incorrect. To get
 an accurate prediction, remove all rows with weight == 0.}
 
-\item{family}{Family. For MaxR, only gaussian.  For backward, ordinal and multinomial families are not supported Must be one
-of: "AUTO", "gaussian", "binomial", "fractionalbinomial", "quasibinomial", "poisson", "gamma", "tweedie",
-"negativebinomial". Defaults to AUTO.}
+\item{family}{Family. For maxr/maxrsweep, only gaussian.  For backward, ordinal and multinomial families are not supported
+Must be one of: "AUTO", "gaussian", "binomial", "fractionalbinomial", "quasibinomial", "poisson", "gamma",
+"tweedie", "negativebinomial". Defaults to AUTO.}
 
 \item{link}{Link function. Must be one of: "family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit".
 Defaults to family_default.}
@@ -133,7 +133,7 @@ columns. Must be one of: "AUTO", "IRLSM", "L_BFGS", "COORDINATE_DESCENT_NAIVE", 
 represents Lasso regression, a value of 0 produces Ridge regression, and anything in between specifies the
 amount of mixing between the two. Default value of alpha is 0 when SOLVER = 'L-BFGS'; 0.5 otherwise.}
 
-\item{lambda}{Regularization strength}
+\item{lambda}{Regularization strength Defaults to c(0.0).}
 
 \item{lambda_search}{\code{Logical}. Use lambda search starting at lambda max, given lambda is then interpreted as lambda min
 Defaults to FALSE.}
@@ -158,7 +158,7 @@ Defaults to FALSE.}
 
 \item{remove_collinear_columns}{\code{Logical}. In case of linearly dependent columns, remove some of the dependent columns Defaults to FALSE.}
 
-\item{intercept}{\code{Logical}. Include constant term in the model Defaults to FALSE.}
+\item{intercept}{\code{Logical}. Include constant term in the model Defaults to TRUE.}
 
 \item{non_negative}{\code{Logical}. Restrict coefficients (not intercept) to be non-negative Defaults to FALSE.}
 
@@ -233,8 +233,8 @@ balance_classes. Defaults to 5.0.}
 with all predictors to be included.  Defaults to 1. Defaults to 1.}
 
 \item{mode}{Mode: Used to choose model selection algorithms to use.  Options include 'allsubsets' for all subsets, 'maxr'
-for MaxR, 'backward' for backward selection Must be one of: "allsubsets", "maxr", "backward". Defaults to
-maxr.}
+for MaxR calling GLM to build all models, 'maxrsweep' for using sweep in MaxR, 'backward' for backward
+selection Must be one of: "allsubsets", "maxr", "maxrsweep", "backward". Defaults to maxr.}
 
 \item{p_values_threshold}{For mode='backward' only.  If specified, will stop the model building process when all coefficientsp-values
 drop below this threshold  Defaults to 0.}

@@ -17,6 +17,18 @@ Returns a new \linkS4class{H2OModel} object.
 Upload a binary model from the provided local path to the H2O cluster.
 (H2O model can be saved in a binary form either by saveModel() or by download_model() function.)
 }
+\examples{
+\dontrun{
+# library(h2o)
+# h2o.init()
+# prostate_path = system.file("extdata", "prostate.csv", package = "h2o")
+# prostate = h2o.importFile(path = prostate_path)
+# prostate_glm = h2o.glm(y = "CAPSULE", x = c("AGE","RACE","PSA","DCAPS"),
+#   training_frame = prostate, family = "binomial", alpha = 0.5)
+# glmmodel_path = h2o.download_model(prostate_glm, dir = "/Users/UserName/Desktop")
+# glmmodel_load = h2o.upload_model(glmmodel_path)
+}
+}
 \seealso{
 \code{\link{h2o.saveModel}}, \code{\link{h2o.download_model}}
 }

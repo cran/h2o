@@ -1,8 +1,8 @@
 Package: h2o
-Version: 3.36.1.2
+Version: 3.38.0.1
 Type: Package
 Title: R Interface for the 'H2O' Scalable Machine Learning Platform
-Date: 2022-05-26
+Date: 2022-09-19
 Authors@R: c(
     person("Erin", "LeDell", role = c("aut", "cre"), email = "erin@h2o.ai"),
     person("Navdeep", "Gill", role = c("aut")),
@@ -51,17 +51,18 @@ Suggests: ggplot2 (>= 3.3.0), mlbench, Matrix, slam, bit64 (>= 0.9.7),
 Collate: 'aggregator.R' 'astfun.R' 'automl.R' 'classes.R' 'config.R'
         'connection.R' 'constants.R' 'datasets.R' 'logging.R'
         'communication.R' 'kvstore.R' 'frame.R' 'targetencoder.R'
-        'import.R' 'isolationforest.R' 'extendedisolationforest.R'
-        'parse.R' 'export.R' 'edicts.R' 'models.R' 'coxph.R'
-        'coxphutils.R' 'kmeans.R' 'gam.R' 'anovaglm.R' 'gbm.R'
-        'generic.R' 'glm.R' 'glrm.R' 'modelselection.R' 'pca.R' 'svd.R'
-        'psvm.R' 'deeplearning.R' 'stackedensemble.R' 'xgboost.R'
-        'randomforest.R' 'naivebayes.R' 'word2vec.R' 'w2vutils.R'
-        'locate.R' 'grid.R' 'segment.R' 'predict.R' 'tf-idf.R'
-        'rulefit.R' 'explain.R' 'permutation_varimp.R' 'infogram.R'
-        'zzz.R' 'upliftrandomforest.R'
+        'import.R' 'isolationforest.R' 'isotonicregression.R'
+        'extendedisolationforest.R' 'parse.R' 'export.R' 'edicts.R'
+        'models.R' 'coxph.R' 'coxphutils.R' 'kmeans.R' 'gam.R'
+        'anovaglm.R' 'gbm.R' 'generic.R' 'glm.R' 'glrm.R'
+        'modelselection.R' 'pca.R' 'svd.R' 'psvm.R' 'deeplearning.R'
+        'stackedensemble.R' 'xgboost.R' 'randomforest.R' 'naivebayes.R'
+        'word2vec.R' 'w2vutils.R' 'locate.R' 'grid.R' 'segment.R'
+        'predict.R' 'tf-idf.R' 'rulefit.R' 'explain.R'
+        'permutation_varimp.R' 'infogram.R' 'zzz.R'
+        'upliftrandomforest.R'
 RoxygenNote: 7.1.2
-Packaged: 2022-05-26 14:54:01 UTC; jenkins
+Packaged: 2022-09-19 14:15:02 UTC; jenkins
 Author: Erin LeDell [aut, cre],
   Navdeep Gill [aut],
   Spencer Aiello [aut],
@@ -90,4 +91,4 @@ Author: Erin LeDell [aut, cre],
   H2O.ai [cph, fnd]
 Maintainer: Erin LeDell <erin@h2o.ai>
 Repository: CRAN
-Date/Publication: 2022-05-28 00:00:02 UTC
+Date/Publication: 2022-09-23 11:50:07 UTC

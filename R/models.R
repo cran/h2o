@@ -754,9 +754,14 @@ predict_leaf_node_assignment.H2OModel <- function(object, newdata, type = c("Pat
 #' @export
 h2o.predict_leaf_node_assignment <- predict_leaf_node_assignment.H2OModel
 
+h2o.transform_frame <- function(model, fr) {
+  if (!is(model, "H2OModel") || (is(model, "H2OModel") && model@algorithm != "glrm")) stop("h2o.transform_frame can only be applied to GLRM H2OModel instance.")
+  return(.newExpr("transform", model@model_id, h2o.getId(fr)))
+}
+
 h2o.result <- function(model) {
   if (!is(model, "H2OModel")) stop("h2o.result can only be applied to H2OModel instances with constant results")
-  return(as.data.frame(.newExpr("result", model@model_id)))
+  return(.newExpr("result", model@model_id))
 }
 
 h2o.crossValidate <- function(model, nfolds, model.type = c("gbm", "glm", "deeplearning"), params, strategy = c("mod1", "random")) {
@@ -898,6 +903,7 @@ predict_contributions.H2OModel <- function(object, newdata, output_format = c("o
     if (missing(newdata)) {
         stop("predictions with a missing `newdata` argument is not implemented yet")
     }
+    .check_model_suitability_for_calculation_of_contributions(object)
     params <- list(predict_contributions = TRUE, top_n=top_n, bottom_n=bottom_n, compare_abs=compare_abs)
     params$predict_contributions_output_format <- match.arg(output_format)
     url <- paste0('Predictions/models/', object@model_id, '/frames/',  h2o.getId(newdata))
@@ -1988,7 +1994,7 @@ h2o.aic <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 #' Retrieve the R2 value
 #'
 #' Retrieves the R2 value from an H2O model.
-#' Will return R^2 for GLM Models and will return NaN otherwise.
+#' Will return R^2 for GLM Models.
 #' If "train", "valid", and "xval" parameters are FALSE (default), then the training R2 value is returned. If more
 #' than one parameter is set to TRUE, then a named vector of R2s are returned, where the names are "train", "valid"
 #' or "xval".
@@ -2221,6 +2227,45 @@ h2o.coef_with_p_values <- function(object) {
     }
   } else {
     stop("p-values, z-values and std_error are only found in GLM.")
+  }
+}
+
+#'
+#' Return the variable inflation factors associated with numerical predictors for GLM models.
+#'
+#' @param object An \linkS4class{H2OModel} object.
+#' @examples 
+#' \dontrun{
+#' library(h2o)
+#' h2o.init()
+#' 
+#' f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+#' cars <- h2o.importFile(f)
+#' predictors <- c("displacement", "power", "weight", "acceleration", "year")
+#' response <- "cylinders"
+#' cars_split <- h2o.splitFrame(data = cars, ratios = 0.8, seed = 1234)
+#' train <- cars_split[[1]]
+#' valid <- cars_split[[2]]
+#' cars_glm <- h2o.glm(seed = 1234, 
+#'                     lambda=0.0,
+#'                     compute_p_values=TRUE,
+#'                     generate_variable_inflation_factors=TRUE,     
+#'                     x = predictors, 
+#'                     y = response, 
+#'                     training_frame = train, 
+#'                     validation_frame = valid)
+#' h2o.get_variable_inflation_factors(cars_glm)
+#' }
+#' @export
+h2o.get_variable_inflation_factors <- function(object) {
+  if (is(object, "H2OModel") && object@algorithm %in% c("glm")) {
+    if (object@parameters$generate_variable_inflation_factors) {
+      structure(object@model$variable_inflation_factors, names = object@model$vif_predictor_names)
+    } else {
+      stop("variable inflation factors are not found in model.  Make sure to set enable_variable_inflation_factors=TRUE.")
+    }
+  } else {
+    stop("variable inflation factors are only found in GLM models with numerical predictors.")
   }
 }
 
@@ -3885,7 +3930,7 @@ h2o.null_dof <- function(object, train=FALSE, valid=FALSE, xval=FALSE) {
 #' @seealso \code{\link{predict}} for generating prediction frames,
 #'          \code{\link{h2o.performance}} for creating
 #'          \linkS4class{H2OModelMetrics}.
-#' @alias h2o.gains_lift
+#' @aliases h2o.gains_lift
 #' @examples
 #' \dontrun{
 #' library(h2o)
@@ -4023,6 +4068,7 @@ setMethod("h2o.kolmogorov_smirnov", "H2OModel", function(object) {
 #'        This value is only used in the case of
 #'        \linkS4class{H2OBinomialMetrics} objects.
 #' @param valid Retrieve the validation metric.
+#' @param xval Retrieve the cross-validation metric.
 #' @param ... Extra arguments for extracting train or valid confusion matrices.
 #' @return Calling this function on \linkS4class{H2OModel} objects returns a
 #'         confusion matrix corresponding to the \code{\link{predict}} function.
@@ -4049,14 +4095,23 @@ setGeneric("h2o.confusionMatrix", function(object, ...) {})
 
 #' @rdname h2o.confusionMatrix
 #' @export
-setMethod("h2o.confusionMatrix", "H2OModel", function(object, newdata, valid=FALSE, ...) {
+setMethod("h2o.confusionMatrix", "H2OModel", function(object, newdata, valid=FALSE, xval=FALSE,...) {
   model.parts <- .model.parts(object)
   if( missing(newdata) ) {
     if( valid ) {
       if( is.null(model.parts$vm) ) return( invisible(.warn.no.validation()) )
       else                          return( h2o.confusionMatrix(model.parts$vm, ...) )
-    } else                          return( h2o.confusionMatrix(model.parts$tm, ...) )
-  } else if( valid ) stop("Cannot have both `newdata` and `valid=TRUE`", call.=FALSE)
+    } else if( xval ) {
+      if( is.null(model.parts$xm) ) return( invisible(.warn.no.cross.validation()) )
+      else                          return( h2o.confusionMatrix(model.parts$xm, ...) )
+    }
+    else {
+                                    return( h2o.confusionMatrix(model.parts$tm, ...) )
+    }   
+  } else {
+    if( valid ) stop("Cannot have both `newdata` and `valid=TRUE`", call.=FALSE)
+    if( xval ) stop("Cannot have both `newdata` and `xval=TRUE`", call.=FALSE)
+  }
 
   # ok need to score on the newdata
   url <- paste0("Predictions/models/",object@model_id, "/frames/", h2o.getId(newdata))
@@ -4187,6 +4242,7 @@ setMethod("h2o.confusionMatrix", "H2OModelMetrics", function(object, thresholds=
 #'     plot(gbm, timestep = "number_of_trees", metric = "mae")
 #' }
 #' }
+#' @method plot H2OModel
 #' @export
 plot.H2OModel <- function(x, timestep = "AUTO", metric = "AUTO", ...) {
   df <- as.data.frame(x@model$scoring_history)
@@ -4567,6 +4623,7 @@ setMethod("h2o.gains_lift_plot", "H2OModel", function(object, type = c("both", "
   .gains_lift_plot(gain_table, type = match.arg(type))
 })
 
+#' @method plot H2OBinomialMetrics
 #' @export
 plot.H2OBinomialMetrics <- function(x, type = "roc", main, ...) {
   # TODO: add more types (i.e. cutoffs)
@@ -4603,6 +4660,7 @@ plot.H2OBinomialMetrics <- function(x, type = "roc", main, ...) {
   }
 }
 
+#' @method plot H2OBinomialUpliftMetrics
 #' @export
 plot.H2OBinomialUpliftMetrics <- function(x, metric="AUTO", normalize=FALSE, main, ...) {
     if(!metric %in% c("AUTO", "qini", "lift", "gain")) stop("metric must be 'AUTO', 'qini' or 'lift' or 'gain'")
@@ -4805,6 +4863,7 @@ h2o.tabulate <- function(data, x, y,
 #'              weights_column = NULL, nbins_x = 10, nbins_y = 10)
 #' plot(tab)
 #' }
+#' @method plot H2OTabulate
 #' @export
 plot.H2OTabulate <- function(x, xlab = x$cols[1], ylab = x$cols[2], base_size = 12, ...) {
 
@@ -6139,4 +6198,64 @@ h2o.predicted_vs_actual_by_variable <- function(object,
   attr(vi, "description") <- ""
   attr(vi, "formats") <- c("%s", rep_len("%5f", ncol(vi) - 1))
   vi
+}
+
+#' Create a leaderboard from a list of models, grids and/or automls.
+#'
+#' @param object List of models, automls, or grids; or just single automl/grid object.
+#' @param leaderboard_frame Frame used for generating the metrics (optional).
+#' @param sort_metric Metric used for sorting the leaderboard.
+#' @param extra_columns What extra columns should be calculated (might require leaderboard_frame). Use "ALL" for all available or list of extra columns.
+#' @param scoring_data Metrics to be reported in the leaderboard ("xval", "train", or "valid"). Used if no leaderboard_frame is provided.
+#' @return data.frame
+#'
+#' @examples
+#' \dontrun{
+#' library(h2o)
+#' h2o.init()
+#' iris_hf <- as.h2o(iris)
+#' grid <- h2o.grid("gbm", x = c(1:4), y = 5, training_frame = iris_hf,
+#'                  hyper_params = list(ntrees = c(1, 2, 3)))
+#' h2o.make_leaderboard(grid, iris_hf)
+#' }
+#' @export
+h2o.make_leaderboard <- function(object,
+                                 leaderboard_frame,
+                                 sort_metric = "AUTO",
+                                 extra_columns = c(),
+                                 scoring_data = c("AUTO", "train", "valid", "xval")
+) {
+  .get_models <- function(obj){
+    if (is.list(obj)) {
+      return(lapply(obj, .get_models))
+    } else if (.is.H2OAutoML(obj)) {
+      return(unlist(as.list(obj@leaderboard$model_id)))
+    } else if (inherits(obj, "H2OGrid")) {
+      return(unlist(obj@model_ids))
+    } else if (is.character(obj)) {
+      return(obj)
+    } else if (inherits(obj, "H2OModel")) {
+      return(h2o.keyof(obj))
+    } else {
+      stop("Unsupported object!")
+    }
+  }
+  model_ids <- unlist(.get_models(object))
+  extra_cols <- paste0(extra_columns, collapse = "\", \"")
+  scoring_data <- match.arg(scoring_data)
+  if (missing(leaderboard_frame) || is.null(leaderboard_frame)) {
+    leaderboard_frame_key <- NULL
+  } else {
+    # make sure the frame has assigned a key in R, this is necessary when subsetting h2o frame but not evaluating the subset
+    if (is.null(h2o.keyof(leaderboard_frame))) head(leaderboard_frame, n = 1)
+    leaderboard_frame_key <- h2o.keyof(leaderboard_frame)
+  }
+
+  as.data.frame(.newExpr("makeLeaderboard",
+                         model_ids,
+                         paste0("\"", leaderboard_frame_key, "\""),
+                         paste0("\"", sort_metric, "\""),
+                         paste0("[\"", extra_cols, "\"]"),
+                         paste0("\"", scoring_data, "\"")
+  ), check.names = FALSE)
 }

@@ -12,7 +12,8 @@ h2o.exportFile(
   compression = NULL,
   parts = 1,
   header = TRUE,
-  quote_header = TRUE
+  quote_header = TRUE,
+  format = "csv"
 )
 }
 \arguments{
@@ -45,6 +46,10 @@ Default is to include the header in the output file.}
 
 \item{quote_header}{logical, indicates whether column names should be
 quoted. Default is to use quotes.}
+
+\item{format}{string, one of "csv" or "parquet". Default is "csv". Export
+to parquet is multipart and H2O itself determines the optimal number
+of files (1 file per chunk).}
 }
 \description{
 Exports an H2OFrame (which can be either VA or FV) to a file.

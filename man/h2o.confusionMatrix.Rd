@@ -8,7 +8,7 @@
 \usage{
 h2o.confusionMatrix(object, ...)
 
-\S4method{h2o.confusionMatrix}{H2OModel}(object, newdata, valid = FALSE, ...)
+\S4method{h2o.confusionMatrix}{H2OModel}(object, newdata, valid = FALSE, xval = FALSE, ...)
 
 \S4method{h2o.confusionMatrix}{H2OModelMetrics}(object, thresholds = NULL, metrics = NULL)
 }
@@ -22,6 +22,8 @@ h2o.confusionMatrix(object, ...)
 Requires a valid response column.}
 
 \item{valid}{Retrieve the validation metric.}
+
+\item{xval}{Retrieve the cross-validation metric.}
 
 \item{thresholds}{(Optional) A value or a list of valid values between 0.0 and 1.0.
 This value is only used in the case of

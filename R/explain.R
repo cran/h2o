@@ -1,20 +1,29 @@
 ########################################### UTILS ##################################################
-#' Suppresses h2o progress output from \code{expr}
-#'
-#' @param expr expression
-#'
-#' @return result of \code{expr}
-with_no_h2o_progress <- function(expr) {
-  show_progress <- environment(h2o.no_progress)$
-    .pkg.env$
-    PROGRESS_BAR
-  if (length(show_progress) == 0L || show_progress) {
-    on.exit(h2o.show_progress())
-  } else {
-    on.exit(h2o.no_progress())
-  }
-  h2o.no_progress()
-  force(expr)
+
+#' Works like match.arg but ignores case
+#' @param arg argument to match that should be declared as a character vector containing possible values
+#' @param choices argument to choose from (OPTIONAL)
+#' @return matched arg
+case_insensitive_match_arg <- function(arg, choices) {
+  var_name <- as.character(substitute(arg))
+  if (missing(choices))
+    choices <- eval(formals(sys.function(-1))[[var_name]])
+  orig_choices <- choices
+
+  if (identical(arg, eval(formals(sys.function(-1))[[var_name]])))
+    arg <- choices[[1]]
+
+  choices <- tolower(choices)
+
+  if (length(arg) != 1)
+    stop(sprintf("'%s' must be of length 1", var_name), call. = FALSE)
+
+  arg <- tolower(arg)
+
+  i <- pmatch(arg, choices, nomatch = 0L, duplicates.ok = FALSE)
+  if (all(i == 0L) || length(i) != 1)
+    stop(sprintf("'%s' should be one of %s", var_name, paste(dQuote(orig_choices), collapse = ", ")), call. = FALSE)
+  return(orig_choices[[i]])
 }
 
 #' Stop with a user friendly message if a user is missing the ggplot2 package or has an old version of it.
@@ -88,6 +97,15 @@ with_no_h2o_progress <- function(expr) {
   return(.get_algorithm(model) %in% c("drf", "gbm", "xgboost"))
 }
 
+#' Has the \code{model} coefficients?
+#'
+#' @param model Either a linear model with coefficients => TRUE, or something else => FALSE
+#'
+#' @return boolean
+.has_model_coefficients <- function(model) {
+    return(.get_algorithm(model) %in% c("glm"))
+}
+
 #' Is the model considered to be interpretable, i.e., simple enough.
 #'
 #' @param model model or a string containing model id
@@ -153,6 +171,7 @@ with_no_h2o_progress <- function(expr) {
 #' @return character vector
 .shorten_model_ids <- function(model_ids) {
   shortened_model_ids <- gsub("(.*)_AutoML_[\\d_]+(_.*)?$", "\\1\\2", model_ids, perl=TRUE)
+  shortened_model_ids <- gsub("(Grid_[^_]*)_.*?(_model_\\d+)?$", "\\1\\2", shortened_model_ids, perl=TRUE)
   if (length(unique(shortened_model_ids)) == length(unique(model_ids))) {
     return(shortened_model_ids)
   }
@@ -241,7 +260,7 @@ with_no_h2o_progress <- function(expr) {
 #' @param best_of_family If TRUE, return only the best of family models; if FALSE return all models in \code{object}
 #' @param require_newdata If TRUE, require newdata to be specified; otherwise allow NULL instead, this can be used when
 #'                        there is no need to know if the problem is (multinomial) classification.
-#'
+#' @param check_x_y_consistency If TRUE, make sure that when given a list of models all models have the same X and y. Defaults to TRUE.
 #' @return a list with the following names \code{leader}, \code{is_automl}, \code{models},
 #'   \code{is_classification}, \code{is_multinomial_classification}, \code{x}, \code{y}, \code{model}
 .process_models_or_automl <- function(object, newdata,
@@ -250,7 +269,8 @@ with_no_h2o_progress <- function(expr) {
                                       top_n_from_AutoML = NA,
                                       only_with_varimp = FALSE,
                                       best_of_family = FALSE,
-                                      require_newdata = TRUE) {
+                                      require_newdata = TRUE,
+                                      check_x_y_consistency = TRUE) {
   if (missing(object))
     stop("object must be specified!")
   if (missing(newdata))
@@ -330,6 +350,8 @@ with_no_h2o_progress <- function(expr) {
       model_ids = head(model_ids, top_n_from_AutoML)
     ))
   } else {
+    if (inherits(object, "H2OGrid"))
+      object <- unlist(object@model_ids)
     if (length(object) == 1) {
       if (require_multiple_models) {
         stop("More than one model is needed!")
@@ -399,28 +421,28 @@ with_no_h2o_progress <- function(expr) {
       )
       x <- mi$x
       y <- mi$y
-
-      for (model in object) {
-        model <- mi$get_model(model)
-        if (any(sort(model@allparameters$x) != sort(x))) {
-          stop(sprintf(
-            "Model \"%s\" has different x from model\"%s\"! (%s != %s)",
-            model@model_id,
-            object[[1]]@model_id,
-            paste(model@allparameters$x, collapse = ", "),
-            paste(x, collapse = ", ")
-          ))
-        }
-        if (any(sort(model@allparameters$y) != sort(y))) {
-          stop(sprintf(
-            "Model \"y\" has different x from model\"%s\"! (%s != %s)", model@model_id,
-            object[[1]]@model_id,
-            paste(model@allparameters$y, collapse = ", "),
-            paste(y, collapse = ", ")
-          ))
+      if (check_x_y_consistency) {
+        for (model in object) {
+          model <- mi$get_model(model)
+          if (any(sort(model@allparameters$x) != sort(x))) {
+            stop(sprintf(
+              "Model \"%s\" has different x from model\"%s\"! (%s != %s)",
+              model@model_id,
+              object[[1]]@model_id,
+              paste(model@allparameters$x, collapse = ", "),
+              paste(x, collapse = ", ")
+            ))
+          }
+          if (any(sort(model@allparameters$y) != sort(y))) {
+            stop(sprintf(
+              "Model \"y\" has different x from model\"%s\"! (%s != %s)", model@model_id,
+              object[[1]]@model_id,
+              paste(model@allparameters$y, collapse = ", "),
+              paste(y, collapse = ", ")
+            ))
+          }
         }
       }
-
       return(mi)
     }
   }
@@ -489,27 +511,7 @@ with_no_h2o_progress <- function(expr) {
     leaderboard <- models_info$leaderboard
     return(head(leaderboard, n = min(top_n, nrow(leaderboard))))
   }
-  leaderboard <-
-    as.data.frame(t(sapply(models_info$model_ids, function(m) {
-      m <- models_info$get_model(m)
-      metrics <- h2o.performance(m, leaderboard_frame)@metrics
-      unlist(metrics[intersect(c(
-        "AUC",
-        "mean_residual_deviance",
-        "mean_per_class_error",
-        "logloss",
-        "pr_auc",
-        "RMSE",
-        "MSE",
-        "mae",
-        "rmsle"
-      ), names(metrics))])
-    })))
-  leaderboard <- cbind(data.frame(model_id = .model_ids(models_info$model_ids), stringsAsFactors = FALSE),
-                       leaderboard)
-  leaderboard <- leaderboard[order(leaderboard[[2]]),]
-  names(leaderboard) <- tolower(names(leaderboard))
-  row.names(leaderboard) <- seq_len(nrow(leaderboard))
+  leaderboard <- h2o.make_leaderboard(models_info$model_ids, leaderboard_frame, extra_columns = if(!is.null(leaderboard_frame)) "ALL" else NULL)
   return(head(leaderboard, n = min(top_n, nrow(leaderboard))))
 }
 
@@ -600,7 +602,7 @@ with_no_h2o_progress <- function(expr) {
   .check_for_ggplot2()
   # Used by tidy evaluation in ggplot2, since rlang is not required #' @importFrom rlang hack can't be used
   .data <- NULL
-  with_no_h2o_progress({
+  h2o.no_progress({
     suppressWarnings({
       varimp <- h2o.varimp(model)
     })
@@ -635,7 +637,7 @@ with_no_h2o_progress <- function(expr) {
   indices <- which(!duplicated(substr(leaderboard$model_id, 1, 3)))
   indices <- c(seq_len(top_n), indices[indices > top_n])
   leaderboard <- leaderboard[indices,]
-  with_no_h2o_progress({
+  h2o.no_progress({
     leaderboard <-
       cbind(leaderboard,
             do.call(
@@ -1130,7 +1132,7 @@ pd_ice_common <- function(model,
             column, "\" feature.")
   }
 
-  with_no_h2o_progress({
+  h2o.no_progress({
     if (is_ice) {
       return(handle_ice(model, newdata, column, target, centered, show_logodds, show_pdp, models_info, output_graphing_data, grouping_variable_value, nbins, show_rug))
     } else {
@@ -1585,6 +1587,19 @@ handle_pdp <- function(newdata, column, target, show_logodds, row_index, models_
   return(p)
 }
 
+.check_model_suitability_for_calculation_of_contributions <- function(model) {
+    is_h2o_model <- .is_h2o_model(model)
+    if (!is_h2o_model || !(.is_h2o_tree_model(model) || model@algorithm == "generic")) {
+        err_msg <-  "Calculation of feature contributions requires a tree-based model."
+        if (is_h2o_model && .has_model_coefficients(model)) {
+            err_msg <- paste(err_msg, " When features are independent, you can use the h2o.coef() method to get coefficients")
+            err_msg <- paste(err_msg, " for non-standardized data or h2o.coef_norm() to get coefficients for standardized data.")
+            err_msg <- paste(err_msg, " You can plot standardized coefficient magnitudes by calling h2o.std_coef_plot() on the model.")
+        }
+        stop(err_msg)
+    }
+}
+
 #' SHAP Summary Plot
 #'
 #' SHAP summary plot shows the contribution of the features for each instance (row of data).
@@ -1635,9 +1650,7 @@ h2o.shap_summary_plot <-
     .check_for_ggplot2()
     # Used by tidy evaluation in ggplot2, since rlang is not required #' @importFrom rlang hack can't be used
     .data <- NULL
-    if (!.is_h2o_model(model) || !.is_h2o_tree_model(model)) {
-      stop("SHAP summary plot requires a tree-based model!")
-    }
+    .check_model_suitability_for_calculation_of_contributions(model)
     if (!missing(columns) && !missing(top_n_features)) {
       warning("Parameters columns, and top_n_features are mutually exclusive. Parameter top_n_features will be ignored.")
     }
@@ -1660,7 +1673,7 @@ h2o.shap_summary_plot <-
       newdata <- newdata[indices,]
     }
 
-    with_no_h2o_progress({
+    h2o.no_progress({
       newdata_df <- as.data.frame(newdata)
 
       contributions <- as.data.frame(h2o.predict_contributions(model, newdata))
@@ -1845,9 +1858,7 @@ h2o.shap_explain_row_plot <-
     .check_for_ggplot2()
     # Used by tidy evaluation in ggplot2, since rlang is not required #' @importFrom rlang hack can't be used
     .data <- NULL
-    if (!.is_h2o_model(model) || !.is_h2o_tree_model(model)) {
-      stop("SHAP explain_row plot requires a tree-based model!")
-    }
+    .check_model_suitability_for_calculation_of_contributions(model)
 
     if (!missing(columns) && !missing(top_n_features)) {
       warning("Parameters columns, and top_n_features are mutually exclusive. Parameter top_n_features will be ignored.")
@@ -1870,7 +1881,7 @@ h2o.shap_explain_row_plot <-
 
     x <- model@allparameters$x
 
-    with_no_h2o_progress({
+    h2o.no_progress({
       contributions <-
         as.data.frame(h2o.predict_contributions(model, newdata[row_index,]))
       contributions_names <- names(contributions)
@@ -2231,7 +2242,7 @@ h2o.varimp_heatmap <- function(object,
 h2o.model_correlation <- function(object, newdata, top_n = 20, cluster_models = TRUE) {
   models_info <- .process_models_or_automl(object, newdata, require_multiple_models = TRUE, top_n_from_AutoML = top_n)
   models <- models_info$model_ids
-  with_no_h2o_progress({
+  h2o.no_progress({
     preds <- do.call(h2o.cbind,
       lapply(models, function(m, df) {
         m <- models_info$get_model(m)
@@ -2409,7 +2420,7 @@ h2o.residual_analysis_plot <- function(model, newdata) {
   if (h2o.isfactor(newdata[[model@allparameters$y]]))
     stop("Residual analysis is not implemented for classification.")
 
-  with_no_h2o_progress({
+  h2o.no_progress({
     y <- model@allparameters$y
 
     predictions <- stats::predict(model, newdata)
@@ -2605,7 +2616,7 @@ h2o.pd_multi_plot <- function(object,
     if (models_info$is_multinomial_classification) {
       targets <- h2o.levels(newdata[[models_info$y]])
     }
-    with_no_h2o_progress({
+    h2o.no_progress({
       pdps <-
         h2o.partialPlot(models_info$get_model(models_info$model_ids[[1]]), newdata, column,
                         plot = FALSE, targets = targets,
@@ -2699,7 +2710,7 @@ h2o.pd_multi_plot <- function(object,
     })
   }
 
-  with_no_h2o_progress({
+  h2o.no_progress({
     results <- NULL
     models_to_plot <- models_info$model_ids
     if (best_of_family)
@@ -3053,8 +3064,7 @@ h2o.learning_curve_plot <- function(model,
   inverse_metric_mapping <- stats::setNames(names(metric_mapping), metric_mapping)
   inverse_metric_mapping[["custom"]] <- "custom, custom_increasing"
 
-  metric <- match.arg(arg = if (missing(metric) || tolower(metric) == "auto") "AUTO" else tolower(metric),
-                      choices = eval(formals()$metric))
+  metric <- case_insensitive_match_arg(metric)
 
   if (!model@algorithm %in% c("stackedensemble", "glm", "gam", "glrm", "modelselection", "deeplearning",
                               "drf", "gbm", "xgboost", "coxph", "isolationforest")) {
@@ -3327,6 +3337,220 @@ h2o.learning_curve_plot <- function(model,
     )
 
   return(p)
+}
+
+
+.calculate_pareto_front <- function(df, x, y, optimum = c("top left", "top right", "bottom left", "bottom right")) {
+  optimum <- match.arg(optimum)
+  cum_agg <- if (startsWith(optimum, "top")) {
+    cummax
+  } else {
+    cummin
+  }
+  decreasing <- c(endsWith(optimum, "right"), startsWith(optimum, "top"))
+
+  reordered_df <- df[order(df[[x]], df[[y]], decreasing = decreasing, method = "radix"), ]
+  reordered_df <- reordered_df[which(!duplicated(cum_agg(reordered_df[[y]]))), ]
+  reordered_df
+}
+
+
+setClass("H2OParetoFront", slots = c(
+  pareto_front = "data.frame",
+  leaderboard = "data.frame",
+  x = "character",
+  y = "character",
+  title = "character",
+  color_col = "character"
+  ))
+
+#' Plot Pareto front
+#' @param x \code{H2OParetoFront} object
+#' @param y missing
+#' @param ... unused
+#' @rdname plot-methods
+#' @importFrom graphics plot
+#' @exportMethod plot
+setMethod("plot", "H2OParetoFront", function(x, y, ...) {
+  .check_for_ggplot2()
+  if (!missing(y)) stop("Argument y is not used!")
+  .data <- NULL
+  pretty_label <- function(lab) {
+    labels <- list(
+      auc = "Area Under ROC Curve",
+      aucpr = "Area Under Precision/Recall Curve",
+      logloss = "Logloss",
+      mae = "Mean Absolute Error",
+      mean_per_class_error = "Mean Per Class Error",
+      mean_residual_deviance = "Mean Residual Deviance",
+      mse = "Mean Square Error",
+      predict_time_per_row_ms = "Per-Row Prediction Time [ms]",
+      rmse = "Root Mean Square Error",
+      rmsle = "Root Mean Square Log Error",
+      training_time_ms = "Training Time [ms]"
+    )
+    if (is.null(labels[[lab]]))
+      return(lab)
+    else
+      return(labels[[lab]])
+  }
+
+  xlab <- pretty_label(x@x)
+  ylab <- pretty_label(x@y)
+
+
+  p <- ggplot2::ggplot(data = x@pareto_front, ggplot2::aes(
+    x = .data[[x@x]],
+    y = .data[[x@y]],
+    color = if (x@color_col %in% names(x@pareto_front)) .data[[x@color_col]] else NULL
+  )) +
+    ggplot2::geom_point(data = x@leaderboard, alpha = 0.5)
+
+  if (nrow(x@pareto_front) > 1)
+    p <- p + ggplot2::geom_line(group = 0, color = "black")
+
+  p +
+    ggplot2::geom_point(size = 3) +
+    ggplot2::labs(x = xlab, y = ylab, title = x@title) +
+    ggplot2::scale_color_brewer(type = "qual", palette = "Dark2") +
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.title = ggplot2::element_blank())
+})
+
+#' Show H2OParetoFront
+#'
+#' @param object \code{H2OParetoFront} object
+#' @export
+setMethod("show", "H2OParetoFront", function(object) {
+  cat(object@title, "\n")
+  cat("with respect to ", object@x, " and ", object@y, ":\n")
+  print(object@pareto_front)
+  invisible(object)
+})
+
+#' Plot Pareto front
+#'
+#' Create Pareto front and plot it. Pareto front contains models that are optimal in a sense that for each model in the
+#' Pareto front there isn't a model that would be better in both criteria. For example, this can be useful in picking
+#' models that are fast to predict and at the same time have high accuracy. For generic data.frames/H2OFrames input
+#' the task is assumed to be minimization for both metrics.
+#'
+#' @param object H2OAutoML or H2OGrid or a data.frame
+#' @param leaderboard_frame a frame used for generating the leaderboard (used when \code{object} is not a frame)
+#' @param x_metric one of the metrics present in the leaderboard
+#' @param y_metric one of the metrics present in the leaderboard
+#' @param optimum location of the optimum on XY plane
+#' @param title title used for plotting
+#' @param color_col categorical column in the leaderboard that should be used for coloring the points
+#'
+#' @return An H2OParetoFront S4 object with plot method and `pareto_front`` slot
+#'
+#' @examples
+#'\dontrun{
+#' library(h2o)
+#' h2o.init()
+#'
+#' # Import the wine dataset into H2O:
+#' df <-  h2o.importFile("h2o://prostate.csv")
+#'
+#' # Set the response
+#' response <- "CAPSULE"
+#' df[[response]] <- as.factor(df[[response]])
+#'
+#' # Split the dataset into a train and test set:
+#' splits <- h2o.splitFrame(df, ratios = 0.8, seed = 1)
+#' train <- splits[[1]]
+#' test <- splits[[2]]
+#'
+#' # Build and train the model:
+#' aml <- h2o.automl(y = response,
+#'                   training_frame = train,
+#'                   max_models = 10,
+#'                   seed = 1)
+#'
+#' # Create the Pareto front
+#' pf <- h2o.pareto_front(aml)
+#' plot(pf)
+#' pf@pareto_front # to retrieve the Pareto front subset of the leaderboard
+#'
+#' aml2 <- h2o.automl(y = response,
+#'                    training_frame = train,
+#'                    max_models = 10,
+#'                    seed = 42)
+#'
+#' combined_leaderboard <- h2o.make_leaderboard(list(aml, aml2), test, extra_columns = "ALL")
+#' pf_combined <- h2o.pareto_front(combined_leaderboard, x_metric = "predict_time_per_row_ms",
+#'                                 y_metric = "rmse", optimum = "bottom left")
+#' plot(pf_combined)
+#' pf_combined@pareto_front
+#' }
+#' @export
+h2o.pareto_front <- function(object,
+                             leaderboard_frame = NULL,
+                             x_metric = c("AUTO", "AUC", "AUCPR", "logloss", "MAE", "mean_per_class_error",
+                                          "mean_residual_deviance", "MSE", "predict_time_per_row_ms",
+                                          "RMSE", "RMSLE", "training_time_ms"),
+                             y_metric = c("AUTO", "AUC", "AUCPR", "logloss", "MAE", "mean_per_class_error",
+                                          "mean_residual_deviance", "MSE", "predict_time_per_row_ms",
+                                          "RMSE", "RMSLE", "training_time_ms"),
+                             optimum = c("AUTO", "top left", "top right", "bottom left", "bottom right"),
+                             title = NULL,
+                             color_col = "algo") {
+  if (is.data.frame(object) || inherits(object, "H2OFrame")) {
+    leaderboard <- object
+  } else if (is.null(leaderboard_frame) && inherits(object, "H2OAutoML")) {
+    leaderboard <- h2o.get_leaderboard(object, "ALL")
+  } else {
+    leaderboard <- h2o.make_leaderboard(object, leaderboard_frame, extra_columns = if (!is.null(leaderboard_frame)) "ALL" else NULL)
+  }
+  leaderboard <- as.data.frame(leaderboard)
+
+  x_metric <- case_insensitive_match_arg(x_metric, c("AUTO", names(leaderboard)))
+  y_metric <- case_insensitive_match_arg(y_metric, c("AUTO", names(leaderboard)))
+
+  if (x_metric == "AUTO") {
+    if ("predict_time_per_row_ms" %in% names(leaderboard))
+      x_metric <- "predict_time_per_row_ms"
+    else
+      stop("Please specify x_metric to use for pareto front plot. Defaults to `predict_time_per_row_ms` which is missing.")
+  }
+  if (y_metric == "AUTO")
+    y_metric <- names(leaderboard)[[2]]
+
+  if (!x_metric %in% names(leaderboard))
+    stop(sprintf("'%s' not found in the leaderboard!", x_metric), call. = FALSE)
+  if (!y_metric %in% names(leaderboard))
+    stop(sprintf("'%s' not found in the leaderboard!", y_metric), call. = FALSE)
+
+  if (is.null(title)) {
+    name <- NULL
+    if (inherits(object, "H2OAutoML"))
+      name <- object@project_name
+    if (inherits(object, "H2OGrid"))
+      name <- object@grid_id
+    if (is.null(name))
+      title <- "Pareto Front"
+    else
+      title <- paste("Pareto Front for", name)
+  }
+
+  higher_is_better <- c("auc", "aucpr")
+  optimum <- case_insensitive_match_arg(optimum)
+  if (optimum == "AUTO")
+    optimum <- paste(
+      if (y_metric %in% higher_is_better) "top" else "bottom",
+      if (x_metric %in% higher_is_better) "right" else "left"
+    )
+
+  pareto_front <- .calculate_pareto_front(leaderboard, x = x_metric, y = y_metric, optimum = optimum)
+  return(new("H2OParetoFront",
+             pareto_front = pareto_front,
+             leaderboard = leaderboard,
+             x = x_metric,
+             y = y_metric,
+             color_col = color_col,
+             title = title
+  ))
 }
 
 ######################################## Explain ###################################################

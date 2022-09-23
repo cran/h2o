@@ -4,7 +4,13 @@
 \alias{h2o.no_progress}
 \title{Disable Progress Bar}
 \usage{
-h2o.no_progress()
+h2o.no_progress(expr)
+}
+\arguments{
+\item{expr}{When specified, disable progress bar only for the evaluation of the expr and after the evaluation return to the previous setting (default is to show the progress bar), otherwise disable it globally.}
+}
+\value{
+Value of expr if specified, otherwise NULL.
 }
 \description{
 Disable Progress Bar
@@ -29,4 +35,7 @@ iris_km <- h2o.kmeans(x = predictors,
                       k = 10, estimate_k = TRUE, 
                       standardize = FALSE, seed = 1234)
 }
+}
+\seealso{
+\link{h2o.show_progress}
 }

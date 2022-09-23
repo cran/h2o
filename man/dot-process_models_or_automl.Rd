@@ -13,7 +13,8 @@ their properties such as \code{x}, \code{y}, whether it is a (multinomial) clasi
   top_n_from_AutoML = NA,
   only_with_varimp = FALSE,
   best_of_family = FALSE,
-  require_newdata = TRUE
+  require_newdata = TRUE,
+  check_x_y_consistency = TRUE
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ their properties such as \code{x}, \code{y}, whether it is a (multinomial) clasi
 
 \item{require_newdata}{If TRUE, require newdata to be specified; otherwise allow NULL instead, this can be used when
 there is no need to know if the problem is (multinomial) classification.}
+
+\item{check_x_y_consistency}{If TRUE, make sure that when given a list of models all models have the same X and y. Defaults to TRUE.}
 }
 \value{
 a list with the following names \code{leader}, \code{is_automl}, \code{models},
