@@ -128,11 +128,11 @@ Defaults to FALSE.}
 \item{stopping_rounds}{Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the
 stopping_metric does not improve for k:=stopping_rounds scoring events (0 to disable) Defaults to 0.}
 
-\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and
-anonomaly_score for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF
-with the Python client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
-"AUCPR", "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing".
-Defaults to AUTO.}
+\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and anomaly_score
+for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF with the Python
+client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "AUCPR",
+"lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing". Defaults to
+AUTO.}
 
 \item{early_stopping}{\code{Logical}. Stop early when there is no more relative improvement on train or validation (if provided).
 Defaults to FALSE.}

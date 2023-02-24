@@ -85,7 +85,8 @@ h2o.glm(
   fix_dispersion_parameter = FALSE,
   generate_variable_inflation_factors = FALSE,
   fix_tweedie_variance_power = TRUE,
-  dispersion_learning_rate = 0.5
+  dispersion_learning_rate = 0.5,
+  influence = c("dfbetas")
 )
 }
 \arguments{
@@ -253,11 +254,11 @@ max_active_predictors is set to 5000 otherwise it is set to 100000000. Defaults 
 \item{stopping_rounds}{Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the
 stopping_metric does not improve for k:=stopping_rounds scoring events (0 to disable) Defaults to 0.}
 
-\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and
-anonomaly_score for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF
-with the Python client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
-"AUCPR", "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing".
-Defaults to AUTO.}
+\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and anomaly_score
+for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF with the Python
+client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "AUCPR",
+"lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing". Defaults to
+AUTO.}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
 much) Defaults to 0.001.}
@@ -307,6 +308,9 @@ Defaults to TRUE.}
 loglikelihood actually decreases with the new dispersion.  In this case, instead of setting new dispersion =
 dispersion - change, we set new dispersion = dispersion + dispersion_learning_rate * change. Defaults to 0.5.
 Defaults to 0.5.}
+
+\item{influence}{If set to dfbetas will calculate the difference in beta when a datarow is included and excluded in the
+dataset. Must be one of: "dfbetas".}
 }
 \value{
 A subclass of \code{\linkS4class{H2OModel}} is returned. The specific subclass depends on the machine

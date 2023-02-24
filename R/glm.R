@@ -114,11 +114,11 @@
 #' @param obj_reg Likelihood divider in objective value computation, default (of -1.0) will set it to 1/nobs Defaults to -1.
 #' @param stopping_rounds Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the
 #'        stopping_metric does not improve for k:=stopping_rounds scoring events (0 to disable) Defaults to 0.
-#' @param stopping_metric Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and
-#'        anonomaly_score for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF
-#'        with the Python client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
-#'        "AUCPR", "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing".
-#'        Defaults to AUTO.
+#' @param stopping_metric Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and anomaly_score
+#'        for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF with the Python
+#'        client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "AUCPR",
+#'        "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing". Defaults to
+#'        AUTO.
 #' @param stopping_tolerance Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
 #'        much) Defaults to 0.001.
 #' @param balance_classes \code{Logical}. Balance training data class counts via over/under-sampling (for imbalanced data). Defaults to
@@ -152,6 +152,8 @@
 #'        loglikelihood actually decreases with the new dispersion.  In this case, instead of setting new dispersion =
 #'        dispersion - change, we set new dispersion = dispersion + dispersion_learning_rate * change. Defaults to 0.5.
 #'        Defaults to 0.5.
+#' @param influence If set to dfbetas will calculate the difference in beta when a datarow is included and excluded in the
+#'        dataset. Must be one of: "dfbetas".
 #' @return A subclass of \code{\linkS4class{H2OModel}} is returned. The specific subclass depends on the machine
 #'         learning task at hand (if it's binomial classification, then an \code{\linkS4class{H2OBinomialModel}} is
 #'         returned, if it's regression then a \code{\linkS4class{H2ORegressionModel}} is returned). The default print-
@@ -271,7 +273,8 @@ h2o.glm <- function(x,
                     fix_dispersion_parameter = FALSE,
                     generate_variable_inflation_factors = FALSE,
                     fix_tweedie_variance_power = TRUE,
-                    dispersion_learning_rate = 0.5)
+                    dispersion_learning_rate = 0.5,
+                    influence = c("dfbetas"))
 {
   # Validate required training_frame first and other frame args: should be a valid key or an H2OFrame object
   training_frame <- .validate.H2OFrame(training_frame, required=TRUE)
@@ -450,6 +453,8 @@ h2o.glm <- function(x,
     parms$fix_tweedie_variance_power <- fix_tweedie_variance_power
   if (!missing(dispersion_learning_rate))
     parms$dispersion_learning_rate <- dispersion_learning_rate
+  if (!missing(influence))
+    parms$influence <- influence
 
   if( !missing(interactions) ) {
     # interactions are column names => as-is
@@ -552,6 +557,7 @@ h2o.glm <- function(x,
                                     generate_variable_inflation_factors = FALSE,
                                     fix_tweedie_variance_power = TRUE,
                                     dispersion_learning_rate = 0.5,
+                                    influence = c("dfbetas"),
                                     segment_columns = NULL,
                                     segment_models_id = NULL,
                                     parallelism = 1)
@@ -735,6 +741,8 @@ h2o.glm <- function(x,
     parms$fix_tweedie_variance_power <- fix_tweedie_variance_power
   if (!missing(dispersion_learning_rate))
     parms$dispersion_learning_rate <- dispersion_learning_rate
+  if (!missing(influence))
+    parms$influence <- influence
 
   if( !missing(interactions) ) {
     # interactions are column names => as-is

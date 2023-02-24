@@ -94,11 +94,11 @@
 #' @param obj_reg Likelihood divider in objective value computation, default (of -1.0) will set it to 1/nobs Defaults to -1.
 #' @param stopping_rounds Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the
 #'        stopping_metric does not improve for k:=stopping_rounds scoring events (0 to disable) Defaults to 0.
-#' @param stopping_metric Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and
-#'        anonomaly_score for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF
-#'        with the Python client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
-#'        "AUCPR", "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing".
-#'        Defaults to AUTO.
+#' @param stopping_metric Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and anomaly_score
+#'        for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF with the Python
+#'        client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "AUCPR",
+#'        "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing". Defaults to
+#'        AUTO.
 #' @param stopping_tolerance Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
 #'        much) Defaults to 0.001.
 #' @param balance_classes \code{Logical}. Balance training data class counts via over/under-sampling (for imbalanced data). Defaults to
@@ -115,10 +115,18 @@
 #' @param min_predictor_number For mode = 'backward' only.  Minimum number of predictors to be considered when building GLM models starting
 #'        with all predictors to be included.  Defaults to 1. Defaults to 1.
 #' @param mode Mode: Used to choose model selection algorithms to use.  Options include 'allsubsets' for all subsets, 'maxr'
-#'        for MaxR calling GLM to build all models, 'maxrsweep' for using sweep in MaxR, 'backward' for backward
-#'        selection Must be one of: "allsubsets", "maxr", "maxrsweep", "backward". Defaults to maxr.
+#'        that uses sequential replacement and GLM to build all models, slow but works with cross-validation, validation
+#'        frames for more robust results, 'maxrsweep' that uses sequential replacement and sweeping action, much faster
+#'        than 'maxr', 'backward' for backward selection. Must be one of: "allsubsets", "maxr", "maxrsweep", "backward".
+#'        Defaults to maxr.
+#' @param build_glm_model \code{Logical}. For maxrsweep mode only.  If true, will return full blown GLM models with the desired
+#'        predictorsubsets.  If false, only the predictor subsets, predictor coefficients are returned.  This is
+#'        forspeeding up the model selection process.  The users can choose to build the GLM models themselvesby using
+#'        the predictor subsets themselves.  Default to true. Defaults to TRUE.
 #' @param p_values_threshold For mode='backward' only.  If specified, will stop the model building process when all coefficientsp-values
 #'        drop below this threshold  Defaults to 0.
+#' @param influence If set to dfbetas will calculate the difference in beta when a datarow is included and excluded in the
+#'        dataset. Must be one of: "dfbetas".
 #' @examples
 #' \dontrun{
 #' library(h2o)
@@ -185,7 +193,9 @@ h2o.modelSelection <- function(x,
                                max_predictor_number = 1,
                                min_predictor_number = 1,
                                mode = c("allsubsets", "maxr", "maxrsweep", "backward"),
-                               p_values_threshold = 0)
+                               build_glm_model = TRUE,
+                               p_values_threshold = 0,
+                               influence = c("dfbetas"))
 {
   # Validate required training_frame first and other frame args: should be a valid key or an H2OFrame object
   training_frame <- .validate.H2OFrame(training_frame, required=TRUE)
@@ -312,8 +322,12 @@ h2o.modelSelection <- function(x,
     parms$min_predictor_number <- min_predictor_number
   if (!missing(mode))
     parms$mode <- mode
+  if (!missing(build_glm_model))
+    parms$build_glm_model <- build_glm_model
   if (!missing(p_values_threshold))
     parms$p_values_threshold <- p_values_threshold
+  if (!missing(influence))
+    parms$influence <- influence
 
   # Error check and build model
   model <- .h2o.modelJob('modelselection', parms, h2oRestApiVersion=3, verbose=FALSE)
@@ -373,7 +387,9 @@ h2o.modelSelection <- function(x,
                                                max_predictor_number = 1,
                                                min_predictor_number = 1,
                                                mode = c("allsubsets", "maxr", "maxrsweep", "backward"),
+                                               build_glm_model = TRUE,
                                                p_values_threshold = 0,
+                                               influence = c("dfbetas"),
                                                segment_columns = NULL,
                                                segment_models_id = NULL,
                                                parallelism = 1)
@@ -505,8 +521,12 @@ h2o.modelSelection <- function(x,
     parms$min_predictor_number <- min_predictor_number
   if (!missing(mode))
     parms$mode <- mode
+  if (!missing(build_glm_model))
+    parms$build_glm_model <- build_glm_model
   if (!missing(p_values_threshold))
     parms$p_values_threshold <- p_values_threshold
+  if (!missing(influence))
+    parms$influence <- influence
 
   # Build segment-models specific parameters
   segment_parms <- list()
@@ -537,7 +557,7 @@ h2o.get_best_r2_values<- function(model) {
 #' @export   
 h2o.get_predictors_added_per_step<- function(model) {
   if( is(model, "H2OModel") && (model@algorithm=='modelselection')) {
-    if (model@allparameters$mode != 'backard') {
+    if (model@allparameters$mode != 'backward') {
       return(model@model$predictors_added_per_step)
     } else {
       stop("h2o.get_predictors_added_per_step can not be called with model = backward")
@@ -561,7 +581,7 @@ h2o.get_predictors_removed_per_step<- function(model) {
 #' @export 
 h2o.get_best_model_predictors<-function(model) {
   if ( is(model, "H2OModel") && (model@algorithm=='modelselection'))
-    return(model@model$best_model_predictors)
+    return(model@model$best_predictors_subset)
 }
 
     

@@ -3,6 +3,7 @@
 #'
 #' @importFrom graphics strwidth par legend polygon arrows points grid
 #' @importFrom grDevices dev.copy dev.off png rainbow adjustcolor
+#' @include classes.R
 
 NULL
 
@@ -917,6 +918,59 @@ predict_contributions.H2OModel <- function(object, newdata, output_format = c("o
 #' @rdname predict_contributions.H2OModel
 #' @export
 h2o.predict_contributions <- predict_contributions.H2OModel
+
+#' Output row to tree assignment for the model and provided training data.
+#'
+#' Output is frame of size nrow = nrow(original_training_data) and ncol = number_of_trees_in_model+1 in format: 
+#'     row_id    tree_1    tree_2    tree_3
+#'          0         0         1         1
+#'          1         1         1         1
+#'          2         1         0         0
+#'          3         1         1         0
+#'          4         0         1         1
+#'          5         1         1         1
+#'          6         1         0         0
+#'          7         0         1         0
+#'          8         0         1         1
+#'          9         1         0         0
+#' 
+#' Where 1 in the tree_{number} cols means row is used in the tree and 0 means that row is not used.
+#' The structure of the output depends on sample_rate or sample_size parameter setup.
+#'
+#' Note: Multinomial classification generate tree for each category, each tree use the same sample of the data.
+#'
+#' @param object a fitted \linkS4class{H2OModel} object
+#' @param original_training_data An H2OFrame object that was used for model training. Currently there is no validation of the input.
+#' @param ... additional arguments to pass on.
+#' @return Returns an H2OFrame contain row to tree assignment for each tree and row.
+#' @examples
+#' \dontrun{
+#' library(h2o)
+#' h2o.init()
+#' prostate_path <- system.file("extdata", "prostate.csv", package = "h2o")
+#' prostate <- h2o.uploadFile(path = prostate_path)
+#' prostate_gbm <- h2o.gbm(4:9, "AGE", prostate, sample_rate = 0.6)
+#' # Get row to tree assignment
+#' h2o.row_to_tree_assignment(prostate_gbm, prostate)
+#' }
+#' @export
+row_to_tree_assignment.H2OModel <- function(object, original_training_data, ...) {
+    if (missing(original_training_data)) {
+        stop("row_to_tree_assignment with a missing `original_training_data` argument is not implemented yet")
+    }
+    params <- list(row_to_tree_assignment = TRUE)
+    url <- paste0('Predictions/models/', object@model_id, '/frames/',  h2o.getId(original_training_data))
+    res <- .h2o.__remoteSend(url, method = "POST", .params = params, h2oRestApiVersion = 4)
+    job_key <- res$key$name
+    dest_key <- res$dest$name
+    .h2o.__waitOnJob(job_key)
+    h2o.getFrame(dest_key)
+}
+
+#' @rdname row_to_tree_assignment.H2OModel
+#' @export
+h2o.row_to_tree_assignment <- row_to_tree_assignment.H2OModel
+
 
 #' Retrieve the number of occurrences of each feature for given observations 
 #  on their respective paths in a tree ensemble model.
@@ -2299,36 +2353,67 @@ h2o.get_variable_inflation_factors <- function(object) {
 #' h2o.coef(cars_glm)
 #' }
 #' @export
-h2o.coef <- function(object, predictorSize=-1) {
-  if (is(object, "H2OModel") && object@algorithm %in% c("glm", "gam", "coxph", "modelselection")) {
-    if ((object@algorithm == "glm" || object@algorithm == "gam") && (object@allparameters$family %in% c("multinomial", "ordinal"))) {
-        grabCoeff(object@model$coefficients_table, "coefs_class", FALSE)
+h2o.coef <- function(object, predictorSize = -1) {
+  if (is(object, "H2OModel") &&
+      object@algorithm %in% c("glm", "gam", "coxph", "modelselection")) {
+    if ((object@algorithm == "glm" ||
+         object@algorithm == "gam") &&
+        (object@allparameters$family %in% c("multinomial", "ordinal"))) {
+      grabCoeff(object@model$coefficients_table, "coefs_class", FALSE)
     } else {
       if (object@algorithm == "modelselection") {
-        modelIDs <- object@model$best_model_ids
-        numModels <- length(modelIDs)
-        mode <- object@parameters$mode
-        maxPredNumbers <- length(object@model$best_model_predictors[[numModels]])
-        if (predictorSize == 0)
-          stop("predictorSize (predictor subset size) must be between 0 and the total number of predictors used.")
-        if (predictorSize > maxPredNumbers)
-          stop("predictorSize (predictor subset size) cannot exceed the total number of predictors used.")
-        if (predictorSize > 0) { # subset size was specified
-          if (mode == "backward") {
-            return(grabOneModelCoef(modelIDs, numModels-(maxPredNumbers-predictorSize), FALSE))
+        if (object@allparameters$mode == "maxrsweep" &&
+            !object@allparameters$build_glm_model) {
+          numModels <- length(object@model$best_r2_values)
+          maxPredNumbers <- object@parameters$max_predictor_number
+          stopifnot(
+            "predictorSize (predictor subset size) must be between 0 and the total number of predictors used." = predictorSize != 0,
+            "predictorSize (predictor subset size) cannot exceed the total number of predictors used." = predictorSize <= maxPredNumbers
+          )
+          if (predictorSize < 0) {
+            coeffs <- vector("list", numModels)
+            for (index in seq(numModels)) {
+              coeffs[[index]] <- structure(object@model$coefficient_values[[index]], names=object@model$coefficient_names[[index]])
+            }
+            return(coeffs)
           } else {
-            return(grabOneModelCoef(modelIDs, predictorSize, FALSE))
+            return(structure(object@model$coefficient_values[[predictorSize]], names=object@model$coefficient_names[[predictorSize]]))    
           }
         } else {
-        coeffs <- vector("list", numModels)
-        for (index in seq(numModels)) {
-          coeffs[[index]] <- grabOneModelCoef(modelIDs, index, FALSE)
-        }
-        return(coeffs)
+          modelIDs <- object@model$best_model_ids
+          numModels <- length(modelIDs)
+          mode <- object@parameters$mode
+          maxPredNumbers <- numModels
+          if (mode == "backward")
+            maxPredNumbers <- length(object@model$best_predictors_subset[[numModels]])
+          stopifnot(
+            "predictorSize (predictor subset size) must be between 0 and the total number of predictors used." = predictorSize != 0,
+            "predictorSize (predictor subset size) cannot exceed the total number of predictors used." = predictorSize <= maxPredNumbers
+            )
+          if (predictorSize > 0) {
+            # subset size was specified
+            if (mode == "backward") {
+              return(grabOneModelCoef(
+                modelIDs,
+                numModels - (maxPredNumbers - predictorSize),
+                FALSE
+              ))
+            } else {
+              return(grabOneModelCoef(modelIDs, predictorSize, FALSE))
+            }
+          } else {
+            coeffs <- vector("list", numModels)
+            for (index in seq(numModels)) {
+              coeffs[[index]] <- grabOneModelCoef(modelIDs, index, FALSE)
+            }
+            return(coeffs)
           }
+        }
       } else {
-        structure(object@model$coefficients_table$coefficients,
-                names = object@model$coefficients_table$names)
+        structure(
+          object@model$coefficients_table$coefficients,
+          names = object@model$coefficients_table$names
+        )
       }
     }
   } else {
@@ -2342,6 +2427,141 @@ grabOneModelCoef <- function(modelIDs, index, standardized) {
     return(h2o.coef_norm(oneModel))
   } else {
       return(h2o.coef(oneModel))
+  }
+}
+
+#'
+#' Extracts a list of H2OFrames containing regression influence diagnostics for predictor subsets of various sizes or
+#' just one H2OFrame containing regression influence diagnostics for predictor subsets of one fixed size
+#'
+#' @param model an \linkS4class{H2OModel} object.
+#' @param predictorSize predictor subset size.  If specified, will only return model coefficients of that subset size.  If
+#'          not specified will return a lists of model coefficient dicts for all predictor subset size.
+#' @examples 
+#' \dontrun{
+#' library(h2o)
+#' h2o.init()
+#' 
+#' f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+#' cars <- h2o.importFile(f)
+#' predictors <- c("displacement", "power", "weight", "acceleration", "year")
+#' response <- "acceleration"
+#' cars_model <- h2o.modelSelection(y=response, 
+#'                                  x=predictors, 
+#'                                  training_frame = cars, 
+#'                                  min_predictor_number=2, 
+#'                                  mode="backward", 
+#'                                  influence="dfbetas",
+#'                                  lambda=0.0,
+#'                                  family="gaussian")
+#' rid_frame <- h2o.get_regression_influence_diagnostics(cars_model, predictorSize=3)
+#' }
+#' @export   
+h2o.get_regression_influence_diagnostics <- function(model, predictorSize = -1) {
+    mode <- model@allparameters$mode
+    if( is(model, "H2OModel") && (model@algorithm=='modelselection')) {
+        if ((mode == 'maxrsweep') && (model@allparameters$build_glm_model==FALSE)) {
+            stop("regression influence diagnostics are only available when GLM models are built.  For mode='maxrsweep', make
+      sure build_glm_model to TRUE.")
+        } else {
+            if (model@allparameters$influence == "dfbetas") {
+                modelIDs <- model@model$best_model_ids
+                numModels <- length(modelIDs)
+                if (predictorSize < 0) {    # return a list of frames
+                    ridFrames <- vector("list", numModels)
+                    for (index in seq(numModels)) {
+                        oneModel <- h2o.getModel(modelIDs[[index]]$name)
+                        ridFrames[[index]] <- h2o.getFrame(oneModel@model$regression_influence_diagnostics$name)
+                    }
+                    return(ridFrames)
+                } else {  # only return one frame
+                    maxPredNumbers <- numModels
+                    index <- predictorSize
+                    if (mode == "backwards") {
+                        maxPredNumbers <- length(model@model$best_predictors_subset[[numModels]])
+                        index <- numModels-(maxPredNumbers-predictorSize)
+                    }
+                    oneModel <- h2o.getModel(modelIDs[[index]]$name)
+                    return(h2o.getFrame(oneModel@model$regression_influence_diagnostics$name))
+                }
+           } else {
+                stop("regression influence diagnostic is only available when infuence='dfbetas' for GLM binomial and
+                 gaussian families.")
+            }
+        }
+    } else if (is(model, "H2OModel") && (model@algorithm=="glm")) {
+        if (model@allparameters$influence == 'dfbetas') {
+            return(h2o.getFrame(model@model$regression_influence_diagnostics$name))
+        } else {
+            stop("influence needs to be set to 'dfbetas'.")
+        }
+    }
+}
+
+#'
+#' Extracts the final training negative log likelihood of a GLM model.
+#'
+#' @param model an \linkS4class{H2OModel} object.
+#' @return The final training negative log likelihood of a GLM model.
+#' 
+#' @examples 
+#' \dontrun{
+#' library(h2o)
+#' h2o.init()
+#' 
+#' f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+#' cars <- h2o.importFile(f)
+#' predictors <- c("displacement", "power", "weight", "acceleration", "year")
+#' response <- "acceleration"
+#' cars_model <- h2o.glm(y=response, 
+#'                        x=predictors, 
+#'                        training_frame = cars, 
+#'                        family="gaussian",
+#'                        generate_scoring_history=TRUE)
+#' nllValue <- h2o.negative_log_likelihood(cars_model)
+#' }
+#' @export 
+h2o.negative_log_likelihood <- function(model) {
+    return(extract_scoring_history(model, "negative_log_likelihood"))
+}
+
+#'
+#' Extracts the final training average objective function of a GLM model.
+#'
+#' @param model an \linkS4class{H2OModel} object.
+#' @return The final training average objective of a GLM model.
+#' 
+#' @examples 
+#' \dontrun{
+#' library(h2o)
+#' h2o.init()
+#' 
+#' f <- "https://s3.amazonaws.com/h2o-public-test-data/smalldata/junit/cars_20mpg.csv"
+#' cars <- h2o.importFile(f)
+#' predictors <- c("displacement", "power", "weight", "acceleration", "year")
+#' response <- "acceleration"
+#' cars_model <- h2o.glm(y=response, 
+#'                        x=predictors, 
+#'                        training_frame = cars, 
+#'                        family="gaussian",
+#'                        generate_scoring_history=TRUE)
+#' objValue <- h2o.average_objective(cars_model)
+#' }
+#' @export 
+h2o.average_objective <- function(model) {
+    return(extract_scoring_history(model, "objective"))
+}
+
+extract_scoring_history <- function(model, value) {
+  if (is(model, "H2OModel") && (model@algorithm=='glm')) {
+      if (model@allparameters$generate_scoring_history==TRUE) {
+          scHist <- model@model$scoring_history
+          return(scHist[nrow(scHist), value])
+      } else {
+          stop("negative_log_likelihood and average_objection functions can only be extracted when generate_scoring_history=TRUE for now.")
+      }
+  } else {
+      stop("negative_log_likelihood and average_objection functions are only available for GLM models.")
   }
 }
 
@@ -2376,26 +2596,61 @@ h2o.coef_norm <- function(object, predictorSize=-1) {
   if (is(object, "H2OModel") &&
       (object@algorithm %in% c("glm", "gam", "coxph", "modelselection"))) {
     if (object@algorithm == "modelselection") {
-      modelIDs <- object@model$best_model_ids
-      numModels = length(modelIDs)
-      mode <- object@parameters$mode
-      maxPredNumbers <- length(object@model$best_model_predictors[[numModels]])
-      if (predictorSize == 0)
-        stop("predictorSize (predictor subset size) must be between 0 and the total number of predictors used.")
-      if (predictorSize > maxPredNumbers)
-        stop("predictorSize (predictor subset size) cannot exceed the total number of predictors used.")
-      if (predictorSize > 0) { # subset size was specified 
+      if (object@allparameters$mode == "maxrsweep" &&
+          !object@allparameters$build_glm_model) {
+        numModels <- length(object@model$best_r2_values)
+        maxPredNumbers <- object@parameters$max_predictor_number
+        stopifnot(
+            "predictorSize (predictor subset size) must be between 0 and the total number of predictors used." = predictorSize != 0,
+            "predictorSize (predictor subset size) cannot exceed the total number of predictors used." = predictorSize <= maxPredNumbers
+        )
+        if (predictorSize < 0) {
+          coeffs <- vector("list", numModels)
+          for (index in seq(numModels)) {
+            coeffs[[index]] <-
+              structure(
+                object@model$coefficient_values_normalized[[index]],
+                names = object@model$coefficient_names[[index]]
+              )
+          }
+          return(coeffs)
+        } else {
+          return(structure(object@model$coefficient_values_normalized[[predictorSize]],
+                    names = object@model$coefficient_names[[predictorSize]]))
+        }
+        
+        if (predictorSize < 0) {
+          structure(names=object@model$coefficient_names, object@model$coefficient_values_normalized)
+        } else {
+          structure(names=object@model$coefficient_names[[predictorSize]], object@model$coefficient_values_normalized[[predictorSize]])    
+        }        
+      } else {
+        modelIDs <- object@model$best_model_ids
+        numModels = length(modelIDs)
+        mode <- object@parameters$mode
+        maxPredNumbers <- numModels
+        stopifnot(
+            "predictorSize (predictor subset size) must be between 0 and the total number of predictors used." = predictorSize != 0,
+            "predictorSize (predictor subset size) cannot exceed the total number of predictors used." = predictorSize <= maxPredNumbers
+        )
+        if (predictorSize > 0) {
+          # subset size was specified
           if (mode == "backward") {
-            return(grabOneModelCoef(modelIDs, numModels-(maxPredNumbers-predictorSize), TRUE))
+            return(grabOneModelCoef(
+              modelIDs,
+              numModels - (maxPredNumbers - predictorSize),
+              TRUE
+            ))
           } else {
             return(grabOneModelCoef(modelIDs, predictorSize, TRUE))
           }
-      } else {
-      coeffs <- vector("list", numModels)
-      for (index in seq(numModels)) {
-        coeffs[[index]] <- grabOneModelCoef(modelIDs, index, TRUE)
-      }
-      return(coeffs)
+        } else {
+          coeffs <- vector("list", numModels)
+          for (index in seq(numModels)) {
+            coeffs[[index]] <- grabOneModelCoef(modelIDs, index, TRUE)
+          }
+          return(coeffs)
+        }
       }
     }
     if (object@allparameters$family %in% c("multinomial", "ordinal")) {
@@ -5630,7 +5885,7 @@ h2o.deepfeatures <- function(object, data, layer) {
 #'
 #' #' @aliases H2ONode
 #'
-setClass("H2ONode", representation(
+setClass("H2ONode", slots = c(
   id = "integer"
 ))
 
@@ -5641,7 +5896,7 @@ setClass("H2ONode", representation(
 #'
 #' #' @aliases H2OLeafNode
 #'
-setClass("H2OLeafNode", representation(
+setClass("H2OLeafNode", slots = c(
   prediction = "numeric"
 ),
 contains = "H2ONode")
@@ -5661,7 +5916,7 @@ contains = "H2ONode")
 #' @export
 setClass(
   "H2OSplitNode",
-  representation(
+  slots = c(
     threshold = "numeric",
     left_child = "H2ONode",
     right_child = "H2ONode",
@@ -5732,7 +5987,7 @@ print.H2ONode <- function(node){
 #' @export
 setClass(
   "H2OTree",
-  representation(
+  slots = c(
     root_node = "H2ONode",
     left_children = "integer",
     right_children = "integer",

@@ -39,6 +39,7 @@ h2o.gam(
   plug_values = NULL,
   compute_p_values = FALSE,
   remove_collinear_columns = FALSE,
+  splines_non_negative = NULL,
   intercept = TRUE,
   non_negative = FALSE,
   max_iterations = -1,
@@ -171,6 +172,11 @@ Defaults to FALSE.}
 
 \item{remove_collinear_columns}{\code{Logical}. In case of linearly dependent columns, remove some of the dependent columns Defaults to FALSE.}
 
+\item{splines_non_negative}{Valid for I-spline (bs=2) only.  True if the I-splines are monotonically increasing (and monotonically non-
+decreasing) and False if the I-splines are monotonically decreasing (and monotonically non-increasing).  If
+specified, must be the same size as gam_columns.  Values for other spline types will be ignored.  Default to
+true.}
+
 \item{intercept}{\code{Logical}. Include constant term in the model Defaults to TRUE.}
 
 \item{non_negative}{\code{Logical}. Restrict coefficients (not intercept) to be non-negative Defaults to FALSE.}
@@ -224,11 +230,11 @@ max_active_predictors is set to 5000 otherwise it is set to 100000000. Defaults 
 \item{stopping_rounds}{Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the
 stopping_metric does not improve for k:=stopping_rounds scoring events (0 to disable) Defaults to 0.}
 
-\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and
-anonomaly_score for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF
-with the Python client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
-"AUCPR", "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing".
-Defaults to AUTO.}
+\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and anomaly_score
+for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF with the Python
+client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "AUCPR",
+"lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing". Defaults to
+AUTO.}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
 much) Defaults to 0.001.}
@@ -246,9 +252,12 @@ balance_classes. Defaults to 5.0.}
 
 \item{custom_metric_func}{Reference to custom evaluation function, format: `language:keyName=funcName`}
 
-\item{num_knots}{Number of knots for gam predictors}
+\item{num_knots}{Number of knots for gam predictors.  If specified, must specify one for each gam predictor.  For monotone
+I-splines, mininum = 2, for cs spline, minimum = 3.  For thin plate, minimum is size of polynomial basis + 2.}
 
-\item{spline_orders}{Order of I-splines used for gam predictors. If specified, must be the same size as gam_columns.Values for bs=0
+\item{spline_orders}{Order of I-splines or NBSplineTypeI M-splines used for gam predictors. If specified, must be the same size as
+gam_columns.  For I-splines, the spline_orders will be the same as the polynomials used to generate the
+splines.  For M-splines, the polynomials used to generate the splines will be spline_order-1.  Values for bs=0
 or 1 will be ignored.}
 
 \item{knot_ids}{Array storing frame keys of knots.  One for each gam column set specified in gam_columns}
@@ -258,7 +267,8 @@ or 1 will be ignored.}
 \item{scale_tp_penalty_mat}{\code{Logical}. Scale penalty matrix for tp (thin plate) smoothers as in R Defaults to FALSE.}
 
 \item{bs}{Basis function type for each gam predictors, 0 for cr, 1 for thin plate regression with knots, 2 for monotone
-splines.  If specified, must be the same size as gam_columns}
+I-splines, 3 for NBSplineTypeI M-splines (refer to doc here: https://h2oai.atlassian.net/browse/PUBDEV-8835).
+If specified, must be the same size as gam_columns}
 
 \item{scale}{Smoothing parameter for gam predictors.  If specified, must be of the same length as gam_columns}
 

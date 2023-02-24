@@ -67,7 +67,9 @@ h2o.modelSelection(
   max_predictor_number = 1,
   min_predictor_number = 1,
   mode = c("allsubsets", "maxr", "maxrsweep", "backward"),
-  p_values_threshold = 0
+  build_glm_model = TRUE,
+  p_values_threshold = 0,
+  influence = c("dfbetas")
 )
 }
 \arguments{
@@ -202,11 +204,11 @@ max_active_predictors is set to 5000 otherwise it is set to 100000000. Defaults 
 \item{stopping_rounds}{Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the
 stopping_metric does not improve for k:=stopping_rounds scoring events (0 to disable) Defaults to 0.}
 
-\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and
-anonomaly_score for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF
-with the Python client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
-"AUCPR", "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing".
-Defaults to AUTO.}
+\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and anomaly_score
+for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF with the Python
+client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "AUCPR",
+"lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing". Defaults to
+AUTO.}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
 much) Defaults to 0.001.}
@@ -233,11 +235,21 @@ balance_classes. Defaults to 5.0.}
 with all predictors to be included.  Defaults to 1. Defaults to 1.}
 
 \item{mode}{Mode: Used to choose model selection algorithms to use.  Options include 'allsubsets' for all subsets, 'maxr'
-for MaxR calling GLM to build all models, 'maxrsweep' for using sweep in MaxR, 'backward' for backward
-selection Must be one of: "allsubsets", "maxr", "maxrsweep", "backward". Defaults to maxr.}
+that uses sequential replacement and GLM to build all models, slow but works with cross-validation, validation
+frames for more robust results, 'maxrsweep' that uses sequential replacement and sweeping action, much faster
+than 'maxr', 'backward' for backward selection. Must be one of: "allsubsets", "maxr", "maxrsweep", "backward".
+Defaults to maxr.}
+
+\item{build_glm_model}{\code{Logical}. For maxrsweep mode only.  If true, will return full blown GLM models with the desired
+predictorsubsets.  If false, only the predictor subsets, predictor coefficients are returned.  This is
+forspeeding up the model selection process.  The users can choose to build the GLM models themselvesby using
+the predictor subsets themselves.  Default to true. Defaults to TRUE.}
 
 \item{p_values_threshold}{For mode='backward' only.  If specified, will stop the model building process when all coefficientsp-values
 drop below this threshold  Defaults to 0.}
+
+\item{influence}{If set to dfbetas will calculate the difference in beta when a datarow is included and excluded in the
+dataset. Must be one of: "dfbetas".}
 }
 \description{
 H2O ModelSelection is used to build the best model with one predictor, two predictors, ... up to max_predictor_number 

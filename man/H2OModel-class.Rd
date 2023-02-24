@@ -41,6 +41,8 @@ the data used to build the model (an object of class H2OFrame).
 
 \item{\code{allparameters}}{A \code{list} containg all parameters used to fit the model.}
 
+\item{\code{params}}{A \code{list} containing default, set, and actual parameters.}
+
 \item{\code{have_pojo}}{A \code{logical} indicating whether export to POJO is supported}
 
 \item{\code{have_mojo}}{A \code{logical} indicating whether export to MOJO is supported}

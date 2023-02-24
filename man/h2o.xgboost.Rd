@@ -58,6 +58,7 @@ h2o.xgboost(
   nthread = -1,
   save_matrix_directory = NULL,
   build_tree_one_node = FALSE,
+  parallelize_cross_validation = TRUE,
   calibrate_model = FALSE,
   calibration_frame = NULL,
   calibration_method = c("AUTO", "PlattScaling", "IsotonicRegression"),
@@ -80,6 +81,8 @@ h2o.xgboost(
   auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
     "WEIGHTED_OVO"),
   scale_pos_weight = 1,
+  eval_metric = NULL,
+  score_eval_metric_only = FALSE,
   verbose = FALSE
 )
 }
@@ -128,11 +131,11 @@ an accurate prediction, remove all rows with weight == 0.}
 \item{stopping_rounds}{Early stopping based on convergence of stopping_metric. Stop if simple moving average of length k of the
 stopping_metric does not improve for k:=stopping_rounds scoring events (0 to disable) Defaults to 0.}
 
-\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and
-anonomaly_score for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF
-with the Python client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC",
-"AUCPR", "lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing".
-Defaults to AUTO.}
+\item{stopping_metric}{Metric to use for early stopping (AUTO: logloss for classification, deviance for regression and anomaly_score
+for Isolation Forest). Note that custom and custom_increasing can only be used in GBM and DRF with the Python
+client. Must be one of: "AUTO", "deviance", "logloss", "MSE", "RMSE", "MAE", "RMSLE", "AUC", "AUCPR",
+"lift_top_group", "misclassification", "mean_per_class_error", "custom", "custom_increasing". Defaults to
+AUTO.}
 
 \item{stopping_tolerance}{Relative tolerance for metric-based stopping criterion (stop if relative improvement is not at least this
 much) Defaults to 0.001.}
@@ -206,6 +209,8 @@ parameter). Defaults to maximum available Defaults to -1.}
 \item{build_tree_one_node}{\code{Logical}. Run on one node only; no network overhead but fewer cpus used. Suitable for small datasets.
 Defaults to FALSE.}
 
+\item{parallelize_cross_validation}{\code{Logical}. Allow parallel training of cross-validation models Defaults to TRUE.}
+
 \item{calibrate_model}{\code{Logical}. Use Platt Scaling (default) or Isotonic Regression to calculate calibrated class
 probabilities. Calibration can provide more accurate estimates of class probabilities. Defaults to FALSE.}
 
@@ -253,6 +258,11 @@ auto.}
 
 \item{scale_pos_weight}{Controls the effect of observations with positive labels in relation to the observations with negative labels
 on gradient calculation. Useful for imbalanced problems. Defaults to 1.0.}
+
+\item{eval_metric}{Specification of evaluation metric that will be passed to the native XGBoost backend.}
+
+\item{score_eval_metric_only}{\code{Logical}. If enabled, score only the evaluation metric. This can make model training faster if scoring
+is frequent (eg. each iteration). Defaults to FALSE.}
 
 \item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree). Defaults to FALSE.}
 }

@@ -1,8 +1,8 @@
 Package: h2o
-Version: 3.38.0.1
+Version: 3.40.0.1
 Type: Package
 Title: R Interface for the 'H2O' Scalable Machine Learning Platform
-Date: 2022-09-19
+Date: 2023-02-08
 Authors@R: c(
     person("Erin", "LeDell", role = c("aut", "cre"), email = "erin@h2o.ai"),
     person("Navdeep", "Gill", role = c("aut")),
@@ -47,22 +47,22 @@ Depends: R (>= 2.13.0), methods, stats
 Imports: graphics, tools, utils, RCurl, jsonlite
 Suggests: ggplot2 (>= 3.3.0), mlbench, Matrix, slam, bit64 (>= 0.9.7),
         data.table (>= 1.9.8), rgl (>= 0.100.19), plot3Drgl (>= 1.0.1),
-        survival, DT, IRdisplay, htmltools, plotly, repr, curl
-Collate: 'aggregator.R' 'astfun.R' 'automl.R' 'classes.R' 'config.R'
-        'connection.R' 'constants.R' 'datasets.R' 'logging.R'
-        'communication.R' 'kvstore.R' 'frame.R' 'targetencoder.R'
-        'import.R' 'isolationforest.R' 'isotonicregression.R'
-        'extendedisolationforest.R' 'parse.R' 'export.R' 'edicts.R'
-        'models.R' 'coxph.R' 'coxphutils.R' 'kmeans.R' 'gam.R'
-        'anovaglm.R' 'gbm.R' 'generic.R' 'glm.R' 'glrm.R'
-        'modelselection.R' 'pca.R' 'svd.R' 'psvm.R' 'deeplearning.R'
-        'stackedensemble.R' 'xgboost.R' 'randomforest.R' 'naivebayes.R'
-        'word2vec.R' 'w2vutils.R' 'locate.R' 'grid.R' 'segment.R'
-        'predict.R' 'tf-idf.R' 'rulefit.R' 'explain.R'
-        'permutation_varimp.R' 'infogram.R' 'zzz.R'
-        'upliftrandomforest.R'
+        survival, DT, IRdisplay, htmltools, plotly, repr, curl, scales
 RoxygenNote: 7.1.2
-Packaged: 2022-09-19 14:15:02 UTC; jenkins
+Collate: 'admissibleml.R' 'aggregator.R' 'anovaglm.R' 'astfun.R'
+        'automl.R' 'classes.R' 'communication.R' 'config.R'
+        'connection.R' 'constants.R' 'coxph.R' 'coxphutils.R'
+        'datasets.R' 'deeplearning.R' 'edicts.R' 'explain.R' 'export.R'
+        'extendedisolationforest.R' 'frame.R' 'gam.R' 'gbm.R'
+        'generic.R' 'glm.R' 'glrm.R' 'grid.R' 'import.R' 'infogram.R'
+        'isolationforest.R' 'isotonicregression.R' 'kmeans.R'
+        'kvstore.R' 'locate.R' 'logging.R' 'models.R'
+        'modelselection.R' 'naivebayes.R' 'parse.R' 'pca.R'
+        'permutation_varimp.R' 'predict.R' 'psvm.R' 'randomforest.R'
+        'rulefit.R' 'segment.R' 'stackedensemble.R' 'svd.R'
+        'targetencoder.R' 'tf-idf.R' 'upliftrandomforest.R'
+        'w2vutils.R' 'word2vec.R' 'xgboost.R' 'zzz.R'
+Packaged: 2023-02-08 18:32:01 UTC; jenkins
 Author: Erin LeDell [aut, cre],
   Navdeep Gill [aut],
   Spencer Aiello [aut],
@@ -91,4 +91,4 @@ Author: Erin LeDell [aut, cre],
   H2O.ai [cph, fnd]
 Maintainer: Erin LeDell <erin@h2o.ai>
 Repository: CRAN
-Date/Publication: 2022-09-23 11:50:07 UTC
+Date/Publication: 2023-02-24 09:22:18 UTC
