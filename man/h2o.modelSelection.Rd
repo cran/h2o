@@ -67,9 +67,10 @@ h2o.modelSelection(
   max_predictor_number = 1,
   min_predictor_number = 1,
   mode = c("allsubsets", "maxr", "maxrsweep", "backward"),
-  build_glm_model = TRUE,
+  build_glm_model = FALSE,
   p_values_threshold = 0,
-  influence = c("dfbetas")
+  influence = c("dfbetas"),
+  multinode_mode = FALSE
 )
 }
 \arguments{
@@ -243,13 +244,16 @@ Defaults to maxr.}
 \item{build_glm_model}{\code{Logical}. For maxrsweep mode only.  If true, will return full blown GLM models with the desired
 predictorsubsets.  If false, only the predictor subsets, predictor coefficients are returned.  This is
 forspeeding up the model selection process.  The users can choose to build the GLM models themselvesby using
-the predictor subsets themselves.  Default to true. Defaults to TRUE.}
+the predictor subsets themselves.  Defaults to false. Defaults to FALSE.}
 
 \item{p_values_threshold}{For mode='backward' only.  If specified, will stop the model building process when all coefficientsp-values
 drop below this threshold  Defaults to 0.}
 
 \item{influence}{If set to dfbetas will calculate the difference in beta when a datarow is included and excluded in the
 dataset. Must be one of: "dfbetas".}
+
+\item{multinode_mode}{\code{Logical}. For maxrsweep only.  If enabled, will attempt to perform sweeping action using multiple nodes
+in the cluster.  Defaults to false. Defaults to FALSE.}
 }
 \description{
 H2O ModelSelection is used to build the best model with one predictor, two predictors, ... up to max_predictor_number 

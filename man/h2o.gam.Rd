@@ -76,6 +76,7 @@ h2o.gam(
   bs = NULL,
   scale = NULL,
   keep_gam_cols = FALSE,
+  store_knot_locations = FALSE,
   auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
     "WEIGHTED_OVO")
 )
@@ -273,6 +274,9 @@ If specified, must be the same size as gam_columns}
 \item{scale}{Smoothing parameter for gam predictors.  If specified, must be of the same length as gam_columns}
 
 \item{keep_gam_cols}{\code{Logical}. Save keys of model matrix Defaults to FALSE.}
+
+\item{store_knot_locations}{\code{Logical}. If set to true, will return knot locations as double[][] array for gam column names found
+knots_for_gam.  Default to false. Defaults to FALSE.}
 
 \item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
 "WEIGHTED_OVO". Defaults to AUTO.}

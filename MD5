@@ -1,5 +1,5 @@
-805612ecce771905964021eba7de738b *DESCRIPTION
-b087c7960ddecda1793123a52d7adf7c *NAMESPACE
+116a3c24b62b9e84b15e2a392a88d6b3 *DESCRIPTION
+18231d7273f5448725b73d175379c704 *NAMESPACE
 6fe38e24a23a87bd379ad2b4751f95f1 *NEWS
 8ef84b59851fae638f0443e4a713958f *R/admissibleml.R
 046e6ece23d1099606763a6abf1af9c4 *R/aggregator.R
@@ -16,11 +16,11 @@ f8c77ad8a6f0f9312e745e3328a73f79 *R/coxph.R
 3e4eff97aa1ae9614f9d405fad3d4d3a *R/datasets.R
 f5c424981e81a7a8fb0834e096476ea2 *R/deeplearning.R
 d7f673b11d31e88178816e444ddada54 *R/edicts.R
-2900541a49dc8021f0173ff56cdaca71 *R/explain.R
+20947ee8f873cea8bfdbe34265d76acb *R/explain.R
 abde2b316fe82eecb47bc484f7bb679d *R/export.R
 0e2c6a9ed21b3503e62cd5c3acf143df *R/extendedisolationforest.R
 5d13b1a74867a0fb833c8deb805f94a9 *R/frame.R
-2b1b16340df5bab2cf40700cef1a97cb *R/gam.R
+6d2adb46d64092854e0d8fc71a115abc *R/gam.R
 01dc4a64169fd3e670f07de0a43f6801 *R/gbm.R
 c58f0fe845e6bc1fed19983f97a5289b *R/generic.R
 f7fad91056874179f2f0829ba5a318b1 *R/glm.R
@@ -34,8 +34,8 @@ dc072938a24467cb545c45567ab82622 *R/kmeans.R
 8351f3f32b998ed958748700afe86967 *R/kvstore.R
 7e8d3ebdc396c9f285935562cdff4dd0 *R/locate.R
 9fbcf238b88b1bc318482cbd3879ee63 *R/logging.R
-177911268cf92d5a5dfc404eeb15518d *R/models.R
-50fdaf702aac05dc10535c778d37d5dd *R/modelselection.R
+624ef1107774a79e253b07b793da8f47 *R/models.R
+09bebdd79ea74a128b0c8b43b38a91f6 *R/modelselection.R
 ac55554f0abef8c2dc9c5f3c2f19002a *R/naivebayes.R
 25ce93200179ddb4475e84b87c6d0cd2 *R/parse.R
 93693132826845434eefdd91705e6707 *R/pca.R
@@ -65,7 +65,7 @@ dcab4a64fc5d2007723ff2a174b0b35e *demo/h2o.kmeans.R
 49d02e01f8f52c313d633ba07fb44100 *demo/h2o.prcomp.R
 9922fd14a111c81d856f9eebddbea22a *demo/h2o.randomForest.R
 a31387b3c7efeaaeb7329842b9f6c15f *inst/branch.txt
-b026324c6904b2a9cb4b88d6d61c81d1 *inst/buildnum.txt
+48a24b70a0b376535542b996af517398 *inst/buildnum.txt
 c2009f0054eecbceac0e820e4927e455 *inst/extdata/australia.csv
 fdbd7a2797e683a8f352462c6b140b7d *inst/extdata/housevotes.csv
 42615765a885ddf54427f12c34a0a070 *inst/extdata/iris.csv
@@ -178,7 +178,7 @@ db8a9b1f5b44f996a24a35cc3f1b2cc1 *man/dot-verify_dataxy.Rd
 61dc471e93657b72dec1fa3297eb6fb9 *man/feature_frequencies.H2OModel.Rd
 378ea84ebf19632b14f6855d91ff76c7 *man/generate_col_ind.Rd
 e0de41f699cb066cf379578923d0df59 *man/get_seed.H2OModel.Rd
-7505b28c2b2b12764a9128029697af5e *man/h2o-package.Rd
+8ea97f9713dc76a45001de8156960506 *man/h2o-package.Rd
 63b3c68103547f1ee9a4eabbc6650a7d *man/h2o.HGLMMetrics.Rd
 f681c0a688ae25c437114b844e42b560 *man/h2o.abs.Rd
 23a2815f1286909d355ce5c001bedeb1 *man/h2o.acos.Rd
@@ -284,7 +284,7 @@ e3731aa64832000c8d8b8d77a5ed25de *man/h2o.gainsLift.Rd
 33db43bc1014fe4ced70e8101cac8792 *man/h2o.gains_lift_plot-H2OModel-method.Rd
 221525b3aa4791ee3631f2ce37c722f7 *man/h2o.gains_lift_plot-H2OModelMetrics-method.Rd
 54094eab7e58da92c16c0517044ca26d *man/h2o.gains_lift_plot.Rd
-958f883899c19a909d0fc5237a06e7eb *man/h2o.gam.Rd
+0615af539474e41bed7a68167b7dae8d *man/h2o.gam.Rd
 a938eadfc97b135339647d8d043f1238 *man/h2o.gbm.Rd
 c343e7433d4e66c73370485d02bca0c3 *man/h2o.generic.Rd
 1efe2cca129f77f845d4c6f45019c520 *man/h2o.genericModel.Rd
@@ -306,6 +306,8 @@ c9611ec1acd24e971677c6cce159a040 *man/h2o.get_automl.Rd
 9ac2632804aad305efef25bf03326377 *man/h2o.get_best_model.Rd
 cc3f7e8fc8106a8d708330270bdb6617 *man/h2o.get_best_model_predictors.Rd
 46e5acc0ff1dcf91ad2c9d2a95487f1f *man/h2o.get_best_r2_values.Rd
+7b2c4e48568124bc3d10ddf7485a5843 *man/h2o.get_gam_knot_column_names.Rd
+c47ce27ba7fdd9e47ee069edead40383 *man/h2o.get_knot_locations.Rd
 9dbc33d4fda186b53aac108d88ffb087 *man/h2o.get_leaderboard.Rd
 52690ecf3d924a250b4ab64b15a1cf74 *man/h2o.get_ntrees_actual.Rd
 18d830200cf5caa3478d54e64686420a *man/h2o.get_predictors_added_per_step.Rd
@@ -386,7 +388,7 @@ cf11fd0db21b4155881029737e4d9cd7 *man/h2o.melt.Rd
 794edd31e3403d5f9a01348a4a8c4cc8 *man/h2o.metric.Rd
 d7bfbbe72fe7cb88440dcfc523a67b31 *man/h2o.min.Rd
 ab5dd0aab978a1689dc9a43a5b27d880 *man/h2o.mktime.Rd
-eca69363602a26335705fe8e803126cd *man/h2o.modelSelection.Rd
+2c3f5d2c538942677aab81ad06d230f8 *man/h2o.modelSelection.Rd
 61f07028217ff3a3c6c1fb10ee8b9a62 *man/h2o.model_correlation.Rd
 f020d0783dbca42c509cefc52b166f53 *man/h2o.model_correlation_heatmap.Rd
 b6a21488956df3003008a1670202da67 *man/h2o.mojo_predict_csv.Rd
