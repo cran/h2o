@@ -25,7 +25,7 @@ column names, types, and dimensions. If newdata is passed in, then train, valid,
 \item{train}{A logical value indicating whether to return the training metrics (constructed during training).
 
 Note: when the trained h2o model uses balance_classes, the training metrics constructed during training will be from the balanced training dataset.
-For more information visit: \url{https://0xdata.atlassian.net/browse/TN-9}}
+For more information visit: \url{https://github.com/h2oai/h2o-3/discussions/15518}}
 
 \item{valid}{A logical value indicating whether to return the validation metrics (constructed during training).}
 

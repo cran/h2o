@@ -73,6 +73,7 @@ h2o.gbm(
   auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
     "WEIGHTED_OVO"),
   interaction_constraints = NULL,
+  auto_rebalance = TRUE,
   verbose = FALSE
 )
 }
@@ -238,6 +239,8 @@ constant value or not. Defaults to TRUE.}
 "WEIGHTED_OVO". Defaults to AUTO.}
 
 \item{interaction_constraints}{A set of allowed column interactions.}
+
+\item{auto_rebalance}{\code{Logical}. Allow automatic rebalancing of training and validation datasets Defaults to TRUE.}
 
 \item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per tree). Defaults to FALSE.}
 }
