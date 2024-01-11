@@ -11,7 +11,8 @@ h2o.shap_explain_row_plot(
   columns = NULL,
   top_n_features = 10,
   plot_type = c("barplot", "breakdown"),
-  contribution_type = c("both", "positive", "negative")
+  contribution_type = c("both", "positive", "negative"),
+  background_frame = NULL
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ for each contribution_type.}
 
 \item{contribution_type}{When \code{plot_type == "barplot"}, plot one of "negative",
 "positive", or "both" contributions.  Defaults to "both".}
+
+\item{background_frame}{Optional frame, that is used as the source of baselines for the marginal SHAP.}
 }
 \value{
 A ggplot2 object.

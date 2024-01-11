@@ -18,6 +18,7 @@ h2o.parseRaw(
   chunk_size = NULL,
   decrypt_tool = NULL,
   skipped_columns = NULL,
+  force_col_types = FALSE,
   custom_non_data_line_markers = NULL,
   partition_by = NULL,
   quotechar = NULL,
@@ -62,6 +63,10 @@ Valid types are "ARFF", "XLS", "CSV", "SVMLight"}
 acquired by calling \link{h2o.decryptionSetup}.}
 
 \item{skipped_columns}{a list of column indices to be excluded from parsing}
+
+\item{force_col_types}{(Optional) if true will force parser to return the exact column types specified in 
+column_types.  For parquet, if column_types is not specified, the parquet schema will be used to determine 
+the actual column type.}
 
 \item{custom_non_data_line_markers}{(Optional) If a line in imported file starts with any character in given string it will NOT be imported. Empty string means all lines are imported, NULL means that default behaviour for given format will be used}
 

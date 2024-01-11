@@ -21,11 +21,15 @@ This function is mostly for internal purposes, but may occasionally be useful fo
 It has same parameters as :meth:\verb{H2OConnection.request <h2o.backend.H2OConnection.request>}.
 }
 \details{
-REST API endpoints can be obtained using:\preformatted{endpoints <- sapply(h2o.api("GET /3/Metadata/endpoints")$routes, function(r) paste(r$http_method, r$url_pattern))
-}
+REST API endpoints can be obtained using:
 
-For a given route, the supported params can be otained using:\preformatted{parameters <- sapply(h2o.api("GET /3/Metadata/schemas/\{route$input_schema\}")$schemas[[1]]$fields, function(f) \{ l <-list(); l[f$name] <- f$help; l \})
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{endpoints <- sapply(h2o.api("GET /3/Metadata/endpoints")$routes, function(r) paste(r$http_method, r$url_pattern))
+}\if{html}{\out{</div>}}
+
+For a given route, the supported params can be otained using:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{parameters <- sapply(h2o.api("GET /3/Metadata/schemas/\{route$input_schema\}")$schemas[[1]]$fields, function(f) \{ l <-list(); l[f$name] <- f$help; l \})
+}\if{html}{\out{</div>}}
 }
 \examples{
 \dontrun{

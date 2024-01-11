@@ -36,7 +36,7 @@ interval notation.}
 \item{include.lowest}{\code{Logical}, indicationg if an 'x[i]' equal to the lowest (or highest, for \code{right =
 FALSE} 'breaks' value should be included}
 
-\item{right}{/code{Logical}, indicating if the intervals should be closed on the right (opened on the left) or vice
+\item{right}{\code{Logical}, indicating if the intervals should be closed on the right (opened on the left) or vice
 versa.}
 
 \item{dig.lab}{Integer which is used when labels are not given, determines the number of digits used in formatting

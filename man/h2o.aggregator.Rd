@@ -12,8 +12,8 @@ h2o.aggregator(
   target_num_exemplars = 5000,
   rel_tol_num_exemplars = 0.5,
   transform = c("NONE", "STANDARDIZE", "NORMALIZE", "DEMEAN", "DESCALE"),
-  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-    "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
+    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
   save_mapping_frame = FALSE,
   num_iteration_without_new_exemplar = 500,
   export_checkpoints_dir = NULL

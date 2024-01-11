@@ -816,7 +816,7 @@ h2o.unique <- function(x, include_nas=FALSE){
 #'        interval notation.
 #' @param include.lowest \code{Logical}, indicationg if an 'x[i]' equal to the lowest (or highest, for \code{right =
 #'        FALSE} 'breaks' value should be included
-#' @param right /code{Logical}, indicating if the intervals should be closed on the right (opened on the left) or vice
+#' @param right \code{Logical}, indicating if the intervals should be closed on the right (opened on the left) or vice
 #'        versa.
 #' @param dig.lab Integer which is used when labels are not given, determines the number of digits used in formatting
 #'        the break numbers.
@@ -4160,7 +4160,7 @@ as.h2o.H2OFrame <- function(x, destination_frame="", ...) {
 #' @details 
 #' Method \code{as.h2o.data.frame} will use \code{\link[data.table]{fwrite}} if data.table package is installed in required version.
 #' @seealso \code{\link{use.package}}
-#' @references \url{https://h2o.ai/blog/fast-csv-writing-for-r/}
+#' @references \url{https://h2o.ai/blog/2016/fast-csv-writing-for-r/}
 #' @export
 as.h2o.data.frame <- function(x, destination_frame="", use_datatable=TRUE, ...) {
   if( destination_frame=="" ) {

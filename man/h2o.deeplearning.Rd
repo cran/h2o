@@ -91,14 +91,15 @@ h2o.deeplearning(
   reproducible = FALSE,
   export_weights_and_biases = FALSE,
   mini_batch_size = 1,
-  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-    "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
+    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
   elastic_averaging = FALSE,
   elastic_averaging_moving_rate = 0.9,
   elastic_averaging_regularization = 0.001,
   export_checkpoints_dir = NULL,
-  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
-    "WEIGHTED_OVO"),
+  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO", "WEIGHTED_OVO"),
+  custom_metric_func = NULL,
+  gainslift_bins = -1,
   verbose = FALSE
 )
 }
@@ -323,6 +324,10 @@ propagation, but might slow down backpropagation. Defaults to FALSE.}
 
 \item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
 "WEIGHTED_OVO". Defaults to AUTO.}
+
+\item{custom_metric_func}{Reference to custom evaluation function, format: `language:keyName=funcName`}
+
+\item{gainslift_bins}{Gains/Lift table number of bins. 0 means disabled.. Default value -1 means automatic binning. Defaults to -1.}
 
 \item{verbose}{\code{Logical}. Print scoring history to the console (Metrics per epoch). Defaults to FALSE.}
 }

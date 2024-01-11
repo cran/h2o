@@ -27,8 +27,8 @@ h2o.gam(
   tweedie_variance_power = 0,
   tweedie_link_power = 0,
   theta = 0,
-  solver = c("AUTO", "IRLSM", "L_BFGS", "COORDINATE_DESCENT_NAIVE",
-    "COORDINATE_DESCENT", "GRADIENT_DESCENT_LH", "GRADIENT_DESCENT_SQERR"),
+  solver = c("AUTO", "IRLSM", "L_BFGS", "COORDINATE_DESCENT_NAIVE", "COORDINATE_DESCENT",
+    "GRADIENT_DESCENT_LH", "GRADIENT_DESCENT_SQERR"),
   alpha = NULL,
   lambda = NULL,
   lambda_search = FALSE,
@@ -46,8 +46,7 @@ h2o.gam(
   objective_epsilon = -1,
   beta_epsilon = 1e-04,
   gradient_epsilon = -1,
-  link = c("family_default", "identity", "logit", "log", "inverse", "tweedie",
-    "ologit"),
+  link = c("family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit"),
   startval = NULL,
   prior = -1,
   cold_start = FALSE,
@@ -77,8 +76,8 @@ h2o.gam(
   scale = NULL,
   keep_gam_cols = FALSE,
   store_knot_locations = FALSE,
-  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
-    "WEIGHTED_OVO")
+  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO", "WEIGHTED_OVO"),
+  gainslift_bins = -1
 )
 }
 \arguments{
@@ -92,7 +91,7 @@ If the response is numeric, then a regression model will be trained, otherwise i
 \item{training_frame}{Id of the training data frame.}
 
 \item{gam_columns}{Arrays of predictor column names for gam for smoothers using single or multiple predictors like
-{{'c1'},{'c2','c3'},{'c4'},...}}
+\{\{'c1'\},\{'c2','c3'\},\{'c4'\},...\}}
 
 \item{model_id}{Destination id for this model; auto-generated if not specified.}
 
@@ -280,6 +279,8 @@ knots_for_gam.  Default to false. Defaults to FALSE.}
 
 \item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
 "WEIGHTED_OVO". Defaults to AUTO.}
+
+\item{gainslift_bins}{Gains/Lift table number of bins. 0 means disabled.. Default value -1 means automatic binning. Defaults to -1.}
 }
 \description{
 Creates a generalized additive model, specified by a response variable, a set of predictors, and a

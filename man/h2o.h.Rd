@@ -16,6 +16,9 @@ h2o.h(model, frame, variables)
 \item{variables}{Variables of the interest.}
 }
 \description{
+This statistic can be calculated only for numerical variables. Missing values are supported.
+}
+\details{
 See Jerome H. Friedman and Bogdan E. Popescu, 2008, "Predictive learning via rule ensembles", *Ann. Appl. Stat.*
 **2**:916-954, http://projecteuclid.org/download/pdfview_1/euclid.aoas/1223908046, s. 8.1.
 }

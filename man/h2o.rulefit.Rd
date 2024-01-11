@@ -20,8 +20,7 @@ h2o.rulefit(
   distribution = c("AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
     "tweedie", "laplace", "quantile", "huber"),
   rule_generation_ntrees = 50,
-  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
-    "WEIGHTED_OVO"),
+  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO", "WEIGHTED_OVO"),
   remove_duplicates = TRUE,
   lambda = NULL,
   max_categorical_levels = 10

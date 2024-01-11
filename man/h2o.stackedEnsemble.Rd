@@ -22,12 +22,13 @@ h2o.stackedEnsemble(
   max_runtime_secs = 0,
   weights_column = NULL,
   offset_column = NULL,
+  custom_metric_func = NULL,
   seed = -1,
   score_training_samples = 10000,
   keep_levelone_frame = FALSE,
   export_checkpoints_dir = NULL,
-  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
-    "WEIGHTED_OVO")
+  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO", "WEIGHTED_OVO"),
+  gainslift_bins = -1
 )
 }
 \arguments{
@@ -83,6 +84,8 @@ an accurate prediction, remove all rows with weight == 0.}
 
 \item{offset_column}{Offset column. This will be added to the combination of columns before applying the link function.}
 
+\item{custom_metric_func}{Reference to custom evaluation function, format: `language:keyName=funcName`}
+
 \item{seed}{Seed for random numbers; passed through to the metalearner algorithm. Defaults to -1 (time-based random number).}
 
 \item{score_training_samples}{Specify the number of training set samples for scoring. The value must be >= 0. To use all training samples,
@@ -94,6 +97,8 @@ enter 0. Defaults to 10000.}
 
 \item{auc_type}{Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
 "WEIGHTED_OVO". Defaults to AUTO.}
+
+\item{gainslift_bins}{Gains/Lift table number of bins. 0 means disabled.. Default value -1 means automatic binning. Defaults to -1.}
 }
 \description{
 Build a stacked ensemble (aka. Super Learner) using the H2O base

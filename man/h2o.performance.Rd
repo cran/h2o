@@ -11,7 +11,8 @@ h2o.performance(
   valid = FALSE,
   xval = FALSE,
   data = NULL,
-  auc_type = "NONE"
+  auc_type = "NONE",
+  auuc_type = NULL
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ For more information visit: \url{https://github.com/h2oai/h2o-3/discussions/1551
 
 \item{auc_type}{For multinomila model only. Set default multinomial AUC type. Must be one of: "AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
 "WEIGHTED_OVO". Default is "NONE"}
+
+\item{auuc_type}{For binomial model only. Set default AUUC type. Must be one of: "AUTO", "GINI", "GAIN", "LIFT". Default is NULL.}
 }
 \value{
 Returns an object of the \linkS4class{H2OModelMetrics} subclass.

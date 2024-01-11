@@ -49,8 +49,8 @@ h2o.randomForest(
   min_split_improvement = 1e-05,
   histogram_type = c("AUTO", "UniformAdaptive", "Random", "QuantilesGlobal",
     "RoundRobin", "UniformRobust"),
-  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-    "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
+    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
   calibrate_model = FALSE,
   calibration_frame = NULL,
   calibration_method = c("AUTO", "PlattScaling", "IsotonicRegression"),
@@ -60,8 +60,7 @@ h2o.randomForest(
   export_checkpoints_dir = NULL,
   check_constant_response = TRUE,
   gainslift_bins = -1,
-  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
-    "WEIGHTED_OVO"),
+  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO", "WEIGHTED_OVO"),
   verbose = FALSE
 )
 }
@@ -157,7 +156,7 @@ Defaults to -1 (time-based random number).}
 \item{build_tree_one_node}{\code{Logical}. Run on one node only; no network overhead but fewer cpus used. Suitable for small datasets.
 Defaults to FALSE.}
 
-\item{mtries}{Number of variables randomly sampled as candidates at each split. If set to -1, defaults to sqrt{p} for
+\item{mtries}{Number of variables randomly sampled as candidates at each split. If set to -1, defaults to sqrt\{p\} for
 classification and p/3 for regression (where p is the # of predictors Defaults to -1.}
 
 \item{sample_rate}{Row sample rate per tree (from 0.0 to 1.0) Defaults to 0.632.}

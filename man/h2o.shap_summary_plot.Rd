@@ -9,7 +9,8 @@ h2o.shap_summary_plot(
   newdata,
   columns = NULL,
   top_n_features = 20,
-  sample_size = 1000
+  sample_size = 1000,
+  background_frame = NULL
 )
 }
 \arguments{
@@ -24,6 +25,8 @@ If specified, then the \code{top_n_features} parameter will be ignored.}
 \item{top_n_features}{Integer specifying the maximum number of columns to show (ranked by variable importance).}
 
 \item{sample_size}{Integer specifying the maximum number of observations to be plotted.}
+
+\item{background_frame}{Optional frame, that is used as the source of baselines for the marginal SHAP.}
 }
 \value{
 A ggplot2 object

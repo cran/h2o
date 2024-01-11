@@ -6,7 +6,7 @@
 \usage{
 h2o.partialPlot(
   object,
-  data,
+  newdata,
   cols,
   destination_key,
   nbins = 20,
@@ -18,13 +18,14 @@ h2o.partialPlot(
   col_pairs_2dpdp = NULL,
   save_to = NULL,
   row_index = -1,
-  targets = NULL
+  targets = NULL,
+  ...
 )
 }
 \arguments{
 \item{object}{An \linkS4class{H2OModel} object.}
 
-\item{data}{An H2OFrame object used for scoring and constructing the plot.}
+\item{newdata}{An H2OFrame object used for scoring and constructing the plot.}
 
 \item{cols}{Feature(s) for which partial dependence will be calculated.}
 
@@ -56,6 +57,8 @@ If the files already exists, they will be overridden. Files are only saves if pl
 \item{row_index}{Row for which partial dependence will be calculated instead of the whole input frame.}
 
 \item{targets}{Target classes for multinomial model.}
+
+\item{...}{Mainly used for backwards compatibility, to allow deprecated parameters.}
 }
 \value{
 Plot and list of calculated mean response tables for each feature requested.
@@ -79,15 +82,15 @@ prostate_gbm <- h2o.gbm(x = c("AGE", "RACE"),
                         ntrees = 10,
                         max_depth = 5,
                         learn_rate = 0.1)
-h2o.partialPlot(object = prostate_gbm, data = prostate, cols = c("AGE", "RACE"))
+h2o.partialPlot(object = prostate_gbm, newdata = prostate, cols = c("AGE", "RACE"))
 
 iris_hex <- as.h2o(iris)
 iris_gbm <- h2o.gbm(x = c(1:4), y = 5, training_frame = iris_hex)
 
 # one target class
-h2o.partialPlot(object = iris_gbm, data = iris_hex, cols="Petal.Length", targets=c("setosa"))
+h2o.partialPlot(object = iris_gbm, newdata = iris_hex, cols="Petal.Length", targets=c("setosa"))
 # three target classes
-h2o.partialPlot(object = iris_gbm, data = iris_hex, cols="Petal.Length", 
+h2o.partialPlot(object = iris_gbm, newdata = iris_hex, cols="Petal.Length", 
                  targets=c("setosa", "virginica", "versicolor"))
 }
 }

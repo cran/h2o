@@ -4,18 +4,29 @@
 \alias{h2o.thresholds_and_metric_scores}
 \title{Retrieve the thresholds and metric scores table}
 \usage{
-h2o.thresholds_and_metric_scores(object, train = FALSE, valid = FALSE)
+h2o.thresholds_and_metric_scores(
+  object,
+  train = FALSE,
+  valid = FALSE,
+  xval = FALSE
+)
 }
 \arguments{
-\item{object}{An \linkS4class{H2OBinomialUpliftMetrics}}
+\item{object}{A \linkS4class{H2OBinomialUpliftMetrics} or a \linkS4class{H2OBinomialMetrics}}
 
 \item{train}{Retrieve the training thresholds and metric scores table}
 
 \item{valid}{Retrieve the validation thresholds and metric scores table}
+
+\item{xval}{Retrieve the cross-validation thresholds and metric scores table (only for \linkS4class{H2OBinomialMetrics})}
 }
 \description{
-Retrieves the thresholds and metric scores table from an \linkS4class{H2OBinomialUpliftMetrics}.
-The table contains indices, thresholds, all cumulative uplift values and cumulative number of observations.
+Retrieves the thresholds and metric scores table from a \linkS4class{H2OBinomialUpliftMetrics} 
+or a \linkS4class{H2OBinomialMetrics}.
+}
+\details{
+The table contains indices, thresholds, all cumulative uplift values and cumulative number of observations for 
+uplift binomial models or thresholds and maximal metric values for binomial models. 
 If "train" and "valid" parameters are FALSE (default), then the training table is returned. If more
 than one parameter is set to TRUE, then a named vector of tables is returned, where the names are "train", "valid".
 }

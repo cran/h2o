@@ -9,12 +9,15 @@ h2o.extendedIsolationForest(
   x,
   model_id = NULL,
   ignore_const_cols = TRUE,
-  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-    "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
+    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  score_each_iteration = FALSE,
+  score_tree_interval = 0,
   ntrees = 100,
   sample_size = 256,
   extension_level = 0,
-  seed = -1
+  seed = -1,
+  disable_training_metrics = TRUE
 )
 }
 \arguments{
@@ -29,6 +32,10 @@ h2o.extendedIsolationForest(
 \item{categorical_encoding}{Encoding scheme for categorical features Must be one of: "AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
 "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited". Defaults to AUTO.}
 
+\item{score_each_iteration}{\code{Logical}. Whether to score during each iteration of model training. Defaults to FALSE.}
+
+\item{score_tree_interval}{Score the model after every so many trees. Disabled if set to 0. Defaults to 0.}
+
 \item{ntrees}{Number of Extended Isolation Forest trees. Defaults to 100.}
 
 \item{sample_size}{Number of randomly sampled observations used to train each Extended Isolation Forest tree. Defaults to 256.}
@@ -38,6 +45,8 @@ Isolation Forest. Defaults to 0.}
 
 \item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}
+
+\item{disable_training_metrics}{\code{Logical}. Disable calculating training metrics (expensive on large datasets) Defaults to TRUE.}
 }
 \description{
 Trains an Extended Isolation Forest model

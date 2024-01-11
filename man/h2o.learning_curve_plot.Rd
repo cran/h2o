@@ -8,7 +8,8 @@ h2o.learning_curve_plot(
   model,
   metric = c("AUTO", "auc", "aucpr", "mae", "rmse", "anomaly_score", "convergence",
     "custom", "custom_increasing", "deviance", "lift_top_group", "logloss",
-    "misclassification", "negative_log_likelihood", "objective", "sumetaieta02"),
+    "misclassification", "negative_log_likelihood", "objective", "sumetaieta02",
+    "loglik"),
   cv_ribbon = NULL,
   cv_lines = NULL
 )

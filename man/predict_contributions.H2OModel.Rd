@@ -8,20 +8,26 @@
 predict_contributions.H2OModel(
   object,
   newdata,
-  output_format = c("original", "compact"),
+  output_format = c("compact", "original"),
   top_n = 0,
   bottom_n = 0,
   compare_abs = FALSE,
+  background_frame = NULL,
+  output_space = FALSE,
+  output_per_reference = FALSE,
   ...
 )
 
 h2o.predict_contributions(
   object,
   newdata,
-  output_format = c("original", "compact"),
+  output_format = c("compact", "original"),
   top_n = 0,
   bottom_n = 0,
   compare_abs = FALSE,
+  background_frame = NULL,
+  output_space = FALSE,
+  output_per_reference = FALSE,
   ...
 )
 }
@@ -46,6 +52,18 @@ If bottom_n<0 then sort all SHAP values in ascending order
 If top_n<0 && bottom_n<0 then sort all SHAP values in descending order}
 
 \item{compare_abs}{True to compare absolute values of contributions}
+
+\item{background_frame}{Optional frame, that is used as the source of baselines for
+the baseline SHAP (when output_per_reference == TRUE) or for
+the marginal SHAP (when output_per_reference == FALSE).}
+
+\item{output_space}{If TRUE, linearly scale the contributions so that they sum up to the prediction.
+NOTE: This will result only in approximate SHAP values even if the model supports exact SHAP calculation.
+NOTE: This will not have any effect if the estimator doesn't use a link function.}
+
+\item{output_per_reference}{If TRUE, return baseline SHAP, i.e., contribution for each data point for each reference from the background_frame.
+If FALSE, return TreeSHAP if no background_frame is provided, or marginal SHAP if background frame is provided.
+Can be used only with background_frame.}
 
 \item{...}{additional arguments to pass on.}
 }
@@ -84,6 +102,10 @@ h2o.predict_contributions(prostate_gbm, prostate, bottom_n=2, compare_abs=TRUE)
 h2o.predict_contributions(prostate_gbm, prostate, top_n=-1)
 # Compute SHAP and pick the top two highest and top two lowest
 h2o.predict_contributions(prostate_gbm, prostate, top_n=2, bottom_n=2)
+
+# Compute Marginal SHAP, this enables looking at the contributions against different
+# baselines, e.g., older people in the following example
+h2o.predict_contributions(prostate_gbm, prostate, background_frame=prostate[prostate$AGE > 75, ])
 }
 }
 \seealso{

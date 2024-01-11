@@ -31,8 +31,8 @@ h2o.glm(
   tweedie_variance_power = 0,
   tweedie_link_power = 1,
   theta = 1e-10,
-  solver = c("AUTO", "IRLSM", "L_BFGS", "COORDINATE_DESCENT_NAIVE",
-    "COORDINATE_DESCENT", "GRADIENT_DESCENT_LH", "GRADIENT_DESCENT_SQERR"),
+  solver = c("AUTO", "IRLSM", "L_BFGS", "COORDINATE_DESCENT_NAIVE", "COORDINATE_DESCENT",
+    "GRADIENT_DESCENT_LH", "GRADIENT_DESCENT_SQERR"),
   alpha = NULL,
   lambda = NULL,
   lambda_search = FALSE,
@@ -51,8 +51,7 @@ h2o.glm(
   objective_epsilon = -1,
   beta_epsilon = 1e-04,
   gradient_epsilon = -1,
-  link = c("family_default", "identity", "logit", "log", "inverse", "tweedie",
-    "ologit"),
+  link = c("family_default", "identity", "logit", "log", "inverse", "tweedie", "ologit"),
   rand_link = c("[identity]", "[family_default]"),
   startval = NULL,
   calc_like = FALSE,
@@ -76,8 +75,7 @@ h2o.glm(
   max_runtime_secs = 0,
   custom_metric_func = NULL,
   generate_scoring_history = FALSE,
-  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
-    "WEIGHTED_OVO"),
+  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO", "WEIGHTED_OVO"),
   dispersion_epsilon = 1e-04,
   tweedie_epsilon = 8e-17,
   max_iterations_dispersion = 3000,
@@ -86,7 +84,8 @@ h2o.glm(
   generate_variable_inflation_factors = FALSE,
   fix_tweedie_variance_power = TRUE,
   dispersion_learning_rate = 0.5,
-  influence = c("dfbetas")
+  influence = c("dfbetas"),
+  gainslift_bins = -1
 )
 }
 \arguments{
@@ -311,6 +310,8 @@ Defaults to 0.5.}
 
 \item{influence}{If set to dfbetas will calculate the difference in beta when a datarow is included and excluded in the
 dataset. Must be one of: "dfbetas".}
+
+\item{gainslift_bins}{Gains/Lift table number of bins. 0 means disabled.. Default value -1 means automatic binning. Defaults to -1.}
 }
 \value{
 A subclass of \code{\linkS4class{H2OModel}} is returned. The specific subclass depends on the machine

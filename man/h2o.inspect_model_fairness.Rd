@@ -10,7 +10,8 @@ h2o.inspect_model_fairness(
   protected_columns,
   reference,
   favorable_class,
-  metrics = c("auc", "aucpr", "f1", "p.value", "selectedRatio", "total")
+  metrics = c("auc", "aucpr", "f1", "p.value", "selectedRatio", "total"),
+  background_frame = NULL
 )
 }
 \arguments{
@@ -27,6 +28,9 @@ If set to NULL, it will use the biggest group as the reference.}
 \item{favorable_class}{Positive/favorable outcome class of the response.}
 
 \item{metrics}{Character vector of metrics to show.}
+
+\item{background_frame}{Optional frame, that is used as the source of baselines for the marginal SHAP.
+Setting it enables calculating SHAP in more models but it can be more time and memory consuming.}
 }
 \value{
 H2OExplanation object

@@ -1,8 +1,8 @@
 Package: h2o
-Version: 3.42.0.2
+Version: 3.44.0.3
 Type: Package
 Title: R Interface for the 'H2O' Scalable Machine Learning Platform
-Date: 2023-07-25
+Date: 2023-12-20
 Authors@R: c(
     person("Tomas", "Fryda", role = c("aut", "cre"), email = "tomas.fryda@h2o.ai"),
     person("Erin", "LeDell", role = c("aut")),
@@ -53,8 +53,8 @@ Suggests: ggplot2 (>= 3.3.0), mlbench, Matrix, slam, bit64 (>= 0.9.7),
         data.table (>= 1.9.8), rgl (>= 0.100.19), plot3Drgl (>= 1.0.1),
         survival, DT, IRdisplay, htmltools, plotly, repr, curl, scales
 RoxygenNote: 7.1.2
-Collate: 'admissibleml.R' 'aggregator.R' 'anovaglm.R' 'astfun.R'
-        'automl.R' 'classes.R' 'communication.R' 'config.R'
+Collate: 'adaboost.R' 'admissibleml.R' 'aggregator.R' 'anovaglm.R'
+        'astfun.R' 'automl.R' 'classes.R' 'communication.R' 'config.R'
         'connection.R' 'constants.R' 'coxph.R' 'coxphutils.R'
         'datasets.R' 'decisiontree.R' 'deeplearning.R' 'edicts.R'
         'explain.R' 'export.R' 'extendedisolationforest.R' 'frame.R'
@@ -66,7 +66,7 @@ Collate: 'admissibleml.R' 'aggregator.R' 'anovaglm.R' 'astfun.R'
         'randomforest.R' 'rulefit.R' 'segment.R' 'stackedensemble.R'
         'svd.R' 'targetencoder.R' 'tf-idf.R' 'upliftrandomforest.R'
         'w2vutils.R' 'word2vec.R' 'xgboost.R' 'zzz.R'
-Packaged: 2023-08-02 13:33:23 UTC; tomasfryda
+Packaged: 2024-01-10 12:15:19 UTC; tomasfryda
 Author: Tomas Fryda [aut, cre],
   Erin LeDell [aut],
   Navdeep Gill [aut],
@@ -99,4 +99,4 @@ Author: Tomas Fryda [aut, cre],
   H2O.ai [cph, fnd]
 Maintainer: Tomas Fryda <tomas.fryda@h2o.ai>
 Repository: CRAN
-Date/Publication: 2023-08-09 05:00:02 UTC
+Date/Publication: 2024-01-11 11:30:03 UTC

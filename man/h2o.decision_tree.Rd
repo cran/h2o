@@ -10,8 +10,8 @@ h2o.decision_tree(
   training_frame,
   model_id = NULL,
   ignore_const_cols = TRUE,
-  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-    "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
+    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
   seed = -1,
   max_depth = 20,
   min_rows = 10

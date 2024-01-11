@@ -13,7 +13,8 @@ h2o.exportFile(
   parts = 1,
   header = TRUE,
   quote_header = TRUE,
-  format = "csv"
+  format = "csv",
+  write_checksum = TRUE
 )
 }
 \arguments{
@@ -50,6 +51,9 @@ quoted. Default is to use quotes.}
 \item{format}{string, one of "csv" or "parquet". Default is "csv". Export
 to parquet is multipart and H2O itself determines the optimal number
 of files (1 file per chunk).}
+
+\item{write_checksum}{logical, if supported by the format (e.g. 'parquet'), 
+export will include a checksum file for each exported data file.}
 }
 \description{
 Exports an H2OFrame (which can be either VA or FV) to a file.

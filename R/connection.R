@@ -261,18 +261,22 @@ h2o.init <- function(ip = "localhost", port = 54321, name = NA_character_, start
 
       if( is.null( build_number_H2O ) ){
         stop(sprintf("Version mismatch! H2O is running version %s but h2o-R package is version %s.
-        Upgrade H2O and R to latest stable version - https://h2o-release.s3.amazonaws.com/h2o/latest_stable.html",
+        Upgrade H2O and R to latest stable version - https://h2o-release.s3.amazonaws.com/h2o/latest_stable.html.  
+        To avoid this error message (not recommended), you can set strict_version_check=FALSE.",
         verH2O, toString(verPkg)))
       } else if (build_number_H2O =="unknown"){
         stop(sprintf("Version mismatch! H2O is running version %s but h2o-R package is version %s.
-        Upgrade H2O and R to latest stable version - https://h2o-release.s3.amazonaws.com/h2o/latest_stable.html",
+        Upgrade H2O and R to latest stable version - https://h2o-release.s3.amazonaws.com/h2o/latest_stable.html. 
+         To avoid this error message (not recommended), you can set strict_version_check=FALSE.",
         verH2O, toString(verPkg)))
       } else if (build_number_H2O =="99999"){
         stop((sprintf("Version mismatch! H2O is running version %s but h2o-R package is version %s.
-        This is a developer build, please contact your developer",verH2O, toString(verPkg) )))
+        This is a developer build, please contact your developer.  To avoid this error message (not recommended),
+         you can set strict_version_check=FALSE.",verH2O, toString(verPkg) )))
       } else {
          stop(sprintf("Version mismatch! H2O is running version %s but h2o-R package is version %s.
-         Install the matching h2o-R version from - https://h2o-release.s3.amazonaws.com/h2o/%s/%s/index.html",
+         Install the matching h2o-R version from - https://h2o-release.s3.amazonaws.com/h2o/%s/%s/index.html.  To 
+         avoid this error message (not recommended), you can set strict_version_check=FALSE.",
          verH2O, toString(verPkg),branch_name_H2O,build_number_H2O))
       }
     }
@@ -851,9 +855,9 @@ h2o.resume <- function(recovery_dir=NULL) {
   } else {
     base_url <- paste("s3.amazonaws.com/h2o-release/h2o", branch, version, "Rjar", sep = "/")
     h2o_url <- paste("https:/", base_url, "h2o.jar", sep = "/")
-    # Get MD5 checksum
-    md5_check <- "8782d5e328d631f80375dc3df6162770"
+    md5_check <- "b0aede99ebb643bf4a17ffdb4365c4b7"
   }
+
   if (nchar(md5_check) != 32) stop("md5 malformed, must be 32 characters (see ", md5_url, ")")
 
   # Save to temporary file first to protect against incomplete downloads

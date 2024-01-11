@@ -18,6 +18,7 @@ h2o.importFile(
   na.strings = NULL,
   decrypt_tool = NULL,
   skipped_columns = NULL,
+  force_col_types = FALSE,
   custom_non_data_line_markers = NULL,
   partition_by = NULL,
   quotechar = NULL,
@@ -36,6 +37,7 @@ h2o.importFolder(
   na.strings = NULL,
   decrypt_tool = NULL,
   skipped_columns = NULL,
+  force_col_types = FALSE,
   custom_non_data_line_markers = NULL,
   partition_by = NULL,
   quotechar = NULL,
@@ -66,6 +68,7 @@ h2o.uploadFile(
   parse_type = NULL,
   decrypt_tool = NULL,
   skipped_columns = NULL,
+  force_col_types = FALSE,
   quotechar = NULL,
   escapechar = "\\\\"
 )
@@ -100,6 +103,11 @@ forced to a certain type upon import parsing.}
 acquired by calling \link{h2o.decryptionSetup}.}
 
 \item{skipped_columns}{a list of column indices to be skipped during parsing.}
+
+\item{force_col_types}{(Optional) If TRUE, will force the column types to be either the ones in Parquet 
+schema for Parquet files or the ones specified in column_types.  This parameter is used for 
+numerical columns only.  Other column settings will happen without setting this parameter.  
+Defaults to FALSE.}
 
 \item{custom_non_data_line_markers}{(Optional) If a line in imported file starts with any character in given string it will NOT be imported. Empty string means all lines are imported, NULL means that default behaviour for given format will be used}
 

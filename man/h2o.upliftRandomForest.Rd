@@ -29,11 +29,12 @@ h2o.upliftRandomForest(
   col_sample_rate_per_tree = 1,
   histogram_type = c("AUTO", "UniformAdaptive", "Random", "QuantilesGlobal",
     "RoundRobin", "UniformRobust"),
-  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit",
-    "Binary", "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
+  categorical_encoding = c("AUTO", "Enum", "OneHotInternal", "OneHotExplicit", "Binary",
+    "Eigen", "LabelEncoder", "SortByResponse", "EnumLimited"),
   distribution = c("AUTO", "bernoulli", "multinomial", "gaussian", "poisson", "gamma",
     "tweedie", "laplace", "quantile", "huber"),
   check_constant_response = TRUE,
+  custom_metric_func = NULL,
   uplift_metric = c("AUTO", "KL", "Euclidean", "ChiSquared"),
   auuc_type = c("AUTO", "qini", "lift", "gain"),
   auuc_nbins = -1,
@@ -83,7 +84,7 @@ values can lead to more overfitting. Defaults to 1024.}
 \item{seed}{Seed for random numbers (affects certain parts of the algo that are stochastic and those might or might not be enabled by default).
 Defaults to -1 (time-based random number).}
 
-\item{mtries}{Number of variables randomly sampled as candidates at each split. If set to -1, defaults to sqrt{p} for
+\item{mtries}{Number of variables randomly sampled as candidates at each split. If set to -1, defaults to sqrt\{p\} for
 classification and p/3 for regression (where p is the # of predictors Defaults to -2.}
 
 \item{sample_rate}{Row sample rate per tree (from 0.0 to 1.0) Defaults to 0.632.}
@@ -106,6 +107,8 @@ classification and p/3 for regression (where p is the # of predictors Defaults t
 \item{check_constant_response}{\code{Logical}. Check if response column is constant. If enabled, then an exception is thrown if the response
 column is a constant value.If disabled, then model will train regardless of the response column being a
 constant value or not. Defaults to TRUE.}
+
+\item{custom_metric_func}{Reference to custom evaluation function, format: `language:keyName=funcName`}
 
 \item{uplift_metric}{Divergence metric used to find best split when building an uplift tree. Must be one of: "AUTO", "KL",
 "Euclidean", "ChiSquared". Defaults to AUTO.}

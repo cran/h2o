@@ -11,7 +11,8 @@ h2o.explain(
   top_n_features = 5,
   include_explanations = "ALL",
   exclude_explanations = NULL,
-  plot_overrides = NULL
+  plot_overrides = NULL,
+  background_frame = NULL
 )
 }
 \arguments{
@@ -32,6 +33,9 @@ parameter top_n_features will be ignored.}
 
 \item{plot_overrides}{Overrides for individual model explanations, e.g.
 \code{list(shap_summary_plot = list(columns = 50))}.}
+
+\item{background_frame}{Optional frame, that is used as the source of baselines for the marginal SHAP.
+Setting it enables calculating SHAP in more models but it can be more time and memory consuming.}
 }
 \value{
 List of outputs with class "H2OExplanation"

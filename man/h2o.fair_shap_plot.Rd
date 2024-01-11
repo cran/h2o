@@ -4,7 +4,14 @@
 \alias{h2o.fair_shap_plot}
 \title{SHAP summary plot for one feature with protected groups on y-axis.}
 \usage{
-h2o.fair_shap_plot(model, newdata, protected_columns, column, autoscale = TRUE)
+h2o.fair_shap_plot(
+  model,
+  newdata,
+  protected_columns,
+  column,
+  autoscale = TRUE,
+  background_frame = NULL
+)
 }
 \arguments{
 \item{model}{H2O Model Object}
@@ -17,6 +24,8 @@ such as race, gender, age etc.}
 \item{column}{String containing column name.}
 
 \item{autoscale}{If TRUE, try to guess when to use log transformation on X axis.}
+
+\item{background_frame}{Optional frame, that is used as the source of baselines for the marginal SHAP.}
 }
 \value{
 list of ggplot2 objects

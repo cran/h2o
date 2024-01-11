@@ -33,8 +33,7 @@ h2o.naiveBayes(
   max_runtime_secs = 0,
   export_checkpoints_dir = NULL,
   gainslift_bins = -1,
-  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO",
-    "WEIGHTED_OVO")
+  auc_type = c("AUTO", "NONE", "MACRO_OVR", "WEIGHTED_OVR", "MACRO_OVO", "WEIGHTED_OVO")
 )
 }
 \arguments{

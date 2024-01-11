@@ -13,7 +13,8 @@ h2o.make_metrics(
   treatment = NULL,
   auc_type = "NONE",
   auuc_type = "AUTO",
-  auuc_nbins = -1
+  auuc_nbins = -1,
+  custom_auuc_thresholds = NULL
 )
 }
 \arguments{
@@ -34,8 +35,12 @@ h2o.make_metrics(
 \item{auuc_type}{(optional) For uplift binomial classification you have to specify which type of AUUC will be used to 
 calculate this metric. Possibilities are gini, lift, gain, AUTO. Default is AUTO which means qini.}
 
-\item{auuc_nbins}{(optional) For uplift binomial classification you have to specify number of bins to be used 
+\item{auuc_nbins}{(optional) For uplift binomial classification you can specify number of bins to be used 
 for calculation the AUUC. Default is -1, which means 1000.}
+
+\item{custom_auuc_thresholds}{(optional) For uplift binomial classification you can specify exact thresholds to 
+calculate AUUC. Default is NULL. If the thresholds are not defined, auuc_nbins will be used to calculate 
+new thresholds from the predicted data.}
 }
 \value{
 Returns an object of the \linkS4class{H2OModelMetrics} subclass.
